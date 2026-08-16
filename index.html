@@ -280,6 +280,31 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 [data-theme="dark"] .az-tabs button[aria-current="true"]{color:#12160F}
 .az-time{font-size:11.5px;color:var(--soft);padding:10px 15px 0}
 .zk-note{font-size:11.5px;color:var(--gold);margin-top:7px;line-height:1.7}
+
+/* ===== صفحة المصحف ===== */
+.mushaf{background:#FBF6EA;border:1px solid #E3D6BC;border-radius:14px;margin-top:10px;
+  padding:12px 14px 8px;box-shadow:0 3px 14px rgba(80,60,20,.07)}
+[data-theme="dark"] .mushaf{background:#14180F;border-color:#2A3320;box-shadow:none}
+.mus-head{display:flex;justify-content:space-between;font-size:11.5px;color:#9A7C46;
+  border-bottom:1px solid #E7DAC0;padding-bottom:7px;margin-bottom:12px}
+[data-theme="dark"] .mus-head{color:#B79A62;border-color:#2A3320}
+.mus-body{font-family:Hafs,Amiri,serif;text-align:justify;text-align-last:center;
+  line-height:2.35;color:#1E1B14;word-spacing:-1px}
+[data-theme="dark"] .mus-body{color:#E6E2D3}
+.mus-body .ay{cursor:pointer;border-radius:5px}
+.mus-body .ay.mark{background:rgba(214,140,140,.28)}
+.mus-body .num{font-size:.72em;color:#9A7C46}
+[data-theme="dark"] .mus-body .num{color:#B79A62}
+.sura-band{display:flex;align-items:center;gap:8px;margin:16px 0 10px;
+  border:1.5px solid #C9A96A;border-radius:9px;padding:7px 10px;background:rgba(201,169,106,.09)}
+.sura-band::before,.sura-band::after{content:"";flex:1;height:1px;background:#C9A96A;opacity:.5}
+.sura-band span{font-family:Hafs,Amiri,serif;font-size:17px;color:#8A6A2F;white-space:nowrap}
+[data-theme="dark"] .sura-band span{color:#C9A96A}
+.mus-bsm{font-family:Hafs,Amiri,serif;text-align:center;font-size:.9em;color:#8A6A2F;margin:8px 0 12px}
+[data-theme="dark"] .mus-bsm{color:#C9A96A}
+.mus-foot{text-align:center;font-size:11.5px;color:#9A7C46;border-top:1px solid #E7DAC0;
+  margin-top:12px;padding-top:7px}
+[data-theme="dark"] .mus-foot{color:#B79A62;border-color:#2A3320}
 </style>
 
 <header><div class="wrap hrow">
@@ -378,13 +403,16 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <button class="rd-btn" id="rd-minus">أ−</button>
     <button class="rd-btn" id="rd-plus">أ+</button>
   </div>
-  <div class="rd-page">
-    <div class="rd-basmala" id="rd-basmala">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</div>
-    <div id="rd-ayat"></div>
+
+  <div class="mushaf" id="mushaf">
+    <div class="mus-head"><span id="mus-juz"></span><span id="mus-sura"></span></div>
+    <div class="mus-body" id="mus-body"></div>
+    <div class="mus-foot"><span id="mus-page"></span></div>
   </div>
+
   <div class="rd-nav">
-    <button id="rd-prev">السابقة</button>
-    <button id="rd-next">التالية</button>
+    <button id="rd-prev">الصفحة السابقة ›</button>
+    <button id="rd-next">‹ الصفحة التالية</button>
   </div>
 </div>
 
@@ -859,77 +887,101 @@ document.getElementById('acc-times').onclick=e=>{
   h.querySelector('.acc-x').textContent=open?'＋':'－';
   if(!open) renderTimes() };
 
-/* ================= القرآن ================= */
-let QURAN=null, qCur=0, qFont=+(localStorage.getItem('qFont')||25);
+/* ================= القرآن — عرض بالصفحات ================= */
+let Q=null, qPage=1, qFont=+(localStorage.getItem('qFont')||23);
 const QKEY='quran-pos';
+const JUZ_AR=['الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر',
+ 'الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر','السابع عشر','الثامن عشر',
+ 'التاسع عشر','العشرون','الحادي والعشرون','الثاني والعشرون','الثالث والعشرون','الرابع والعشرون',
+ 'الخامس والعشرون','السادس والعشرون','السابع والعشرون','الثامن والعشرون','التاسع والعشرون','الثلاثون'];
 
-async function loadQuran(){
-  if(QURAN) return QURAN;
-  try{ QURAN=await (await fetch('./quran.json')).json() }catch{ QURAN=[] }
-  return QURAN;
-}
-async function openQuran(){
-  await loadQuran();
-  renderAyaDay(); renderResume(); renderSurahList();
-}
+async function loadQuran(){ if(Q)return Q;
+  try{ Q=await (await fetch('./quran.json')).json() }catch{ Q={suras:[],pages:[],juz:[]} }
+  return Q }
+const suraOf=n=>Q.suras[n-1];
+const juzOf=p=>{ let j=1; Q.juz.forEach((sp,i)=>{ if(p>=sp) j=i+1 }); return j };
+
+async function openQuran(){ await loadQuran(); renderAyaDay(); renderResume(); renderSurahList() }
+
 function renderSurahList(){
   const q=(document.getElementById('q-search').value||'').trim();
-  const rows=QURAN.filter(x=>!q||x.name.includes(q)||String(x.n).includes(q));
+  const rows=Q.suras.filter(x=>!q||x.name.includes(q)||String(x.n).includes(q));
   document.getElementById('q-list').innerHTML=rows.map(x=>
-    `<div class="q-row" data-n="${x.n}"><span class="q-num">${AR(x.n)}</span>
-      <span><span class="q-nm">${x.name}</span><div class="q-mt">${AR(x.a.length)} آية</div></span>
+    `<div class="q-row" data-p="${x.page}"><span class="q-num">${AR(x.n)}</span>
+      <span><span class="q-nm">${x.name}</span><div class="q-mt">${AR(x.a.length)} آية · صفحة ${AR(x.page)}</div></span>
       <span class="q-badge">﴾</span></div>`).join('');
 }
 document.getElementById('q-search').oninput=renderSurahList;
 document.getElementById('q-list').onclick=e=>{
-  const r=e.target.closest('.q-row'); if(r) openSurah(+r.dataset.n) };
+  const r=e.target.closest('.q-row'); if(r) openPage(+r.dataset.p) };
 
 async function renderResume(){
   const p=await store.get(QKEY); const el=document.getElementById('q-resume');
-  if(!p||!QURAN[p.n-1]){ el.style.display='none'; return }
-  const s=QURAN[p.n-1];
+  if(!p||!p.page){ el.style.display='none'; return }
   el.style.display='block';
-  el.innerHTML=`<div class="k">أكمل القراءة</div><div class="v">${s.name}</div>
-    <div class="m">توقفت عند الآية ${AR((p.a||0)+1)} من ${AR(s.a.length)}</div>`;
-  el.onclick=()=>openSurah(p.n,p.a);
+  el.innerHTML=`<div class="k">أكمل القراءة</div>
+    <div class="v">${p.sura||''}</div>
+    <div class="m">صفحة ${AR(p.page)} · الجزء ${JUZ_AR[juzOf(p.page)-1]}</div>`;
+  el.onclick=()=>openPage(p.page);
 }
 function renderAyaDay(){
-  if(!QURAN.length) return;
+  if(!Q.suras.length)return;
   const seed=Math.floor(Date.now()/86400000);
-  const s=QURAN[seed%114], i=seed%s.a.length;
-  document.getElementById('aya-day').innerHTML=
-    `<div class="lbl">آية اليوم</div><div class="txt">${s.a[i]}</div>
+  const s=Q.suras[seed%114], i=seed%s.a.length;
+  const el=document.getElementById('aya-day');
+  el.innerHTML=`<div class="lbl">آية اليوم</div><div class="txt">${s.a[i]}</div>
      <div class="ref">${s.name} — الآية ${AR(i+1)}</div>`;
-  document.getElementById('aya-day').onclick=()=>openSurah(s.n,i);
+  el.onclick=()=>openPage(s.page);
 }
-async function openSurah(n,goto){
-  await loadQuran(); qCur=n;
-  const s=QURAN[n-1]; if(!s)return;
-  document.getElementById('rd-title').textContent=s.name;
-  document.getElementById('rd-basmala').style.display=(n===1||n===9)?'none':'';
-  const mark=(await store.get(QKEY)||{});
-  document.getElementById('rd-ayat').innerHTML=s.a.map((t,i)=>
-    `<span class="rd-aya ${mark.n===n&&mark.a===i?'mark':''}" data-i="${i}"
-      style="font-size:${qFont}px">${t} </span>`).join('');
-  switchTab('read');
-  if(goto!=null){ const el=document.querySelector(`.rd-aya[data-i="${goto}"]`);
-    if(el) setTimeout(()=>el.scrollIntoView({block:'center'}),120) }
+
+async function openPage(p){
+  await loadQuran();
+  qPage=Math.min(604,Math.max(1,p));
+  const runs=Q.pages[qPage-1]||[];
+  const mark=(await store.get(QKEY))||{};
+  let html='', last=null;
+  runs.forEach(([sn,from,to])=>{
+    const su=suraOf(sn);
+    if(from===1){ html+=`<div class="sura-band"><span>سُورَةُ ${su.name}</span></div>`;
+      if(sn!==1&&sn!==9) html+=`<div class="mus-bsm">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</div>` }
+    for(let i=from;i<=to;i++)
+      html+=`<span class="ay ${mark.page===qPage&&mark.s===sn&&mark.a===i?'mark':''}"
+        data-s="${sn}" data-a="${i}">${su.a[i-1]} </span>`;
+    last=su;
+  });
+  const body=document.getElementById('mus-body');
+  body.style.fontSize=qFont+'px';
+  body.innerHTML=html;
+  document.getElementById('mus-juz').textContent='الجزء '+JUZ_AR[juzOf(qPage)-1];
+  document.getElementById('mus-sura').textContent=last?last.name:'';
+  document.getElementById('mus-page').textContent='صفحة '+AR(qPage)+' من ٦٠٤';
+  document.getElementById('rd-title').textContent=last?last.name:'المصحف';
+  await store.set(QKEY,{page:qPage,sura:last?last.name:'',s:mark.s,a:mark.a});
+  if(tab!=='read') switchTab('read');
+  scrollTo({top:0,behavior:'instant'});
 }
-document.getElementById('rd-ayat').onclick=async e=>{
-  const a=e.target.closest('.rd-aya'); if(!a)return;
-  document.querySelectorAll('.rd-aya').forEach(x=>x.classList.remove('mark'));
+document.getElementById('mus-body').onclick=async e=>{
+  const a=e.target.closest('.ay'); if(!a)return;
+  document.querySelectorAll('.mus-body .ay').forEach(x=>x.classList.remove('mark'));
   a.classList.add('mark');
-  await store.set(QKEY,{n:qCur,a:+a.dataset.i});
+  const cur=(await store.get(QKEY))||{};
+  await store.set(QKEY,Object.assign(cur,{page:qPage,s:+a.dataset.s,a:+a.dataset.a}));
   toast('حُفظ موضعك') };
 document.getElementById('rd-back').onclick=()=>switchTab('quran');
-document.getElementById('rd-prev').onclick=()=>openSurah(Math.max(1,qCur-1));
-document.getElementById('rd-next').onclick=()=>openSurah(Math.min(114,qCur+1));
-document.getElementById('rd-plus').onclick=()=>{qFont=Math.min(44,qFont+2);
-  localStorage.setItem('qFont',qFont);
-  document.querySelectorAll('.rd-aya').forEach(x=>x.style.fontSize=qFont+'px')};
-document.getElementById('rd-minus').onclick=()=>{qFont=Math.max(16,qFont-2);
-  localStorage.setItem('qFont',qFont);
-  document.querySelectorAll('.rd-aya').forEach(x=>x.style.fontSize=qFont+'px')};
+document.getElementById('rd-prev').onclick=()=>openPage(qPage-1);
+document.getElementById('rd-next').onclick=()=>openPage(qPage+1);
+const setF=v=>{ qFont=Math.min(38,Math.max(15,v)); localStorage.setItem('qFont',qFont);
+  document.getElementById('mus-body').style.fontSize=qFont+'px' };
+document.getElementById('rd-plus').onclick=()=>setF(qFont+2);
+document.getElementById('rd-minus').onclick=()=>setF(qFont-2);
+
+/* سحب لتقليب الصفحات */
+(function(){ const el=document.getElementById('mushaf'); let x0=null,y0=null;
+  el.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  el.addEventListener('touchend',e=>{ if(x0==null)return;
+    const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
+    if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.6) openPage(qPage+(dx>0?-1:1));
+    x0=null },{passive:true}); })();
 
 /* ================= tabs ================= */
 const TITLES={today:'اليوم',quran:'القرآن الكريم',read:'القرآن الكريم',azkar:'الأذكار',tasbih:'الورد والمسبحة',history:'السجل'};
