@@ -1,0 +1,270 @@
+{
+ "sheikh": {
+  "name": "الشيخ محمد عبدالعظيم الباز",
+  "bio": "دروس ومحاضرات وسلاسل علمية",
+  "telegram": "https://t.me/droselmsheakmohmedelbaz",
+  "youtube": "",
+  "facebook": ""
+ },
+ "categories": [
+  {
+   "id": "aqeedah",
+   "name": "العقيدة"
+  },
+  {
+   "id": "tafsir",
+   "name": "التفسير وعلوم القرآن"
+  },
+  {
+   "id": "hadith",
+   "name": "الحديث وشروحه"
+  },
+  {
+   "id": "fiqh",
+   "name": "الفقه"
+  },
+  {
+   "id": "seerah",
+   "name": "السيرة والتاريخ"
+  },
+  {
+   "id": "raqaiq",
+   "name": "الرقائق والتزكية"
+  },
+  {
+   "id": "quran",
+   "name": "القرآن الكريم"
+  },
+  {
+   "id": "khutab",
+   "name": "الخطب والمواسم"
+  }
+ ],
+ "series": [
+  {
+   "id": "usool3",
+   "cat": "aqeedah",
+   "name": "كتاب الأصول الثلاثة",
+   "desc": "",
+   "base": "https://archive.org/download/usool3-albaz/",
+   "lessons": [
+    {
+     "t": "الدرس الأول",
+     "f": "001.mp3"
+    },
+    {
+     "t": "الدرس الثاني",
+     "f": "002.mp3"
+    }
+   ]
+  },
+  {
+   "id": "tahawiyah",
+   "cat": "aqeedah",
+   "name": "شرح كتاب العقيدة الطحاوية",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "qadar",
+   "cat": "aqeedah",
+   "name": "مختصر الإيمان بالقضاء والقدر",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "anwar-sunnah",
+   "cat": "aqeedah",
+   "name": "مختصر أنوار السنة وظلمات البدعة",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "lumaa",
+   "cat": "aqeedah",
+   "name": "مسابقة متن لمعة الاعتقاد",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "tafsir-tawheed",
+   "cat": "tafsir",
+   "name": "سلسلة التفسير — مسجد التوحيد",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "tafsir-quran",
+   "cat": "tafsir",
+   "name": "تفسير القرآن الكريم",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "taysir",
+   "cat": "tafsir",
+   "name": "تيسير الكريم الرحمن في تفسير كلام المنان",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "ibn-kathir",
+   "cat": "tafsir",
+   "name": "مدارسة تفسير ابن كثير",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "qasas-quran",
+   "cat": "tafsir",
+   "name": "مسابقة قصص في القرآن",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "jamie-uloom",
+   "cat": "hadith",
+   "name": "جامع العلوم والحكم لابن رجب — مسجد التوحيد",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "ghusl-bukhari",
+   "cat": "hadith",
+   "name": "شرح كتاب الغسل من صحيح البخاري",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "wadih",
+   "cat": "fiqh",
+   "name": "شرح كتاب الواضح في الفقه",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "fiqh-various",
+   "cat": "fiqh",
+   "name": "دروس فقهية متنوعة",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "buyoo",
+   "cat": "fiqh",
+   "name": "أحكام البيوع",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "janaiz",
+   "cat": "fiqh",
+   "name": "دروس أحكام الجنائز",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "mukhtasar-seerah",
+   "cat": "seerah",
+   "name": "دورة مختصر السيرة النبوية والصحابة العشر",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "seerah-lessons",
+   "cat": "seerah",
+   "name": "دروس السيرة",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "tarikh-uthman",
+   "cat": "seerah",
+   "name": "التاريخ الإسلامي من عثمان بن عفان رضي الله عنه",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "halawat-iman",
+   "cat": "raqaiq",
+   "name": "سلسلة حلاوة الإيمان — مسجد سلامة",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "various-books",
+   "cat": "raqaiq",
+   "name": "شرح كتب متنوعة",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "women",
+   "cat": "raqaiq",
+   "name": "دروس للنساء — مسجد عمر بن الخطاب",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "mushaf",
+   "cat": "quran",
+   "name": "المصحف كاملًا بصوت الشيخ",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "tilawat1",
+   "cat": "quran",
+   "name": "تلاوات من القرآن الكريم",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "tilawat2",
+   "cat": "quran",
+   "name": "تلاوات مختارة",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "jumaa",
+   "cat": "khutab",
+   "name": "خطب الجمعة",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  },
+  {
+   "id": "tahajjud",
+   "cat": "khutab",
+   "name": "صلاة التهجد ١٤٤٧",
+   "desc": "",
+   "base": "",
+   "lessons": []
+  }
+ ]
+}
