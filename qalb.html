@@ -48,7 +48,8 @@ h1{font-family:Amiri,serif;font-size:26px;margin:0;color:var(--deep)}
 .tile .st{font-size:10.5px;color:var(--soft);margin-top:5px}
 
 .tabs{display:flex;gap:8px;margin-top:14px}
-.tabs button{flex:1;padding:10px 0;border-radius:12px;border:1px solid var(--line);
+.tabs{overflow-x:auto}
+.tabs button{flex:1;white-space:nowrap;padding:10px 0;border-radius:12px;border:1px solid var(--line);
   background:var(--card);color:var(--soft);font-size:13.5px;cursor:pointer}
 .tabs button[aria-current="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
 [data-theme="dark"] .tabs button[aria-current="true"]{color:#12160F}
@@ -57,6 +58,32 @@ h1{font-family:Amiri,serif;font-size:26px;margin:0;color:var(--deep)}
   border:1px solid var(--line);color:var(--deep);font-size:13px;background:var(--paper)}
 .srcnote{background:var(--wash);border:1px solid var(--line);border-radius:12px;
   padding:11px 13px;margin:12px 0 0;font-size:12px;color:var(--soft);line-height:1.8}
+.cat-hero{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:12px}
+.cat-hero h2{margin:0 0 5px;font-family:Amiri,serif;font-size:25px;color:var(--deep)}
+.cat-hero p{margin:0;font-size:12.5px;color:var(--soft)}
+.ob{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:11px;overflow:hidden}
+.ob-head{width:100%;display:flex;gap:10px;align-items:flex-start;padding:14px 15px;border:0;
+  background:transparent;cursor:pointer;text-align:start}
+.ob-head .q{flex:1;font-size:14.5px;line-height:1.7}
+.ob-head .x{font-size:15px;color:var(--soft);flex:none}
+.ob-body{border-top:1px solid var(--line)}
+.ob-sec{padding:13px 15px;border-top:1px solid var(--line)}
+.ob-sec:first-child{border-top:0}
+.ob-lbl{font-size:11.5px;color:var(--gold);margin-bottom:7px}
+.ob-txt{font-size:13.5px;line-height:2}
+.ob-why{margin:0;padding-inline-start:18px}
+.ob-why li{font-size:13px;line-height:1.9;margin-bottom:5px;color:var(--soft)}
+.prog40{background:linear-gradient(150deg,var(--deep),#3A5533);color:#F2F7EE;
+  border-radius:var(--r);padding:15px;margin-bottom:12px}
+[data-theme="dark"] .prog40{background:linear-gradient(150deg,#1E2C18,#141D10);border:1px solid var(--line)}
+.prog40 .h{font-size:13px;opacity:.85}
+.prog40 .n{font-family:Amiri,serif;font-size:30px;line-height:1.2;margin-top:3px}
+.prog40 .cells{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:12px}
+.prog40 .cells i{aspect-ratio:1;border-radius:4px;background:rgba(255,255,255,.16)}
+.prog40 .cells i.on{background:#E7C97C}
+.prog40 .cells i.today{outline:1.5px solid #fff}
+.prog40 button{margin-top:12px;width:100%;padding:10px;border-radius:11px;border:0;
+  background:rgba(255,255,255,.16);color:#fff;font-size:13px;cursor:pointer}
 .intro{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-top:14px}
 .intro p{margin:0;font-size:13px;color:var(--soft);line-height:1.9}
 
@@ -118,6 +145,7 @@ textarea{width:100%;min-height:96px;resize:vertical;font-size:14.5px;background:
     <div class="tabs">
       <button data-k="problems" aria-current="true">أمراض القلوب</button>
       <button data-k="works">أعمال القلوب</button>
+      <button data-k="obstacles">العقبات</button>
     </div>
     <p class="srcnote">مادة هذا القسم مجموعة ومصاغة من كتب أهل العلم في أعمال القلوب وأمراضها،
       وتحت كل باب رابطُ مصدرِه للتوسّع والمراجعة.</p>
@@ -125,8 +153,24 @@ textarea{width:100%;min-height:96px;resize:vertical;font-size:14.5px;background:
     <div class="intro"><p>لكل داءٍ في القلب دواء، والعلاج يبدأ بمعرفة الداء وتسميته. اختر ما تشكوه، واقرأ تعريفه وأسبابه، ثم التزم بعلاجه يومًا بيوم — وسجّل ما يمرّ بك في دفترك الخاص.</p></div>
   </div>
 
+  <div id="v-cat" class="hide">
+    <button class="back" id="b-back-cat">← رجوع</button>
+    <div class="cat-hero"><h2 id="cat-name"></h2><p id="cat-sub"></p></div>
+    <div id="p40-cat"></div>
+    <div id="ob-list"></div>
+    <section>
+      <div class="sh"><span>دفتري</span><span class="sub" style="margin:0">خاص بك تمامًا</span></div>
+      <div class="bd">
+        <textarea id="jr2" placeholder="اكتب ما تمرّ به مع هذه العقبة…"></textarea>
+        <button class="primary" id="save-jr2">حفظ</button>
+      </div>
+      <div id="entries2"></div>
+    </section>
+  </div>
+
   <div id="v-detail" class="hide">
     <button class="back" id="b-back">← رجوع</button>
+    <div id="p40-detail"></div>
     <section>
       <div class="sh"><span id="d-name"></span><span class="sub" id="d-sub" style="margin:0"></span></div>
       <div class="bd" id="d-def"></div>
@@ -172,6 +216,7 @@ const today=()=>iso(new Date());
 
 let DATA={problems:[],works:[]}, track={}, journal={}, cfg={}, curId=null, kind='problems';
 const ITEMS=()=>DATA[kind]||[];
+let curCat=null;
 const CURE=p=>p.cure||p.means||[];
 const LIST=p=>p.causes||p.fruits||[];
 
@@ -181,7 +226,13 @@ function streakOf(pid,ci){ let s=0;
   for(let i=0;;i++){ const d=new Date(); d.setDate(d.getDate()-i);
     if(doneOn(pid,ci,iso(d))) s++; else if(i>0) break; else break }
   return s }
+function catPct(c){
+  let tot=0,n=0;
+  (c.items||[]).forEach(it=>it.steps.forEach((st,i)=>{ if(st.track){tot++;
+    if(doneOn(c.id+'/'+it.id,i,today())) n++ }}));
+  return tot? Math.round(n/tot*100):0 }
 function todayPct(p){
+  if(p.items) return catPct(p);
   const cure=CURE(p); const t=cure.filter(c=>c.track); if(!t.length)return 0;
   let n=0; cure.forEach((c,i)=>{ if(c.track&&doneOn(p.id,i,today())) n++ });
   return Math.round(n/t.length*100) }
@@ -199,8 +250,120 @@ function renderList(){
       <div class="st">${pct?(kind==='works'?'اليوم ':'علاج اليوم ')+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div>
     </div>`}).join('');
   document.getElementById('grid').onclick=e=>{
-    const t=e.target.closest('.tile'); if(t) open(t.dataset.id) };
+    const t=e.target.closest('.tile'); if(!t)return;
+    if(kind==='obstacles') openCat(t.dataset.id); else open(t.dataset.id) };
 }
+
+/* ---------- برنامج ٤٠ يومًا ---------- */
+let prog={};
+const dayIndex=(startIso)=>Math.floor((fromIso(today())-fromIso(startIso))/86400000);
+function progHtml(id,label){
+  const p=prog[id];
+  if(!p) return `<div class="prog40"><div class="h">برنامج الأربعين</div>
+    <div class="n">٤٠ يومًا على ${label}</div>
+    <div class="h" style="margin-top:6px">التزام يومي متصل يصنع عادة راسخة بإذن الله.</div>
+    <button data-p40="start">ابدأ البرنامج</button></div>`;
+  const dayN=dayIndex(p.start)+1;
+  let cells='';
+  for(let i=0;i<40;i++){
+    const d=fromIso(p.start); d.setDate(d.getDate()+i);
+    cells+=`<i class="${(p.days||[]).includes(iso(d))?'on':''} ${iso(d)===today()?'today':''}"></i>` }
+  const doneToday=(p.days||[]).includes(today());
+  return `<div class="prog40"><div class="h">برنامج الأربعين — ${label}</div>
+    <div class="n">اليوم ${AR(Math.min(40,Math.max(1,dayN)))} من ٤٠</div>
+    <div class="cells">${cells}</div>
+    <button data-p40="${doneToday?'undo':'mark'}">${doneToday?'✓ سُجّل اليوم — إلغاء':'سجّل التزام اليوم'}</button>
+    <button data-p40="reset" style="background:transparent;border:1px solid rgba(255,255,255,.25);margin-top:7px">إنهاء البرنامج</button></div>`;
+}
+async function p40Click(e,id){
+  const b=e.target.closest('button[data-p40]'); if(!b) return false;
+  const a=b.dataset.p40;
+  if(a==='start'){ prog[id]={start:today(),days:[]}; toast('بدأ البرنامج — وفّقك الله') }
+  else if(a==='mark'){ (prog[id].days=prog[id].days||[]).push(today());
+    const n=prog[id].days.length;
+    toast(n>=40?'أتممت الأربعين — تقبّل الله':'سُجّل اليوم ✓') }
+  else if(a==='undo'){ prog[id].days=prog[id].days.filter(x=>x!==today()) }
+  else if(a==='reset'){ delete prog[id]; toast('أُنهي البرنامج') }
+  await store.set('qalb-prog',prog);
+  return true;
+}
+
+/* ---------- شاشة فئة العقبات ---------- */
+function openCat(id){
+  curCat=(DATA.obstacles||[]).find(x=>x.id===id); if(!curCat)return;
+  curId=id;
+  document.getElementById('cat-name').textContent=curCat.name;
+  document.getElementById('cat-sub').textContent=curCat.sub||'';
+  document.getElementById('p40-cat').innerHTML=progHtml('cat:'+curCat.id,curCat.name);
+  document.getElementById('p40-cat').onclick=async ev=>{
+    if(await p40Click(ev,'cat:'+curCat.id)){
+      document.getElementById('p40-cat').innerHTML=progHtml('cat:'+curCat.id,curCat.name) } };
+  renderObs(); renderJournal2();
+  document.getElementById('v-list').classList.add('hide');
+  document.getElementById('v-cat').classList.remove('hide');
+  scrollTo({top:0,behavior:'smooth'});
+}
+function renderObs(){
+  const host=document.getElementById('ob-list');
+  host.innerHTML=curCat.items.map((it,k)=>{
+    const key=curCat.id+'/'+it.id;
+    const steps=it.steps.map((st,i)=>{
+      const on=doneOn(key,i,today()), sk=st.track?streakOf(key,i):0;
+      let wk='';
+      if(st.track){ wk='<div class="week">';
+        for(let j=6;j>=0;j--){const d=new Date();d.setDate(d.getDate()-j);
+          wk+=`<i class="${doneOn(key,i,iso(d))?'on':''}"></i>`}
+        wk+='</div>' }
+      return `<div class="cure">
+        <button class="chk ${on?'on':''} ${st.track?'':'no'}" ${st.track?`data-k="${key}" data-i="${i}"`:''}>✓</button>
+        <div><div class="t">${st.t}</div><div class="d">${st.d}</div>
+        ${sk>1?`<div class="streak">${AR(sk)} أيام متتابعة</div>`:''}${wk}</div></div>`}).join('');
+    const src=(it.sources||[]).filter(x=>x&&x.u).map(x=>
+      `<a href="${x.u}" target="_blank" rel="noopener" style="display:block;text-decoration:none;
+        color:var(--deep);font-size:12.5px;padding:8px 0">${x.t||'المصدر'} ↗</a>`).join('');
+    return `<div class="ob"><button class="ob-head" data-ob="${k}">
+        <span class="q">${it.q}</span><span class="x">＋</span></button>
+      <div class="ob-body hide">
+        <div class="ob-sec"><div class="ob-lbl">لماذا تحدث</div>
+          <ul class="ob-why">${it.why.map(w=>`<li>${w}</li>`).join('')}</ul></div>
+        <div class="ob-sec"><div class="ob-lbl">الجواب باختصار</div>
+          <div class="ob-txt">${it.answer}</div></div>
+        <div class="ob-sec" style="padding:0"><div class="ob-lbl" style="padding:13px 15px 0">خطوات التجاوز</div>
+          ${steps}</div>
+        ${src?`<div class="ob-sec"><div class="ob-lbl">للتوسّع</div>${src}</div>`:''}
+      </div></div>`}).join('');
+  host.onclick=async e=>{
+    const h=e.target.closest('.ob-head');
+    if(h){ const b=h.nextElementSibling; const open=b.classList.toggle('hide');
+      h.querySelector('.x').textContent=open?'＋':'－'; return }
+    const b=e.target.closest('button[data-k]'); if(!b)return;
+    const d=today(); track[d]=track[d]||{};
+    const kk=b.dataset.k+':'+b.dataset.i;
+    if(track[d][kk]) delete track[d][kk]; else track[d][kk]=1;
+    await store.set('qalb-track',track); renderObs(); };
+}
+function renderJournal2(){
+  const list=(journal[curCat.id]||[]).slice().reverse();
+  document.getElementById('entries2').innerHTML= list.length? list.map((e,i)=>
+    `<div class="entry"><div class="dt"><span>${new Intl.DateTimeFormat('ar-EG',
+      {weekday:'long',day:'numeric',month:'long'}).format(new Date(e.d))}</span>
+      <button class="del" data-i="${(journal[curCat.id].length-1)-i}">حذف</button></div>
+      <div class="tx">${e.x.replace(/</g,'&lt;')}</div></div>`).join('')
+    : '<div class="empty">لا شيء بعد. اكتب أول ما يخطر لك — لن يراه أحد غيرك.</div>';
+  document.getElementById('entries2').onclick=async e=>{
+    const b=e.target.closest('button[data-i]'); if(!b)return;
+    journal[curCat.id].splice(+b.dataset.i,1); await store.set('qalb-journal',journal);
+    renderJournal2() };
+}
+document.getElementById('save-jr2').onclick=async()=>{
+  const t=document.getElementById('jr2').value.trim(); if(!t)return;
+  (journal[curCat.id]=journal[curCat.id]||[]).push({d:Date.now(),x:t});
+  await store.set('qalb-journal',journal);
+  document.getElementById('jr2').value=''; renderJournal2(); toast('حُفظ في دفترك') };
+document.getElementById('b-back-cat').onclick=()=>{
+  document.getElementById('v-cat').classList.add('hide');
+  document.getElementById('v-list').classList.remove('hide');
+  renderList(); scrollTo({top:0,behavior:'smooth'}) };
 
 /* ---------- detail ---------- */
 function open(id){
@@ -226,6 +389,10 @@ function open(id){
   document.getElementById('s-proof').classList.toggle('hide',!p.proof);
   document.getElementById('d-note').textContent=p.note||'';
   document.getElementById('s-note').classList.toggle('hide',!p.note);
+  document.getElementById('p40-detail').innerHTML=progHtml('item:'+p.id,p.name);
+  document.getElementById('p40-detail').onclick=async ev=>{
+    if(await p40Click(ev,'item:'+p.id)){
+      document.getElementById('p40-detail').innerHTML=progHtml('item:'+p.id,p.name) } };
   renderCure(); renderJournal();
   document.getElementById('v-list').classList.add('hide');
   document.getElementById('v-detail').classList.remove('hide');
@@ -284,14 +451,18 @@ document.getElementById('b-theme').onclick=async()=>{
   cfg=(await store.get('cfg'))||{};
   if(cfg.theme) document.documentElement.setAttribute('data-theme',cfg.theme);
   track=(await store.get('qalb-track'))||{};
+  prog=(await store.get('qalb-prog'))||{};
   journal=(await store.get('qalb-journal'))||{};
   try{ DATA=await (await fetch('./qalb.json?v='+Date.now())).json() }catch{}
   renderList();
   document.querySelector('.tabs').onclick=e=>{ const b=e.target.closest('button'); if(!b)return;
     kind=b.dataset.k;
     document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-current',x.dataset.k===kind));
-    document.getElementById('hd').textContent = kind==='works'?'أعمال القلوب':'علاج القلوب';
-    document.getElementById('hs').textContent = kind==='works'?'اغرسها في قلبك يومًا بيوم':'اعرف داءك، واعمل بدوائه';
+    const T={problems:['علاج القلوب','اعرف داءك، واعمل بدوائه'],
+             works:['أعمال القلوب','اغرسها في قلبك يومًا بيوم'],
+             obstacles:['العقبات','ما يعترض طريقك وكيف تتجاوزه']}[kind];
+    document.getElementById('hd').textContent=T[0];
+    document.getElementById('hs').textContent=T[1];
     renderList() };
   if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 })();

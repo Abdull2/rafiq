@@ -305,6 +305,22 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .mus-foot{text-align:center;font-size:11.5px;color:#9A7C46;border-top:1px solid #E7DAC0;
   margin-top:12px;padding-top:7px}
 [data-theme="dark"] .mus-foot{color:#B79A62;border-color:#2A3320}
+
+.dua-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:15px;margin-bottom:10px}
+.dua-card .t{font-family:Amiri,serif;font-size:20px;line-height:2.1}
+.dua-card .s{font-size:11.5px;color:var(--gold);margin-top:9px}
+.dua-card .nt{font-size:12px;color:var(--soft);margin-top:5px;line-height:1.7}
+.dua-card .acts{display:flex;gap:8px;margin-top:11px}
+.dua-card .acts button{border:1px solid var(--line);background:transparent;color:var(--soft);
+  border-radius:9px;padding:6px 12px;font-size:12px;cursor:pointer}
+.dua-card .acts button.on{border-color:var(--gold);color:var(--gold)}
+.my-dua{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px;margin-bottom:10px}
+.my-dua.ans{border-color:var(--sage);background:var(--wash)}
+.my-dua .x{font-size:14.5px;line-height:1.9}
+.my-dua .m{font-size:11px;color:var(--soft);margin-top:6px;display:flex;justify-content:space-between;gap:8px}
+.my-dua .m button{border:0;background:none;color:var(--deep);font-size:12px;cursor:pointer}
 </style>
 
 <header><div class="wrap hrow">
@@ -313,6 +329,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <div class="sub" id="dateline"></div>
   </div>
   <div style="display:flex;gap:7px">
+    <button class="icon" id="btn-history" aria-label="السجل">▤</button>
     <button class="icon" id="btn-theme" aria-label="الوضع الليلي">◐</button>
     <button class="icon" id="btn-settings" aria-label="الإعدادات">⚙</button>
   </div>
@@ -419,6 +436,13 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <!-- ============ AZKAR ============ -->
 <div id="v-azkar" class="hide"><div id="az-wrap"></div></div>
 
+<!-- ============ DUA ============ -->
+<div id="v-dua" class="hide">
+  <div class="az-tabs" id="dua-tabs"></div>
+  <input class="search" id="dua-search" placeholder="ابحث في الأدعية…">
+  <div id="dua-list"></div>
+</div>
+
 <!-- ============ TASBIH ============ -->
 <div id="v-tasbih" class="hide">
   <section>
@@ -477,9 +501,9 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <button data-tab="today" aria-current="true"><em>✓</em>اليوم</button>
   <button data-tab="quran"><em>﴾﴿</em>القرآن</button>
   <button data-tab="azkar"><em>☾</em>الأذكار</button>
+  <button data-tab="dua"><em>☟</em>الدعاء</button>
   <button data-tab="tasbih"><em>◍</em>الورد</button>
   <button onclick="location.href='./qalb.html'"><em>❤</em>القلب</button>
-  <button data-tab="history"><em>▤</em>السجل</button>
 </div></nav>
 
 <!-- settings sheet -->
@@ -983,12 +1007,84 @@ document.getElementById('rd-minus').onclick=()=>setF(qFont-2);
     if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.6) openPage(qPage+(dx>0?-1:1));
     x0=null },{passive:true}); })();
 
+document.getElementById('btn-history').onclick=()=>switchTab('history');
+
+/* ================= الدعاء ================= */
+let DUA={cats:[]}, duaCat='quran', duaFav=[], myDuas=[];
+async function loadDua(){ if(DUA.cats.length)return;
+  try{ DUA=await (await fetch('./adiya.json?v='+Date.now())).json() }catch{}
+  duaFav=(await store.get('dua-fav'))||[]; myDuas=(await store.get('my-duas'))||[] }
+async function renderDua(){
+  await loadDua();
+  document.getElementById('dua-tabs').innerHTML=
+    DUA.cats.map(c=>`<button data-c="${c.id}" aria-current="${c.id===duaCat}">${c.name}</button>`).join('')+
+    `<button data-c="_fav" aria-current="${duaCat==='_fav'}">★ المحفوظة</button>`+
+    `<button data-c="_my" aria-current="${duaCat==='_my'}">✎ دفتر دعائي</button>`;
+  const q=(document.getElementById('dua-search').value||'').trim();
+  const host=document.getElementById('dua-list');
+
+  if(duaCat==='_my'){
+    host.innerHTML=`<div class="dua-card">
+      <textarea id="new-dua" placeholder="اكتب دعوتك… ثم علّمها إذا استُجيبت"
+        style="width:100%;min-height:80px;background:var(--paper);border:1px solid var(--line);
+        border-radius:11px;padding:10px;font-size:14.5px;line-height:1.9"></textarea>
+      <div class="acts"><button id="add-dua" style="flex:1">أضف إلى دفتري</button></div></div>`+
+      (myDuas.length? myDuas.slice().reverse().map((x,i)=>{
+        const idx=myDuas.length-1-i;
+        return `<div class="my-dua ${x.ans?'ans':''}"><div class="x">${x.t.replace(/</g,'&lt;')}</div>
+          <div class="m"><span>${new Intl.DateTimeFormat('ar-EG',{day:'numeric',month:'long',year:'numeric'})
+            .format(new Date(x.d))}${x.ans?' · استُجيب ✓':''}</span>
+          <span><button data-ans="${idx}">${x.ans?'إلغاء':'استُجيب'}</button>
+          <button data-del="${idx}">حذف</button></span></div></div>`}).join('')
+        : '<div class="dua-card" style="text-align:center;color:var(--soft);font-size:13px">دفترك فارغ. اكتب أول دعوة — ولن يراها أحد غيرك.</div>');
+    host.onclick=async e=>{
+      if(e.target.id==='add-dua'){ const t=document.getElementById('new-dua').value.trim();
+        if(!t)return; myDuas.push({t,d:Date.now(),ans:false});
+        await store.set('my-duas',myDuas); renderDua(); toast('أُضيفت إلى دفترك'); return }
+      const a=e.target.closest('button[data-ans]');
+      if(a){ myDuas[+a.dataset.ans].ans=!myDuas[+a.dataset.ans].ans;
+        await store.set('my-duas',myDuas); renderDua();
+        if(myDuas[+a.dataset.ans].ans) toast('الحمد لله — استُجيب'); return }
+      const dl=e.target.closest('button[data-del]');
+      if(dl){ myDuas.splice(+dl.dataset.del,1); await store.set('my-duas',myDuas); renderDua() } };
+    return;
+  }
+
+  let items=[];
+  if(duaCat==='_fav') DUA.cats.forEach(c=>c.items.forEach((x,i)=>{
+    if(duaFav.includes(c.id+':'+i)) items.push([c,x,i]) }));
+  else { const c=DUA.cats.find(x=>x.id===duaCat)||DUA.cats[0];
+    c.items.forEach((x,i)=>items.push([c,x,i])) }
+  if(q) items=items.filter(([c,x])=>x.t.includes(q)||x.s.includes(q));
+
+  host.innerHTML= items.length? items.map(([c,x,i])=>{
+    const k=c.id+':'+i, fav=duaFav.includes(k);
+    return `<div class="dua-card"><div class="t">${x.t}</div>
+      <div class="s">${x.s}</div>${x.note?`<div class="nt">${x.note}</div>`:''}
+      <div class="acts"><button data-fav="${k}" class="${fav?'on':''}">${fav?'★ محفوظ':'☆ حفظ'}</button>
+      <button data-copy="${k}">نسخ</button></div></div>`}).join('')
+    : '<div class="dua-card" style="text-align:center;color:var(--soft);font-size:13px">لا نتائج</div>';
+
+  host.onclick=async e=>{
+    const f=e.target.closest('button[data-fav]');
+    if(f){ const k=f.dataset.fav; const j=duaFav.indexOf(k);
+      if(j<0)duaFav.push(k); else duaFav.splice(j,1);
+      await store.set('dua-fav',duaFav); renderDua(); return }
+    const cp=e.target.closest('button[data-copy]');
+    if(cp){ const [cid,i]=cp.dataset.copy.split(':');
+      const c=DUA.cats.find(x=>x.id===cid); const x=c.items[+i];
+      navigator.clipboard?.writeText(x.t+'\n('+x.s+')'); toast('نُسخ الدعاء') } };
+}
+document.getElementById('dua-tabs').onclick=e=>{ const b=e.target.closest('button'); if(!b)return;
+  duaCat=b.dataset.c; renderDua() };
+document.getElementById('dua-search').oninput=()=>renderDua();
+
 /* ================= tabs ================= */
-const TITLES={today:'اليوم',quran:'القرآن الكريم',read:'القرآن الكريم',azkar:'الأذكار',tasbih:'الورد والمسبحة',history:'السجل'};
+const TITLES={today:'اليوم',quran:'القرآن الكريم',read:'القرآن الكريم',azkar:'الأذكار',dua:'الدعاء',tasbih:'الورد والمسبحة',history:'السجل'};
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 function switchTab(t){
   tab=t;
-  ['today','quran','read','azkar','tasbih','history'].forEach(v=>
+  ['today','quran','read','azkar','dua','tasbih','history'].forEach(v=>
     document.getElementById('v-'+v).classList.toggle('hide',v!==t));
   document.querySelectorAll('nav button[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===t));
   document.getElementById('page-title').textContent=TITLES[t];
@@ -996,6 +1092,7 @@ function switchTab(t){
   if(t==='quran') openQuran();
   if(t==='tasbih'){ renderTasbih(); renderQuran() }
   if(t==='azkar') renderAzkar();
+  if(t==='dua') renderDua();
   scrollTo({top:0,behavior:'smooth'});
 }
 
