@@ -47,6 +47,16 @@ h1{font-family:Amiri,serif;font-size:26px;margin:0;color:var(--deep)}
 .tile .pr i{display:block;height:100%;background:var(--deep)}
 .tile .st{font-size:10.5px;color:var(--soft);margin-top:5px}
 
+.tabs{display:flex;gap:8px;margin-top:14px}
+.tabs button{flex:1;padding:10px 0;border-radius:12px;border:1px solid var(--line);
+  background:var(--card);color:var(--soft);font-size:13.5px;cursor:pointer}
+.tabs button[aria-current="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+[data-theme="dark"] .tabs button[aria-current="true"]{color:#12160F}
+.links{display:flex;gap:8px;padding:13px 15px;border-top:1px solid var(--line);flex-wrap:wrap}
+.links a{flex:1;text-align:center;text-decoration:none;padding:10px;border-radius:11px;
+  border:1px solid var(--line);color:var(--deep);font-size:13px;background:var(--paper)}
+.srcnote{background:var(--wash);border:1px solid var(--line);border-radius:12px;
+  padding:11px 13px;margin:12px 0 0;font-size:12px;color:var(--soft);line-height:1.8}
 .intro{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-top:14px}
 .intro p{margin:0;font-size:13px;color:var(--soft);line-height:1.9}
 
@@ -105,6 +115,12 @@ textarea{width:100%;min-height:96px;resize:vertical;font-size:14.5px;background:
 
 <div class="wrap">
   <div id="v-list">
+    <div class="tabs">
+      <button data-k="problems" aria-current="true">أمراض القلوب</button>
+      <button data-k="works">أعمال القلوب</button>
+    </div>
+    <p class="srcnote">مادة هذا القسم مجموعة ومصاغة من كتب أهل العلم في أعمال القلوب وأمراضها،
+      وتحت كل باب رابطُ مصدرِه للتوسّع والمراجعة.</p>
     <div class="grid" id="grid"></div>
     <div class="intro"><p>لكل داءٍ في القلب دواء، والعلاج يبدأ بمعرفة الداء وتسميته. اختر ما تشكوه، واقرأ تعريفه وأسبابه، ثم التزم بعلاجه يومًا بيوم — وسجّل ما يمرّ بك في دفترك الخاص.</p></div>
   </div>
@@ -116,13 +132,16 @@ textarea{width:100%;min-height:96px;resize:vertical;font-size:14.5px;background:
       <div class="bd" id="d-def"></div>
     </section>
     <section>
-      <div class="sh">أسبابها</div>
+      <div class="sh" id="d-list-head">أسبابها</div>
       <div class="bd"><ul id="d-causes"></ul></div>
     </section>
     <section>
-      <div class="sh"><span>العلاج</span><span class="sub" id="d-today" style="margin:0"></span></div>
+      <div class="sh"><span id="d-cure-head">العلاج</span><span class="sub" id="d-today" style="margin:0"></span></div>
       <div id="d-cure"></div>
     </section>
+    <section id="s-links"><div class="links" id="d-links"></div>
+      <p class="srcnote" style="margin:0;border:0;border-radius:0;background:transparent">
+      للتوسّع والتحقّق ارجع إلى المصدر أعلاه.</p></section>
     <section id="s-proof"><div class="ayah" id="d-proof"></div></section>
     <section id="s-note" class="hide"><div class="warn" id="d-note"></div></section>
     <section>
@@ -151,7 +170,10 @@ const AR=n=>Number(n).toLocaleString('ar-EG');
 const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const today=()=>iso(new Date());
 
-let DATA={problems:[]}, track={}, journal={}, cfg={}, curId=null;
+let DATA={problems:[],works:[]}, track={}, journal={}, cfg={}, curId=null, kind='problems';
+const ITEMS=()=>DATA[kind]||[];
+const CURE=p=>p.cure||p.means||[];
+const LIST=p=>p.causes||p.fruits||[];
 
 /* ---------- helpers ---------- */
 const doneOn=(pid,ci,day)=>!!(track[day]&&track[day][pid+':'+ci]);
@@ -160,20 +182,21 @@ function streakOf(pid,ci){ let s=0;
     if(doneOn(pid,ci,iso(d))) s++; else if(i>0) break; else break }
   return s }
 function todayPct(p){
-  const t=p.cure.filter(c=>c.track); if(!t.length)return 0;
-  let n=0; p.cure.forEach((c,i)=>{ if(c.track&&doneOn(p.id,i,today())) n++ });
+  const cure=CURE(p); const t=cure.filter(c=>c.track); if(!t.length)return 0;
+  let n=0; cure.forEach((c,i)=>{ if(c.track&&doneOn(p.id,i,today())) n++ });
   return Math.round(n/t.length*100) }
+function findItem(id){ return (DATA.problems||[]).concat(DATA.works||[]).find(x=>x.id===id) }
 
 /* ---------- list ---------- */
 function renderList(){
-  document.getElementById('grid').innerHTML=DATA.problems.map(p=>{
+  document.getElementById('grid').innerHTML=ITEMS().map(p=>{
     const pct=todayPct(p); const j=(journal[p.id]||[]).length;
     return `<div class="tile" data-id="${p.id}">
       <div class="ic">${p.icon||'◈'}</div>
       <div class="nm">${p.name}</div>
       <div class="ds">${p.sub||''}</div>
       <div class="pr"><i style="width:${pct}%"></i></div>
-      <div class="st">${pct?'علاج اليوم '+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div>
+      <div class="st">${pct?(kind==='works'?'اليوم ':'علاج اليوم ')+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div>
     </div>`}).join('');
   document.getElementById('grid').onclick=e=>{
     const t=e.target.closest('.tile'); if(t) open(t.dataset.id) };
@@ -181,11 +204,24 @@ function renderList(){
 
 /* ---------- detail ---------- */
 function open(id){
-  curId=id; const p=DATA.problems.find(x=>x.id===id); if(!p)return;
+  curId=id; const p=findItem(id); if(!p)return;
+  const isWork=(DATA.works||[]).some(x=>x.id===id);
+  document.getElementById('d-list-head').textContent=p.listHead||(isWork?'ثمراته':'أسبابها');
+  document.getElementById('d-cure-head').textContent=p.cureHead||(isWork?'وسائل تحصيله':'العلاج');
+  document.getElementById('jr').placeholder=isWork
+    ? 'اكتب ما تلمسه من أثر هذا العمل في قلبك…'
+    : 'اكتب ما تمرّ به اليوم… ما الذي حرّكك؟ متى ضعفت؟ ما الذي أعانك؟';
+  const L=[];
+  if(p.link) L.push(`<a href="${p.link}" target="_blank" rel="noopener">اقرأ المزيد في الدرر السنية ↗</a>`);
+  if(p.video) L.push(`<a href="${p.video}" target="_blank" rel="noopener">شاهد الشرح ▶</a>`);
+  (p.sources||[]).forEach(x=>{ if(x&&x.u)
+    L.push(`<a href="${x.u}" target="_blank" rel="noopener" style="flex-basis:100%">${x.t||'المصدر'} ↗</a>`) });
+  document.getElementById('d-links').innerHTML=L.join('');
+  document.getElementById('s-links').classList.toggle('hide',!L.length);
   document.getElementById('d-name').textContent=p.name;
   document.getElementById('d-sub').textContent=p.sub||'';
   document.getElementById('d-def').textContent=p.def;
-  document.getElementById('d-causes').innerHTML=p.causes.map(c=>`<li>${c}</li>`).join('');
+  document.getElementById('d-causes').innerHTML=LIST(p).map(c=>`<li>${c}</li>`).join('');
   document.getElementById('d-proof').textContent=p.proof||'';
   document.getElementById('s-proof').classList.toggle('hide',!p.proof);
   document.getElementById('d-note').textContent=p.note||'';
@@ -196,9 +232,9 @@ function open(id){
   scrollTo({top:0,behavior:'smooth'});
 }
 function renderCure(){
-  const p=DATA.problems.find(x=>x.id===curId);
+  const p=findItem(curId); if(!p)return;
   document.getElementById('d-today').textContent='اليوم '+todayPct(p)+'%';
-  document.getElementById('d-cure').innerHTML=p.cure.map((c,i)=>{
+  document.getElementById('d-cure').innerHTML=CURE(p).map((c,i)=>{
     const on=doneOn(p.id,i,today()), st=c.track?streakOf(p.id,i):0;
     let wk='';
     if(c.track){ wk='<div class="week">';
@@ -251,6 +287,12 @@ document.getElementById('b-theme').onclick=async()=>{
   journal=(await store.get('qalb-journal'))||{};
   try{ DATA=await (await fetch('./qalb.json?v='+Date.now())).json() }catch{}
   renderList();
+  document.querySelector('.tabs').onclick=e=>{ const b=e.target.closest('button'); if(!b)return;
+    kind=b.dataset.k;
+    document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-current',x.dataset.k===kind));
+    document.getElementById('hd').textContent = kind==='works'?'أعمال القلوب':'علاج القلوب';
+    document.getElementById('hs').textContent = kind==='works'?'اغرسها في قلبك يومًا بيوم':'اعرف داءك، واعمل بدوائه';
+    renderList() };
   if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 })();
 </script>
