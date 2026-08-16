@@ -1,15 +1,22 @@
 {
-  "name": "دروس الشيخ محمد عبدالعظيم الباز",
-  "short_name": "دروس الشيخ",
-  "description": "السلاسل العلمية والدروس والخطب والتلاوات — استماع وتحميل بدون إنترنت، مع متابعة التقدّم وتدوين الفوائد.",
-  "lang": "ar", "dir": "rtl",
-  "start_url": "./index.html", "scope": "./",
-  "display": "standalone", "orientation": "portrait",
-  "background_color": "#0E1B2A", "theme_color": "#0E1B2A",
-  "categories": ["education", "lifestyle"],
+  "name": "رفيق يومك — محاسبة النفس",
+  "short_name": "رفيق يومك",
+  "description": "محاسبة يومية، مواقيت الصلاة، القبلة، الأذكار، المسبحة، وورد القرآن — يعمل بدون إنترنت وبدون إعلانات.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B3A2F",
+  "theme_color": "#0B3A2F",
+  "categories": ["lifestyle", "productivity"],
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
     { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "المسبحة", "url": "./tasbih.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
   ]
 }
