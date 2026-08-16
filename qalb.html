@@ -1,0 +1,256 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>علاج القلوب</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0B3A2F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --paper:#F7F8F3; --card:#FFFFFF; --ink:#2E3A29; --soft:#6B7A63;
+  --sage:#8FA97E; --deep:#4A6940; --wash:#E9EFE3; --line:#DCE5D4;
+  --gold:#B08A4A; --clay:#B08A6A; --r:16px;
+}
+[data-theme="dark"]{
+  --paper:#12160F; --card:#1A2016; --ink:#E4EADD; --soft:#9AAA8E;
+  --sage:#7B9469; --deep:#A8C296; --wash:#232B1D; --line:#2E3826;
+  --gold:#C9A76A; --clay:#C09A78;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--paper);color:var(--ink);direction:rtl;
+  font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;padding-bottom:40px}
+.wrap{max-width:540px;margin:0 auto;padding:0 14px}
+.hide{display:none!important}
+button,input,textarea{font-family:inherit;color:inherit}
+
+header{background:var(--card);border-bottom:1px solid var(--line);padding:14px 0}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+h1{font-family:Amiri,serif;font-size:26px;margin:0;color:var(--deep)}
+.sub{font-size:12px;color:var(--soft);margin-top:3px}
+.icon{width:36px;height:36px;border-radius:11px;border:1px solid var(--line);background:var(--card);
+  font-size:15px;cursor:pointer;display:grid;place-items:center;flex:none;text-decoration:none;color:var(--ink)}
+
+/* grid of problems */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 13px;cursor:pointer}
+.tile:active{background:var(--wash)}
+.tile .ic{font-size:20px;color:var(--gold);line-height:1}
+.tile .nm{font-family:Amiri,serif;font-size:22px;margin-top:6px;color:var(--deep)}
+.tile .ds{font-size:11.5px;color:var(--soft);margin-top:4px;line-height:1.6}
+.tile .pr{height:5px;border-radius:99px;background:var(--wash);margin-top:10px;overflow:hidden}
+.tile .pr i{display:block;height:100%;background:var(--deep)}
+.tile .st{font-size:10.5px;color:var(--soft);margin-top:5px}
+
+.intro{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-top:14px}
+.intro p{margin:0;font-size:13px;color:var(--soft);line-height:1.9}
+
+/* detail */
+.back{border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:10px;
+  padding:7px 13px;font-size:12.5px;cursor:pointer;margin:14px 0 10px}
+section{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
+.sh{background:var(--wash);padding:11px 15px;font-size:14px;font-weight:600;color:var(--deep);
+  display:flex;justify-content:space-between;align-items:center}
+.bd{padding:14px 15px;font-size:14px;line-height:2}
+.bd.soft{color:var(--soft);font-size:13.5px}
+ul{margin:0;padding-inline-start:20px}
+li{margin-bottom:8px;font-size:13.5px;line-height:1.9}
+.ayah{font-family:Amiri,serif;font-size:19px;line-height:2.1;color:var(--deep);text-align:center;padding:16px 15px}
+.warn{background:color-mix(in srgb,var(--clay) 15%,transparent);border-top:1px solid var(--line);
+  padding:13px 15px;font-size:13px;line-height:1.9;color:var(--ink)}
+
+/* cure trackers */
+.cure{padding:13px 15px;border-top:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:12px}
+.cure:first-child{border-top:0}
+.chk{width:28px;height:28px;border-radius:9px;border:1.5px solid var(--line);background:transparent;
+  cursor:pointer;display:grid;place-items:center;font-size:14px;color:transparent;margin-top:2px}
+.chk.on{background:var(--deep);border-color:var(--deep);color:#fff}
+[data-theme="dark"] .chk.on{color:#12160F}
+.chk.no{border-style:dashed;cursor:default}
+.cure .t{font-size:14px;font-weight:500}
+.cure .d{font-size:12.5px;color:var(--soft);line-height:1.8;margin-top:4px}
+.cure .streak{font-size:11px;color:var(--gold);margin-top:5px}
+.week{display:flex;gap:4px;margin-top:7px}
+.week i{width:15px;height:15px;border-radius:5px;background:var(--wash);border:1px solid var(--line)}
+.week i.on{background:var(--deep);border-color:var(--deep)}
+
+/* journal */
+textarea{width:100%;min-height:96px;resize:vertical;font-size:14.5px;background:var(--paper);
+  border:1px solid var(--line);border-radius:12px;padding:11px 12px;line-height:1.9}
+.primary{width:100%;padding:11px;border-radius:12px;border:0;background:var(--deep);color:#fff;
+  font-size:14px;font-weight:600;cursor:pointer;margin-top:9px}
+[data-theme="dark"] .primary{color:#12160F}
+.entry{padding:12px 15px;border-top:1px solid var(--line)}
+.entry .dt{font-size:11px;color:var(--gold);margin-bottom:5px;display:flex;justify-content:space-between}
+.entry .tx{font-size:13.5px;line-height:1.9;white-space:pre-wrap}
+.entry .del{border:0;background:none;color:var(--soft);font-size:12px;cursor:pointer}
+.empty{padding:18px 15px;text-align:center;color:var(--soft);font-size:13px;line-height:1.9}
+.toast{position:fixed;bottom:24px;inset-inline:0;text-align:center;font-size:12.5px;color:var(--deep);
+  opacity:0;transition:.3s;pointer-events:none;z-index:40}
+.toast.on{opacity:1}
+</style>
+
+<header><div class="wrap hrow">
+  <div><h1 id="hd">علاج القلوب</h1><div class="sub" id="hs">اعرف داءك، واعمل بدوائه</div></div>
+  <div style="display:flex;gap:7px">
+    <button class="icon" id="b-theme">◐</button>
+    <a class="icon" href="./index.html" title="الرئيسية">⌂</a>
+  </div>
+</div></header>
+
+<div class="wrap">
+  <div id="v-list">
+    <div class="grid" id="grid"></div>
+    <div class="intro"><p>لكل داءٍ في القلب دواء، والعلاج يبدأ بمعرفة الداء وتسميته. اختر ما تشكوه، واقرأ تعريفه وأسبابه، ثم التزم بعلاجه يومًا بيوم — وسجّل ما يمرّ بك في دفترك الخاص.</p></div>
+  </div>
+
+  <div id="v-detail" class="hide">
+    <button class="back" id="b-back">← رجوع</button>
+    <section>
+      <div class="sh"><span id="d-name"></span><span class="sub" id="d-sub" style="margin:0"></span></div>
+      <div class="bd" id="d-def"></div>
+    </section>
+    <section>
+      <div class="sh">أسبابها</div>
+      <div class="bd"><ul id="d-causes"></ul></div>
+    </section>
+    <section>
+      <div class="sh"><span>العلاج</span><span class="sub" id="d-today" style="margin:0"></span></div>
+      <div id="d-cure"></div>
+    </section>
+    <section id="s-proof"><div class="ayah" id="d-proof"></div></section>
+    <section id="s-note" class="hide"><div class="warn" id="d-note"></div></section>
+    <section>
+      <div class="sh"><span>دفتري</span><span class="sub" style="margin:0">خاص بك تمامًا</span></div>
+      <div class="bd">
+        <textarea id="jr" placeholder="اكتب ما تمرّ به اليوم… ما الذي حرّكك؟ متى ضعفت؟ ما الذي أعانك؟"></textarea>
+        <button class="primary" id="save-jr">حفظ</button>
+      </div>
+      <div id="entries"></div>
+    </section>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const store={
+ async get(k){ if(window.storage){try{const r=await window.storage.get(k,false);return r?JSON.parse(r.value):null}catch{return null}}
+   const v=localStorage.getItem(k);return v?JSON.parse(v):null },
+ async set(k,v){ if(window.storage){try{await window.storage.set(k,JSON.stringify(v),false);return}catch{}}
+   localStorage.setItem(k,JSON.stringify(v)) }
+};
+const toast=m=>{const t=document.getElementById('toast');t.textContent=m;
+  t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1400)};
+const AR=n=>Number(n).toLocaleString('ar-EG');
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const today=()=>iso(new Date());
+
+let DATA={problems:[]}, track={}, journal={}, cfg={}, curId=null;
+
+/* ---------- helpers ---------- */
+const doneOn=(pid,ci,day)=>!!(track[day]&&track[day][pid+':'+ci]);
+function streakOf(pid,ci){ let s=0;
+  for(let i=0;;i++){ const d=new Date(); d.setDate(d.getDate()-i);
+    if(doneOn(pid,ci,iso(d))) s++; else if(i>0) break; else break }
+  return s }
+function todayPct(p){
+  const t=p.cure.filter(c=>c.track); if(!t.length)return 0;
+  let n=0; p.cure.forEach((c,i)=>{ if(c.track&&doneOn(p.id,i,today())) n++ });
+  return Math.round(n/t.length*100) }
+
+/* ---------- list ---------- */
+function renderList(){
+  document.getElementById('grid').innerHTML=DATA.problems.map(p=>{
+    const pct=todayPct(p); const j=(journal[p.id]||[]).length;
+    return `<div class="tile" data-id="${p.id}">
+      <div class="ic">${p.icon||'◈'}</div>
+      <div class="nm">${p.name}</div>
+      <div class="ds">${p.sub||''}</div>
+      <div class="pr"><i style="width:${pct}%"></i></div>
+      <div class="st">${pct?'علاج اليوم '+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div>
+    </div>`}).join('');
+  document.getElementById('grid').onclick=e=>{
+    const t=e.target.closest('.tile'); if(t) open(t.dataset.id) };
+}
+
+/* ---------- detail ---------- */
+function open(id){
+  curId=id; const p=DATA.problems.find(x=>x.id===id); if(!p)return;
+  document.getElementById('d-name').textContent=p.name;
+  document.getElementById('d-sub').textContent=p.sub||'';
+  document.getElementById('d-def').textContent=p.def;
+  document.getElementById('d-causes').innerHTML=p.causes.map(c=>`<li>${c}</li>`).join('');
+  document.getElementById('d-proof').textContent=p.proof||'';
+  document.getElementById('s-proof').classList.toggle('hide',!p.proof);
+  document.getElementById('d-note').textContent=p.note||'';
+  document.getElementById('s-note').classList.toggle('hide',!p.note);
+  renderCure(); renderJournal();
+  document.getElementById('v-list').classList.add('hide');
+  document.getElementById('v-detail').classList.remove('hide');
+  scrollTo({top:0,behavior:'smooth'});
+}
+function renderCure(){
+  const p=DATA.problems.find(x=>x.id===curId);
+  document.getElementById('d-today').textContent='اليوم '+todayPct(p)+'%';
+  document.getElementById('d-cure').innerHTML=p.cure.map((c,i)=>{
+    const on=doneOn(p.id,i,today()), st=c.track?streakOf(p.id,i):0;
+    let wk='';
+    if(c.track){ wk='<div class="week">';
+      for(let k=6;k>=0;k--){const d=new Date();d.setDate(d.getDate()-k);
+        wk+=`<i class="${doneOn(p.id,i,iso(d))?'on':''}"></i>`}
+      wk+='</div>' }
+    return `<div class="cure">
+      <button class="chk ${on?'on':''} ${c.track?'':'no'}" ${c.track?`data-c="${i}"`:''}>✓</button>
+      <div><div class="t">${c.t}</div><div class="d">${c.d}</div>
+      ${st>1?`<div class="streak">${AR(st)} أيام متتابعة</div>`:''}${wk}</div></div>`}).join('');
+  document.getElementById('d-cure').onclick=async e=>{
+    const b=e.target.closest('button[data-c]'); if(!b)return;
+    const k=curId+':'+b.dataset.c, d=today();
+    track[d]=track[d]||{};
+    if(track[d][k]) delete track[d][k]; else track[d][k]=1;
+    await store.set('qalb-track',track); renderCure(); renderList() };
+}
+function renderJournal(){
+  const list=(journal[curId]||[]).slice().reverse();
+  document.getElementById('entries').innerHTML= list.length? list.map((e,i)=>
+    `<div class="entry"><div class="dt"><span>${new Intl.DateTimeFormat('ar-EG',
+      {weekday:'long',day:'numeric',month:'long'}).format(new Date(e.d))}</span>
+      <button class="del" data-i="${(journal[curId].length-1)-i}">حذف</button></div>
+      <div class="tx">${e.x.replace(/</g,'&lt;')}</div></div>`).join('')
+    : '<div class="empty">لا شيء بعد. اكتب أول ما يخطر لك — لن يراه أحد غيرك.</div>';
+  document.getElementById('entries').onclick=async e=>{
+    const b=e.target.closest('button[data-i]'); if(!b)return;
+    journal[curId].splice(+b.dataset.i,1); await store.set('qalb-journal',journal);
+    renderJournal(); renderList() };
+}
+document.getElementById('save-jr').onclick=async()=>{
+  const t=document.getElementById('jr').value.trim(); if(!t)return;
+  (journal[curId]=journal[curId]||[]).push({d:Date.now(),x:t});
+  await store.set('qalb-journal',journal);
+  document.getElementById('jr').value=''; renderJournal(); renderList(); toast('حُفظ في دفترك') };
+document.getElementById('b-back').onclick=()=>{
+  document.getElementById('v-detail').classList.add('hide');
+  document.getElementById('v-list').classList.remove('hide');
+  renderList(); scrollTo({top:0,behavior:'smooth'}) };
+document.getElementById('b-theme').onclick=async()=>{
+  cfg.theme=cfg.theme==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',cfg.theme);
+  await store.set('cfg',cfg) };
+
+/* ---------- boot ---------- */
+(async function(){
+  cfg=(await store.get('cfg'))||{};
+  if(cfg.theme) document.documentElement.setAttribute('data-theme',cfg.theme);
+  track=(await store.get('qalb-track'))||{};
+  journal=(await store.get('qalb-journal'))||{};
+  try{ DATA=await (await fetch('./qalb.json?v='+Date.now())).json() }catch{}
+  renderList();
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+})();
+</script>

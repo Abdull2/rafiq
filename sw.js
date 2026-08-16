@@ -1,6 +1,6 @@
-const CACHE = 'rafiq-v1';
+const CACHE = 'rafiq-v2'; // network-first content
 const ASSETS = [
-  './', './index.html', './tasbih.html', './manifest.webmanifest',
+  './', './index.html', './tasbih.html', './qalb.html', './qalb.json', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'
 ];
 
@@ -16,6 +16,13 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  // network-first for content files so updates appear immediately
+  if (new URL(e.request.url).pathname.endsWith('qalb.json')) {
+    e.respondWith(fetch(e.request).then(r => { const c = r.clone();
+      caches.open(CACHE).then(x => x.put(e.request, c)); return r; })
+      .catch(() => caches.match(e.request)));
+    return;
+  }
   e.respondWith(
     caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
       const copy = res.clone();
