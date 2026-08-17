@@ -49,7 +49,7 @@ self.addEventListener('fetch', e => {
         return res;
       })
       .catch(() =>
-        caches.match(req).then(hit => hit || caches.match('./index.html'))
+        caches.match(req, {ignoreSearch:true}).then(hit => hit || caches.match('./index.html'))
       )
   );
 });

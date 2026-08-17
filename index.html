@@ -515,6 +515,12 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 [data-theme="dark"] .flags .fl-t{color:var(--clay)}
 .flags ul{margin:0;padding-inline-start:18px}
 .flags li{font-size:12.5px;line-height:1.9;margin-bottom:4px}
+/* v18 — صفحة تفصيل الاسم */
+.asma-card>button[data-asmoid]{cursor:pointer}.asma-card>button[data-asmoid] .x{font-size:18px;color:var(--gold)}
+.asma-detail-hero{margin:12px 0;padding:18px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,var(--wash),var(--card))}.asma-detail-hero .num{font-size:11px;color:var(--soft)}.asma-detail-hero h2{font-family:Amiri,serif;font-size:34px;color:var(--deep);margin:3px 0 7px}.asma-detail-hero p{font-size:13px;line-height:1.9;margin:0;color:var(--soft)}
+.asma-dsec{margin:10px 0;border:1px solid var(--line);border-radius:15px;background:var(--card);overflow:hidden}.asma-dhead{padding:12px 14px;font-weight:600;color:var(--deep);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;align-items:center}.asma-dbody{padding:13px 14px}.asma-verse{padding:12px 0;border-bottom:1px solid var(--line)}.asma-verse:last-child{border-bottom:0}.asma-verse .ref{font-size:11px;color:var(--gold);margin-bottom:5px}.asma-verse .txt{font-family:Hafs,Amiri,serif;font-size:20px;line-height:2.1}.asma-more{width:100%;margin-top:10px;border:1px solid var(--line);background:var(--wash);color:var(--deep);border-radius:11px;padding:10px;cursor:pointer}.asma-method{font-size:11.5px;line-height:1.8;color:var(--soft);background:var(--wash);padding:10px;border-radius:11px}.asma-hadith-seed{padding:11px;border-radius:12px;background:var(--wash);margin-bottom:9px;font-size:12.5px;line-height:1.8}.asma-hadith-seed a{color:var(--deep);font-weight:600;text-decoration:none}.asma-live{font-size:12px;line-height:1.8}.asma-live .result{display:block;padding:11px 0;border-bottom:1px solid var(--line)}.asma-live .result:last-child{border-bottom:0}.asma-live a{color:var(--deep)}.asma-live-note{font-size:11px;color:var(--soft);line-height:1.7;margin-bottom:8px}.asma-ext{display:inline-block;margin-top:8px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:var(--deep);font-size:11px;background:var(--paper)}
+
+
 </style>
 
 <header><div class="wrap hrow">
@@ -1588,6 +1594,7 @@ async function hClick(e){
 
 
 
+
 /* ---------- فقه النفس ---------- */
 let nafsGroup='all', nafsQuery='';
 function nafsNorm(x){ return (x||'').toLowerCase().replace(/[ًٌٍَُِّْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي') }
@@ -1631,33 +1638,94 @@ function hNafs(){
 }
 
 /* ---------- أسماء الله الحسنى ---------- */
-let ASMA=null, asmaQuery='';
+let ASMA=null, asmaQuery='', asmaCur=null, asmaVerseLimit=30, dorarSeq=0;
 async function loadAsma(){ if(ASMA)return ASMA; try{ASMA=await (await fetch('./asma.json?v='+Date.now())).json()}catch{ASMA={names:[],sources:{},methodology:''}} return ASMA }
-function asmaNorm(x){ return nafsNorm(x).replace(/ة/g,'ه') }
+function asmaNorm(x){ return nafsNorm(x).replace(/ة/g,'ه').replace(/ٱ/g,'ا').replace(/[ۖۗۚۛۜ۞۩]/g,'') }
+function asmaQNorm(x){ return (x||'').replace(/[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06edـ]/g,'').replace(/ٱ/g,'ا').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/[٠-٩0-9]/g,'').replace(/[^ء-ي ]/g,' ').replace(/\s+/g,' ').trim() }
+function asmaStripPrefix(w){ let x=w; while(x.length>3 && /^[وفبكل]/.test(x)) x=x.slice(1); return x }
+function asmaVerseHit(text,name){
+  const t=asmaQNorm(text), n=asmaQNorm(name);
+  if(!t||!n)return false;
+  if(n.includes(' ')) return t.includes(n);
+  const bare=(n.startsWith('ال')&&n!=='الله')?n.slice(2):n;
+  return t.split(' ').some(w=>{
+    const x=asmaStripPrefix(w), y=x.endsWith('ا')?x.slice(0,-1):x;
+    if(x===n||y===n)return true;
+    if(bare!==n&&(x===bare||y===bare))return true;
+    if((n==='الرب'||n==='الاله') && (x.startsWith(bare)||y.startsWith(bare))) return true;
+    return false;
+  });
+}
+async function asmaVerses(it){
+  await loadQuran(); const out=[];
+  (Q.suras||[]).forEach(s=>(s.a||[]).forEach((a,i)=>{ if(asmaVerseHit(a,it.name)) out.push({s:s.name,sn:s.n,a:i+1,t:a}) }));
+  return out;
+}
+const ASMA_HADITH_EVIDENCE={
+  'الشافي':[{t:'«اشفِ أنت الشافي، لا شفاء إلا شفاؤك…» — صحيح البخاري، وأخرجه مسلم.',u:'https://dorar.net/hadith/sharh/2287'}],
+  'الرفيق':[{t:'«إن الله رفيق يحب الرفق…» — صحيح مسلم.',u:'https://dorar.net/hadith/sharh/152138'}],
+  'الجميل':[{t:'«إن الله جميل يحب الجمال» — صحيح مسلم.',u:'https://dorar.net/hadith/sharh/26749'}],
+  'القابض':[{t:'«إن الله هو المسعّر القابض الباسط الرزاق…» — حديث صحيح.',u:'https://dorar.net/hadith/sharh/35389'}],
+  'الباسط':[{t:'«إن الله هو المسعّر القابض الباسط الرزاق…» — حديث صحيح.',u:'https://dorar.net/hadith/sharh/35389'}],
+  'المعطي':[{t:'«والله المعطي وأنا القاسم» — صحيح البخاري.',u:'https://dorar.net/h/4IufF4iK'}],
+  'المقدم':[{t:'«أنت المقدّم وأنت المؤخّر…» — صحيح البخاري.',u:'https://dorar.net/hadith/sharh/134851'}],
+  'المؤخر':[{t:'«أنت المقدّم وأنت المؤخّر…» — صحيح البخاري.',u:'https://dorar.net/hadith/sharh/134851'}],
+  'المنان':[{t:'دعاء «…المنّان، بديع السماوات والأرض…» — صححه أهل الحديث.',u:'https://dorar.net/hadith/sharh/31141'}],
+  'السيد':[{t:'«السيد الله تبارك وتعالى» — ثابت في السنة.',u:'https://dorar.net/hadith/sharh/70611'}],
+  'الحيي':[{t:'«إن الله حيي ستير يحب الحياء والستر…» — حديث صحيح.',u:'https://dorar.net/hadith/sharh/61140'}],
+  'الستير':[{t:'«إن الله حيي ستير يحب الحياء والستر…» — حديث صحيح.',u:'https://dorar.net/hadith/sharh/61140'}],
+  'الوتر':[{t:'«فإن الله وتر يحب الوتر» — حديث ثابت.',u:'https://dorar.net/hadith/sharh/115859'}]
+};
 function hAsmaList(){
   const host=document.getElementById('asma-list'); if(!host||!ASMA)return;
   const q=asmaNorm(asmaQuery), F=(ASMA.names||[]).filter(x=>!q||asmaNorm(x.name+' '+x.meaning+' '+x.impact).includes(q));
   document.getElementById('asma-result-count').textContent=`${AR(F.length)} من ${AR((ASMA.names||[]).length)} اسمًا`;
-  host.innerHTML=F.length?F.map((it,k)=>{
-    const links=(it.sources||[]).map(code=>ASMA.sources[code]).filter(Boolean).map(x=>`<a href="${x.url}" target="_blank" rel="noopener">${x.title} ↗</a>`).join('');
-    return `<div class="asma-card"><button class="h-obh" data-ob="a${it.n}"><span class="asma-num">${AR(it.n)}</span><span class="asma-name">${it.name}</span><span class="asma-qc">القرآن: ${it.quranCount}</span><span class="x">＋</span></button>
-      <div class="asma-body h-obb hide">
-        <div class="asma-block"><div class="asma-lb">المعنى المبسّط</div><div class="asma-tx">${it.meaning}</div></div>
-        <div class="asma-block"><div class="asma-lb">أثر الإيمان بالاسم</div><div class="asma-tx">${it.impact}</div></div>
-        <div class="asma-meta"><div class="asma-pill"><b>في القرآن</b><br>${it.quranCount}<br><span>${it.quranNote}</span></div><div class="asma-pill"><b>في السنة</b><br>${it.sunnahCount}<br><span>${it.sunnahNote}</span></div></div>
-        <div class="asma-block"><div class="asma-lb">ثبوت الاسم</div><div class="asma-tx">${it.proof}</div></div>
-        <div class="asma-srcs">${links}</div>
-      </div></div>`}).join(''):'<div class="nafs-empty">لا توجد أسماء مطابقة لبحثك.</div>';
+  host.innerHTML=F.length?F.map(it=>`<div class="asma-card"><button data-asmoid="${it.n}"><span class="asma-num">${AR(it.n)}</span><span class="asma-name">${it.name}</span><span class="asma-qc">القرآن: ${it.quranCount}</span><span class="x">←</span></button></div>`).join(''):'<div class="nafs-empty">لا توجد أسماء مطابقة لبحثك.</div>';
+}
+function cleanDorarHtml(html){
+  const d=document.createElement('div'); d.innerHTML=html||'';
+  d.querySelectorAll('script,style,iframe,object,embed,form,input,button').forEach(x=>x.remove());
+  d.querySelectorAll('*').forEach(el=>{[...el.attributes].forEach(a=>{if(/^on/i.test(a.name))el.removeAttribute(a.name)}); if(el.tagName==='A'){const u=el.getAttribute('href')||''; if(u.startsWith('/'))el.setAttribute('href','https://dorar.net'+u); else if(!/^https?:\/\//i.test(u))el.removeAttribute('href'); el.target='_blank';el.rel='noopener'}});
+  return d.innerHTML;
+}
+function asmaDorarSearch(it){
+  const host=document.getElementById('asma-hadith-live'); if(!host)return;
+  host.innerHTML='<div class="asma-live-note">جارٍ جلب نتائج الموسوعة الحديثية…</div>';
+  const cb='rafiqDorar'+(++dorarSeq)+'_'+Date.now(), sc=document.createElement('script'); let done=false;
+  const finish=msg=>{if(done)return;done=true;try{delete window[cb]}catch{};sc.remove(); if(msg)host.innerHTML=msg};
+  window[cb]=data=>{ if(done)return; const arr=(data&&data.ahadith)||[]; done=true; sc.remove(); try{delete window[cb]}catch{};
+    host.innerHTML=arr.length?`<div class="asma-live-note">نتائج مباشرة من API الرسمي للدرر السنية. وجود النتيجة لا يعني صحتها وحده؛ راجع حكم المحدث الظاهر في كل نتيجة.</div>${arr.map(x=>`<div class="result">${cleanDorarHtml(x.th)}</div>`).join('')}`:'<div class="asma-live-note">لم يُرجع الـAPI نتائج لهذه الصيغة. استخدم رابط البحث الكامل أدناه.</div>';
+  };
+  sc.onerror=()=>finish('<div class="asma-live-note">تعذر تحميل نتائج الأحاديث الآن. يحتاج هذا الجزء إلى اتصال بالإنترنت.</div>');
+  sc.src='https://dorar.net/dorar_api.json?skey='+encodeURIComponent(it.name)+'&callback='+encodeURIComponent(cb); document.head.appendChild(sc);
+  setTimeout(()=>finish('<div class="asma-live-note">تعذر تحميل نتائج الأحاديث الآن. افتح البحث الكامل في الدرر السنية.</div>'),12000);
+}
+async function hAsmaDetail(n){
+  await loadAsma(); const it=(ASMA.names||[]).find(x=>+x.n===+n); if(!it)return hAsma();
+  asmaCur=it.n; asmaVerseLimit=30; const vv=await asmaVerses(it), ev=ASMA_HADITH_EVIDENCE[it.name]||[];
+  const renderVerses=()=>{
+    const box=document.getElementById('asma-verses'); if(!box)return;
+    box.innerHTML=vv.length?vv.slice(0,asmaVerseLimit).map(v=>`<div class="asma-verse"><div class="ref">${v.s} — آية ${AR(v.a)}</div><div class="txt">${v.t}</div></div>`).join(''):'<div class="asma-live-note">لم يجد البحث اللفظي المباشر موضعًا في نص المصحف المحلي لهذا الاسم.</div>';
+    const more=document.getElementById('asma-more'); if(more){more.style.display=asmaVerseLimit<vv.length?'block':'none';more.textContent=`عرض المزيد (${AR(Math.min(50,vv.length-asmaVerseLimit))})`}
+  };
+  document.getElementById('v-qalb').innerHTML=`<button class="back" id="asma-back" style="margin-top:12px">← الأسماء الحسنى</button>
+    <div class="asma-detail-hero"><div class="num">الاسم رقم ${AR(it.n)}</div><h2>${it.name}</h2><p>${it.meaning}</p></div>
+    <div class="asma-dsec"><div class="asma-dhead"><span>أثر الإيمان بالاسم</span></div><div class="asma-dbody"><div class="asma-tx">${it.impact}</div></div></div>
+    <div class="asma-dsec"><div class="asma-dhead"><span>القرآن الكريم</span><span>${AR(vv.length)} موضعًا لفظيًا</span></div><div class="asma-dbody"><div class="asma-method">العدد السابق في البطاقة (${it.quranCount}) من المرجع التعليمي المستخدم في النسخة السابقة. أما القائمة هنا فتُستخرج آليًا من نص المصحف الموجود داخل التطبيق بمطابقة لفظ الاسم بعد إزالة التشكيل. لذلك قد تختلف؛ وبعض الألفاظ المشتركة قد تَرِد في سياق لا يكون فيه اللفظ اسمًا لله، فثبوت الاسم يُرجع فيه إلى الدليل والمصدر العقدي.</div><div id="asma-verses"></div><button id="asma-more" class="asma-more">عرض المزيد</button></div></div>
+    <div class="asma-dsec"><div class="asma-dhead"><span>السنة النبوية</span></div><div class="asma-dbody">${ev.length?ev.map(h=>`<div class="asma-hadith-seed">${h.t}<br><a href="${h.u}" target="_blank" rel="noopener">المصدر في الدرر السنية ↗</a></div>`).join(''):''}<div class="asma-method">لا ندّعي أن قائمة محلية يمكنها حصر كل طرق وروايات السنة. لذلك يعرض التطبيق أدناه نتائج بحث مباشرة من الموسوعة الحديثية للدرر السنية عند توفر الإنترنت، مع بقاء الحكم على كل رواية كما في المصدر.</div><div id="asma-hadith-live" class="asma-live"></div><a class="asma-ext" href="https://dorar.net/hadith/search?st=w&q=${encodeURIComponent(it.name)}" target="_blank" rel="noopener">فتح البحث الكامل عن «${it.name}» في الدرر السنية ↗</a></div></div>
+    <div class="asma-dsec"><div class="asma-dhead"><span>المصادر</span></div><div class="asma-dbody"><div class="asma-srcs">${(it.sources||[]).map(code=>ASMA.sources[code]).filter(Boolean).map(x=>`<a href="${x.url}" target="_blank" rel="noopener">${x.title} ↗</a>`).join('')}<a href="https://dorar.net/aqeeda/459/" target="_blank" rel="noopener">الدرر السنية — أسماء الله الحسنى ↗</a></div></div></div>`;
+  document.getElementById('v-qalb').onclick=e=>{ if(e.target.closest('#asma-back')){asmaCur=null;hAsma();return} if(e.target.closest('#asma-more')){asmaVerseLimit+=50;renderVerses();return} };
+  renderVerses(); asmaDorarSearch(it); scrollTo({top:0,behavior:'smooth'});
 }
 async function hAsma(){
-  await loadAsma();
+  await loadAsma(); asmaCur=null;
   document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">
     <button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button><button data-k="asma" aria-current="true">الأسماء الحسنى</button></div>
     <div class="asma-head"><h2>أسماء الله الحسنى</h2><p>${ASMA.methodology}</p></div>
     <input id="asma-search" class="q-search" type="search" value="${asmaQuery.replace(/"/g,'&quot;')}" placeholder="ابحث باسم أو معنى: الرحيم، رزق، مغفرة…" aria-label="بحث في أسماء الله الحسنى">
     <div class="asma-count" id="asma-result-count"></div><div id="asma-list"></div>
-    <div class="nafs-note"><b>تنبيه منهجي:</b> «أثر الإيمان بالاسم» ليس وصفة بعدد تكرار معين، ولا نثبت فضلًا خاصًا بلا دليل. للمراجع الكاملة افتح صفحة «المصادر» من الإعدادات.</div>`;
-  document.getElementById('v-qalb').onclick=hClick;
+    <div class="nafs-note"><b>طريقة الاستخدام:</b> اضغط على أي اسم لفتح صفحة كاملة له: المعنى، الأثر الإيماني، مواضع اللفظ في القرآن، ونتائج الأحاديث من الدرر السنية.</div>`;
+  document.getElementById('v-qalb').onclick=e=>{const b=e.target.closest('[data-asmoid]');if(b){hAsmaDetail(+b.dataset.asmoid);return}hClick(e)};
   document.getElementById('asma-search').oninput=e=>{asmaQuery=e.target.value;hAsmaList()}; hAsmaList();
 }
 
