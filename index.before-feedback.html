@@ -56,16 +56,6 @@ header{background:var(--card);border-bottom:1px solid var(--line);
 .hrow .sub{font-size:12px;color:var(--ink-soft);margin-top:3px}
 .icon{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);
   background:var(--card);font-size:17px;cursor:pointer;display:grid;place-items:center}
- .icon svg{width:19px;height:19px;display:block}
-.feedback-box .field label{display:block;font-size:13px;font-weight:600;color:var(--deep);margin-bottom:7px}
-.feedback-box select,.feedback-box textarea{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:12px;padding:11px 12px;font-size:14px}
-.feedback-box textarea{min-height:125px;resize:vertical;line-height:1.8}
-.feedback-context{display:inline-flex;align-items:center;gap:6px;background:var(--wash);color:var(--deep);border-radius:999px;padding:6px 10px;font-size:11.5px;margin-top:8px}
-.feedback-note{font-size:11.5px;color:var(--ink-soft);line-height:1.8;margin-top:9px}
-.feedback-actions{display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-top:12px}
-.feedback-actions button{padding:11px;border-radius:12px;cursor:pointer;font-size:13.5px;border:1px solid var(--line);background:var(--card);color:var(--deep)}
-.feedback-actions .primary{background:var(--deep);border-color:var(--deep);color:#fff;font-weight:600}
-[data-theme="dark"] .feedback-actions .primary{color:#12160F}
 
 /* next prayer banner */
 .next{background:linear-gradient(135deg,var(--deep),#3A5533);color:#fff;border-radius:var(--r);
@@ -544,7 +534,6 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <div class="sub" id="dateline" style="display:none"></div>
   </div>
   <div style="display:flex;gap:7px">
-    <button class="icon" id="btn-feedback" aria-label="إرسال ملاحظة" title="إرسال ملاحظة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 9.2 9.2 0 0 1-3.1-.5L4 20l1.5-4.1A7.1 7.1 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/><path d="M8.5 10h7M8.5 13h4.5"/></svg></button>
     <button class="icon" id="btn-history" aria-label="السجل">▤</button>
     <button class="icon" id="btn-theme" aria-label="الوضع الليلي">◐</button>
     <button class="icon" id="btn-settings" aria-label="الإعدادات">⚙</button>
@@ -797,34 +786,6 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
         padding:10px 0;font-size:14px">المصادر العلمية ↗</a>
       <a href="./privacy.html" style="display:block;text-decoration:none;color:var(--deep);
         padding:10px 0;font-size:14px">سياسة الخصوصية ↗</a>
-    </div>
-  </div>
-</div>
-
-<!-- feedback sheet -->
-<div class="sheet hide" id="feedback-sheet">
-  <div class="box feedback-box" role="dialog" aria-modal="true" aria-labelledby="feedback-title">
-    <div class="sec-head" style="border-radius:0"><span id="feedback-title">ملاحظتك تهمنا</span>
-      <button id="close-feedback" aria-label="إغلاق" style="border:0;background:none;color:var(--deep);font-size:19px;cursor:pointer">✕</button></div>
-    <div class="field">
-      <label for="feedback-type">نوع الملاحظة</label>
-      <select id="feedback-type">
-        <option>اقتراح أو فكرة</option>
-        <option>مشكلة تقنية</option>
-        <option>ملاحظة على المحتوى أو المصدر</option>
-        <option>تجربة الاستخدام والتصميم</option>
-        <option>أخرى</option>
-      </select>
-      <div class="feedback-context" id="feedback-context">القسم الحالي: —</div>
-    </div>
-    <div class="field">
-      <label for="feedback-text">اكتب ملاحظتك</label>
-      <textarea id="feedback-text" maxlength="1500" placeholder="مثال: أثناء البحث في الأحاديث لاحظت أن... أو أتمنى إضافة..."></textarea>
-      <div class="feedback-note">لن تُرفق بيانات المحاسبة أو السجل أو موقعك. سيُضاف فقط اسم القسم الحالي وإصدار التطبيق لتسهيل فهم المشكلة.</div>
-      <div class="feedback-actions">
-        <button id="feedback-copy">نسخ</button>
-        <button class="primary" id="feedback-share">مشاركة الملاحظة</button>
-      </div>
     </div>
   </div>
 </div>
@@ -1955,44 +1916,6 @@ document.getElementById('prev-day').onclick=()=>shift(-1);
 document.getElementById('next-dayb').onclick=()=>shift(1);
 document.getElementById('go-today').onclick=()=>load(iso(new Date()));
 function shift(n){const d=fromIso(current);d.setDate(d.getDate()+n);load(iso(d))}
-
-/* ================= feedback ================= */
-const FEEDBACK_VERSION='v20.4';
-const feedbackSheet=document.getElementById('feedback-sheet');
-const feedbackText=document.getElementById('feedback-text');
-function feedbackPayload(){
-  const msg=feedbackText.value.trim();
-  if(!msg){ toast('اكتب ملاحظتك أولًا'); feedbackText.focus(); return null }
-  const type=document.getElementById('feedback-type').value;
-  const section=TITLES[tab]||'غير محدد';
-  return `رفيق يومك — ملاحظة مستخدم\nالنوع: ${type}\nالقسم: ${section}\nالإصدار: ${FEEDBACK_VERSION}\n\n${msg}`;
-}
-async function copyFeedback(text){
-  try{
-    if(navigator.clipboard?.writeText){ await navigator.clipboard.writeText(text); return true }
-    const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
-    document.body.appendChild(ta); ta.select(); const ok=document.execCommand('copy'); ta.remove(); return ok;
-  }catch{return false}
-}
-document.getElementById('btn-feedback').onclick=()=>{
-  document.getElementById('feedback-context').textContent='القسم الحالي: '+(TITLES[tab]||'—');
-  feedbackSheet.classList.remove('hide'); setTimeout(()=>feedbackText.focus(),80);
-};
-document.getElementById('close-feedback').onclick=()=>feedbackSheet.classList.add('hide');
-feedbackSheet.onclick=e=>{if(e.target===feedbackSheet)feedbackSheet.classList.add('hide')};
-document.getElementById('feedback-copy').onclick=async()=>{
-  const text=feedbackPayload(); if(!text)return;
-  const ok=await copyFeedback(text); toast(ok?'تم نسخ الملاحظة':'تعذر النسخ على هذا الجهاز');
-};
-document.getElementById('feedback-share').onclick=async()=>{
-  const text=feedbackPayload(); if(!text)return;
-  if(navigator.share){
-    try{ await navigator.share({title:'ملاحظة على رفيق يومك',text}); toast('شكرًا لملاحظتك'); feedbackSheet.classList.add('hide'); return }
-    catch(e){ if(e?.name==='AbortError')return }
-  }
-  const ok=await copyFeedback(text);
-  toast(ok?'تم نسخ الملاحظة — شاركها بالطريقة المناسبة':'تعذر فتح المشاركة على هذا الجهاز');
-};
 
 /* ================= settings ================= */
 const sheet=document.getElementById('settings');
