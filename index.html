@@ -321,6 +321,19 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .my-dua .x{font-size:14.5px;line-height:1.9}
 .my-dua .m{font-size:11px;color:var(--soft);margin-top:6px;display:flex;justify-content:space-between;gap:8px}
 .my-dua .m button{border:0;background:none;color:var(--deep);font-size:12px;cursor:pointer}
+
+/* weekly tracker */
+.tr-row{display:grid;grid-template-columns:96px 1fr auto;gap:10px;align-items:center;
+  padding:11px 15px;border-top:1px solid var(--line)}
+.tr-row:first-child{border-top:0}
+.tr-name{font-size:13px}
+.tr-week{display:flex;gap:5px}
+.tr-week i{flex:1;aspect-ratio:1;max-width:26px;border-radius:7px;background:var(--wash);
+  border:1px solid var(--line);display:grid;place-items:center;font-size:9px;color:var(--soft)}
+.tr-week i.on{background:var(--deep);border-color:var(--deep);color:#fff}
+[data-theme="dark"] .tr-week i.on{color:#12160F}
+.tr-week i.today{outline:1.5px solid var(--gold)}
+.tr-st{font-size:11px;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
 </style>
 
 <header><div class="wrap hrow">
@@ -479,6 +492,10 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 <!-- ============ HISTORY ============ -->
 <div id="v-history" class="hide">
+  <section>
+    <div class="sec-head">متابعة الأسبوع</div>
+    <div id="tracker"></div>
+  </section>
   <section>
     <div class="sec-head">آخر ٤ أسابيع</div>
     <div class="stats">
@@ -841,7 +858,35 @@ document.getElementById('q-plus').onclick=()=>{data.pages=(data.pages||0)+1;rend
 document.getElementById('q-minus').onclick=()=>{data.pages=Math.max(0,(data.pages||0)-1);renderQuran();save('')};
 
 /* ================= history ================= */
+async function renderTracker(){
+  const days=[];
+  for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i);
+    days.push({k:iso(d), day:(iso(d)===current)?data:await store.get('day:'+iso(d))}) }
+  let qt={}; try{ qt=JSON.parse(localStorage.getItem('qalb-track'))||{} }catch{}
+  const qalbOn=k=>Object.keys(qt[k]||{}).length>0;
+  const defs=[
+   ['المحاسبة', d=>d&&Object.keys(d.ratings||{}).length>0],
+   ['الصلوات', d=>{ if(!d)return false;
+      const v=Object.values(d.prayers||{}); return v.length>=5&&v.every(x=>x==='jamaah'||x==='time') }],
+   ['أذكار الصباح', d=>d&&Object.keys(d.azkar||{}).some(k=>k.startsWith('morning')&&d.azkar[k]>0)],
+   ['أذكار المساء', d=>d&&Object.keys(d.azkar||{}).some(k=>k.startsWith('evening')&&d.azkar[k]>0)],
+   ['ورد القرآن', d=>d&&(d.pages||0)>0],
+   ['المسبحة', d=>d&&Object.values(d.tasbih||{}).reduce((a,b)=>a+b,0)>0],
+   ['علاج القلب', (d,k)=>qalbOn(k)]
+  ];
+  const wd=k=>new Intl.DateTimeFormat('ar-EG',{weekday:'narrow'}).format(fromIso(k));
+  document.getElementById('tracker').innerHTML=defs.map(([name,fn])=>{
+    const cells=days.map(x=>`<i class="${fn(x.day,x.k)?'on':''} ${x.k===iso(new Date())?'today':''}"
+      title="${x.k}">${fn(x.day,x.k)?'✓':wd(x.k)}</i>`).join('');
+    let st=0;
+    for(let i=days.length-1;i>=0;i--){ if(fn(days[i].day,days[i].k)) st++;
+      else if(i!==days.length-1) break; else break }
+    return `<div class="tr-row"><span class="tr-name">${name}</span>
+      <span class="tr-week">${cells}</span>
+      <span class="tr-st">${st>0?AR(st)+' 🔥':''}</span></div>`}).join('');
+}
 async function renderHistory(){
+  await renderTracker();
   const days=[];
   for(let i=27;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i);
     days.push({key:iso(d),day:await store.get('day:'+iso(d))}) }
@@ -1166,6 +1211,8 @@ document.getElementById('btn-theme').onclick=async()=>{
   buildMoods(); buildSections(); buildPrayerLog();
   await load(current);
   renderNext(); setInterval(renderNext,1000);
+  const h=(location.hash||'').replace('#','');
+  if(['today','quran','azkar','dua','tasbih','history'].includes(h)) switchTab(h);
 })();
 </script>
 <script>
