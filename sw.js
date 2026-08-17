@@ -3,7 +3,7 @@
    بهذا يظهر أي تعديل ترفعه فورًا دون تغيير رقم النسخة،
    ويظل التطبيق يعمل كاملًا بدون إنترنت.
 */
-const CACHE = 'rafiq-live';
+const CACHE = 'rafiq-v20-1-v202';
 const ASSETS = [
   './', './index.html', './tasbih.html', './qalb.json', './asma.json', './riyad.json', './irtaqi.json', './adiya.json',
   './amiri-400.woff2', './amiri-700.woff2', './plex-400.woff2', './plex-500.woff2', './plex-600.woff2',
