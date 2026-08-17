@@ -5,9 +5,10 @@
 */
 const CACHE = 'rafiq-live';
 const ASSETS = [
-  './', './index.html', './tasbih.html', './qalb.json', './riyad.json', './irtaqi.json',
-  './azkar.json', './adiya.json', './quran.json', './hafs.woff2',
-  './manifest.webmanifest', './icon-192.png', './icon-512.png',
+  './', './index.html', './tasbih.html', './qalb.json', './riyad.json', './irtaqi.json', './adiya.json',
+  './amiri-400.woff2', './amiri-700.woff2', './plex-400.woff2', './plex-500.woff2', './plex-600.woff2',
+  './azkar.json', './quran.json', './hafs.woff2',
+  './manifest.webmanifest', './privacy.html', './sources.html', './icon-192.png', './icon-512.png',
   './icon-maskable-512.png', './apple-touch-icon.png'
 ];
 

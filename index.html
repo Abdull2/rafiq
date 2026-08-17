@@ -8,10 +8,23 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="رفيق يومك">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Amiri';src:url('./amiri-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Amiri';src:url('./amiri-700.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'IBM Plex Sans Arabic';src:url('./plex-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'IBM Plex Sans Arabic';src:url('./plex-500.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'IBM Plex Sans Arabic';src:url('./plex-600.woff2') format('woff2');font-weight:600;font-display:swap}
 
+.nafs-note{background:var(--wash);border:1px solid var(--line);border-radius:14px;
+  padding:12px 14px;margin-top:12px;font-size:12.5px;color:var(--soft);line-height:1.9}
+.nafs-note b{color:var(--deep)}
+.flags{background:color-mix(in srgb,var(--clay) 13%,transparent);border:1px solid var(--line);
+  border-radius:12px;padding:11px 13px}
+.flags .fl-t{font-size:12px;color:var(--clay);font-weight:600;margin-bottom:6px}
+[data-theme="dark"] .flags .fl-t{color:var(--clay)}
+.flags ul{margin:0;padding-inline-start:18px}
+.flags li{font-size:12.5px;line-height:1.9;margin-bottom:4px}
+</style>
 <style>
 :root{
   --paper:#F7F8F3; --card:#FFFFFF; --ink:#2E3A29; --ink-soft:#6B7A63;
@@ -26,12 +39,14 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--paper);color:var(--ink);direction:rtl;
   font-family:"IBM Plex Sans Arabic",system-ui,"Segoe UI",sans-serif;padding-bottom:104px}
-.wrap{max-width:540px;margin:0 auto;padding:0 14px}
+.wrap{max-width:540px;margin:0 auto;
+  padding:0 calc(14px + env(safe-area-inset-right)) 0 calc(14px + env(safe-area-inset-left))}
 h1{font-family:Amiri,serif;font-weight:700;font-size:28px;margin:0;color:var(--deep)}
 .hide{display:none!important}
 button,input,textarea,select{font-family:inherit;color:inherit}
 
-header{background:var(--card);border-bottom:1px solid var(--line);padding:14px 0}
+header{background:var(--card);border-bottom:1px solid var(--line);
+  padding:calc(14px + env(safe-area-inset-top)) 0 14px}
 .hrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .hrow .sub{font-size:12px;color:var(--ink-soft);margin-top:3px}
 .icon{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);
@@ -146,7 +161,8 @@ nav{position:fixed;inset-inline:0;bottom:0;background:var(--card);border-top:1px
 nav div{max-width:540px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:5px;padding:0 10px}
 nav button{font-size:11px;padding:7px 0 5px;border-radius:11px;border:0;background:none;
   color:var(--ink-soft);cursor:pointer;display:grid;gap:3px;justify-items:center}
-nav button em{font-style:normal;font-size:17px}
+nav button em{font-style:normal;display:grid;place-items:center;width:24px;height:24px}
+nav button em svg{width:22px;height:22px;display:block}
 nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 .sheet{position:fixed;inset:0;background:rgba(20,28,18,.45);z-index:30;display:grid;align-items:end}
@@ -169,7 +185,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .hero-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
 .hd-day{font-size:15px;font-weight:600}
 .hd-hij{font-size:11.5px;opacity:.75;margin-top:2px}
-.cal-btn{width:34px;height:34px;border-radius:11px;border:1px solid rgba(255,255,255,.25);
+.cal-btn{padding:7px 12px;font-size:11.5px;border-radius:11px;border:1px solid rgba(255,255,255,.25);
   background:rgba(255,255,255,.1);color:#fff;font-size:14px;cursor:pointer}
 .ring-wrap{position:relative;width:190px;height:190px;margin:6px auto 2px}
 .ring{width:190px;height:190px;transform:rotate(-90deg)}
@@ -257,7 +273,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .q-mt{font-size:10.5px;color:var(--soft);margin-top:1px}
 .q-badge{font-size:10.5px;color:var(--gold)}
 
-.rd-bar{position:sticky;top:0;z-index:10;background:var(--paper);display:flex;gap:7px;align-items:center;
+.rd-bar{position:sticky;top:env(safe-area-inset-top);z-index:10;background:var(--paper);display:flex;gap:7px;align-items:center;
   padding:10px 0;border-bottom:1px solid var(--line)}
 .rd-btn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--card);
   color:var(--ink);font-size:13px;cursor:pointer;flex:none}
@@ -473,12 +489,33 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .kh-lock,.kh-open{background:var(--card);border:1px dashed var(--gold);border-radius:var(--r);padding:15px}
 .kh-t{font-family:Amiri,serif;font-size:22px;color:var(--gold)}
 .kh-d{font-size:12.5px;color:var(--soft);line-height:1.9;margin-top:5px}
+
+@media (min-width:700px){
+  .wrap{max-width:680px}
+  .h-grid{grid-template-columns:repeat(3,1fr)}
+  nav div{max-width:680px}
+}
+@media (orientation:landscape) and (max-height:520px){
+  .ring-wrap{width:130px;height:130px}
+  .ring{width:130px;height:130px}
+  .ring-pct{font-size:34px}
+}
+
+.nafs-note{background:var(--wash);border:1px solid var(--line);border-radius:14px;
+  padding:12px 14px;margin-top:12px;font-size:12.5px;color:var(--soft);line-height:1.9}
+.nafs-note b{color:var(--deep)}
+.flags{background:color-mix(in srgb,var(--clay) 13%,transparent);border:1px solid var(--line);
+  border-radius:12px;padding:11px 13px}
+.flags .fl-t{font-size:12px;color:var(--clay);font-weight:600;margin-bottom:6px}
+[data-theme="dark"] .flags .fl-t{color:var(--clay)}
+.flags ul{margin:0;padding-inline-start:18px}
+.flags li{font-size:12.5px;line-height:1.9;margin-bottom:4px}
 </style>
 
 <header><div class="wrap hrow">
   <div>
     <h1 id="page-title">اليوم</h1>
-    <div class="sub" id="dateline"></div>
+    <div class="sub" id="dateline" style="display:none"></div>
   </div>
   <div style="display:flex;gap:7px">
     <button class="icon" id="btn-history" aria-label="السجل">▤</button>
@@ -497,7 +534,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
         <div class="hd-day" id="hd-day">—</div>
         <div class="hd-hij" id="hd-hij"></div>
       </div>
-      <button class="cal-btn" id="open-cal">▤</button>
+      <button class="cal-btn" id="open-cal" title="اختر يومًا">التقويم</button>
     </div>
 
     <div class="ring-wrap">
@@ -677,12 +714,12 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <div class="toast" id="toast">تم الحفظ</div>
 
 <nav><div style="grid-template-columns:repeat(6,1fr)">
-  <button data-tab="today"><em>✓</em>اليوم</button>
-  <button data-tab="quran"><em>﴾﴿</em>القرآن</button>
-  <button data-tab="sunnah"><em>◈</em>السنة</button>
-  <button data-tab="azkar"><em>☾</em>الذكر</button>
-  <button data-tab="qalb"><em>❤</em>القلب</button>
-  <button data-tab="irtaqi"><em>▲</em>ارتقِ</button>
+  <button data-tab="today"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="M8 20h8"/><path d="M5 8h14"/><path d="M5 8l-2.5 5a3 3 0 0 0 5 0Z"/><path d="M19 8l2.5 5a3 3 0 0 1-5 0Z"/><circle cx="12" cy="4.5" r="1.2"/></svg></em>محاسبتي</button>
+  <button data-tab="quran"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.4 5.2 8.4 4.5 6 4.5H3.5v13H6c2.4 0 4.4.7 6 2 1.6-1.3 3.6-2 6-2h2.5v-13H18c-2.4 0-4.4.7-6 2Z"/><path d="M12 6.5v13"/></svg></em>المصحف</button>
+  <button data-tab="sunnah"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5c0 4-3.8 7.2-8.5 7.2-.9 0-1.8-.1-2.6-.3L4.5 20.5l1.2-3.4a6.9 6.9 0 0 1-2.2-5c0-4 3.8-7.2 8.5-7.2s8.5 3.2 8.5 7.1Z"/><path d="M8.5 10h7"/><path d="M8.5 13h4.5"/></svg></em>أحاديث</button>
+  <button data-tab="azkar"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17.6 15.8A6.5 6.5 0 1 1 12.4 5a5.4 5.4 0 0 0 5.2 10.8Z"/><path d="M19.6 6.2l.7 1.5 1.6.2-1.2 1.1.3 1.6-1.4-.8-1.4.8.3-1.6-1.2-1.1 1.6-.2Z"/></svg></em>الذكر</button>
+  <button data-tab="qalb"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.3A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7 2.7C19 15.6 12 20 12 20Z"/></svg></em>القلب</button>
+  <button data-tab="irtaqi"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5v-3.5"/><path d="M9.5 19.5v-7"/><path d="M14.5 19.5v-10.5"/><path d="M19.5 19.5V5.5"/><path d="M17 8l2.5-2.5L22 8"/></svg></em>ارتقِ</button>
 </div></nav>
 
 <!-- settings sheet -->
@@ -719,6 +756,13 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
       </div>
       <input type="file" id="file-in" accept="application/json" class="hide">
       <div class="muted" style="margin-top:8px">بياناتك محفوظة على جهازك فقط، ولا تُرسل لأي خادم.</div>
+    </div>
+    <div class="field">
+      <label>عن التطبيق</label>
+      <a href="./sources.html" style="display:block;text-decoration:none;color:var(--deep);
+        padding:10px 0;font-size:14px">المصادر العلمية ↗</a>
+      <a href="./privacy.html" style="display:block;text-decoration:none;color:var(--deep);
+        padding:10px 0;font-size:14px">سياسة الخصوصية ↗</a>
     </div>
   </div>
 </div>
@@ -817,7 +861,7 @@ const toast=m=>{const t=document.getElementById('toast');t.textContent=m||'تم 
 function arabicDate(k){ const d=fromIso(k);
   const g=new Intl.DateTimeFormat('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(d);
   let h=''; try{h=new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'}).format(d)}catch{}
-  return h? g+' · '+h : g }
+  return h? g+' — '+h : g }
 
 /* ================= save ================= */
 let saveT;
@@ -1372,6 +1416,7 @@ const hFind=id=>(HD.problems||[]).concat(HD.works||[],HD.obstacles||[]).find(x=>
 async function hRender(){
   await loadH(); hCur=null;
   if(hKind==='deeds'){ return hDeeds() }
+  if(hKind==='nafs'){ return hNafs() }
   const items=HD[hKind]||[];
   document.getElementById('v-qalb').innerHTML=
    `<div class="h-tabs">
@@ -1379,6 +1424,7 @@ async function hRender(){
       <button data-k="works" aria-current="${hKind==='works'}">أعمال القلوب</button>
       <button data-k="obstacles" aria-current="${hKind==='obstacles'}">العقبات</button>
       <button data-k="deeds" aria-current="${hKind==='deeds'}">بنك الأعمال</button>
+      <button data-k="nafs" aria-current="${hKind==='nafs'}">فقه النفس</button>
     </div>
     <p class="h-src">مادة هذا القسم مجموعة ومصاغة من كتب أهل العلم، وتحت كل باب رابط مصدره للتوسّع.</p>
     <div class="h-grid">`+items.map(p=>{
@@ -1502,8 +1548,21 @@ async function hClick(e){
   const chk=e.target.closest('button[data-k]');
   if(chk){ const d=hToday(); hTrack[d]=hTrack[d]||{};
     const kk=chk.dataset.k+':'+chk.dataset.i;
-    if(hTrack[d][kk]) delete hTrack[d][kk]; else hTrack[d][kk]=1;
-    await store.set('qalb-track',hTrack); hOpen(hCur); return }
+    const now=!hTrack[d][kk];
+    if(now) hTrack[d][kk]=1; else delete hTrack[d][kk];
+    await store.set('qalb-track',hTrack);
+    // تحديث موضعي بلا إعادة رسم حتى لا يُغلق ما فتحه المستخدم
+    chk.classList.toggle('on',now);
+    const wrap=chk.closest('.h-cure');
+    if(wrap){ const cells=wrap.querySelectorAll('.h-wk i');
+      if(cells.length) cells[cells.length-1].classList.toggle('on',now);
+      const st=hStreak(chk.dataset.k,+chk.dataset.i);
+      let el=wrap.querySelector('.stk');
+      if(st>1){ if(!el){ el=document.createElement('div'); el.className='stk';
+          wrap.querySelector('div').insertBefore(el,wrap.querySelector('.h-wk')) }
+        el.textContent=AR(st)+' أيام متتابعة' }
+      else if(el) el.remove() }
+    return }
   const p4=e.target.closest('button[data-p40]');
   if(p4){ const a=p4.dataset.p40, id=hCur;
     if(a==='start'){ hProg[id]={start:hToday(),days:[]}; toast('بدأ البرنامج — وفّقك الله') }
@@ -1519,6 +1578,38 @@ async function hClick(e){
     await store.set('qalb-journal',hJournal); hOpen(hCur) }
 }
 
+
+
+/* ---------- فقه النفس ---------- */
+function hNafs(){
+  const N=HD.nafs||[];
+  document.getElementById('v-qalb').innerHTML=
+   `<div class="h-tabs">
+      <button data-k="problems">أمراض القلوب</button>
+      <button data-k="works">أعمال القلوب</button>
+      <button data-k="obstacles">العقبات</button>
+      <button data-k="deeds">بنك الأعمال</button>
+      <button data-k="nafs" aria-current="true">فقه النفس</button></div>
+    <div class="nafs-note"><b>قسم توعوي لا تشخيصي.</b> ما هنا يعينك على فهم حالك واتخاذ خطوات نافعة،
+      ولا يُغني عن مختصّ. وإن وجدتَ في أي موضوع «علامات تستدعي مختصًّا» تنطبق عليك، فاطلب المساعدة —
+      فمداواة النفس أخذٌ بالأسباب وعبادة، لا نقصَ إيمان.</div>
+    ${N.map((it,k)=>{
+      const key='nafs/'+it.id;
+      return `<div class="h-ob"><button class="h-obh" data-ob="${k}">
+          <span class="q">${it.q}</span><span class="x">＋</span></button>
+        <div class="h-obb hide">
+          <div class="h-obs"><div class="lb">لماذا يحدث</div>
+            <ul>${it.why.map(w=>`<li>${w}</li>`).join('')}</ul></div>
+          <div class="h-obs"><div class="lb">من منظور فقه النفس</div><div class="tx">${it.answer}</div></div>
+          <div class="h-obs"><div class="flags"><div class="fl-t">علامات تستدعي مختصًّا</div>
+            <ul>${it.flags.map(f=>`<li>${f}</li>`).join('')}</ul></div></div>
+          <div class="h-obs" style="padding-bottom:0"><div class="lb">ما يعينك عمليًّا</div></div>
+          ${hStepsHtml(key,it.steps)}
+          ${(it.sources||[]).length?`<div class="h-obs"><div class="lb">للتوسّع</div>`+
+            it.sources.map(x=>`<a href="${x.u}" target="_blank" rel="noopener" class="h-lnk">${x.t} ↗</a>`).join('')+
+            `</div>`:''}
+        </div></div>`}).join('')}`;
+}
 
 /* ---------- بنك الأعمال + الخبيئة ---------- */
 let dCat=null, kh={pin:'',items:[]}, khOpen=false;
@@ -1589,7 +1680,8 @@ function hDeedsTabs(){
     <button data-k="problems">أمراض القلوب</button>
     <button data-k="works">أعمال القلوب</button>
     <button data-k="obstacles">العقبات</button>
-    <button data-k="deeds" aria-current="true">بنك الأعمال</button></div>`;
+    <button data-k="deeds" aria-current="true">بنك الأعمال</button>
+    <button data-k="nafs">فقه النفس</button></div>`;
 }
 function khHtml(){
   if(!khOpen) return `<div class="kh-lock">
@@ -1705,7 +1797,7 @@ async function irtClick(e){
 }
 
 /* ================= tabs ================= */
-const TITLES={today:'اليوم',quran:'القرآن الكريم',read:'القرآن الكريم',azkar:'الأذكار',dua:'الدعاء',tasbih:'الورد والمسبحة',sunnah:'رياض الصالحين',qalb:'القلب',irtaqi:'ارتقِ',history:'السجل'};
+const TITLES={today:'محاسبة يومي',quran:'المصحف',read:'المصحف',azkar:'الأذكار',dua:'الدعاء',tasbih:'الورد والمسبحة',sunnah:'أحاديث — رياض الصالحين',qalb:'القلب',irtaqi:'ارتقِ',history:'السجل'};
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 function switchTab(t){
   tab=t;
