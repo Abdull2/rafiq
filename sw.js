@@ -5,7 +5,7 @@
 */
 const CACHE = 'rafiq-live';
 const ASSETS = [
-  './', './index.html', './tasbih.html', './qalb.html', './qalb.json',
+  './', './index.html', './tasbih.html', './qalb.json', './riyad.json', './irtaqi.json',
   './azkar.json', './adiya.json', './quran.json', './hafs.woff2',
   './manifest.webmanifest', './icon-192.png', './icon-512.png',
   './icon-maskable-512.png', './apple-touch-icon.png'

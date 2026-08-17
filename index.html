@@ -334,6 +334,145 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 [data-theme="dark"] .tr-week i.on{color:#12160F}
 .tr-week i.today{outline:1.5px solid var(--gold)}
 .tr-st{font-size:11px;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.zseg{display:flex;gap:7px;margin-top:12px}
+.zseg button{flex:1;padding:9px 0;border-radius:12px;border:1px solid var(--line);
+  background:var(--card);color:var(--soft);font-size:12.5px;cursor:pointer}
+.zseg button[aria-current="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+[data-theme="dark"] .zseg button[aria-current="true"]{color:#12160F}
+
+/* السنة */
+.hd-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-top:12px}
+.hd-card .lbl{font-size:11px;color:var(--gold);margin-bottom:8px}
+.hd-card .t{font-family:Amiri,serif;font-size:19px;line-height:2.2}
+.hd-card .r{font-size:11.5px;color:var(--soft);margin-top:9px}
+.bk-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
+  padding:12px 14px;border-top:1px solid var(--line);cursor:pointer}
+.bk-row:first-child{border-top:0}
+.bk-wrap{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-top:12px;overflow:hidden}
+.bk-name{font-family:Amiri,serif;font-size:19px}
+.bk-n{font-size:11px;color:var(--soft)}
+.hd-item{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px;margin-top:10px}
+.hd-item .num{font-size:11px;color:var(--gold);margin-bottom:7px}
+.hd-item .tx{font-family:Amiri,serif;font-size:18px;line-height:2.3}
+.hd-item .acts{display:flex;gap:8px;margin-top:11px}
+.hd-item .acts button{border:1px solid var(--line);background:transparent;color:var(--soft);
+  border-radius:9px;padding:6px 12px;font-size:11.5px;cursor:pointer}
+.hd-item .acts button.on{color:var(--gold);border-color:var(--gold)}
+
+/* ارتقِ */
+.irt-hero{background:linear-gradient(160deg,var(--deep),#2C4626);color:#F2F7EE;border-radius:22px;
+  padding:18px 16px;margin-top:12px;text-align:center}
+[data-theme="dark"] .irt-hero{background:linear-gradient(160deg,#1E2C18,#141D10);border:1px solid var(--line)}
+.irt-hero .rank{font-family:Amiri,serif;font-size:34px;line-height:1.2}
+.irt-hero .sc{font-size:13px;opacity:.85;margin-top:4px}
+.irt-hero .d{font-size:12.5px;opacity:.85;line-height:1.9;margin-top:9px}
+.irt-hero button{margin-top:13px;width:100%;padding:11px;border-radius:12px;border:0;
+  background:rgba(255,255,255,.18);color:#fff;font-size:13.5px;cursor:pointer}
+.ax-row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:9px}
+.ax-row .top{display:flex;justify-content:space-between;font-size:13.5px}
+.ax-row .top b{font-weight:500}
+.ax-row .top span{color:var(--soft);font-size:12px;font-variant-numeric:tabular-nums}
+.ax-bar{height:7px;border-radius:99px;background:var(--wash);margin-top:8px;overflow:hidden}
+.ax-bar i{display:block;height:100%;background:var(--deep)}
+.ax-bar i.weak{background:var(--clay)}
+.qz{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px}
+.qz .qt{font-size:14.5px;line-height:1.8;margin-bottom:10px}
+.qz .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.qz .opts button{padding:9px 0;border-radius:10px;border:1px solid var(--line);background:transparent;
+  color:var(--soft);font-size:11.5px;cursor:pointer}
+.qz .opts button[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+[data-theme="dark"] .qz .opts button[aria-pressed="true"]{color:#12160F}
+.plan-row{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;
+  padding:12px 14px;border-top:1px solid var(--line)}
+.plan-row:first-child{border-top:0}
+.pchk{width:28px;height:28px;border-radius:9px;border:1.5px solid var(--line);background:transparent;
+  cursor:pointer;display:grid;place-items:center;font-size:14px;color:transparent}
+.pchk.on{background:var(--deep);border-color:var(--deep);color:#fff}
+[data-theme="dark"] .pchk.on{color:#12160F}
+.plan-row .nm{font-size:13.5px;line-height:1.7}
+.plan-row .ax{font-size:10.5px;color:var(--soft);margin-top:2px}
+.plan-row .st{font-size:11px;color:var(--gold);white-space:nowrap}
+
+.h-tabs{display:flex;gap:7px;margin-top:12px;overflow-x:auto}
+.h-tabs button{flex:1;white-space:nowrap;padding:10px 12px;border-radius:12px;border:1px solid var(--line);
+  background:var(--card);color:var(--soft);font-size:12.5px;cursor:pointer}
+.h-tabs button[aria-current="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+[data-theme="dark"] .h-tabs button[aria-current="true"]{color:#12160F}
+.h-src{background:var(--wash);border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+  margin:11px 0 0;font-size:11.5px;color:var(--soft);line-height:1.8}
+.h-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.h-tile{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 13px;cursor:pointer}
+.h-tile .ic{font-size:20px;color:var(--gold);line-height:1}
+.h-tile .nm{font-family:Amiri,serif;font-size:21px;margin-top:6px;color:var(--deep)}
+.h-tile .ds{font-size:11.5px;color:var(--soft);margin-top:4px;line-height:1.6}
+.h-tile .pr{height:5px;border-radius:99px;background:var(--wash);margin-top:10px;overflow:hidden}
+.h-tile .pr i{display:block;height:100%;background:var(--deep)}
+.h-tile .st{font-size:10.5px;color:var(--soft);margin-top:5px}
+.h-cathero{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:12px}
+.h-cathero h2{margin:0 0 5px;font-family:Amiri,serif;font-size:25px;color:var(--deep)}
+.h-cathero p{margin:0;font-size:12.5px;color:var(--soft)}
+.h-sec{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
+.h-sh{background:var(--wash);padding:11px 15px;font-size:14px;font-weight:600;color:var(--deep)}
+.h-bd{padding:14px 15px;font-size:14px;line-height:2}
+.h-bd ul{margin:0;padding-inline-start:18px}
+.h-bd li{font-size:13.5px;line-height:1.9;margin-bottom:6px;color:var(--soft)}
+.h-ay{font-family:Amiri,serif;font-size:19px;line-height:2.1;color:var(--deep);text-align:center;padding:16px 15px}
+.h-warn{background:color-mix(in srgb,var(--clay) 15%,transparent);padding:13px 15px;font-size:13px;line-height:1.9}
+.h-cure{padding:13px 15px;border-top:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:12px}
+.h-cure .t{font-size:14px;font-weight:500}
+.h-cure .d{font-size:12.5px;color:var(--soft);line-height:1.8;margin-top:4px}
+.h-cure .stk{font-size:11px;color:var(--gold);margin-top:5px}
+.h-chk{width:28px;height:28px;border-radius:9px;border:1.5px solid var(--line);background:transparent;
+  cursor:pointer;display:grid;place-items:center;font-size:14px;color:transparent;margin-top:2px}
+.h-chk.on{background:var(--deep);border-color:var(--deep);color:#fff}
+[data-theme="dark"] .h-chk.on{color:#12160F}
+.h-chk.no{border-style:dashed;cursor:default}
+.h-wk{display:flex;gap:4px;margin-top:7px}
+.h-wk i{width:15px;height:15px;border-radius:5px;background:var(--wash);border:1px solid var(--line)}
+.h-wk i.on{background:var(--deep);border-color:var(--deep)}
+.h-ob{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:11px;overflow:hidden}
+.h-obh{width:100%;display:flex;gap:10px;align-items:flex-start;padding:14px 15px;border:0;
+  background:transparent;cursor:pointer;text-align:start}
+.h-obh .q{flex:1;font-size:14.5px;line-height:1.7}
+.h-obh .x{font-size:15px;color:var(--soft)}
+.h-obb{border-top:1px solid var(--line)}
+.h-obs{padding:13px 15px;border-top:1px solid var(--line)}
+.h-obs:first-child{border-top:0}
+.h-obs .lb{font-size:11.5px;color:var(--gold);margin-bottom:7px}
+.h-obs .tx{font-size:13.5px;line-height:2}
+.h-obs ul{margin:0;padding-inline-start:18px}
+.h-obs li{font-size:13px;line-height:1.9;margin-bottom:5px;color:var(--soft)}
+.h-lnk{display:block;text-decoration:none;color:var(--deep);font-size:12.5px;padding:7px 0}
+.h-links{display:flex;flex-direction:column;padding:13px 15px;gap:4px}
+.h-links a{text-decoration:none;color:var(--deep);font-size:13px;padding:8px 0}
+.h-ta{width:100%;min-height:90px;resize:vertical;font-size:14.5px;background:var(--paper);
+  border:1px solid var(--line);border-radius:12px;padding:11px;line-height:1.9;font-family:inherit;color:var(--ink)}
+.h-primary{width:100%;padding:11px;border-radius:12px;border:0;background:var(--deep);color:#fff;
+  font-size:14px;font-weight:600;cursor:pointer;margin-top:9px}
+[data-theme="dark"] .h-primary{color:#12160F}
+.h-entry{padding:12px 15px;border-top:1px solid var(--line)}
+.h-entry .dt{font-size:11px;color:var(--gold);margin-bottom:5px;display:flex;justify-content:space-between}
+.h-entry .dt button{border:0;background:none;color:var(--soft);font-size:12px;cursor:pointer}
+.h-entry .tx{font-size:13.5px;line-height:1.9;white-space:pre-wrap}
+.h-empty{padding:18px 15px;text-align:center;color:var(--soft);font-size:13px;line-height:1.9}
+.h-p40{background:linear-gradient(150deg,var(--deep),#3A5533);color:#F2F7EE;border-radius:var(--r);
+  padding:15px;margin-bottom:12px}
+[data-theme="dark"] .h-p40{background:linear-gradient(150deg,#1E2C18,#141D10);border:1px solid var(--line)}
+.h-p40 .hh{font-size:12.5px;opacity:.85}
+.h-p40 .nn{font-family:Amiri,serif;font-size:28px;line-height:1.2;margin-top:3px}
+.h-p40 .cells{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:12px}
+.h-p40 .cells i{aspect-ratio:1;border-radius:4px;background:rgba(255,255,255,.16)}
+.h-p40 .cells i.on{background:#E7C97C}
+.h-p40 .cells i.td{outline:1.5px solid #fff}
+.h-p40 button{margin-top:12px;width:100%;padding:10px;border-radius:11px;border:0;
+  background:rgba(255,255,255,.18);color:#fff;font-size:13px;cursor:pointer}
+
+.kh-card{margin-top:12px}
+.kh-lock,.kh-open{background:var(--card);border:1px dashed var(--gold);border-radius:var(--r);padding:15px}
+.kh-t{font-family:Amiri,serif;font-size:22px;color:var(--gold)}
+.kh-d{font-size:12.5px;color:var(--soft);line-height:1.9;margin-top:5px}
 </style>
 
 <header><div class="wrap hrow">
@@ -449,6 +588,13 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <!-- ============ AZKAR ============ -->
 <div id="v-azkar" class="hide"><div id="az-wrap"></div></div>
 
+<!-- ============ ZIKR HUB ============ -->
+<div class="wrap"><div class="zseg hide" id="zseg">
+  <button data-z="azkar">الأذكار</button>
+  <button data-z="dua">الدعاء</button>
+  <button data-z="tasbih">المسبحة والورد</button>
+</div></div>
+
 <!-- ============ DUA ============ -->
 <div id="v-dua" class="hide">
   <div class="az-tabs" id="dua-tabs"></div>
@@ -490,6 +636,22 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   </section>
 </div>
 
+<!-- ============ QALB ============ -->
+<div id="v-qalb" class="hide"></div>
+
+<!-- ============ SUNNAH ============ -->
+<div id="v-sunnah" class="hide">
+  <div class="hd-card" id="hadith-day"></div>
+  <input class="search" id="rs-search" placeholder="ابحث في رياض الصالحين…">
+  <div id="rs-books"></div>
+  <div id="rs-list"></div>
+</div>
+
+<!-- ============ IRTAQI ============ -->
+<div id="v-irtaqi" class="hide">
+  <div id="irt-body"></div>
+</div>
+
 <!-- ============ HISTORY ============ -->
 <div id="v-history" class="hide">
   <section>
@@ -515,12 +677,12 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <div class="toast" id="toast">تم الحفظ</div>
 
 <nav><div style="grid-template-columns:repeat(6,1fr)">
-  <button data-tab="today" aria-current="true"><em>✓</em>اليوم</button>
+  <button data-tab="today"><em>✓</em>اليوم</button>
   <button data-tab="quran"><em>﴾﴿</em>القرآن</button>
-  <button data-tab="azkar"><em>☾</em>الأذكار</button>
-  <button data-tab="dua"><em>☟</em>الدعاء</button>
-  <button data-tab="tasbih"><em>◍</em>الورد</button>
-  <button onclick="location.href='./qalb.html'"><em>❤</em>القلب</button>
+  <button data-tab="sunnah"><em>◈</em>السنة</button>
+  <button data-tab="azkar"><em>☾</em>الذكر</button>
+  <button data-tab="qalb"><em>❤</em>القلب</button>
+  <button data-tab="irtaqi"><em>▲</em>ارتقِ</button>
 </div></nav>
 
 <!-- settings sheet -->
@@ -1124,30 +1286,449 @@ document.getElementById('dua-tabs').onclick=e=>{ const b=e.target.closest('butto
   duaCat=b.dataset.c; renderDua() };
 document.getElementById('dua-search').oninput=()=>renderDua();
 
+
+/* ================= السنة — رياض الصالحين ================= */
+let RS=null, rsBook=-1, rsFav=[];
+async function loadRS(){ if(RS)return RS;
+  try{ RS=await (await fetch('./riyad.json')).json() }catch{ RS={books:[]} }
+  rsFav=(await store.get('rs-fav'))||[]; return RS }
+async function renderSunnah(){
+  await loadRS();
+  const q=(document.getElementById('rs-search').value||'').trim();
+  // حديث اليوم
+  const seed=Math.floor(Date.now()/86400000);
+  const all=RS.books.length?RS.books[seed%RS.books.length]:null;
+  if(all){ const h=all.items[seed%all.items.length];
+    document.getElementById('hadith-day').innerHTML=
+      `<div class="lbl">حديث اليوم</div><div class="t">${h.t}</div>
+       <div class="r">${all.name} — رياض الصالحين ${AR(h.n)}</div>` }
+
+  if(q){
+    document.getElementById('rs-books').innerHTML='';
+    const hits=[];
+    RS.books.forEach(b=>b.items.forEach(h=>{ if(hits.length<60&&h.t.includes(q)) hits.push([b,h]) }));
+    document.getElementById('rs-list').innerHTML= hits.length? hits.map(([b,h])=>
+      `<div class="hd-item"><div class="num">${b.name} — ${AR(h.n)}</div>
+        <div class="tx">${h.t}</div></div>`).join('')
+      : '<div class="hd-item" style="text-align:center;color:var(--soft);font-size:13px">لا نتائج</div>';
+    return;
+  }
+  if(rsBook<0){
+    document.getElementById('rs-list').innerHTML='';
+    document.getElementById('rs-books').innerHTML='<div class="bk-wrap">'+RS.books.map((b,i)=>
+      `<div class="bk-row" data-b="${i}"><div><div class="bk-name">${b.name}</div>
+        <div class="bk-n">${AR(b.items.length)} حديثًا</div></div><span class="bk-n">﴾</span></div>`).join('')+'</div>';
+  } else {
+    const b=RS.books[rsBook];
+    document.getElementById('rs-books').innerHTML=
+      `<button class="back" id="rs-back" style="margin-top:12px">← كل الكتب</button>
+       <div class="hd-card"><div class="lbl">الكتاب</div><div class="t">${b.name}</div>
+       <div class="r">${AR(b.items.length)} حديثًا</div></div>`;
+    document.getElementById('rs-list').innerHTML=b.items.map(h=>{
+      const k=rsBook+':'+h.n, f=rsFav.includes(k);
+      return `<div class="hd-item"><div class="num">رياض الصالحين ${AR(h.n)}</div>
+        <div class="tx">${h.t}</div>
+        <div class="acts"><button data-f="${k}" class="${f?'on':''}">${f?'★ محفوظ':'☆ حفظ'}</button>
+        <button data-c="${k}">نسخ</button></div></div>`}).join('');
+  }
+}
+document.getElementById('rs-search').oninput=renderSunnah;
+document.getElementById('rs-books').onclick=e=>{
+  if(e.target.closest('#rs-back')){ rsBook=-1; renderSunnah(); return }
+  const r=e.target.closest('.bk-row'); if(r){ rsBook=+r.dataset.b; renderSunnah() } };
+document.getElementById('rs-list').onclick=async e=>{
+  const f=e.target.closest('button[data-f]');
+  if(f){ const k=f.dataset.f, i=rsFav.indexOf(k);
+    if(i<0)rsFav.push(k); else rsFav.splice(i,1);
+    await store.set('rs-fav',rsFav); renderSunnah(); return }
+  const c=e.target.closest('button[data-c]');
+  if(c){ const [bi,n]=c.dataset.c.split(':');
+    const h=RS.books[+bi].items.find(x=>x.n==n);
+    try{ navigator.clipboard?.writeText(h.t) }catch{}
+    toast('نُسخ الحديث') } };
+
+/* ================= القلب (مدمج) ================= */
+let HD=null, hKind='problems', hCur=null, hTrack={}, hJournal={}, hProg={};
+const hToday=()=>iso(new Date());
+const hDone=(k,i,d)=>!!(hTrack[d]&&hTrack[d][k+':'+i]);
+function hStreak(k,i){ let s=0;
+  for(let j=0;;j++){ const d=new Date(); d.setDate(d.getDate()-j);
+    if(hDone(k,i,iso(d))) s++; else break } return s }
+const hSteps=p=>p.cure||p.means||[];
+const hList=p=>p.causes||p.fruits||[];
+async function loadH(){ if(HD)return HD;
+  try{ HD=await (await fetch('./qalb.json?v='+Date.now())).json() }catch{ HD={problems:[],works:[],obstacles:[]} }
+  hTrack=(await store.get('qalb-track'))||{}; hJournal=(await store.get('qalb-journal'))||{};
+  hProg=(await store.get('qalb-prog'))||{}; return HD }
+function hPct(p){
+  if(p.items){ let t=0,n=0;
+    p.items.forEach(it=>it.steps.forEach((st,i)=>{ if(st.track){t++; if(hDone(p.id+'/'+it.id,i,hToday()))n++ }}));
+    return t?Math.round(n/t*100):0 }
+  const c=hSteps(p), tr=c.filter(x=>x.track); if(!tr.length)return 0;
+  let n=0; c.forEach((x,i)=>{ if(x.track&&hDone(p.id,i,hToday()))n++ });
+  return Math.round(n/tr.length*100) }
+const hFind=id=>(HD.problems||[]).concat(HD.works||[],HD.obstacles||[]).find(x=>x.id===id);
+
+async function hRender(){
+  await loadH(); hCur=null;
+  if(hKind==='deeds'){ return hDeeds() }
+  const items=HD[hKind]||[];
+  document.getElementById('v-qalb').innerHTML=
+   `<div class="h-tabs">
+      <button data-k="problems" aria-current="${hKind==='problems'}">أمراض القلوب</button>
+      <button data-k="works" aria-current="${hKind==='works'}">أعمال القلوب</button>
+      <button data-k="obstacles" aria-current="${hKind==='obstacles'}">العقبات</button>
+      <button data-k="deeds" aria-current="${hKind==='deeds'}">بنك الأعمال</button>
+    </div>
+    <p class="h-src">مادة هذا القسم مجموعة ومصاغة من كتب أهل العلم، وتحت كل باب رابط مصدره للتوسّع.</p>
+    <div class="h-grid">`+items.map(p=>{
+      const pct=hPct(p), j=(hJournal[p.id]||[]).length;
+      return `<div class="h-tile" data-id="${p.id}"><div class="ic">${p.icon||'◈'}</div>
+        <div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div>
+        <div class="pr"><i style="width:${pct}%"></i></div>
+        <div class="st">${pct?'اليوم '+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div></div>`}).join('')+
+    `</div>`;
+  document.getElementById('v-qalb').onclick=hClick;
+}
+function hProgHtml(id,label){
+  const p=hProg[id];
+  if(!p) return `<div class="h-p40"><div class="hh">برنامج الأربعين</div>
+    <div class="nn">٤٠ يومًا على ${label}</div>
+    <button data-p40="start">ابدأ البرنامج</button></div>`;
+  const n=Math.floor((fromIso(hToday())-fromIso(p.start))/86400000)+1;
+  let cells='';
+  for(let i=0;i<40;i++){ const d=fromIso(p.start); d.setDate(d.getDate()+i);
+    cells+=`<i class="${(p.days||[]).includes(iso(d))?'on':''} ${iso(d)===hToday()?'td':''}"></i>` }
+  const dt=(p.days||[]).includes(hToday());
+  return `<div class="h-p40"><div class="hh">برنامج الأربعين — ${label}</div>
+    <div class="nn">اليوم ${AR(Math.min(40,Math.max(1,n)))} من ٤٠</div>
+    <div class="cells">${cells}</div>
+    <button data-p40="${dt?'undo':'mark'}">${dt?'✓ سُجّل اليوم — إلغاء':'سجّل التزام اليوم'}</button></div>`;
+}
+function hStepsHtml(key,steps){
+  return steps.map((st,i)=>{
+    const on=hDone(key,i,hToday()), sk=st.track?hStreak(key,i):0;
+    let wk='';
+    if(st.track){ wk='<div class="h-wk">';
+      for(let j=6;j>=0;j--){const d=new Date();d.setDate(d.getDate()-j);
+        wk+=`<i class="${hDone(key,i,iso(d))?'on':''}"></i>`}
+      wk+='</div>' }
+    return `<div class="h-cure">
+      <button class="h-chk ${on?'on':''} ${st.track?'':'no'}" ${st.track?`data-k="${key}" data-i="${i}"`:''}>✓</button>
+      <div><div class="t">${st.t}</div><div class="d">${st.d}</div>
+      ${sk>1?`<div class="stk">${AR(sk)} أيام متتابعة</div>`:''}${wk}</div></div>`}).join('');
+}
+function hOpen(id){
+  const p=hFind(id); if(!p)return; hCur=id;
+  const isOb=!!p.items;
+  const links=[];
+  if(p.link) links.push(`<a href="${p.link}" target="_blank" rel="noopener">اقرأ المزيد ↗</a>`);
+  if(p.video) links.push(`<a href="${p.video}" target="_blank" rel="noopener">شاهد الشرح ▶</a>`);
+  (p.sources||[]).forEach(x=>{ if(x&&x.u) links.push(`<a href="${x.u}" target="_blank" rel="noopener">${x.t||'المصدر'} ↗</a>`) });
+
+  let body;
+  if(isOb){
+    body=p.items.map((it,k)=>{
+      const key=p.id+'/'+it.id;
+      const src=(it.sources||[]).filter(x=>x&&x.u).map(x=>
+        `<a href="${x.u}" target="_blank" rel="noopener" class="h-lnk">${x.t||'المصدر'} ↗</a>`).join('');
+      return `<div class="h-ob"><button class="h-obh" data-ob="${k}">
+          <span class="q">${it.q}</span><span class="x">＋</span></button>
+        <div class="h-obb hide">
+          <div class="h-obs"><div class="lb">لماذا تحدث</div>
+            <ul>${it.why.map(w=>`<li>${w}</li>`).join('')}</ul></div>
+          <div class="h-obs"><div class="lb">الجواب باختصار</div><div class="tx">${it.answer}</div></div>
+          <div class="h-obs" style="padding-bottom:0"><div class="lb">خطوات التجاوز</div></div>
+          ${hStepsHtml(key,it.steps)}
+          ${src?`<div class="h-obs"><div class="lb">للتوسّع</div>${src}</div>`:''}
+        </div></div>`}).join('');
+  } else {
+    body=`<div class="h-sec"><div class="h-sh">${p.listHead||(HD.works||[]).some(w=>w.id===p.id)?(p.listHead||'ثمراته'):'أسبابها'}</div>
+        <div class="h-bd"><ul>${hList(p).map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
+      <div class="h-sec"><div class="h-sh">${p.cureHead||((HD.works||[]).some(w=>w.id===p.id)?'وسائل تحصيله':'العلاج')}</div>
+        ${hStepsHtml(p.id,hSteps(p))}</div>
+      ${p.proof?`<div class="h-sec"><div class="h-ay">${p.proof}</div></div>`:''}
+      ${p.note?`<div class="h-sec"><div class="h-warn">${p.note}</div></div>`:''}`;
+  }
+  const jr=(hJournal[p.id]||[]).slice().reverse();
+  document.getElementById('v-qalb').innerHTML=
+    `<button class="back" id="h-back" style="margin-top:12px">← رجوع</button>
+     ${hProgHtml(p.id,p.name)}
+     <div class="h-cathero"><h2>${p.name}</h2><p>${p.sub||''}</p></div>
+     ${p.def?`<div class="h-sec"><div class="h-bd">${p.def}</div></div>`:''}
+     ${body}
+     ${links.length?`<div class="h-sec"><div class="h-links">${links.join('')}</div></div>`:''}
+     <div class="h-sec"><div class="h-sh">دفتري</div>
+       <div class="h-bd"><textarea id="h-jr" class="h-ta" placeholder="اكتب ما تمرّ به…"></textarea>
+       <button class="h-primary" id="h-save">حفظ</button></div>
+       <div id="h-entries">${jr.length? jr.map((e,i)=>
+         `<div class="h-entry"><div class="dt"><span>${new Intl.DateTimeFormat('ar-EG',
+           {weekday:'long',day:'numeric',month:'long'}).format(new Date(e.d))}</span>
+           <button data-del="${(hJournal[p.id].length-1)-i}">حذف</button></div>
+           <div class="tx">${e.x.replace(/</g,'&lt;')}</div></div>`).join('')
+         : '<div class="h-empty">لا شيء بعد. اكتب أول ما يخطر لك — لن يراه أحد غيرك.</div>'}</div>
+     </div>`;
+  scrollTo({top:0,behavior:'smooth'});
+}
+async function hClick(e){
+  const kt=e.target.closest('.h-tabs button');
+  if(kt){ hKind=kt.dataset.k; dCat=null; hRender(); return }
+  if(e.target.closest('#d-back')){ dCat=null; hDeeds(); return }
+  const dc=e.target.closest('[data-dcat]'); if(dc){ dCat=dc.dataset.dcat; hDeeds(); return }
+  const dd=e.target.closest('button[data-dd]');
+  if(dd){ const d=hToday(); hTrack[d]=hTrack[d]||{};
+    const kk=dd.dataset.dd+':0';
+    if(hTrack[d][kk]) delete hTrack[d][kk]; else { hTrack[d][kk]=1; toast('تقبّل الله') }
+    await store.set('qalb-track',hTrack); hDeeds(); return }
+  if(e.target.closest('button[data-skip]')){
+    const sk=((await store.get('deed-skip'))||0)+1; await store.set('deed-skip',sk); hDeeds(); return }
+  if(e.target.id==='kh-go'){
+    const v=(document.getElementById('kh-pin').value||'').trim();
+    if(!v){ toast('أدخل رقمًا'); return }
+    if(!kh.pin){ kh.pin=v; await store.set('khabia',kh); khOpen=true; toast('حُفظ الرقم') }
+    else if(kh.pin===v){ khOpen=true }
+    else { toast('رقم غير صحيح'); return }
+    hDeeds(); return }
+  if(e.target.id==='kh-close'){ khOpen=false; hDeeds(); return }
+  if(e.target.id==='kh-add'){ const t=document.getElementById('kh-in').value.trim(); if(!t)return;
+    (kh.items=kh.items||[]).push({d:Date.now(),t}); await store.set('khabia',kh); hDeeds(); return }
+  const kd=e.target.closest('button[data-khdel]');
+  if(kd){ kh.items.splice(+kd.dataset.khdel,1); await store.set('khabia',kh); hDeeds(); return }
+  const back=e.target.closest('#h-back'); if(back){ hRender(); return }
+  const tile=e.target.closest('.h-tile'); if(tile){ hOpen(tile.dataset.id); return }
+  const oh=e.target.closest('.h-obh');
+  if(oh){ const b=oh.nextElementSibling; const op=b.classList.toggle('hide');
+    oh.querySelector('.x').textContent=op?'＋':'－'; return }
+  const chk=e.target.closest('button[data-k]');
+  if(chk){ const d=hToday(); hTrack[d]=hTrack[d]||{};
+    const kk=chk.dataset.k+':'+chk.dataset.i;
+    if(hTrack[d][kk]) delete hTrack[d][kk]; else hTrack[d][kk]=1;
+    await store.set('qalb-track',hTrack); hOpen(hCur); return }
+  const p4=e.target.closest('button[data-p40]');
+  if(p4){ const a=p4.dataset.p40, id=hCur;
+    if(a==='start'){ hProg[id]={start:hToday(),days:[]}; toast('بدأ البرنامج — وفّقك الله') }
+    else if(a==='mark'){ (hProg[id].days=hProg[id].days||[]).push(hToday());
+      toast(hProg[id].days.length>=40?'أتممت الأربعين — تقبّل الله':'سُجّل اليوم ✓') }
+    else if(a==='undo'){ hProg[id].days=hProg[id].days.filter(x=>x!==hToday()) }
+    await store.set('qalb-prog',hProg); hOpen(id); return }
+  if(e.target.id==='h-save'){ const t=document.getElementById('h-jr').value.trim(); if(!t)return;
+    (hJournal[hCur]=hJournal[hCur]||[]).push({d:Date.now(),x:t});
+    await store.set('qalb-journal',hJournal); hOpen(hCur); toast('حُفظ في دفترك'); return }
+  const del=e.target.closest('button[data-del]');
+  if(del){ hJournal[hCur].splice(+del.dataset.del,1);
+    await store.set('qalb-journal',hJournal); hOpen(hCur) }
+}
+
+
+/* ---------- بنك الأعمال + الخبيئة ---------- */
+let dCat=null, kh={pin:'',items:[]}, khOpen=false;
+const dKey=(cid,i)=>'deed:'+cid+':'+i;
+function dCount(days){ // عدد الأعمال المؤدّاة في آخر N يوم
+  let n=0, seen=new Set();
+  for(let j=0;j<days;j++){ const dd=new Date(); dd.setDate(dd.getDate()-j);
+    const t=hTrack[iso(dd)]||{};
+    Object.keys(t).forEach(k=>{ if(k.startsWith('deed:')){ n++; seen.add(k.split(':')[1]) } }) }
+  return {n,cats:seen.size} }
+async function loadKh(){ kh=(await store.get('khabia'))||{pin:'',items:[]} }
+
+async function hDeeds(){
+  await loadKh();
+  const D=HD.deeds||[];
+  const seed=Math.floor(Date.now()/86400000);
+  const skip=(await store.get('deed-skip'))||0;
+  const flat=[]; D.forEach(c=>c.items.forEach((it,i)=>flat.push([c,it,i])));
+  const pick=flat.length?flat[(seed+skip)%flat.length]:null;
+  const w=dCount(7);
+  const host=document.getElementById('v-qalb');
+
+  if(dCat){
+    const c=D.find(x=>x.id===dCat);
+    host.innerHTML=`<button class="back" id="d-back" style="margin-top:12px">← بنك الأعمال</button>
+      <div class="h-cathero"><h2>${c.name}</h2><p>${c.sub||''}</p></div>
+      <div class="h-sec">`+c.items.map((it,i)=>{
+        const k=dKey(c.id,i), on=hDone(k,0,hToday());
+        let times=0; for(let j=0;j<30;j++){const dd=new Date();dd.setDate(dd.getDate()-j);
+          if(hDone(k,0,iso(dd))) times++ }
+        return `<div class="h-cure"><button class="h-chk ${on?'on':''}" data-k="${k}" data-i="0">✓</button>
+          <div><div class="t">${it.t}</div>
+          ${times?`<div class="stk">فعلته ${AR(times)} مرة هذا الشهر</div>`:''}</div></div>`}).join('')+
+      `</div>`;
+    return;
+  }
+
+  host.innerHTML=
+   `${hDeedsTabs()}
+    ${pick?`<div class="h-p40" style="background:linear-gradient(150deg,var(--gold),#8A6A2F)">
+      <div class="hh">عمل اليوم — ${pick[0].name}</div>
+      <div class="nn" style="font-size:19px;line-height:1.7">${pick[1].t}</div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button data-dd="${dKey(pick[0].id,pick[2])}" style="flex:2;margin:0">${hDone(dKey(pick[0].id,pick[2]),0,hToday())?'✓ تم بحمد الله':'تم'}</button>
+        <button data-skip="1" style="flex:1;margin:0;background:rgba(255,255,255,.14)">غيّره</button>
+      </div></div>`:''}
+
+    <div class="kh-card" id="kh-card">${khHtml()}</div>
+
+    <div class="h-sec" style="margin-top:12px"><div class="h-sh">هذا الأسبوع</div>
+      <div class="h-bd" style="display:flex;gap:10px">
+        <div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.n)}</div>
+          <div style="font-size:11px;color:var(--soft)">عملًا صالحًا</div></div>
+        <div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.cats)} / ٦</div>
+          <div style="font-size:11px;color:var(--soft)">أبوابًا لمستها</div></div>
+      </div></div>
+
+    <div class="h-grid">`+D.map(c=>{
+      let t=0; c.items.forEach((_,i)=>{ if(hDone(dKey(c.id,i),0,hToday())) t++ });
+      return `<div class="h-tile" data-dcat="${c.id}"><div class="ic">${c.icon}</div>
+        <div class="nm" style="font-size:18px">${c.name}</div>
+        <div class="ds">${c.sub||''}</div>
+        <div class="st">${AR(c.items.length)} عملًا${t?' · اليوم '+AR(t)+' ✓':''}</div></div>`}).join('')+
+    `</div>`;
+}
+function hDeedsTabs(){
+  return `<div class="h-tabs">
+    <button data-k="problems">أمراض القلوب</button>
+    <button data-k="works">أعمال القلوب</button>
+    <button data-k="obstacles">العقبات</button>
+    <button data-k="deeds" aria-current="true">بنك الأعمال</button></div>`;
+}
+function khHtml(){
+  if(!khOpen) return `<div class="kh-lock">
+    <div class="kh-t">الخبيئة</div>
+    <div class="kh-d">عملٌ لا يعلمه إلا الله. لا عدّاد هنا ولا نسب — فمن أراد أن يُرى فقد خرج من البابين.</div>
+    <div style="display:flex;gap:8px;margin-top:11px">
+      <input type="password" id="kh-pin" inputmode="numeric" placeholder="${kh.pin?'أدخل الرقم السري':'اختر رقمًا سريًّا'}"
+        style="flex:1;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:10px;font-size:14px">
+      <button id="kh-go" style="border:1px solid var(--line);background:var(--card);color:var(--deep);
+        border-radius:11px;padding:10px 16px;font-size:13px;cursor:pointer">فتح</button>
+    </div></div>`;
+  return `<div class="kh-open">
+    <div class="kh-t">الخبيئة <button id="kh-close" style="float:inline-end;border:0;background:none;
+      color:var(--soft);font-size:12px;cursor:pointer">إغلاق</button></div>
+    <div class="kh-d">هل لك اليوم عمل لا يعلمه إلا الله؟</div>
+    <textarea id="kh-in" class="h-ta" placeholder="اكتبه هنا…" style="min-height:70px;margin-top:10px"></textarea>
+    <button class="h-primary" id="kh-add">أضف</button>
+    ${(kh.items||[]).slice().reverse().map((x,i)=>
+      `<div class="h-entry"><div class="dt"><span>${new Intl.DateTimeFormat('ar-EG',
+        {day:'numeric',month:'long'}).format(new Date(x.d))}</span>
+        <button data-khdel="${kh.items.length-1-i}">حذف</button></div>
+        <div class="tx">${x.t.replace(/</g,'&lt;')}</div></div>`).join('')}
+  </div>`;
+}
+
+/* ================= ارتقِ ================= */
+let IRT=null, irtAns={}, irtHist=[], irtPlan=[], irtDone={};
+async function loadIrt(){ if(IRT)return IRT;
+  try{ IRT=await (await fetch('./irtaqi.json')).json() }catch{ IRT={axes:[],ranks:[]} }
+  irtHist=(await store.get('irt-hist'))||[]; irtPlan=(await store.get('irt-plan'))||[];
+  irtDone=(await store.get('irt-done'))||{}; return IRT }
+const irtRank=p=>IRT.ranks.slice().reverse().find(r=>p>=r.min)||IRT.ranks[0];
+function irtScores(ans){
+  const per={}; let tot=0,n=0;
+  IRT.axes.forEach(a=>{ let s=0,c=0;
+    a.q.forEach((_,i)=>{ const v=ans[a.id+':'+i]; if(v!=null){s+=v;c++} });
+    per[a.id]=c?Math.round(s/(a.q.length*3)*100):0; tot+=s; n+=a.q.length*3 });
+  return {per,total:n?Math.round(tot/n*100):0}
+}
+async function irtRender(){
+  await loadIrt();
+  const last=irtHist[irtHist.length-1];
+  const host=document.getElementById('irt-body');
+  if(!last){ irtQuiz(); return }
+  const {per,total}=last;
+  const rank=irtRank(total);
+  const weak=IRT.axes.slice().sort((a,b)=>per[a.id]-per[b.id]).slice(0,2).map(a=>a.id);
+  const prev=irtHist.length>1?irtHist[irtHist.length-2].total:null;
+  const diff=prev!=null?total-prev:null;
+  const d=hToday();
+  host.innerHTML=
+   `<div class="irt-hero">
+      <div class="sc">مرتبتك الحالية</div>
+      <div class="rank">${rank.name}</div>
+      <div class="sc">${AR(total)}% من اللياقة الإيمانية${diff!=null?(diff>=0?' · ▲ '+AR(diff):' · ▼ '+AR(-diff))+' عن القياس السابق':''}</div>
+      <div class="d">${rank.d}</div>
+      <button data-irt="requiz">أعد القياس</button>
+    </div>
+    <div class="sec-head" style="margin-top:14px;border-radius:12px">محاورك</div>`+
+    IRT.axes.map(a=>`<div class="ax-row"><div class="top"><b>${a.name}</b>
+      <span>${AR(per[a.id])}%${weak.includes(a.id)?' — الأضعف':''}</span></div>
+      <div class="ax-bar"><i class="${weak.includes(a.id)?'weak':''}" style="width:${per[a.id]}%"></i></div></div>`).join('')+
+    `<div class="sec-head" style="margin-top:14px;border-radius:12px">خطة اليوم — من نقاط ضعفك</div>
+     <div class="card" style="background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden">`+
+     (irtPlan.length? irtPlan.map((it,i)=>{
+        const on=!!(irtDone[d]&&irtDone[d][i]);
+        let st=0; for(let j=0;;j++){ const dd=new Date(); dd.setDate(dd.getDate()-j);
+          if(irtDone[iso(dd)]&&irtDone[iso(dd)][i]) st++; else break }
+        return `<div class="plan-row"><button class="pchk ${on?'on':''}" data-pl="${i}">✓</button>
+          <div><div class="nm">${it.t}</div><div class="ax">${it.ax}</div></div>
+          <span class="st">${st>1?AR(st)+' 🔥':''}</span></div>`}).join('')
+      : '<div class="plan-row"><div class="nm">لا خطة بعد — أعد القياس لتوليدها.</div></div>')+
+     `</div>
+     <p class="note" style="font-size:12px;color:var(--soft);line-height:1.8;margin-top:12px">
+      القياس تقديري لمساعدتك على معرفة موضع الخلل، وليس حكمًا على إيمانك — فالإيمان بيد الله ولا يُقاس بجدول.</p>`;
+  host.onclick=irtClick;
+}
+function irtQuiz(){
+  const host=document.getElementById('irt-body');
+  const L=[['لا','0'],['أحيانًا','1'],['غالبًا','2'],['دائمًا','3']];
+  host.innerHTML=`<div class="irt-hero"><div class="rank">قياس اللياقة الإيمانية</div>
+      <div class="d">أجب بصدق عن ٢٤ سؤالًا — النتيجة لك وحدك، ولا يراها أحد.</div></div>`+
+    IRT.axes.map(a=>`<div class="sec-head" style="margin-top:14px;border-radius:12px">${a.name}</div>`+
+      a.q.map((q,i)=>`<div class="qz"><div class="qt">${q}</div><div class="opts">`+
+        L.map(([lb,v])=>`<button data-q="${a.id}:${i}" data-v="${v}"
+          aria-pressed="${irtAns[a.id+':'+i]==+v}">${lb}</button>`).join('')+
+        `</div></div>`).join('')).join('')+
+    `<button class="primary" id="irt-done" style="width:100%;padding:14px;border-radius:14px;border:0;
+      background:var(--deep);color:#fff;font-size:15px;font-weight:600;margin-top:16px;cursor:pointer">
+      احسب مرتبتي وأنشئ خطتي</button>`;
+  host.onclick=irtClick;
+}
+async function irtClick(e){
+  const q=e.target.closest('button[data-q]');
+  if(q){ irtAns[q.dataset.q]=+q.dataset.v;
+    document.querySelectorAll(`button[data-q="${q.dataset.q}"]`).forEach(b=>
+      b.setAttribute('aria-pressed',b===q)); return }
+  if(e.target.id==='irt-done'){
+    const need=IRT.axes.reduce((n,a)=>n+a.q.length,0);
+    if(Object.keys(irtAns).length<need){ toast('أكمل جميع الأسئلة'); return }
+    const {per,total}=irtScores(irtAns);
+    irtHist.push({d:Date.now(),per,total});
+    const weak=IRT.axes.slice().sort((a,b)=>per[a.id]-per[b.id]).slice(0,2);
+    irtPlan=[]; weak.forEach(a=>a.plan.forEach(t=>irtPlan.push({t,ax:a.name})));
+    await store.set('irt-hist',irtHist); await store.set('irt-plan',irtPlan);
+    toast('تمّ القياس — هذه خطتك'); irtRender(); return }
+  if(e.target.closest('button[data-irt="requiz"]')){ irtAns={}; irtQuiz(); return }
+  const pl=e.target.closest('button[data-pl]');
+  if(pl){ const d=hToday(); irtDone[d]=irtDone[d]||{};
+    const i=pl.dataset.pl;
+    if(irtDone[d][i]) delete irtDone[d][i]; else irtDone[d][i]=1;
+    await store.set('irt-done',irtDone); irtRender() }
+}
+
 /* ================= tabs ================= */
-const TITLES={today:'اليوم',quran:'القرآن الكريم',read:'القرآن الكريم',azkar:'الأذكار',dua:'الدعاء',tasbih:'الورد والمسبحة',history:'السجل'};
+const TITLES={today:'اليوم',quran:'القرآن الكريم',read:'القرآن الكريم',azkar:'الأذكار',dua:'الدعاء',tasbih:'الورد والمسبحة',sunnah:'رياض الصالحين',qalb:'القلب',irtaqi:'ارتقِ',history:'السجل'};
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 function switchTab(t){
   tab=t;
-  ['today','quran','read','azkar','dua','tasbih','history'].forEach(v=>
-    document.getElementById('v-'+v).classList.toggle('hide',v!==t));
-  document.querySelectorAll('nav button[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===t));
-  document.getElementById('page-title').textContent=TITLES[t];
+  const views=['today','quran','read','azkar','dua','tasbih','sunnah','qalb','irtaqi','history'];
+  views.forEach(v=>{ const el=document.getElementById('v-'+v); if(el) el.classList.toggle('hide',v!==t) });
+  const zikr=['azkar','dua','tasbih'];
+  const navFor={read:'quran',dua:'azkar',tasbih:'azkar'}[t]||t;
+  document.querySelectorAll('nav button[data-tab]').forEach(b=>
+    b.setAttribute('aria-current',b.dataset.tab===navFor));
+  document.getElementById('zseg').classList.toggle('hide',!zikr.includes(t));
+  document.querySelectorAll('#zseg button').forEach(b=>b.setAttribute('aria-current',b.dataset.z===t));
+  document.getElementById('page-title').textContent=TITLES[t]||'';
   if(t==='history') renderHistory();
   if(t==='quran') openQuran();
   if(t==='tasbih'){ renderTasbih(); renderQuran() }
   if(t==='azkar') renderAzkar();
   if(t==='dua') renderDua();
+  if(t==='sunnah') renderSunnah();
+  if(t==='qalb') hRender();
+  if(t==='irtaqi') irtRender();
   scrollTo({top:0,behavior:'smooth'});
 }
-
-/* ===== طيّ المراجعة وفتح التقويم ===== */
-document.getElementById('acc-notes').onclick=e=>{
-  const h=e.target.closest('.acc-head'); if(!h)return;
-  const b=h.nextElementSibling; const open=b.classList.toggle('hide');
-  h.querySelector('.acc-x').textContent=open?'＋':'－' };
-document.getElementById('open-cal').onclick=()=>
-  document.getElementById('cal-panel').classList.toggle('hide');
+document.getElementById('zseg').onclick=e=>{const b=e.target.closest('button'); if(b) switchTab(b.dataset.z)};
 
 /* ================= date controls ================= */
 document.getElementById('datepick').onchange=e=>{if(e.target.value)load(e.target.value)};
