@@ -182,31 +182,33 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 /* ===== hero ===== */
 .hero{background:linear-gradient(160deg,var(--deep) 0%,#2F4A28 55%,#24391F 100%);
-  border-radius:24px;padding:16px 16px 14px;margin-top:12px;color:#F2F7EE;
-  box-shadow:0 10px 30px rgba(20,40,18,.22);position:relative;overflow:hidden}
+  border-radius:22px;padding:14px 15px 12px;margin-top:12px;color:#F2F7EE;
+  box-shadow:0 8px 24px rgba(20,40,18,.18);position:relative;overflow:hidden;
+  display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:12px;align-items:center}
 [data-theme="dark"] .hero{background:linear-gradient(160deg,#1E2C18,#141D10);border:1px solid var(--line)}
-.hero::after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;
-  background:rgba(255,255,255,.05);top:-90px;left:-70px}
-.hero-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
-.hd-day{font-size:15px;font-weight:600}
-.hd-hij{font-size:11.5px;opacity:.75;margin-top:2px}
-.cal-btn{padding:7px 12px;font-size:11.5px;border-radius:11px;border:1px solid rgba(255,255,255,.25);
-  background:rgba(255,255,255,.1);color:#fff;font-size:14px;cursor:pointer}
-.ring-wrap{position:relative;width:190px;height:190px;margin:6px auto 2px}
-.ring{width:190px;height:190px;transform:rotate(-90deg)}
+.hero::after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;
+  background:rgba(255,255,255,.045);top:-80px;left:-65px}
+.hero-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
+.hd-day{font-size:14.5px;font-weight:600}
+.hd-hij{font-size:11px;opacity:.75;margin-top:1px}
+.cal-btn{padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.1);color:#fff;font-size:12px;cursor:pointer}
+.ring-wrap{grid-column:1;position:relative;width:96px;height:96px;margin:9px 0 1px;z-index:1}
+.ring{width:96px;height:96px;transform:rotate(-90deg)}
 .ring-bg{fill:none;stroke:rgba(255,255,255,.16);stroke-width:13}
 .ring-fg{fill:none;stroke:#E7C97C;stroke-width:13;stroke-linecap:round;
   stroke-dasharray:540;stroke-dashoffset:540;transition:stroke-dashoffset .5s ease}
-.ring-mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:1px}
-.ring-pct{font-family:Amiri,serif;font-size:52px;line-height:1;color:#F7E9C4}
-.ring-lbl{font-size:11.5px;opacity:.8}
-.ring-streak{font-size:11px;color:#E7C97C;margin-top:3px}
-.next-slim{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.18);
-  border-radius:14px;padding:9px 12px;margin-top:8px;position:relative;z-index:1;flex-wrap:wrap}
-.ns-l{font-size:10.5px;opacity:.7}
-.ns-n{font-family:Amiri,serif;font-size:19px}
-.ns-c{margin-inline-start:auto;font-size:17px;font-variant-numeric:tabular-nums;font-weight:600;color:#E7C97C}
-.ns-a{font-size:10.5px;opacity:.7;width:100%;text-align:end}
+.ring-mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:0}
+.ring-pct{font-family:Amiri,serif;font-size:29px;line-height:1;color:#F7E9C4}
+.ring-lbl{font-size:9px;opacity:.8;margin-top:1px}
+.ring-streak{font-size:9px;color:#E7C97C;margin-top:2px}
+.next-slim{grid-column:2;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.16);
+  border-radius:13px;padding:9px 10px;margin-top:8px;position:relative;z-index:1;flex-wrap:wrap;align-self:center}
+.ns-score{font-size:10px;opacity:.8;width:100%;padding-bottom:5px;margin-bottom:1px;border-bottom:1px solid rgba(255,255,255,.12)}
+.ns-l{font-size:10px;opacity:.7}
+.ns-n{font-family:Amiri,serif;font-size:18px}
+.ns-c{margin-inline-start:auto;font-size:15px;font-variant-numeric:tabular-nums;font-weight:600;color:#E7C97C}
+.ns-a{font-size:10px;opacity:.7;width:100%;text-align:end}
 
 .cal-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
   margin-top:10px;padding:4px 6px 10px}
@@ -232,6 +234,9 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   border:1px solid var(--line);background:var(--card);color:var(--soft);cursor:pointer;flex:none}
 .mood-strip button[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
 [data-theme="dark"] .mood-strip button[aria-pressed="true"]{color:#12160F}
+.rating-key{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 2px 1px;color:var(--soft);font-size:10.5px}
+.rating-key span{padding:4px 7px;border-radius:999px;background:var(--wash);border:1px solid var(--line)}
+.rating-key .rk-title{background:transparent;border:0;padding-inline:0;color:var(--soft)}
 
 /* ===== accordion sections ===== */
 .acc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
@@ -356,7 +361,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .tr-week i.today{outline:1.5px solid var(--gold)}
 .tr-st{font-size:11px;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
 
-.zseg{display:flex;gap:7px;margin-top:12px}
+.zseg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}
 .zseg button{flex:1;padding:9px 0;border-radius:12px;border:1px solid var(--line);
   background:var(--card);color:var(--soft);font-size:12.5px;cursor:pointer}
 .zseg button[aria-current="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
@@ -555,12 +560,13 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
       </svg>
       <div class="ring-mid">
         <div class="ring-pct" id="ring-pct">٠%</div>
-        <div class="ring-lbl">إنجاز اليوم</div>
+        <div class="ring-lbl">متوسط تقييمك</div>
         <div class="ring-streak" id="ring-streak"></div>
       </div>
     </div>
 
     <div class="next-slim" id="next-box">
+      <span class="ns-score" id="rating-coverage">لم تبدأ التقييم بعد</span>
       <span class="ns-l">الصلاة القادمة</span>
       <span class="ns-n" id="next-name">—</span>
       <span class="ns-c" id="next-cd">--:--</span>
@@ -581,16 +587,17 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div class="pray-strip" id="prayer-log"></div>
 
   <div class="mood-strip" id="mood"></div>
+  <div class="rating-key"><span class="rk-title">مقياس التقييم:</span><span>١ ضعيف</span><span>٢ متوسط</span><span>٣ جيد</span><span>٤ ممتاز</span></div>
 
   <div id="sections"></div>
 
   <div class="acc" id="acc-notes">
     <button class="acc-head" data-acc="notes"><span>مراجعة اليوم</span><span class="acc-x">＋</span></button>
     <div class="acc-body hide">
-      <div class="field"><label for="tomorrow">نيّتي وهدفي ليوم الغد</label>
-        <textarea id="tomorrow" placeholder="هدف واحد واضح…"></textarea></div>
       <div class="field"><label for="best">ما الذي أحسنتُ فيه اليوم؟</label><textarea id="best"></textarea></div>
       <div class="field"><label for="worst">ما الذي قصّرتُ فيه، وكيف أتحسّن؟</label><textarea id="worst"></textarea></div>
+      <div class="field"><label for="tomorrow">نيّتي وهدفي ليوم الغد</label>
+        <textarea id="tomorrow" placeholder="هدف واحد واضح…"></textarea></div>
     </div>
   </div>
 
@@ -635,12 +642,14 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 <!-- ============ AZKAR ============ -->
 <div id="v-azkar" class="hide"><div id="az-wrap"></div></div>
+<div id="v-asma" class="hide"></div>
 
 <!-- ============ ZIKR HUB ============ -->
 <div class="wrap"><div class="zseg hide" id="zseg">
   <button data-z="azkar">الأذكار</button>
   <button data-z="dua">الدعاء</button>
   <button data-z="tasbih">المسبحة والورد</button>
+  <button data-z="asma">الأسماء الحسنى</button>
 </div></div>
 
 <!-- ============ DUA ============ -->
@@ -917,8 +926,9 @@ function paintRatings(){
     b.setAttribute('aria-pressed', data.ratings[b.dataset.item]===+b.dataset.val));
   SECTIONS.forEach(sec=>{
     const v=sec.items.map(([id])=>data.ratings[id]).filter(Boolean);
-    const pct=v.length? Math.round(v.reduce((a,b)=>a+b,0)/(sec.items.length*4)*100):0;
-    const el=document.getElementById('pct-'+sec.id); if(el) el.textContent=v.length?pct+'%':'';
+    const pct=v.length? Math.round(v.reduce((a,b)=>a+b,0)/(v.length*4)*100):0;
+    const el=document.getElementById('pct-'+sec.id);
+    if(el) el.textContent=v.length ? `${AR(pct)}% · ${AR(v.length)}/${AR(sec.items.length)}` : '';
     const bar=document.getElementById('bar-'+sec.id); if(bar) bar.style.width=pct+'%';
   });
   paintRing();
@@ -928,15 +938,18 @@ function paintMood(){ document.querySelectorAll('button[data-mood]').forEach(b=>
 
 /* حلقة الإنجاز */
 async function paintRing(){
-  const pct=score(data);
+  const vals=Object.values(data.ratings||{});
+  const pct=vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/(vals.length*4)*100) : 0;
   const el=document.getElementById('ring-pct'); if(!el)return;
-  el.textContent=AR(pct)+'%';
+  el.textContent=vals.length ? AR(pct)+'%' : '—';
   document.getElementById('ring-fg').style.strokeDashoffset=540-540*pct/100;
   let st=0;
   for(let i=0;i<60;i++){ const d=new Date(); d.setDate(d.getDate()-i);
     const day=(iso(d)===current)?data:await store.get('day:'+iso(d));
     if(day&&Object.keys(day.ratings||{}).length) st++; else if(i>0) break; else break }
-  document.getElementById('ring-streak').textContent = st>1? '🔥 '+AR(st)+' أيام متتابعة':'';
+  document.getElementById('ring-streak').textContent = st>1? '🔥 '+AR(st)+' أيام':'';
+  const cov=document.getElementById('rating-coverage');
+  if(cov) cov.textContent=vals.length ? `قيّمت ${AR(vals.length)} من ${AR(ALL_ITEMS.length)} بندًا` : 'لم تبدأ التقييم بعد';
   const d=fromIso(current);
   document.getElementById('hd-day').textContent=
     new Intl.DateTimeFormat('ar-EG',{weekday:'long',day:'numeric',month:'long'}).format(d);
@@ -1370,15 +1383,15 @@ async function renderSunnah(){
   }
   if(rsBook<0){
     document.getElementById('rs-list').innerHTML='';
-    document.getElementById('rs-books').innerHTML='<div class="bk-wrap">'+RS.books.map((b,i)=>
+    document.getElementById('rs-books').innerHTML=`<div class="hd-card"><div class="lbl">فهرس رياض الصالحين</div><div class="t" style="font-size:17px">٢٠ كتابًا بالترتيب الأصلي</div><div class="r">الأبواب التفصيلية داخل الكتب غير ممثلة في ملف البيانات الحالي. نص الأحاديث معروض كما ورد في المصدر الرقمي، ولم نضف تشكيلًا آليًا حفاظًا على سلامة النص.</div></div><div class="bk-wrap">`+RS.books.map((b,i)=>
       `<div class="bk-row" data-b="${i}"><div><div class="bk-name">${b.name}</div>
         <div class="bk-n">${AR(b.items.length)} حديثًا</div></div><span class="bk-n">﴾</span></div>`).join('')+'</div>';
   } else {
     const b=RS.books[rsBook];
     document.getElementById('rs-books').innerHTML=
       `<button class="back" id="rs-back" style="margin-top:12px">← كل الكتب</button>
-       <div class="hd-card"><div class="lbl">الكتاب</div><div class="t">${b.name}</div>
-       <div class="r">${AR(b.items.length)} حديثًا</div></div>`;
+       <div class="hd-card"><div class="lbl">الكتاب ${AR(rsBook+1)} من ٢٠</div><div class="t">${b.name}</div>
+       <div class="r">${AR(b.items.length)} حديثًا · الترتيب مطابق لفهرس رياض الصالحين</div></div>`;
     document.getElementById('rs-list').innerHTML=b.items.map(h=>{
       const k=rsBook+':'+h.n, f=rsFav.includes(k);
       return `<div class="hd-item"><div class="num">رياض الصالحين ${AR(h.n)}</div>
@@ -1428,7 +1441,6 @@ async function hRender(){
   await loadH(); hCur=null;
   if(hKind==='deeds'){ return hDeeds() }
   if(hKind==='nafs'){ return hNafs() }
-  if(hKind==='asma'){ return hAsma() }
   const items=HD[hKind]||[];
   document.getElementById('v-qalb').innerHTML=
    `<div class="h-tabs">
@@ -1437,7 +1449,6 @@ async function hRender(){
       <button data-k="obstacles" aria-current="${hKind==='obstacles'}">العقبات</button>
       <button data-k="deeds" aria-current="${hKind==='deeds'}">بنك الأعمال</button>
       <button data-k="nafs" aria-current="${hKind==='nafs'}">فقه النفس</button>
-      <button data-k="asma" aria-current="${hKind==='asma'}">الأسماء الحسنى</button>
     </div>
     <p class="h-src">مادة هذا القسم مجموعة ومصاغة من كتب أهل العلم، وتحت كل باب رابط مصدره للتوسّع.</p>
     <div class="h-grid">`+items.map(p=>{
@@ -1626,7 +1637,7 @@ function hNafs(){
    `<div class="h-tabs">
       <button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button>
       <button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button>
-      <button data-k="nafs" aria-current="true">فقه النفس</button><button data-k="asma">الأسماء الحسنى</button></div>
+      <button data-k="nafs" aria-current="true">فقه النفس</button></div>
     <div class="nafs-hero"><h2>فقه النفس — من الفهم إلى التزكية</h2><p>بدل قائمة أعراض سريعة: اقرأ الحدث النفسي، ثم اربطه بالمخلوقية والحاجة والمدخلات والحيل والاختيار، وبعدها ضع البوصلة الإيمانية والخطوة العملية. الصياغة هنا تعليمية مستفادة من محاور مشروع مكاني، وليست نقلًا حرفيًا ولا تشخيصًا طبيًا.</p></div>
     <input id="nafs-search" class="q-search" type="search" value="${nafsQuery.replace(/"/g,'&quot;')}" placeholder="ابحث: قلق، غضب، كمالية، تعلق، وسواس…" aria-label="بحث في فقه النفس">
     <div class="nafs-groups"><button data-ng="all" class="${nafsGroup==='all'?'on':''}">كل المسارات</button>${groups.map(g=>`<button data-ng="${g.id}" class="${nafsGroup===g.id?'on':''}">${g.icon||''} ${g.name}</button>`).join('')}</div>
@@ -1708,24 +1719,22 @@ async function hAsmaDetail(n){
     box.innerHTML=vv.length?vv.slice(0,asmaVerseLimit).map(v=>`<div class="asma-verse"><div class="ref">${v.s} — آية ${AR(v.a)}</div><div class="txt">${v.t}</div></div>`).join(''):'<div class="asma-live-note">لم يجد البحث اللفظي المباشر موضعًا في نص المصحف المحلي لهذا الاسم.</div>';
     const more=document.getElementById('asma-more'); if(more){more.style.display=asmaVerseLimit<vv.length?'block':'none';more.textContent=`عرض المزيد (${AR(Math.min(50,vv.length-asmaVerseLimit))})`}
   };
-  document.getElementById('v-qalb').innerHTML=`<button class="back" id="asma-back" style="margin-top:12px">← الأسماء الحسنى</button>
+  document.getElementById('v-asma').innerHTML=`<button class="back" id="asma-back" style="margin-top:12px">← الأسماء الحسنى</button>
     <div class="asma-detail-hero"><div class="num">الاسم رقم ${AR(it.n)}</div><h2>${it.name}</h2><p>${it.meaning}</p></div>
     <div class="asma-dsec"><div class="asma-dhead"><span>أثر الإيمان بالاسم</span></div><div class="asma-dbody"><div class="asma-tx">${it.impact}</div></div></div>
     <div class="asma-dsec"><div class="asma-dhead"><span>القرآن الكريم</span><span>${AR(vv.length)} موضعًا لفظيًا</span></div><div class="asma-dbody"><div class="asma-method">العدد السابق في البطاقة (${it.quranCount}) من المرجع التعليمي المستخدم في النسخة السابقة. أما القائمة هنا فتُستخرج آليًا من نص المصحف الموجود داخل التطبيق بمطابقة لفظ الاسم بعد إزالة التشكيل. لذلك قد تختلف؛ وبعض الألفاظ المشتركة قد تَرِد في سياق لا يكون فيه اللفظ اسمًا لله، فثبوت الاسم يُرجع فيه إلى الدليل والمصدر العقدي.</div><div id="asma-verses"></div><button id="asma-more" class="asma-more">عرض المزيد</button></div></div>
     <div class="asma-dsec"><div class="asma-dhead"><span>السنة النبوية</span></div><div class="asma-dbody">${ev.length?ev.map(h=>`<div class="asma-hadith-seed">${h.t}<br><a href="${h.u}" target="_blank" rel="noopener">المصدر في الدرر السنية ↗</a></div>`).join(''):''}<div class="asma-method">لا ندّعي أن قائمة محلية يمكنها حصر كل طرق وروايات السنة. لذلك يعرض التطبيق أدناه نتائج بحث مباشرة من الموسوعة الحديثية للدرر السنية عند توفر الإنترنت، مع بقاء الحكم على كل رواية كما في المصدر.</div><div id="asma-hadith-live" class="asma-live"></div><a class="asma-ext" href="https://dorar.net/hadith/search?st=w&q=${encodeURIComponent(it.name)}" target="_blank" rel="noopener">فتح البحث الكامل عن «${it.name}» في الدرر السنية ↗</a></div></div>
     <div class="asma-dsec"><div class="asma-dhead"><span>المصادر</span></div><div class="asma-dbody"><div class="asma-srcs">${(it.sources||[]).map(code=>ASMA.sources[code]).filter(Boolean).map(x=>`<a href="${x.url}" target="_blank" rel="noopener">${x.title} ↗</a>`).join('')}<a href="https://dorar.net/aqeeda/459/" target="_blank" rel="noopener">الدرر السنية — أسماء الله الحسنى ↗</a></div></div></div>`;
-  document.getElementById('v-qalb').onclick=e=>{ if(e.target.closest('#asma-back')){asmaCur=null;hAsma();return} if(e.target.closest('#asma-more')){asmaVerseLimit+=50;renderVerses();return} };
+  document.getElementById('v-asma').onclick=e=>{ if(e.target.closest('#asma-back')){asmaCur=null;hAsma();return} if(e.target.closest('#asma-more')){asmaVerseLimit+=50;renderVerses();return} };
   renderVerses(); asmaDorarSearch(it); scrollTo({top:0,behavior:'smooth'});
 }
 async function hAsma(){
   await loadAsma(); asmaCur=null;
-  document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">
-    <button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button><button data-k="asma" aria-current="true">الأسماء الحسنى</button></div>
-    <div class="asma-head"><h2>أسماء الله الحسنى</h2><p>${ASMA.methodology}</p></div>
+  document.getElementById('v-asma').innerHTML=`<div class="asma-head"><h2>أسماء الله الحسنى</h2><p>${ASMA.methodology}</p></div>
     <input id="asma-search" class="q-search" type="search" value="${asmaQuery.replace(/"/g,'&quot;')}" placeholder="ابحث باسم أو معنى: الرحيم، رزق، مغفرة…" aria-label="بحث في أسماء الله الحسنى">
     <div class="asma-count" id="asma-result-count"></div><div id="asma-list"></div>
     <div class="nafs-note"><b>طريقة الاستخدام:</b> اضغط على أي اسم لفتح صفحة كاملة له: المعنى، الأثر الإيماني، مواضع اللفظ في القرآن، ونتائج الأحاديث من الدرر السنية.</div>`;
-  document.getElementById('v-qalb').onclick=e=>{const b=e.target.closest('[data-asmoid]');if(b){hAsmaDetail(+b.dataset.asmoid);return}hClick(e)};
+  document.getElementById('v-asma').onclick=e=>{const b=e.target.closest('[data-asmoid]');if(b){hAsmaDetail(+b.dataset.asmoid);return}};
   document.getElementById('asma-search').oninput=e=>{asmaQuery=e.target.value;hAsmaList()}; hAsmaList();
 }
 
@@ -1799,8 +1808,7 @@ function hDeedsTabs(){
     <button data-k="works">أعمال القلوب</button>
     <button data-k="obstacles">العقبات</button>
     <button data-k="deeds" aria-current="true">بنك الأعمال</button>
-    <button data-k="nafs">فقه النفس</button>
-    <button data-k="asma">الأسماء الحسنى</button></div>`;
+    <button data-k="nafs">فقه النفس</button></div>`;
 }
 function khHtml(){
   if(!khOpen) return `<div class="kh-lock">
@@ -1916,14 +1924,14 @@ async function irtClick(e){
 }
 
 /* ================= tabs ================= */
-const TITLES={today:'محاسبة يومي',quran:'المصحف',read:'المصحف',azkar:'الأذكار',dua:'الدعاء',tasbih:'الورد والمسبحة',sunnah:'أحاديث — رياض الصالحين',qalb:'القلب',irtaqi:'ارتقِ',history:'السجل'};
+const TITLES={today:'محاسبة يومي',quran:'المصحف',read:'المصحف',azkar:'الأذكار',dua:'الدعاء',tasbih:'الورد والمسبحة',asma:'أسماء الله الحسنى',sunnah:'أحاديث — رياض الصالحين',qalb:'القلب',irtaqi:'ارتقِ',history:'السجل'};
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 function switchTab(t){
   tab=t;
-  const views=['today','quran','read','azkar','dua','tasbih','sunnah','qalb','irtaqi','history'];
+  const views=['today','quran','read','azkar','dua','tasbih','asma','sunnah','qalb','irtaqi','history'];
   views.forEach(v=>{ const el=document.getElementById('v-'+v); if(el) el.classList.toggle('hide',v!==t) });
-  const zikr=['azkar','dua','tasbih'];
-  const navFor={read:'quran',dua:'azkar',tasbih:'azkar'}[t]||t;
+  const zikr=['azkar','dua','tasbih','asma'];
+  const navFor={read:'quran',dua:'azkar',tasbih:'azkar',asma:'azkar'}[t]||t;
   document.querySelectorAll('nav button[data-tab]').forEach(b=>
     b.setAttribute('aria-current',b.dataset.tab===navFor));
   document.getElementById('zseg').classList.toggle('hide',!zikr.includes(t));
@@ -1932,6 +1940,7 @@ function switchTab(t){
   if(t==='history') renderHistory();
   if(t==='quran') openQuran();
   if(t==='tasbih'){ renderTasbih(); renderQuran() }
+  if(t==='asma') hAsma();
   if(t==='azkar') renderAzkar();
   if(t==='dua') renderDua();
   if(t==='sunnah') renderSunnah();
@@ -2004,7 +2013,7 @@ document.getElementById('btn-theme').onclick=async()=>{
   await load(current);
   renderNext(); setInterval(renderNext,1000);
   const h=(location.hash||'').replace('#','');
-  if(['today','quran','azkar','dua','tasbih','history'].includes(h)) switchTab(h);
+  if(['today','quran','azkar','dua','tasbih','asma','sunnah','qalb','irtaqi','history'].includes(h)) switchTab(h);
 })();
 </script>
 <script>
