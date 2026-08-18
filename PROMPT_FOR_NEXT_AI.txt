@@ -1,6 +1,6 @@
 هذه هي النسخة القانونية الحالية للمشروع: **v24** (manifest = 24.0.0).
 
-اقرأ AI_HANDOFF.md وAI_HANDOFF.json وCONTENT_PROVENANCE-ISHKALIAT.md أولًا ثم افحص الكود الحالي. اعتبر ملفات الـhandoff سجل قرارات المشروع، ولا تطلب من المالك إعادة شرح الماضي إلا لو فيه تعارض حقيقي.
+اقرأ AI_HANDOFF.md and DATA_ARCHITECTURE.md وAI_HANDOFF.json وCONTENT_PROVENANCE-ISHKALIAT.md أولًا ثم افحص الكود الحالي. اعتبر ملفات الـhandoff سجل قرارات المشروع، ولا تطلب من المالك إعادة شرح الماضي إلا لو فيه تعارض حقيقي.
 
 قواعد ثابتة:
 - أي تعديل ديني: المصدر يظهر داخل التطبيق نفسه.
@@ -16,3 +16,5 @@ LATEST v24 UX NOTE: “مساري” must have direct visible + أضف لمسا�
 V24 R3 CONTINUITY NOTE:
 Before editing, read AI_HANDOFF.md section 15. Preserve the saved-state UX: generic ＋ must visibly become ✓ immediately and survive re-render. Preserve Irtaqi v3's Sharia-priority plan: obligations/rights/necessary knowledge first, then Quran/dhikr, then nawafil only after a reasonable foundation. Sources belong under post-assessment principles/tasks, not between quiz questions. Any new release/change must update AI_HANDOFF.md + AI_HANDOFF.json + PROMPT_FOR_NEXT_AI.txt + RELEASE-NOTES-v24.txt + QA-REPORT-v24.txt.
 CURRENT STATE: v24 R4 adds Nawawi 40 and a sourced hadith reader; read AI_HANDOFF.md section 16 before editing Riyad/Nawawi or commentary behavior. Never present paraphrased explanation as a verbatim shaykh quote.
+
+R5 note: do not add a cloud backend, analytics SDK, or account sync until the owner explicitly chooses the data/privacy model.

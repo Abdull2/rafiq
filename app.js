@@ -107,7 +107,7 @@ const pText=x=>{
 };
 const profileAge=()=>Number(profile.age)||0;
 const issuesEnabled=()=>profile.advancedIssues===true;
-const issueTabButton=(active=false)=>issuesEnabled()?`<button data-k="ishkaliat"${active?' aria-current="true"':''}>⌁ إشكاليات</button>`:'';
+const issueTabButton=(active=false)=>`<button data-k="ishkaliat" class="${issuesEnabled()?'':'optional-track'}"${active?' aria-current="true"':''} title="مسار متقدم اختياري">⌁ إشكاليات</button>`;
 function audienceOk(x){
   if(!x)return true;
   if(x.audience&&x.audience!=='all'&&x.audience!==profile.gender)return false;
@@ -458,6 +458,13 @@ document.getElementById('q-plus').onclick=()=>{data.pages=(data.pages||0)+1;rend
 document.getElementById('q-minus').onclick=()=>{data.pages=Math.max(0,(data.pages||0)-1);renderQuran();save('')};
 
 /* ================= history ================= */
+function histAzkarComplete(day,setId){
+  const set=(AZ.sets||[]).find(x=>x.id===setId); if(!day||!set||!set.items?.length)return false;
+  return set.items.every((z,i)=>(day.azkar?.[setId+i]||0)>=(z.n||1));
+}
+function histMetricCard(label,value,sub,kind=''){
+  return `<div class="hist-card ${kind}"><div class="hist-label">${label}</div><div class="hist-value">${value}</div><div class="hist-sub">${sub}</div></div>`;
+}
 async function renderTracker(){
   const days=[];
   for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i);
@@ -466,73 +473,71 @@ async function renderTracker(){
   const qalbOn=k=>Object.keys(qt[k]||{}).length>0;
   const defs=[
    ['خلاصة اليوم', d=>dailyRatingValues(d).length>0],
-   ['الصلوات', d=>{ if(!d)return false;
-      const v=Object.values(d.prayers||{}); return v.length>=5&&v.every(x=>x==='jamaah'||x==='time') }],
-   ['أذكار الصباح', d=>d&&Object.keys(d.azkar||{}).some(k=>k.startsWith('morning')&&d.azkar[k]>0)],
-   ['أذكار المساء', d=>d&&Object.keys(d.azkar||{}).some(k=>k.startsWith('evening')&&d.azkar[k]>0)],
+   ['الصلوات', d=>{ if(!d)return false; const v=Object.values(d.prayers||{}); return v.length>=5&&v.every(x=>x==='jamaah'||x==='time') }],
+   ['أذكار الصباح', d=>histAzkarComplete(d,'morning')],
+   ['أذكار المساء', d=>histAzkarComplete(d,'evening')],
    ['ورد القرآن', d=>d&&(d.pages||0)>0],
    ['السبحة', d=>d&&Object.values(d.tasbih||{}).reduce((a,b)=>a+b,0)>0],
    ['علاج القلب', (d,k)=>qalbOn(k)]
   ];
   const wd=k=>new Intl.DateTimeFormat('ar-EG',{weekday:'narrow'}).format(fromIso(k));
   document.getElementById('tracker').innerHTML=defs.map(([name,fn])=>{
-    const cells=days.map(x=>`<i class="${fn(x.day,x.k)?'on':''} ${x.k===iso(new Date())?'today':''}"
-      title="${x.k}">${fn(x.day,x.k)?'✓':wd(x.k)}</i>`).join('');
-    let st=0;
-    for(let i=days.length-1;i>=0;i--){ if(fn(days[i].day,days[i].k)) st++;
-      else if(i!==days.length-1) break; else break }
-    return `<div class="tr-row"><span class="tr-name">${name}</span>
-      <span class="tr-week">${cells}</span>
-      <span class="tr-st">${st>0?AR(st)+' 🔥':''}</span></div>`}).join('');
+    const cells=days.map(x=>`<i class="${fn(x.day,x.k)?'on':''} ${x.k===iso(new Date())?'today':''}" title="${x.k}">${fn(x.day,x.k)?'✓':wd(x.k)}</i>`).join('');
+    let st=0; for(let i=days.length-1;i>=0;i--){ if(fn(days[i].day,days[i].k)) st++; else break }
+    return `<div class="tr-row"><span class="tr-name">${name}</span><span class="tr-week">${cells}</span><span class="tr-st">${st>0?AR(st)+' 🔥':''}</span></div>`}).join('');
+  return {days,qalbOn};
+}
+function renderHistoryPlain(days,qalbOn){
+  const doneReview=days.filter(x=>dailyRatingValues(x.day).length>0).length;
+  const qDays=days.filter(x=>x.day&&(x.day.pages||0)>0).length;
+  const qPages=days.reduce((n,x)=>n+(x.day?.pages||0),0);
+  const am=days.filter(x=>histAzkarComplete(x.day,'morning')).length;
+  const pm=days.filter(x=>histAzkarComplete(x.day,'evening')).length;
+  const heart=days.filter(x=>qalbOn(x.k)).length;
+  let pRecorded=0,pOn=0;
+  days.forEach(x=>Object.values(x.day?.prayers||{}).forEach(v=>{pRecorded++;if(v==='time'||v==='jamaah')pOn++}));
+  const host=document.getElementById('history-summary');
+  if(host)host.innerHTML=`<div class="hist-intro"><b>ماذا سجّلت هذا الأسبوع؟</b><span>الأرقام هنا تلخص ما سجلته داخل رفيق فقط، وليست حكمًا على يومك أو عبادتك.</span></div><div class="hist-cards">${histMetricCard('خلاصة اليوم',`${AR(doneReview)} / ٧`,'أيام سجّلت فيها الخلاصة')}${histMetricCard('الصلاة',pRecorded?`${AR(pOn)} / ${AR(pRecorded)}`:'—',pRecorded?'من الصلوات التي سجّلتها كانت في وقتها':'لم تسجّل صلوات بعد')}${histMetricCard('القرآن',`${AR(qDays)} أيام`,`${AR(qPages)} صفحة مسجّلة`)}${histMetricCard('أذكار الصباح',`${AR(am)} / ٧`,'أيام أتممت فيها الورد')}${histMetricCard('أذكار المساء',`${AR(pm)} / ٧`,'أيام أتممت فيها الورد')}${histMetricCard('القلب',heart?`${AR(heart)} أيام`:'—',heart?'تابعت خطوة من علاج القلب':'لا متابعة مسجلة هذا الأسبوع')}</div>`;
+  const metrics=[
+    {id:'review',label:'خلاصة اليوم',score:doneReview/7,detail:`سجّلتها ${AR(doneReview)} من ٧ أيام`,tab:'today'},
+    {id:'quran',label:'ورد القرآن',score:qDays/7,detail:`قرأت في ${AR(qDays)} من ٧ أيام`,tab:'quran'},
+    {id:'morning',label:'أذكار الصباح',score:am/7,detail:`أتممتها ${AR(am)} من ٧ أيام`,tab:'azkar'},
+    {id:'evening',label:'أذكار المساء',score:pm/7,detail:`أتممتها ${AR(pm)} من ٧ أيام`,tab:'azkar'},
+  ];
+  if(pRecorded)metrics.push({id:'prayer',label:'الصلاة في وقتها',score:pOn/pRecorded,detail:`${AR(pOn)} من ${AR(pRecorded)} صلاة مسجّلة`,tab:'today'});
+  metrics.sort((a,b)=>a.score-b.score);
+  const low=metrics.slice(0,2), high=metrics.slice().sort((a,b)=>b.score-a.score)[0];
+  const gap=document.getElementById('history-gaps');
+  if(gap)gap.innerHTML=`<div class="hist-gap-head"><b>أين يظهر النقص في تسجيلك؟</b><span>نقارن بما سجلته أنت، لا بدرجات إيمان أو صلاح.</span></div>${low.map(x=>`<div class="hist-gap"><div><b>${x.label}</b><span>${x.detail}</span></div><button data-history-open="${x.tab}">افتح القسم</button></div>`).join('')}${high?`<div class="hist-win"><span>أكثر شيء حافظت على تسجيله:</span><b>${high.label}</b></div>`:''}`;
 }
 async function renderHistory(){
-  await renderTracker();
-  const days=[];
-  for(let i=27;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i);
-    days.push({key:iso(d),day:await store.get('day:'+iso(d))}) }
-  document.getElementById('grid').innerHTML=days.map(x=>{
-    const c=x.day?shade(score(x.day)):'';
-    return `<i title="${x.key}" style="background:${c||'var(--wash)'}"></i>`}).join('');
-  const filled=days.filter(x=>dailyRatingValues(x.day).length);
-  document.getElementById('s-avg').textContent=
-    (filled.length?Math.round(filled.reduce((a,x)=>a+score(x.day),0)/filled.length):0)+'%';
-  let streak=0;
-  for(let i=days.length-1;i>=0;i--){
-    const on=dailyRatingValues(days[i].day).length>0;
-    if(on) streak++; else if(i!==days.length-1) break }
+  await loadAzkar();
+  const tr=await renderTracker(), days=tr.days;
+  renderHistoryPlain(days,tr.qalbOn);
+  const days28=[]; for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days28.push({key:iso(d),day:await store.get('day:'+iso(d))})}
+  document.getElementById('grid').innerHTML=days28.map(x=>{const c=x.day?shade(score(x.day)):'';return `<i title="${x.key}" style="background:${c||'var(--wash)'}"></i>`}).join('');
+  const filled=days28.filter(x=>dailyRatingValues(x.day).length);
+  document.getElementById('s-avg').textContent=(filled.length?Math.round(filled.reduce((a,x)=>a+score(x.day),0)/filled.length):0)+'%';
+  let streak=0; for(let i=days28.length-1;i>=0;i--){const on=dailyRatingValues(days28[i].day).length>0;if(on)streak++;else break}
   document.getElementById('s-streak').textContent=streak;
-  let good=0,tot=0,pages=0;
-  days.forEach(x=>{ if(!x.day)return; pages+=x.day.pages||0;
-    Object.values(x.day.prayers||{}).forEach(s=>{tot++; if(s==='jamaah'||s==='time')good++}) });
-  document.getElementById('s-prayers').textContent=(tot?Math.round(good/tot*100):0)+'%';
-  document.getElementById('s-pages').textContent=pages;
-
+  let good=0,tot=0,pages=0; days28.forEach(x=>{if(!x.day)return;pages+=x.day.pages||0;Object.values(x.day.prayers||{}).forEach(v=>{tot++;if(v==='jamaah'||v==='time')good++})});
+  document.getElementById('s-prayers').textContent=(tot?Math.round(good/tot*100):0)+'%'; document.getElementById('s-pages').textContent=pages;
   const tot2={}; ALL_ITEMS.forEach(([id,n])=>tot2[id]={n,sum:0,c:0});
-  filled.forEach(x=>Object.entries(x.day.ratings).forEach(([id,v])=>{if(tot2[id]){tot2[id].sum+=v;tot2[id].c++}}));
+  filled.forEach(x=>Object.entries(x.day.ratings||{}).forEach(([id,v])=>{if(tot2[id]){tot2[id].sum+=v;tot2[id].c++}}));
   const weak=Object.values(tot2).filter(x=>x.c).sort((a,b)=>a.sum/a.c-b.sum/b.c).slice(0,4);
-  document.getElementById('weak').innerHTML= weak.length
-    ? weak.map(x=>`<div class="item"><div class="row"><span>${x.n}</span>
-        <span class="muted">${Math.round(x.sum/x.c/4*100)}%</span></div></div>`).join('')
-    : '<div class="item"><div class="muted">سجّل يومك أولًا ليظهر التحليل هنا.</div></div>';
+  document.getElementById('weak').innerHTML=weak.length?weak.map(x=>`<div class="item"><div class="row"><span>${x.n}</span><span class="muted">${Math.round(x.sum/x.c/4*100)}%</span></div></div>`).join(''):'<div class="item"><div class="muted">سجّل خلاصة يومك ليظهر هذا التفصيل.</div></div>';
   renderFasting();
+  document.getElementById('v-history').onclick=e=>{const b=e.target.closest('[data-history-open]');if(b)switchTab(b.dataset.historyOpen)};
 }
 function renderFasting(){
   const out=[]; const d=new Date();
   for(let i=0;i<40 && out.length<5;i++){
-    const x=new Date(); x.setDate(d.getDate()+i);
-    let hd=null;
-    try{ hd=+new Intl.DateTimeFormat('en-u-ca-islamic-nu-latn',{day:'numeric'}).format(x) }catch{}
-    const wd=x.getDay(); const labels=[];
-    if(hd&&[13,14,15].includes(hd)) labels.push('الأيام البيض');
-    if(wd===1) labels.push('الاثنين');
-    if(wd===4) labels.push('الخميس');
-    if(labels.length) out.push({x,labels});
+    const x=new Date(); x.setDate(d.getDate()+i); let hd=null;
+    try{hd=+new Intl.DateTimeFormat('en-u-ca-islamic-nu-latn',{day:'numeric'}).format(x)}catch{}
+    const wd=x.getDay(),labels=[]; if(hd&&[13,14,15].includes(hd))labels.push('الأيام البيض'); if(wd===1)labels.push('الاثنين'); if(wd===4)labels.push('الخميس');
+    if(labels.length)out.push({x,labels});
   }
-  document.getElementById('fasting').innerHTML= out.length? out.map(o=>
-    `<div class="item"><div class="row">
-      <span>${new Intl.DateTimeFormat('ar-EG',{weekday:'long',day:'numeric',month:'long'}).format(o.x)}</span>
-      <span class="muted">${o.labels.join(' · ')}</span></div></div>`).join('')
-    : '<div class="item"><div class="muted">—</div></div>';
+  document.getElementById('fasting').innerHTML=out.length?out.map(o=>`<div class="item"><div class="row"><span>${new Intl.DateTimeFormat('ar-EG',{weekday:'long',day:'numeric',month:'long'}).format(o.x)}</span><span class="muted">${o.labels.join(' · ')}</span></div></div>`).join(''):'<div class="item"><div class="muted">—</div></div>';
 }
 
 
@@ -1228,8 +1233,10 @@ function hIshkaliatList(){
 async function hIshkaliat(){
   await loadIsh();
   if(!issuesEnabled()){
-    document.getElementById('v-qalb').innerHTML=`<button class="back" id="ish-disabled-back">القلب</button><div class="nafs-hero"><h2>إشكاليات — مسار متقدم</h2><p>هذا المسار اختياري. يمكنك تفعيله من «تخصيص رفيق» إذا كان هذا النوع من المحتوى يناسبك.</p></div>`;
-    document.getElementById('ish-disabled-back').onclick=()=>hRender(); return;
+    document.getElementById('v-qalb').innerHTML=`<button class="back" id="ish-disabled-back">القلب</button><div class="nafs-hero ish-optin"><div class="ish-kicker">مسار متقدم اختياري</div><h2>إشكاليات</h2><p>هذا المسار يناقش قضايا الالتزام والتدين والعمل للدين من محاضرات د. أحمد عبد المنعم، مع رابط الفيديو والتوقيت تحت كل فكرة. لا يصنف رفيق مستوى تدينك؛ أنت فقط تختار إن كنت تريد إظهاره.</p><button class="h-primary" id="ish-enable">إظهار «إشكاليات»</button></div>`;
+    document.getElementById('ish-disabled-back').onclick=()=>hRender();
+    document.getElementById('ish-enable').onclick=async()=>{profile={...profile,advancedIssues:true};await store.set('profile-v1',profile);toast('تم إظهار «إشكاليات» ✓');hIshkaliat()};
+    return;
   }
   document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}
       <button data-k="problems">♡ أمراض القلوب</button><button data-k="works">◇ أعمال القلوب</button>
@@ -1358,13 +1365,19 @@ function dCount(days){ // عدد الأعمال المؤدّاة في آخر N �
   return {n,cats:seen.size} }
 async function loadKh(){ kh=(await store.get('khabia'))||{pin:'',items:[]} }
 
+function deedSourceHtml(it){
+  const s=it?.s;if(!s)return '';
+  const title=s.t||'فتح المصدر';
+  return `<div class="deed-evidence"><div class="deed-evidence-label">الدليل المرتبط بالعمل</div>${s.e?`<div class="deed-evidence-text">${laterEsc(s.e)}</div>`:''}<div class="deed-evidence-ref">${s.u?`<a href="${s.u}" target="_blank" rel="noopener">${laterEsc(title)} ↗</a>`:laterEsc(title)}</div></div>`;
+}
+
 async function hDeeds(){
   await loadKh();
   const D=(HD.deeds||[]).filter(audienceOk), seed=Math.floor(Date.now()/86400000), skip=(await store.get('deed-skip'))||0;
   const flat=[]; D.forEach(c=>c.items.forEach((it,i)=>flat.push([c,it,i]))); const pick=flat.length?flat[(seed+skip)%flat.length]:null, w=dCount(7), host=document.getElementById('v-qalb');
 
   if(dCat){
-    const c=D.find(x=>x.id===dCat); host.innerHTML=`<button class="back" id="d-back">بنك الأعمال</button><div class="h-cathero"><h2>${c.name}</h2><p>${c.sub||''}</p></div><div class="h-sec">`+c.items.map((it,i)=>{ const k=dKey(c.id,i),on=hDone(k,0,hToday()); let times=0; for(let j=0;j<30;j++){const dd=new Date();dd.setDate(dd.getDate()-j);if(hDone(k,0,iso(dd)))times++} return `<div class="h-cure">${laterRegister(`deed:${c.id}:${i}`,{kind:'بنك الأعمال',title:c.name,text:pText(it),source:it.s?.t||'',tab:'qalb'})}<button class="h-chk ${on?'on':''}" data-k="${k}" data-i="0">✓</button><div><div class="t">${pText(it)}</div>${hSourceHtml(it.s)}${times?`<div class="stk">${g('فعلته','فعلتِه')} ${AR(times)} مرة هذا الشهر</div>`:''}</div></div>`}).join('')+`</div>`; host.onclick=hClick; return;
+    const c=D.find(x=>x.id===dCat); host.innerHTML=`<button class="back" id="d-back">بنك الأعمال</button><div class="h-cathero"><h2>${c.name}</h2><p>${c.sub||''}</p></div><div class="h-sec">`+c.items.map((it,i)=>{ const k=dKey(c.id,i),on=hDone(k,0,hToday()); let times=0; for(let j=0;j<30;j++){const dd=new Date();dd.setDate(dd.getDate()-j);if(hDone(k,0,iso(dd)))times++} return `<div class="h-cure">${laterRegister(`deed:${c.id}:${i}`,{kind:'بنك الأعمال',title:c.name,text:pText(it),source:it.s?.t||'',tab:'qalb'})}<button class="h-chk ${on?'on':''}" data-k="${k}" data-i="0">✓</button><div><div class="t">${pText(it)}</div>${deedSourceHtml(it)}${times?`<div class="stk">${g('فعلته','فعلتِه')} ${AR(times)} مرة هذا الشهر</div>`:''}</div></div>`}).join('')+`</div>`; host.onclick=hClick; return;
   }
 
   host.innerHTML=`${hDeedsTabs()}<input id="deeds-search" class="q-search" type="search" value="${deedsQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في بنك الأعمال: صدقة، والدين، علم، خفاء…" aria-label="بحث في بنك الأعمال"><div class="search-count" id="deeds-result-count"></div><div id="deeds-results"></div>`;
@@ -1372,9 +1385,9 @@ async function hDeeds(){
 }
 function renderDeedsContent(D,pick,w){
   const host=document.getElementById('deeds-results'),cnt=document.getElementById('deeds-result-count'); if(!host||!cnt)return; const q=searchNorm(deedsQuery);
-  if(q){ const hits=[]; D.forEach(c=>c.items.forEach((it,i)=>{if(searchNorm(c.name+' '+(c.sub||'')+' '+pText(it)).includes(q))hits.push([c,it,i])})); cnt.textContent=`${AR(hits.length)} نتيجة من ${AR(D.reduce((n,c)=>n+c.items.length,0))} عملًا`; host.innerHTML=hits.length?`<div class="h-sec">${hits.map(([c,it,i])=>{const k=dKey(c.id,i),on=hDone(k,0,hToday());return `<div class="h-cure">${laterRegister(`deed:${c.id}:${i}`,{kind:'بنك الأعمال',title:c.name,text:pText(it),source:it.s?.t||'',tab:'qalb'})}<button class="h-chk ${on?'on':''}" data-k="${k}" data-i="0">✓</button><div><div class="search-source">${c.name}</div><div class="t">${pText(it)}</div>${hSourceHtml(it.s)}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد أعمال مطابقة لبحثك.</div>'; return }
+  if(q){ const hits=[]; D.forEach(c=>c.items.forEach((it,i)=>{if(searchNorm(c.name+' '+(c.sub||'')+' '+pText(it)).includes(q))hits.push([c,it,i])})); cnt.textContent=`${AR(hits.length)} نتيجة من ${AR(D.reduce((n,c)=>n+c.items.length,0))} عملًا`; host.innerHTML=hits.length?`<div class="h-sec">${hits.map(([c,it,i])=>{const k=dKey(c.id,i),on=hDone(k,0,hToday());return `<div class="h-cure">${laterRegister(`deed:${c.id}:${i}`,{kind:'بنك الأعمال',title:c.name,text:pText(it),source:it.s?.t||'',tab:'qalb'})}<button class="h-chk ${on?'on':''}" data-k="${k}" data-i="0">✓</button><div><div class="search-source">${c.name}</div><div class="t">${pText(it)}</div>${deedSourceHtml(it)}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد أعمال مطابقة لبحثك.</div>'; return }
   cnt.textContent=`${AR(D.reduce((n,c)=>n+c.items.length,0))} عملًا في ${AR(D.length)} أبواب`;
-  host.innerHTML=`${pick?`<div class="h-p40" style="background:linear-gradient(150deg,var(--gold),#8A6A2F)"><div class="hh">عمل اليوم — ${pick[0].name}</div><div class="nn" style="font-size:19px;line-height:1.7">${pText(pick[1])}</div>${hSourceHtml(pick[1].s)}<div style="display:flex;gap:8px;margin-top:12px"><button data-dd="${dKey(pick[0].id,pick[2])}" style="flex:2;margin:0">${hDone(dKey(pick[0].id,pick[2]),0,hToday())?'✓ تم بحمد الله':'تم'}</button><button data-skip="1" style="flex:1;margin:0;background:rgba(255,255,255,.14)">غيّره</button></div></div>`:''}<div class="kh-card" id="kh-card">${khHtml()}</div><div class="h-sec" style="margin-top:12px"><div class="h-sh">هذا الأسبوع</div><div class="h-bd" style="display:flex;gap:10px"><div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.n)}</div><div style="font-size:11px;color:var(--soft)">عملًا صالحًا</div></div><div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.cats)} / ٦</div><div style="font-size:11px;color:var(--soft)">أبوابًا لمستها</div></div></div></div><div class="h-grid">${D.map(c=>{let t=0;c.items.forEach((_,i)=>{if(hDone(dKey(c.id,i),0,hToday()))t++});return `<div class="h-tile" data-dcat="${c.id}"><div class="ic">${c.icon}</div><div class="nm" style="font-size:18px">${c.name}</div><div class="ds">${c.sub||''}</div><div class="st">${AR(c.items.length)} عملًا${t?' · اليوم '+AR(t)+' ✓':''}</div></div>`}).join('')}</div>`;
+  host.innerHTML=`${pick?`<div class="h-p40" style="background:linear-gradient(150deg,var(--gold),#8A6A2F)"><div class="hh">عمل اليوم — ${pick[0].name}</div><div class="nn" style="font-size:19px;line-height:1.7">${pText(pick[1])}</div>${deedSourceHtml(pick[1])}<div style="display:flex;gap:8px;margin-top:12px"><button data-dd="${dKey(pick[0].id,pick[2])}" style="flex:2;margin:0">${hDone(dKey(pick[0].id,pick[2]),0,hToday())?'✓ تم بحمد الله':'تم'}</button><button data-skip="1" style="flex:1;margin:0;background:rgba(255,255,255,.14)">غيّره</button></div></div>`:''}<div class="kh-card" id="kh-card">${khHtml()}</div><div class="h-sec" style="margin-top:12px"><div class="h-sh">هذا الأسبوع</div><div class="h-bd" style="display:flex;gap:10px"><div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.n)}</div><div style="font-size:11px;color:var(--soft)">عملًا صالحًا</div></div><div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.cats)} / ٦</div><div style="font-size:11px;color:var(--soft)">أبوابًا لمستها</div></div></div></div><div class="h-grid">${D.map(c=>{let t=0;c.items.forEach((_,i)=>{if(hDone(dKey(c.id,i),0,hToday()))t++});return `<div class="h-tile" data-dcat="${c.id}"><div class="ic">${c.icon}</div><div class="nm" style="font-size:18px">${c.name}</div><div class="ds">${c.sub||''}</div><div class="st">${AR(c.items.length)} عملًا${t?' · اليوم '+AR(t)+' ✓':''}</div></div>`}).join('')}</div>`;
 }
 function hDeedsTabs(){
   return `<div class="h-tabs">${hPathTab(false)}
@@ -1387,7 +1400,7 @@ function hDeedsTabs(){
 function khHtml(){
   if(!khOpen) return `<div class="kh-lock">
     <div class="kh-t">الخبيئة</div>
-    <div class="kh-d">مساحة لعملٍ تحب أن يبقى خفيًا عن الناس، تذكيرًا بالإخلاص لا حكمًا على النيات.</div>${hSourceHtml({t:'القرآن الكريم — البينة 5',u:'https://quran.com/98/5'})}
+    <div class="kh-d">مساحة لعملٍ تحب أن يبقى خفيًا عن الناس، تذكيرًا بالإخلاص لا حكمًا على النيات.</div>${hSourceHtml({t:'حديث السبعة الذين يظلهم الله — «ورجل تصدق بصدقة فأخفاها…»',u:'https://dorar.net/hadith/sharh/6995'})}
     <div style="display:flex;gap:8px;margin-top:11px">
       <input type="password" id="kh-pin" inputmode="numeric" placeholder="${kh.pin?'أدخل الرقم السري':'اختر رقمًا سريًّا'}"
         style="flex:1;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:10px;font-size:14px">

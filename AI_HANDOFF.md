@@ -298,3 +298,18 @@ Continuation rules for hadith explanations:
 4. For high-risk fiqh, hudud, fighting, changing evil, medical, or family-law implications, include context/boundary notes and direct users to qualified scholarship; do not turn a short card into a fatwa.
 5. Preserve exact verification links when available (`sunnah.com/riyadussalihin:<n>` and `sunnah.com/nawawi40:<n>`).
 
+
+
+## 15) v24 R5 — clarity pass: adhkar spacing, Ishkaliat discoverability, deed evidence, history, data architecture
+
+Owner feedback: do not modify ambiguous requirements. R5 changes only items whose intent was clear; no backend/cloud/analytics service was added.
+
+Implemented:
+- Adhkar typography spacing increased; the tap-to-count hint is now a separate line rather than crowding the Arabic dhikr text.
+- `إشكاليات` is always visible in the Heart segmented navigation. If the advanced track is off, opening it shows an explicit opt-in screen and enables it only after a user click.
+- Bank of Deeds references now show **الدليل المرتبط بالعمل** plus a short relevant verse/hadith phrase before the source link. Two loosely-worded actions were tightened to match their evidence more directly.
+- `الخبيئة` no longer uses al-Bayyinah 5 as its main proof for secrecy; it now points directly to the hadith of the seven shaded by Allah, including the hidden charity example.
+- `السجل` now starts with plain-language weekly cards: what the user actually recorded, then `ما الذي يحتاج تثبيتًا؟` based only on recorded app data. It explicitly says this is not a judgement on faith. Old detailed tracker/28-day stats remain under `عرض التفاصيل والأرقام`.
+- Added `DATA_ARCHITECTURE.md`: current product has no cloud backend/database. Most app data is per-device local storage; the existing PWABuilder Android package points to `https://abdull2.github.io/rafiq/`. No cloud analytics or sync was introduced in R5.
+
+Future AI rule: distinguish **product analytics** from **cloud user database/sync**. Do not introduce Firebase/Supabase/custom backend until the owner explicitly chooses the privacy/data model.

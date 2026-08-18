@@ -1,5 +1,5 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-R4-2026-08-19",
+  "state_id": "RAFIQ-HANDOFF-v24-R5-2026-08-19",
   "project": "رفيق يومك",
   "version": "v24",
   "platform": "Chrome MV3 side-panel extension",
@@ -73,6 +73,18 @@
     "new al-Nawawi Forty section added to the علم tab with 42 entries, search, save-later, click-to-explain, takhrij, and per-hadith verification links",
     "official Ibn Uthaymeen Sharh al-Arbaeen page is displayed before Nawawi simplified explanations",
     "hadith explanations are explicitly labelled as concise educational paraphrases rather than verbatim shaykh quotations",
-    "app/sources.html documents Riyad/Nawawi commentary references and the no-false-quotation policy"
-  ]
+    "app/sources.html documents Riyad/Nawawi commentary references and the no-false-quotation policy",
+    "R5: adhkar line spacing and tap-to-count hint separated from Arabic matn",
+    "R5: Ishkaliat tab is always discoverable; disabled state uses explicit user opt-in instead of hiding the tab",
+    "R5: Bank of Deeds shows evidence phrase directly tied to each action before the source link; Khabia uses hidden-charity hadith",
+    "R5: History opens with plain-language weekly activity and lowest-recorded areas, with detailed legacy stats collapsed below",
+    "R5: DATA_ARCHITECTURE.md documents no current cloud backend/database and the existing PWABuilder TWA URL; no backend/analytics added"
+  ],
+  "data_architecture": {
+    "cloud_backend": false,
+    "central_user_database": false,
+    "chrome_app_state": "localStorage via app store wrapper; extension notebook/prefs use chrome.storage.local",
+    "android_existing_wrapper": "PWABuilder/TWA -> https://abdull2.github.io/rafiq/",
+    "decision_required_before_cloud": "owner must explicitly approve analytics vs account sync, data categories, privacy and retention"
+  }
 }

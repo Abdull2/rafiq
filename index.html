@@ -111,6 +111,21 @@
 .path-suggestions button{border:1px solid var(--sage);background:var(--card);color:var(--deep);border-radius:12px;padding:10px 8px;font:inherit;font-size:11.5px;cursor:pointer}
 [data-theme="dark"] .path-quick.on{color:#fff}
 @media(max-width:430px){.path-suggestions{grid-template-columns:1fr 1fr}.path-ob-quick .path-quick,.nafs-path-quick .path-quick{width:100%}}
+
+/* v24 R5 — clearer sources, optional Ishkaliat discoverability, plain-language history */
+.h-tabs button.optional-track{border-style:dashed;color:var(--soft)}
+.ish-optin .h-primary{margin-top:14px;width:100%}
+.deed-evidence{background:color-mix(in srgb,var(--wash) 82%,var(--card));border:1px solid var(--line);border-radius:12px;padding:9px 11px;margin-top:9px;text-align:start}
+.deed-evidence-label{font-size:9.5px;font-weight:700;color:var(--gold);margin-bottom:5px}
+.deed-evidence-text{font-family:Amiri,serif;font-size:15px;line-height:1.9;color:var(--ink);margin-bottom:4px}
+.deed-evidence-ref a,.deed-evidence-ref{font-size:10.5px;color:var(--deep);text-decoration:none;line-height:1.65}
+.deed-evidence-ref a:hover{text-decoration:underline}
+.hist-intro,.hist-gap-head{padding:14px 15px 6px;display:grid;gap:3px}.hist-intro b,.hist-gap-head b{font-size:15px;color:var(--deep)}.hist-intro span,.hist-gap-head span{font-size:10.5px;color:var(--soft);line-height:1.7}
+.hist-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 15px 15px}.hist-card{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:11px;min-height:86px}.hist-label{font-size:11px;color:var(--soft)}.hist-value{font-family:Amiri,serif;font-size:24px;color:var(--deep);line-height:1.3;margin-top:3px}.hist-sub{font-size:10px;color:var(--ink-soft);line-height:1.55;margin-top:2px}
+.hist-gap{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 15px;border-top:1px solid var(--line)}.hist-gap>div{display:grid;gap:2px}.hist-gap b{font-size:13px}.hist-gap span{font-size:10.5px;color:var(--soft)}.hist-gap button{border:1px solid var(--line);background:var(--wash);color:var(--deep);border-radius:10px;padding:7px 10px;font-family:inherit;font-size:10.5px;cursor:pointer;white-space:nowrap}.hist-win{margin:10px 15px 14px;padding:10px 12px;border-radius:11px;background:var(--wash);display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--soft)}.hist-win b{color:var(--deep)}
+.history-details{margin-top:12px;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}.history-details>summary{cursor:pointer;padding:13px 15px;color:var(--deep);font-weight:600;font-size:13px;list-style:none}.history-details>summary::-webkit-details-marker{display:none}.history-details>summary::before{content:'＋';margin-inline-end:7px}.history-details[open]>summary::before{content:'−'}.history-details .inner-section{border-top:1px solid var(--line)}
+@media(max-width:520px){.hist-cards{grid-template-columns:1fr}}
+
 </style>
 <style>
 :root{
@@ -222,7 +237,7 @@ textarea{min-height:70px;resize:vertical}
 
 /* azkar */
 .zikr{padding:13px 15px;border-top:1px solid var(--line)}
-.zikr .txt{font-family:Amiri,serif;font-size:18px;line-height:1.9}
+.zikr .txt{font-family:Amiri,serif;font-size:18px;line-height:2.15;padding:7px 0 11px}
 .zikr .bar{display:flex;justify-content:space-between;align-items:center;margin-top:9px;gap:10px}
 .zikr .cnt{font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
 .zikr button{padding:7px 15px;border-radius:10px;border:1px solid var(--line);
@@ -230,7 +245,7 @@ textarea{min-height:70px;resize:vertical}
 .zikr.done{opacity:.5}
 .zikr.done button{background:var(--wash)}
 .zikr.tap-count{cursor:pointer;transition:.12s}.zikr.tap-count:active{background:var(--wash);transform:scale(.995)}
-.zikr.tap-count .txt::after{content:"  · اضغط للعد";font-family:"IBM Plex Sans Arabic",sans-serif;font-size:9.5px;color:var(--soft);white-space:nowrap}.zikr.done.tap-count .txt::after{content:"  · تم"}
+.zikr.tap-count .txt::after{content:"اضغط على الذكر للعد";display:block;margin-top:8px;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:9.5px;line-height:1.5;color:var(--soft);white-space:normal}.zikr.done.tap-count .txt::after{content:"تم ✓"}
 
 /* progress */
 .prog{height:9px;border-radius:99px;background:var(--wash);overflow:hidden;margin:10px 0 6px}
@@ -463,7 +478,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .az-tabs button[aria-current="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
 [data-theme="dark"] .az-tabs button[aria-current="true"]{color:#12160F}
 .az-time{font-size:11.5px;color:var(--soft);padding:10px 15px 0}
-.zk-note{font-size:11.5px;color:var(--gold);margin-top:7px;line-height:1.7}
+.zk-note{font-size:11.5px;color:var(--gold);margin-top:11px;line-height:1.8}
 
 /* ===== صفحة المصحف ===== */
 .mushaf{background:#FBF6EA;border:1px solid #E3D6BC;border-radius:14px;margin-top:10px;
@@ -1043,20 +1058,24 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <!-- ============ HISTORY ============ -->
 <div id="v-history" class="hide">
   <section>
-    <div class="sec-head">متابعة الأسبوع</div>
-    <div id="tracker"></div>
+    <div class="sec-head">أسبوعك ببساطة</div>
+    <div id="history-summary"></div>
   </section>
   <section>
-    <div class="sec-head">آخر ٤ أسابيع</div>
-    <div class="stats">
-      <div class="stat"><b id="s-streak">0</b><span>أيام متتابعة</span></div>
-      <div class="stat"><b id="s-avg">0%</b><span>متوسط الالتزام</span></div>
-      <div class="stat"><b id="s-prayers">0%</b><span>الصلوات في وقتها</span></div>
-      <div class="stat"><b id="s-pages">0</b><span>صفحات قرآن</span></div>
-    </div>
-    <div class="grid" id="grid"></div>
+    <div class="sec-head">ما الذي يحتاج تثبيتًا؟</div>
+    <div id="history-gaps"></div>
   </section>
-  <section><div class="sec-head">أضعف البنود</div><div id="weak"></div></section>
+  <details class="history-details">
+    <summary>عرض التفاصيل والأرقام</summary>
+    <div class="inner-section"><div class="sec-head">متابعة الأسبوع يومًا بيوم</div><div id="tracker"></div></div>
+    <div class="inner-section"><div class="sec-head">آخر ٤ أسابيع</div><div class="stats">
+      <div class="stat"><b id="s-streak">0</b><span>أيام سجّلت الخلاصة متتابعة</span></div>
+      <div class="stat"><b id="s-avg">0%</b><span>متوسط خلاصة اليوم</span></div>
+      <div class="stat"><b id="s-prayers">0%</b><span>من الصلوات المسجلة في وقتها</span></div>
+      <div class="stat"><b id="s-pages">0</b><span>صفحات قرآن مسجّلة</span></div>
+    </div><div class="grid" id="grid"></div></div>
+    <div class="inner-section"><div class="sec-head">تفصيل بنود خلاصة اليوم</div><div id="weak"></div></div>
+  </details>
   <section><div class="sec-head">صيام مستحبّ قادم</div><div id="fasting"></div></section>
 </div>
 

@@ -57,3 +57,13 @@ v24 R4 — hadith typography + Nawawi 40 + sourced commentary checks
 - [PASS] all app/*.json, AI_HANDOFF.json, and manifest.json parse successfully.
 - [PASS] manifest remains 24.0.0 per owner release numbering.
 - [PASS] AI_HANDOFF.md/json, PROMPT_FOR_NEXT_AI.txt, and RELEASE-NOTES-v24.txt include R4 changes and the no-false-quotation source policy.
+
+
+v24 R5 — clarity/data architecture checks
+- [PASS] Adhkar text uses increased vertical spacing and count hint renders as a separate block line.
+- [PASS] Ishkaliat button renders even when advancedIssues=false and only enables advancedIssues after explicit CTA click.
+- [PASS] Every Bank of Deeds item has a short evidence phrase (`s.e`) plus its source mapping.
+- [PASS] Khabia source points to the hadith of hidden charity.
+- [PASS] History has plain weekly summary + recorded-gap UI; old tracker/28-day detail remains available.
+- [PASS] History wording says analysis is based on what was recorded in Rafiq, not a judgement of faith.
+- [PASS] DATA_ARCHITECTURE.md documents no current cloud backend/database and no analytics addition.
