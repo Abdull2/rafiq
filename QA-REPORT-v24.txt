@@ -41,3 +41,19 @@ v24 R3 — saved-state + Irtaqi v3 checks
 - [PASS] old Irtaqi journey versions (<3) auto-rebuild from last saved assessment.
 - [PASS] new journey uses a unique id in completion keys to prevent same-day re-assessment progress collisions.
 - [PASS] each Irtaqi task object has a visible task-level source mapping.
+
+v24 R4 — hadith typography + Nawawi 40 + sourced commentary checks
+- [PASS] Riyad hadith 811 rendering removes the raw ((...)) takhrij block from the matn and moves «رواه أبو داود والترمذي والنسائي» to a separate reference area.
+- [PASS] remaining Riyad double-parenthesis takhrij blocks are parsed out of the visible matn by riyadParts(); 1800 reference blocks are structurally extractable from the local dataset.
+- [PASS] Riyad cards and Hadith of the Day open the dedicated hadith-detail reader.
+- [PASS] Riyad detail displays the official «شرح رياض الصالحين» reference by Shaykh Muhammad ibn Salih al-Uthaymeen before the simplified explanation.
+- [PASS] simplified Riyad explanation is explicitly labeled as an educational paraphrase, not a verbatim quotation from the shaykh.
+- [PASS] «الأربعون النووية» is present as a fourth Knowledge/Learning section and has its own render container.
+- [PASS] app/nawawi40.json parses and contains meta count=42 plus 42 complete item records numbered 1..42.
+- [PASS] each Nawawi record includes matn, title, takhrij, exact per-hadith verification link, commentary reference link, and simplified explanation.
+- [PASS] Nawawi detail displays the hadith/takhrij source separately, then the official «شرح الأربعين النووية» reference by Shaykh Muhammad ibn Salih al-Uthaymeen before the simplified explanation.
+- [PASS] sources.html documents both official Ibn Uthaymeen commentary references and the non-verbatim-summary policy.
+- [PASS] app/app.js + background.js pass node --check.
+- [PASS] all app/*.json, AI_HANDOFF.json, and manifest.json parse successfully.
+- [PASS] manifest remains 24.0.0 per owner release numbering.
+- [PASS] AI_HANDOFF.md/json, PROMPT_FOR_NEXT_AI.txt, and RELEASE-NOTES-v24.txt include R4 changes and the no-false-quotation source policy.

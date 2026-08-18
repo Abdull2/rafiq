@@ -1,5 +1,5 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-R3-2026-08-19",
+  "state_id": "RAFIQ-HANDOFF-v24-R4-2026-08-19",
   "project": "رفيق يومك",
   "version": "v24",
   "platform": "Chrome MV3 side-panel extension",
@@ -33,7 +33,10 @@
     "fiqh_nafs": "https://makany.co/",
     "who_depression": "https://www.who.int/news-room/fact-sheets/detail/depression",
     "nhs_depression": "https://www.nhs.uk/mental-health/conditions/depression-in-adults/diagnosis/",
-    "ishkaliat_playlist": "https://www.youtube.com/playlist?list=PLnpYU8_AiEPeOynF9Q35m_3QgRq-yFtaC"
+    "ishkaliat_playlist": "https://www.youtube.com/playlist?list=PLnpYU8_AiEPeOynF9Q35m_3QgRq-yFtaC",
+    "riyad_commentary_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/76e12fcc-d35a-417d-a68b-954c0bf06bc6",
+    "nawawi40_commentary_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/7c9cb3e2-3b02-4ad9-97dc-5db895d9a98c",
+    "nawawi40_text": "https://sunnah.com/nawawi40"
   },
   "roadmap": [
     "source integrity and regression testing",
@@ -64,6 +67,12 @@
     "Irtaqi plan upgraded to v3 Sharia-priority framework: obligations/rights/necessary knowledge before devotional growth and nawafil",
     "Irtaqi post-assessment UI shows sourced plan principles and a sourced reason/task card; sources remain out of quiz questions",
     "Irtaqi v2 journeys auto-migrate from the last assessment to v3 and use a unique journey id to avoid same-day progress collisions",
-    "Irtaqi assessment remains 24 questions across prayer/obligations, rights, necessary knowledge, Quran, dhikr, and nawafil"
+    "Irtaqi assessment remains 24 questions across prayer/obligations, rights, necessary knowledge, Quran, dhikr, and nawafil",
+    "Riyad double-parenthesis takhrij is separated from the visible matn and shown in a dedicated reference block",
+    "Riyad hadith cards now open a detail reader with exact hadith source, official Ibn Uthaymeen Sharh Riyad reference, concise explanation, and takhrij notes",
+    "new al-Nawawi Forty section added to the علم tab with 42 entries, search, save-later, click-to-explain, takhrij, and per-hadith verification links",
+    "official Ibn Uthaymeen Sharh al-Arbaeen page is displayed before Nawawi simplified explanations",
+    "hadith explanations are explicitly labelled as concise educational paraphrases rather than verbatim shaykh quotations",
+    "app/sources.html documents Riyad/Nawawi commentary references and the no-false-quotation policy"
   ]
 }

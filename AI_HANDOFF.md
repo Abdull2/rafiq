@@ -274,3 +274,27 @@ Implemented:
 - The assessment axes were matured to: `الصلاة والفرائض`, `ترك الأذى وحقوق العباد`, `العلم اللازم والتزكية`, `القرآن`, `الذكر والدعاء`, `النوافل والزيادة`. It still contains 24 questions total.
 
 Important continuation rule: do not regress `ارتقِ` into a score-maximization/gamification system. When adding plan tasks, separate **religiously fixed acts/counts** from **organizational product choices**, and put the source under the task itself.
+
+## 16) v24 R4 — hadith typography + Nawawi 40 + sourced explanation reader
+
+Owner feedback: Riyad al-Salihin displayed raw double parentheses such as `((رواه...))`, which looked broken in Arabic RTL. Owner also made sourced hadith explanation a top priority and requested adding al-Nawawi's Forty to the `العلم` tab.
+
+Implemented:
+- Riyad al-Salihin rendering now separates legacy double-parenthetical takhrij/source fragments from the main matn. The list/detail UI no longer shows the ugly `((...))` form; the references appear in a dedicated `التخريج والإحالات` block. The underlying local data is not doctrinally rewritten.
+- Every Riyad hadith card is now clickable and opens a focused hadith reader. The reader shows: clean matn -> exact Sunnah.com Riyad link -> **trusted commentary reference before the explanation** -> concise explanation -> extracted takhrij/source notes.
+- Trusted Riyad commentary reference: **شرح رياض الصالحين — الشيخ محمد بن صالح العثيمين رحمه الله**, linked to the official Ibn Uthaymeen Foundation book page.
+- The concise Riyad explanation is deliberately labelled as a short educational Rafiq formulation, **not a verbatim quote from the shaykh**. Never misattribute generated/paraphrased wording as a direct quotation. For legal/theological detail, route the user to the cited commentary.
+- Added `app/nawawi40.json` containing 42 Nawawi hadith entries, titles, concise explanation, takhrij labels, exact per-hadith verification links, and the official commentary-book link.
+- Added a new `الأربعون النووية` segment inside `العلم`, with search, save-for-later integration, and click-to-open hadith reader.
+- Trusted Nawawi commentary reference: **شرح الأربعين النووية — الشيخ محمد بن صالح العثيمين رحمه الله**, linked to the official Ibn Uthaymeen Foundation book page. The simplified notes are short educational paraphrases and not long quotations.
+- Hadith 41 includes a neutral authenticity caution because later hadith scholars discussed its chain; do not present disputed grading as unanimous.
+- `app/sources.html` now records the two commentary references and the explanation/paraphrase policy.
+- Public version remains **v24 / manifest `24.0.0`** per owner instruction.
+
+Continuation rules for hadith explanations:
+1. A visible **commentary source/reference must appear before the simplified explanation**.
+2. Do not invent a shaykh quotation. If wording is not checked verbatim, label it as a simplified educational formulation/paraphrase.
+3. Keep the original hadith/takhrij source separately visible from the commentary source.
+4. For high-risk fiqh, hudud, fighting, changing evil, medical, or family-law implications, include context/boundary notes and direct users to qualified scholarship; do not turn a short card into a fatwa.
+5. Preserve exact verification links when available (`sunnah.com/riyadussalihin:<n>` and `sunnah.com/nawawi40:<n>`).
+

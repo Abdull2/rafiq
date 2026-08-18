@@ -724,73 +724,123 @@ document.getElementById('dua-tabs').onclick=e=>{ const b=e.target.closest('butto
 document.getElementById('dua-search').oninput=()=>renderDua();
 
 
-/* ================= السنة — رياض الصالحين ================= */
-let RS=null, rsBook=-1, rsFav=[];
+/* ================= السنة — رياض الصالحين + قارئ الشرح ================= */
+const RIYAD_SHARH_URL='https://foundation.binothaimeen.net/ar/books/show/76e12fcc-d35a-417d-a68b-954c0bf06bc6';
+const NAWAWI_SHARH_URL='https://foundation.binothaimeen.net/ar/books/show/7c9cb3e2-3b02-4ad9-97dc-5db895d9a98c';
+let RS=null, rsBook=-1, rsFav=[], NAW=null, nawawiQuery='';
+function riyadParts(raw=''){
+  const refs=[];
+  let body=String(raw).replace(/\(\(([\s\S]*?)\)\)/g,(_,x)=>{const v=x.trim();if(v)refs.push(v);return ' '});
+  body=body.replace(/\(\(/g,'(').replace(/\)\)/g,')').replace(/[ \t]+/g,' ').replace(/\s+([،؛.!؟])/g,'$1').trim();
+  return {body,refs:[...new Set(refs)]};
+}
+function cleanRiyadText(raw=''){return riyadParts(raw).body}
+function riyadExplain(text,book=''){
+  const t=searchNorm(text), rules=[
+    [/الاعمال بالنيات|النيات|نية/,`يبين الحديث أثر النية في قيمة العمل وثوابه؛ فصلاح القصد أصل في العبادة والعمل، ولا يكفي حسن النية لتصحيح عمل مخالف للشرع.`],
+    [/جلود السباع|جلود السباع ان تفترش/,`ينهى الحديث عن استعمال جلود السباع في هذا الباب، وفيه توجيه إلى اجتناب ما ثبت النهي عنه في اللباس والفرش، مع رد تفاصيل الأحكام وصورها إلى كلام أهل العلم.`],
+    [/لا تغضب/,`يرشد الحديث إلى كظم آثار الغضب ومنع النفس من الكلام أو التصرف المحرم عند هيجانه، لا إلى إنكار أصل الشعور الطبيعي بالغضب.`],
+    [/التوبة|تاب الله|يستغفر|استغفر/,`يفتح الحديث باب الرجوع إلى الله وعدم الإصرار على الذنب؛ فالتوبة عمل متجدد يجمع الندم وترك المعصية والعزم على عدم العودة ورد الحقوق عند تعلقها بالناس.`],
+    [/الصبر|اصبر/,`يربي الحديث على الصبر المشروع: حبس النفس على الطاعة، وعن المعصية، وعلى أقدار الله المؤلمة، من غير ترك للأسباب المباحة التي ترفع الضرر.`],
+    [/الصدق|صادقا|صادق/,`يدل الحديث على منزلة الصدق في القول والقصد والعمل، وأن المؤمن يتحرى الحق ويتجنب الكذب وما يقرب إليه.`],
+    [/الرحم|الوالدين|والد|امك|اباك/,`يتصل الحديث بحقوق الأسرة وصلة الرحم، ويؤكد أن البر والإحسان من الدين مع حفظ الحدود الشرعية وعدم إعانة أحد على معصية.`],
+    [/الجار|جاره/,`يرشد الحديث إلى تعظيم حق الجار وكف الأذى عنه وبذل المعروف بحسب الاستطاعة، وهو من الأخلاق التي يصدق بها أثر الإيمان.`],
+    [/ضيف|الضيافة/,`يبين الحديث فضل إكرام الضيف وآداب الضيافة من غير تكلف يوقع في الحرج أو تضييع الحقوق.`],
+    [/الغيبة|يغتاب|النميمة|نميمة/,`يحذر الحديث من آفات اللسان التي تفسد القلوب والعلاقات، ويطلب حفظ عرض المسلم وعدم نقل الكلام للإفساد.`],
+    [/حسد|تحاسدوا/,`ينهى الحديث عن الحسد المذموم وتمني زوال نعمة الغير، ويربي على سلامة الصدر والدعاء بالبركة.`],
+    [/الصلاة|صلات|المسجد/,`يبين الحديث فضلًا أو أدبًا متعلقًا بالصلاة؛ والأصل أن تُقدَّم الفرائض وتحفظ شروطها وأوقاتها ثم يُزاد من النوافل بحسب الاستطاعة.`],
+    [/القران|القرآن/,`يربط الحديث المسلم بالقرآن قراءةً وعملًا وتدبرًا، فلا يكون المقصود مجرد التلاوة دون امتثال الهداية.`],
+    [/الدعاء|يدعو|دعوت/,`يبين الحديث بابًا من أبواب الدعاء والافتقار إلى الله، مع الأخذ بأسباب الإجابة والبعد عن الاعتداء في الدعاء وأكل الحرام.`],
+    [/الذكر|سبحان الله|الحمد لله|لا اله الا الله/,`يدل الحديث على فضل ذكر الله وما يورثه من حياة القلب، مع الالتزام بالألفاظ والأعداد الثابتة حين يرد فيها عدد مخصوص.`],
+    [/صدقة|الزكاة|انفق|نفقة/,`يبين الحديث فضل البذل والإحسان، مع تقديم الواجبات المالية والحقوق اللازمة ثم الصدقة من الطيب وبحسب القدرة.`],
+    [/العلم|عالم|تعلم/,`يرشد الحديث إلى فضل العلم النافع الذي يقود إلى العمل، وإلى سؤال أهل العلم فيما يشتبه بدل القول على الله بغير علم.`],
+    [/الموت|الجنازة|القبر|الميت/,`يذكّر الحديث بالآخرة وما يتصل بالموت، ليحمل ذلك على الاستعداد بالطاعة وأداء الحقوق من غير غلو أو يأس.`],
+    [/اللباس|الثوب|ثياب/,`يعرض الحديث حكمًا أو أدبًا من آداب اللباس؛ والمقصود التزام الهدي الشرعي مع النظافة والتجمل المباح وترك المنهي عنه.`],
+    [/النوم|الفراش|اضطجع/,`يتعلق الحديث بآداب النوم وما يشرع عنده، وفيه تربية على أن تكون العادات اليومية موصولة بالذكر والهدي النبوي.`],
+    [/السلام|يسلم|السلام عليكم/,`يبين الحديث أدب السلام وما يترتب عليه من نشر المودة والأمان بين المسلمين وفق الصيغ والآداب المشروعة.`],
+    [/السفر|مسافر|الطريق/,`يتناول الحديث أدبًا أو حكمًا من أحكام السفر، مع مراعاة الرخص الشرعية وحفظ الحقوق والأذكار الثابتة.`],
+    [/الحج|عرفة|المناسك/,`يتصل الحديث بمناسك الحج وفضائله؛ وتفاصيل النسك العملية تُؤخذ من الفقه المعتبر وسؤال أهل العلم، خاصة فيما يختلف باختلاف الحال.`],
+    [/جهاد|القتال|قاتل/,`يتناول الحديث بابًا من أبواب الجهاد وأحكامه، وهي مسائل تضبطها الشريعة وولاية الأمر والقدرة والمصلحة، وليست تصرفات فردية خارج الضوابط.`],
+    [/الاستغفار|اغفر لي/,`يؤكد الحديث دوام الاستغفار والافتقار إلى مغفرة الله مع التوبة الصادقة وعدم الإصرار على المعصية.`]
+  ];
+  for(const [r,x] of rules) if(r.test(t)) return x;
+  const topic=(book||'هذا الباب').replace(/^كتاب\s*/,'');
+  return `يعرض الحديث توجيهًا مرتبطًا بـ«${topic}». المعنى المبسط هنا يقتصر على الدلالة الظاهرة للنص، أما التفصيل العقدي أو الفقهي أو التربوي فيُراجع في الشرح المعتمد المذكور أعلاه.`;
+}
 async function loadRS(){ if(RS)return RS;
   try{ RS=await (await fetch('./riyad.json')).json() }catch{ RS={books:[]} }
   rsFav=(await store.get('rs-fav'))||[]; return RS }
+async function loadNawawi(){if(NAW)return NAW;try{NAW=await (await fetch('./nawawi40.json?v='+Date.now())).json()}catch{NAW={meta:{},items:[]}}return NAW}
+function getRiyadByKey(k){const [bi,n]=String(k).split(':');const b=RS?.books?.[+bi],h=b?.items?.find(x=>String(x.n)===String(n));return b&&h?{b,bi:+bi,h}:null}
+function sourceRefCard(label,url,note=''){
+  return `<div class="hadith-ref-card strong"><div class="label">مرجع الشرح المعتمد</div><a href="${url}" target="_blank" rel="noopener">${laterEsc(label)}</a>${note?`<div class="note">${laterEsc(note)}</div>`:''}</div>`
+}
+function openHadithDetail(kind,data){
+  const shell=document.getElementById('hadith-detail'),host=document.getElementById('hadith-detail-content'),kick=document.getElementById('hadith-detail-kicker');
+  if(!shell||!host)return;
+  if(kind==='riyad'){
+    const {b,h}=data,p=riyadParts(h.t),meaning=riyadExplain(p.body,b.name);
+    kick.textContent=`رياض الصالحين · ${AR(h.n)}`;
+    host.innerHTML=`<div class="hadith-reader-hero"><div class="eyebrow">${laterEsc(b.name)} · الحديث ${AR(h.n)}</div><h2 id="hadith-detail-title">رياض الصالحين</h2><div class="hadith-matn">${laterEsc(p.body)}</div></div>${sourceRefCard('شرح رياض الصالحين — الشيخ محمد بن صالح العثيمين رحمه الله',RIYAD_SHARH_URL,'مؤسسة الشيخ محمد بن صالح العثيمين الخيرية — ٦ مجلدات.')}<div class="hadith-sharh"><div class="head"><b>الشرح المبسط</b><span class="badge">للفهم الأولي</span></div><p>${laterEsc(meaning)}</p><div class="disclaimer">صياغة تعليمية مختصرة في رفيق، وليست نقلًا حرفيًا من الشيخ. المرجع السابق هو المعتمد للتوسع والتحرير.</div></div>${p.refs.length?`<div class="hadith-takhrij"><h3>التخريج والإحالات الواردة في نص رياض الصالحين</h3>${p.refs.map(x=>`<div class="refline">${laterEsc(x)}</div>`).join('')}</div>`:''}<div class="hadith-ref-card"><div class="label">مصدر نص الحديث</div><a href="https://sunnah.com/riyadussalihin:${h.n}" target="_blank" rel="noopener">رياض الصالحين — الحديث ${AR(h.n)}</a><div class="note">${laterEsc(b.name)}. أزلنا الأقواس المزدوجة من العرض، ونقلنا التخريج إلى بطاقة مستقلة بدل ظهوره داخل المتن؛ لم نغيّر معنى الحديث.</div></div>`;
+  }else{
+    const h=data,meta=NAW.meta||{};
+    kick.textContent=`الأربعون النووية · ${AR(h.n)}`;
+    host.innerHTML=`<div class="hadith-reader-hero"><div class="eyebrow">الحديث ${AR(h.n)} من ٤٢</div><h2 id="hadith-detail-title">${laterEsc(h.title)}</h2><div class="hadith-matn">${laterEsc(h.text)}</div></div><div class="hadith-ref-card"><div class="label">مصدر الحديث والتخريج</div><a href="${h.textUrl}" target="_blank" rel="noopener">الأربعون النووية — الحديث ${AR(h.n)}</a><div class="note">${laterEsc(h.takhrij||'راجع رابط الحديث للتخريج.')}</div></div>${sourceRefCard(meta.commentaryBook||'شرح الأربعين النووية — الشيخ محمد بن صالح العثيمين رحمه الله',h.commentaryUrl||NAWAWI_SHARH_URL,'المصدر الرسمي: مؤسسة الشيخ محمد بن صالح العثيمين الخيرية.')}<div class="hadith-sharh"><div class="head"><b>الشرح المبسط</b><span class="badge">على ضوء المرجع</span></div><p>${laterEsc(h.explanation)}</p><div class="disclaimer">${laterEsc(meta.commentaryNote||'الشرح مختصر وليس نقلًا حرفيًا؛ راجع المرجع المعتمد للتفصيل.')}</div></div>`;
+  }
+  shell.classList.remove('hide');shell.scrollTop=0;
+}
+function closeHadithDetail(){document.getElementById('hadith-detail')?.classList.add('hide')}
+document.getElementById('hadith-detail-back').onclick=closeHadithDetail;
+
 async function renderSunnah(){
   await loadRS();
-  const raw=(document.getElementById('rs-search').value||'').trim(), q=searchNorm(raw), cnt=document.getElementById('rs-result-count');
-  const seed=Math.floor(Date.now()/86400000), all=RS.books.length?RS.books[seed%RS.books.length]:null;
-  if(all){ const h=all.items[seed%all.items.length]; document.getElementById('hadith-day').innerHTML=`<div class="lbl">حديث اليوم</div><div class="t">${h.t}</div><div class="r">المصدر: رياض الصالحين — ${all.name} — الحديث ${AR(h.n)} (والتخريج مذكور داخل النص)</div>` }
-
+  const raw=(document.getElementById('rs-search').value||'').trim(),q=searchNorm(raw),cnt=document.getElementById('rs-result-count');
+  const seed=Math.floor(Date.now()/86400000),biDay=RS.books.length?seed%RS.books.length:-1,all=biDay>=0?RS.books[biDay]:null;
+  if(all){const h=all.items[seed%all.items.length],p=riyadParts(h.t),k=biDay+':'+h.n;document.getElementById('hadith-day').dataset.dayHadith=k;document.getElementById('hadith-day').innerHTML=`<div class="lbl">حديث اليوم · اضغط للشرح</div><div class="t">${laterEsc(p.body)}</div><div class="learn-source">رياض الصالحين — ${laterEsc(all.name)} — الحديث ${AR(h.n)}</div>`}
   if(q){
-    document.getElementById('rs-books').innerHTML='';
-    const hits=[]; RS.books.forEach((b,bi)=>b.items.forEach(h=>{if(searchNorm(b.name+' '+h.t+' '+h.n).includes(q))hits.push([b,bi,h])}));
-    cnt.textContent=hits.length?`${AR(hits.length)} نتيجة${hits.length>120?' · نعرض أول '+AR(120):''}`:'لا توجد نتائج';
-    document.getElementById('rs-list').innerHTML=hits.length?hits.slice(0,120).map(([b,bi,h])=>{const k=bi+':'+h.n,f=rsFav.includes(k);return `<div class="hd-item"><div class="num">${b.name} — رياض الصالحين ${AR(h.n)}</div><div class="tx">${h.t}</div><div class="learn-source">المصدر: رياض الصالحين — ${b.name} — الحديث ${AR(h.n)}؛ التخريج داخل النص.</div><div class="acts">${laterRegister(`hadith:${k}`,{kind:'حديث',title:b.name,text:h.t,source:`رياض الصالحين — الحديث ${h.n}`,tab:'sunnah'})}<button data-f="${k}" class="${f?'on':''}">${f?'★ محفوظ':'☆ حفظ'}</button><button data-c="${k}">نسخ</button></div></div>`}).join(''):'<div class="nafs-empty">لا توجد أحاديث مطابقة. جرّب كلمة أخرى أو جزءًا أقصر من العبارة.</div>';
-    return;
+    document.getElementById('rs-books').innerHTML='';const hits=[];RS.books.forEach((b,bi)=>b.items.forEach(h=>{if(searchNorm(b.name+' '+h.t+' '+h.n).includes(q))hits.push([b,bi,h])}));cnt.textContent=hits.length?`${AR(hits.length)} نتيجة${hits.length>120?' · نعرض أول '+AR(120):''}`:'لا توجد نتائج';
+    document.getElementById('rs-list').innerHTML=hits.length?hits.slice(0,120).map(([b,bi,h])=>{const k=bi+':'+h.n,f=rsFav.includes(k),p=riyadParts(h.t);return `<div class="hd-item" data-hadith="${k}"><div class="num">${laterEsc(b.name)} — رياض الصالحين ${AR(h.n)}</div><div class="tx">${laterEsc(p.body)}</div><div class="learn-source">المصدر: رياض الصالحين — ${laterEsc(b.name)} — الحديث ${AR(h.n)}</div><div class="acts">${laterRegister(`hadith:${k}`,{kind:'حديث',title:b.name,text:p.body,source:`رياض الصالحين — الحديث ${h.n}`,tab:'sunnah'})}<button data-f="${k}" class="${f?'on':''}">${f?'★ محفوظ':'☆ حفظ'}</button><button data-c="${k}">نسخ</button></div></div>`}).join(''):'<div class="nafs-empty">لا توجد أحاديث مطابقة. جرّب كلمة أخرى أو جزءًا أقصر من العبارة.</div>';return;
   }
   if(rsBook<0){
-    document.getElementById('rs-list').innerHTML='';
-    const total=RS.books.reduce((n,b)=>n+b.items.length,0); cnt.textContent=`${AR(RS.books.length)} كتابًا · ${AR(total)} حديثًا`;
-    document.getElementById('rs-books').innerHTML=`<div class="hd-card"><div class="lbl">فهرس رياض الصالحين</div><div class="t" style="font-size:17px">٢٠ كتابًا بالترتيب الأصلي</div><div class="r">الأبواب التفصيلية داخل الكتب غير ممثلة في ملف البيانات الحالي. نص الأحاديث معروض كما ورد في المصدر الرقمي، ولم نضف تشكيلًا آليًا حفاظًا على سلامة النص.</div></div><div class="bk-wrap">`+RS.books.map((b,i)=>`<div class="bk-row" data-b="${i}"><div><div class="bk-name">${b.name}</div><div class="bk-n">${AR(b.items.length)} حديثًا</div></div><span class="bk-n">﴾</span></div>`).join('')+'</div>';
-  } else {
-    const b=RS.books[rsBook]; cnt.textContent=`${AR(b.items.length)} حديثًا في ${b.name}`;
-    document.getElementById('rs-books').innerHTML=`<button class="back" id="rs-back">كل الكتب</button><div class="hd-card"><div class="lbl">الكتاب ${AR(rsBook+1)} من ٢٠</div><div class="t">${b.name}</div><div class="r">${AR(b.items.length)} حديثًا · الترتيب مطابق لفهرس رياض الصالحين</div></div>`;
-    document.getElementById('rs-list').innerHTML=b.items.map(h=>{ const k=rsBook+':'+h.n,f=rsFav.includes(k); return `<div class="hd-item"><div class="num">رياض الصالحين ${AR(h.n)}</div><div class="tx">${h.t}</div><div class="learn-source">المصدر: رياض الصالحين — ${b.name} — الحديث ${AR(h.n)}؛ التخريج داخل النص.</div><div class="acts">${laterRegister(`hadith:${k}`,{kind:'حديث',title:b.name,text:h.t,source:`رياض الصالحين — الحديث ${h.n}`,tab:'sunnah'})}<button data-f="${k}" class="${f?'on':''}">${f?'★ محفوظ':'☆ حفظ'}</button><button data-c="${k}">نسخ</button></div></div>`}).join('');
+    document.getElementById('rs-list').innerHTML='';const total=RS.books.reduce((n,b)=>n+b.items.length,0);cnt.textContent=`${AR(RS.books.length)} كتابًا · ${AR(total)} حديثًا`;
+    document.getElementById('rs-books').innerHTML=`<div class="hd-card"><div class="lbl">فهرس رياض الصالحين</div><div class="t" style="font-size:17px">٢٠ كتابًا بالترتيب الأصلي</div><div class="r">اضغط على أي حديث لفتح صفحة قراءة فيها متن نظيف، شرح مبسط، ومرجع الشرح المعتمد.</div></div><div class="bk-wrap">`+RS.books.map((b,i)=>`<div class="bk-row" data-b="${i}"><div><div class="bk-name">${laterEsc(b.name)}</div><div class="bk-n">${AR(b.items.length)} حديثًا</div></div><span class="bk-n">﴾</span></div>`).join('')+'</div>';
+  }else{
+    const b=RS.books[rsBook];cnt.textContent=`${AR(b.items.length)} حديثًا في ${b.name}`;document.getElementById('rs-books').innerHTML=`<button class="back" id="rs-back">كل الكتب</button><div class="hd-card"><div class="lbl">الكتاب ${AR(rsBook+1)} من ٢٠</div><div class="t">${laterEsc(b.name)}</div><div class="r">${AR(b.items.length)} حديثًا · اضغط على الحديث لقراءة الشرح والمراجع.</div></div>`;
+    document.getElementById('rs-list').innerHTML=b.items.map(h=>{const k=rsBook+':'+h.n,f=rsFav.includes(k),p=riyadParts(h.t);return `<div class="hd-item" data-hadith="${k}"><div class="num">رياض الصالحين ${AR(h.n)}</div><div class="tx">${laterEsc(p.body)}</div><div class="learn-source">المصدر: رياض الصالحين — ${laterEsc(b.name)} — الحديث ${AR(h.n)}</div><div class="acts">${laterRegister(`hadith:${k}`,{kind:'حديث',title:b.name,text:p.body,source:`رياض الصالحين — الحديث ${h.n}`,tab:'sunnah'})}<button data-f="${k}" class="${f?'on':''}">${f?'★ محفوظ':'☆ حفظ'}</button><button data-c="${k}">نسخ</button></div></div>`}).join('');
   }
 }
 document.getElementById('rs-search').oninput=renderSunnah;
-document.getElementById('rs-books').onclick=e=>{
-  if(e.target.closest('#rs-back')){ rsBook=-1; renderSunnah(); return }
-  const r=e.target.closest('.bk-row'); if(r){ rsBook=+r.dataset.b; renderSunnah() } };
+document.getElementById('hadith-day').onclick=e=>{if(e.target.closest('a,button'))return;const x=getRiyadByKey(e.currentTarget.dataset.dayHadith);if(x)openHadithDetail('riyad',x)};
+document.getElementById('rs-books').onclick=e=>{if(e.target.closest('#rs-back')){rsBook=-1;renderSunnah();return}const r=e.target.closest('.bk-row');if(r){rsBook=+r.dataset.b;renderSunnah()}};
 document.getElementById('rs-list').onclick=async e=>{
-  const f=e.target.closest('button[data-f]');
-  if(f){ const k=f.dataset.f, i=rsFav.indexOf(k);
-    if(i<0)rsFav.push(k); else rsFav.splice(i,1);
-    await store.set('rs-fav',rsFav); renderSunnah(); return }
-  const c=e.target.closest('button[data-c]');
-  if(c){ const [bi,n]=c.dataset.c.split(':');
-    const h=RS.books[+bi].items.find(x=>x.n==n);
-    try{ navigator.clipboard?.writeText(h.t) }catch{}
-    toast('نُسخ الحديث') } };
+  const f=e.target.closest('button[data-f]');if(f){const k=f.dataset.f,i=rsFav.indexOf(k);if(i<0)rsFav.push(k);else rsFav.splice(i,1);await store.set('rs-fav',rsFav);renderSunnah();return}
+  const c=e.target.closest('button[data-c]');if(c){const x=getRiyadByKey(c.dataset.c);if(x){try{navigator.clipboard?.writeText(cleanRiyadText(x.h.t))}catch{}toast('نُسخ الحديث')}return}
+  if(e.target.closest('button,a'))return;const row=e.target.closest('[data-hadith]');if(row){const x=getRiyadByKey(row.dataset.hadith);if(x)openHadithDetail('riyad',x)}
+};
 
+async function renderNawawi(){
+  await loadNawawi();const host=document.getElementById('learn-nawawi'),q=searchNorm(nawawiQuery),items=(NAW.items||[]).filter(h=>!q||searchNorm(h.title+' '+h.text+' '+h.n).includes(q)),m=NAW.meta||{};
+  host.innerHTML=`<div class="nw-intro"><b>الأربعون النووية</b><p>٤٢ حديثًا جمعها الإمام النووي. اضغط على أي حديث لعرض المتن والشرح المبسط. <strong>مرجع الشرح:</strong> شرح الأربعين النووية للشيخ محمد بن صالح العثيمين رحمه الله، مع رابط المصدر الرسمي داخل كل حديث.</p></div><input id="nw-search" class="q-search" type="search" value="${laterEsc(nawawiQuery)}" placeholder="ابحث في الأربعين النووية…"><div class="search-count">${AR(items.length)} من ${AR((NAW.items||[]).length)} حديثًا</div><div class="nw-grid">${items.map(h=>{const ex=h.text.length>165?h.text.slice(0,165)+'…':h.text;return `<div class="nw-card" data-nawawi="${h.n}">${laterRegister(`nawawi:${h.n}`,{kind:'حديث',title:h.title,text:h.text,source:'الأربعون النووية — الحديث '+h.n,tab:'sunnah'})}<div class="top"><span class="num">${AR(h.n)}</span><div><div class="title">${laterEsc(h.title)}</div><div class="excerpt">${laterEsc(ex)}</div><div class="openhint">اضغط لقراءة الشرح والمصدر ←</div></div></div></div>`}).join('')}</div><div class="learn-disclaimer">${laterEsc(m.commentaryNote||'')}</div>`;
+  host.querySelector('#nw-search').oninput=e=>{nawawiQuery=e.target.value;renderNawawi()};
+  host.querySelector('.nw-grid').onclick=e=>{if(e.target.closest('button,a'))return;const c=e.target.closest('[data-nawawi]');if(!c)return;const h=NAW.items.find(x=>String(x.n)===c.dataset.nawawi);if(h)openHadithDetail('nawawi',h)};
+}
 
-/* ================= العلم: رياض الصالحين + الأساسيات + الفقه ================= */
+/* ================= العلم: رياض الصالحين + الأربعون النووية + الأساسيات + الفقه ================= */
 let LEARN=null, learnMode='riyad', learnQuery='', learnGroup='all';
 async function loadLearn(){if(LEARN)return LEARN;try{LEARN=await (await fetch('./knowledge.json?v='+Date.now())).json()}catch{LEARN={meta:{},essentials:[],fiqh:[]}}return LEARN}
 function learnSources(item,fiqh=false){
-  const ss=item.sources||[]; let out=ss.map(s=>`<div class="learn-source">المصدر: ${s.url?`<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`:s.label}</div>`).join('');
-  if(fiqh){out+=(item.refs||[]).map(x=>`<div class="learn-source">المصدر: ${x}</div>`).join('');out+=`<div class="learn-source"><a href="${LEARN.meta.fiqhUrl}" target="_blank" rel="noopener">فتح مرجع «الفقه الميسر في ضوء الكتاب والسنة»</a></div>`}
-  return out;
+  const ss=item.sources||[];let out=ss.map(s=>`<div class="learn-source">المصدر: ${s.url?`<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`:s.label}</div>`).join('');
+  if(fiqh){out+=(item.refs||[]).map(x=>`<div class="learn-source">المصدر: ${x}</div>`).join('');out+=`<div class="learn-source"><a href="${LEARN.meta.fiqhUrl}" target="_blank" rel="noopener">فتح مرجع «الفقه الميسر في ضوء الكتاب والسنة»</a></div>`}return out;
 }
 function learnCards(items,fiqh=false){return items.map((x,i)=>{const src=(x.sources||[])[0]?.label||(fiqh?LEARN.meta.fiqhBook:'');const plus=laterRegister(`learn:${fiqh?'fiqh':'ess'}:${x.id}`,{kind:fiqh?'فقه':'أساسيات',title:x.title,text:x.lead,source:src,tab:'sunnah'});return `<details class="learn-card"><summary><span class="ln">${AR(i+1)}</span><span class="lt">${x.title}</span>${plus}</summary><div class="learn-body"><p class="learn-lead">${x.lead}</p>${x.bullets?.length?`<ul>${x.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>`:''}${learnSources(x,fiqh)}</div></details>`}).join('')}
 function learnFilters(items){const groups=['all',...new Set(items.map(x=>x.group).filter(Boolean))];return `<div class="learn-tools"><input id="learn-search" class="q-search" type="search" value="${laterEsc(learnQuery)}" placeholder="ابحث داخل هذا القسم…"><div class="learn-groups">${groups.map(x=>`<button data-lg="${laterEsc(x)}" class="${learnGroup===x?'on':''}">${x==='all'?'كل الأبواب':x}</button>`).join('')}</div></div>`}
 function filteredLearn(items){const q=searchNorm(learnQuery);return items.filter(x=>(learnGroup==='all'||x.group===learnGroup)&&(!q||searchNorm(deepSearchText(x)).includes(q)))}
 async function renderKnowledge(){
-  await loadLearn();
-  document.querySelectorAll('#learn-seg button').forEach(b=>b.setAttribute('aria-current',b.dataset.learn===learnMode));
-  ['riyad','essentials','fiqh'].forEach(x=>document.getElementById('learn-'+x)?.classList.toggle('hide',x!==learnMode));
-  if(learnMode==='riyad'){renderSunnah();return}
-  const items=learnMode==='essentials'?LEARN.essentials:LEARN.fiqh, fiqh=learnMode==='fiqh', F=filteredLearn(items);
-  const intro=fiqh?`<b>الفقه الميسر</b><br>${LEARN.meta.fiqhBook}<br>نعرض ملخصات عملية، وتحت كل بطاقة مرجعها.`:`<b>ما لا يسع المسلم جهله</b><br>${LEARN.meta.essentialsBook}<br><a href="${LEARN.meta.essentialsUrl}" target="_blank" rel="noopener">فتح المرجع العام ↗</a><br>${LEARN.meta.essentialsNote||''}`;
-  const host=document.getElementById('learn-'+learnMode);host.innerHTML=`<div class="learn-intro">${intro}</div>${learnFilters(items)}<div class="search-count">${AR(F.length)} من ${AR(items.length)} بابًا</div>${learnCards(F,fiqh)}<div class="learn-disclaimer">${LEARN.meta.note}</div>`;
-  host.querySelector('#learn-search').oninput=e=>{learnQuery=e.target.value;renderKnowledge()};
-  host.querySelector('.learn-groups').onclick=e=>{const b=e.target.closest('button[data-lg]');if(!b)return;learnGroup=b.dataset.lg;renderKnowledge()};
+  await loadLearn();document.querySelectorAll('#learn-seg button').forEach(b=>b.setAttribute('aria-current',b.dataset.learn===learnMode));['riyad','nawawi','essentials','fiqh'].forEach(x=>document.getElementById('learn-'+x)?.classList.toggle('hide',x!==learnMode));
+  if(learnMode==='riyad'){renderSunnah();return}if(learnMode==='nawawi'){renderNawawi();return}
+  const items=learnMode==='essentials'?LEARN.essentials:LEARN.fiqh,fiqh=learnMode==='fiqh',F=filteredLearn(items);const intro=fiqh?`<b>الفقه الميسر</b><br>${LEARN.meta.fiqhBook}<br>نعرض ملخصات عملية، وتحت كل بطاقة مرجعها.`:`<b>ما لا يسع المسلم جهله</b><br>${LEARN.meta.essentialsBook}<br><a href="${LEARN.meta.essentialsUrl}" target="_blank" rel="noopener">فتح المرجع العام ↗</a><br>${LEARN.meta.essentialsNote||''}`;const host=document.getElementById('learn-'+learnMode);host.innerHTML=`<div class="learn-intro">${intro}</div>${learnFilters(items)}<div class="search-count">${AR(F.length)} من ${AR(items.length)} بابًا</div>${learnCards(F,fiqh)}<div class="learn-disclaimer">${LEARN.meta.note}</div>`;host.querySelector('#learn-search').oninput=e=>{learnQuery=e.target.value;renderKnowledge()};host.querySelector('.learn-groups').onclick=e=>{const b=e.target.closest('button[data-lg]');if(!b)return;learnGroup=b.dataset.lg;renderKnowledge()};
 }
-document.getElementById('learn-seg').onclick=e=>{const b=e.target.closest('button[data-learn]');if(!b)return;learnMode=b.dataset.learn;learnQuery='';learnGroup='all';renderKnowledge();scrollTo({top:0,behavior:'smooth'})};
+document.getElementById('learn-seg').onclick=e=>{const b=e.target.closest('button[data-learn]');if(!b)return;closeHadithDetail();learnMode=b.dataset.learn;learnQuery='';learnGroup='all';nawawiQuery='';renderKnowledge();scrollTo({top:0,behavior:'smooth'})};
 
 /* ================= القلب (مدمج) ================= */
 let HD=null, hKind='problems', hCur=null, hTrack={}, hJournal={}, hProg={}, hQuery='', hPaths=[], hPathCur=null, nafsCur=null;

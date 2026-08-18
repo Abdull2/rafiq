@@ -15,3 +15,4 @@ LATEST v24 UX NOTE: “مساري” must have direct visible + أضف لمسا�
 
 V24 R3 CONTINUITY NOTE:
 Before editing, read AI_HANDOFF.md section 15. Preserve the saved-state UX: generic ＋ must visibly become ✓ immediately and survive re-render. Preserve Irtaqi v3's Sharia-priority plan: obligations/rights/necessary knowledge first, then Quran/dhikr, then nawafil only after a reasonable foundation. Sources belong under post-assessment principles/tasks, not between quiz questions. Any new release/change must update AI_HANDOFF.md + AI_HANDOFF.json + PROMPT_FOR_NEXT_AI.txt + RELEASE-NOTES-v24.txt + QA-REPORT-v24.txt.
+CURRENT STATE: v24 R4 adds Nawawi 40 and a sourced hadith reader; read AI_HANDOFF.md section 16 before editing Riyad/Nawawi or commentary behavior. Never present paraphrased explanation as a verbatim shaykh quote.
