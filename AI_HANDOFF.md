@@ -313,3 +313,45 @@ Implemented:
 - Added `DATA_ARCHITECTURE.md`: current product has no cloud backend/database. Most app data is per-device local storage; the existing PWABuilder Android package points to `https://abdull2.github.io/rafiq/`. No cloud analytics or sync was introduced in R5.
 
 Future AI rule: distinguish **product analytics** from **cloud user database/sync**. Do not introduce Firebase/Supabase/custom backend until the owner explicitly chooses the privacy/data model.
+
+## 16) v24 R6 — companion supplications + Asma card layout repair
+
+Owner requested a sourced **أدعية الصحابة** section and reported that the Names of Allah cards had become visually overlapped/broken on narrow widths.
+
+Implemented:
+- Added a new `أدعية الصحابة` category directly after Qur'anic supplications in `app/adiya.json`. It currently contains 5 carefully scoped items:
+  1. Abu Bakr al-Siddiq — the supplication taught to him by the Prophet ﷺ in prayer; Sahih al-Bukhari 834.
+  2. Ali ibn Abi Talib — `اللهم اهدني وسددني`; Sahih Muslim 2725.
+  3. Mu'adh ibn Jabal — `اللهم أعني على ذكرك وشكرك وحسن عبادتك`; Abu Dawud 1522 / al-Nasa'i 1303; strong chain per Ibn Hajar.
+  4. Aisha — `اللهم إنك عفو تحب العفو فاعف عني`; al-Tirmidhi 3513, hasan sahih.
+  5. Abu al-Darda — `اللهم إني أسألك إيمانا دائما...`; athar graded sahih al-isnad in Ibn Abi Shaybah.
+- Important attribution rule: the UI distinguishes **a companion's own supplication** from **a supplication the Prophet ﷺ taught to a specific companion**. Do not flatten these into one attribution.
+- Each item has a visible source and direct Dorar verification link. `app/sources.html` documents the category and its references.
+- The du'a renderer now supports `who`, `sUrl`, and a category `intro`; source text is clickable when a verification URL exists.
+- Repaired Names of Allah list cards for narrow side-panel/mobile widths: card content now uses a two-column CSS grid, reserves dedicated space for the saved-later button, moves Qur'an-count metadata to its own wrapped chip, replaces the ambiguous single arrow with `فتح التفاصيل ←`, and keeps the source in a separate compact block below the card.
+- Added short source labels in `asma.json` for list-card display while keeping full source titles in detailed/source views.
+- Added defensive wrapping/min-width rules in Asma detail sections to reduce overflow and overlap.
+- Public version remains `v24` / manifest `24.0.0`.
+
+Continuation rules:
+1. Do not add companion du'a merely because it is popular; verify the exact attribution and grading.
+2. If the Prophet ﷺ taught a du'a to a companion, label it that way instead of claiming the companion authored it.
+3. Preserve the Asma card's reserved bookmark space and responsive grid; regression-test at narrow widths before changing the card again.
+
+## 17) v24 R7 — move Qur'an daily wird into the Mushaf tab
+
+Owner flagged that `ورد القرآن` was incorrectly living inside the `الذكر / السبحة` area after the product information architecture evolved. The daily Qur'an pages tracker is now owned by the **المصحف** tab.
+
+Implemented:
+- Removed the entire `ورد القرآن` card from `v-tasbih`.
+- Added the same daily pages tracker inside `v-quran`, directly below the Qur'an resume hero and before the verse-of-the-day/search content.
+- Preserved the existing local data model (`data.pages`) and khatma-based organizational goal; this is a UI/navigation move only, not a data migration.
+- `switchTab('quran')` now calls both `openQuran()` and `renderQuran()`; `switchTab('tasbih')` now renders only the tasbih.
+- Moved the `السبحة الكاملة` link into the actual tasbih section header, where it semantically belongs.
+- Public version remains **v24 / manifest `24.0.0`**.
+
+Information-architecture rule going forward:
+- `الذكر` owns adhkar, dua, tasbih, and Names of Allah.
+- `المصحف` owns Qur'an reading, Qur'an search, resume reading, and the daily Qur'an wird/progress tracker.
+- Home may show a shortcut/status for the Qur'an wird, but opening it should route to `المصحف`, not `الذكر`.
+

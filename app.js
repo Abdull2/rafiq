@@ -716,9 +716,11 @@ async function renderDua(){
   else if(q) DUA.cats.forEach(c=>c.items.forEach((x,i)=>items.push([c,x,i])));
   else { const c=DUA.cats.find(x=>x.id===duaCat)||DUA.cats[0]; c.items.forEach((x,i)=>items.push([c,x,i])) }
   if(q) items=items.filter(([c,x])=>searchNorm(c.name+' '+x.t+' '+x.s+' '+(x.note||'')).includes(q));
-  const scope=duaCat==='_fav'?'في المحفوظة':q?'في جميع الأدعية':`في ${(DUA.cats.find(x=>x.id===duaCat)||{}).name||'القسم'}`;
+  const selectedCat=DUA.cats.find(x=>x.id===duaCat);
+  const scope=duaCat==='_fav'?'في المحفوظة':q?'في جميع الأدعية':`في ${selectedCat?.name||'القسم'}`;
   cnt.textContent=`${AR(items.length)} نتيجة ${scope}`;
-  host.innerHTML=items.length?items.map(([c,x,i])=>{ const k=c.id+':'+i,fav=duaFav.includes(k); const ns=x.note?`<div class="learn-source">مصدر الملاحظة: ${x.noteUrl?`<a href="${x.noteUrl}" target="_blank" rel="noopener">${x.noteSource||x.s}</a>`:(x.noteSource||x.s)}</div>`:''; const plus=laterRegister(`dua:${k}`,{kind:'دعاء',title:c.name,text:x.t,source:x.s,tab:'dua'});return `<div class="dua-card">${q?`<div class="search-source">${c.name}</div>`:''}<div class="t">${x.t}</div><div class="s">المصدر: ${x.s}</div>${x.note?`<div class="nt">${x.note}</div>${ns}`:''}<div class="acts">${plus}<button data-fav="${k}" class="${fav?'on':''}">${fav?'★ محفوظ':'☆ حفظ'}</button><button data-copy="${k}">نسخ</button></div></div>`}).join(''):'<div class="nafs-empty">لا توجد أدعية مطابقة لبحثك.</div>';
+  const catIntro=(!q&&selectedCat?.intro)?`<div class="dua-cat-note">${selectedCat.intro}</div>`:'';
+  host.innerHTML=catIntro+(items.length?items.map(([c,x,i])=>{ const k=c.id+':'+i,fav=duaFav.includes(k); const ns=x.note?`<div class="learn-source">مصدر البيان: ${x.noteUrl?`<a href="${x.noteUrl}" target="_blank" rel="noopener">${x.noteSource||x.s}</a>`:(x.noteSource||x.s)}</div>`:''; const mainSrc=x.sUrl?`<a href="${x.sUrl}" target="_blank" rel="noopener">${x.s}</a>`:x.s; const plus=laterRegister(`dua:${k}`,{kind:'دعاء',title:c.name,text:x.t,source:x.s,tab:'dua'});return `<div class="dua-card">${q?`<div class="search-source">${c.name}</div>`:''}${x.who?`<div class="dua-who">${x.who}</div>`:''}<div class="t">${x.t}</div><div class="s">المصدر: ${mainSrc}</div>${x.note?`<div class="nt">${x.note}</div>${ns}`:''}<div class="acts">${plus}<button data-fav="${k}" class="${fav?'on':''}">${fav?'★ محفوظ':'☆ حفظ'}</button><button data-copy="${k}">نسخ</button></div></div>`}).join(''):'<div class="nafs-empty">لا توجد أدعية مطابقة لبحثك.</div>');
 
   host.onclick=async e=>{
     const f=e.target.closest('button[data-fav]'); if(f){ const k=f.dataset.fav,j=duaFav.indexOf(k); if(j<0)duaFav.push(k); else duaFav.splice(j,1); await store.set('dua-fav',duaFav); renderDua(); return }
@@ -1300,7 +1302,7 @@ function hAsmaList(){
   const host=document.getElementById('asma-list'); if(!host||!ASMA)return;
   const q=asmaNorm(asmaQuery), F=(ASMA.names||[]).filter(x=>!q||asmaNorm(x.name+' '+x.meaning+' '+x.impact).includes(q));
   document.getElementById('asma-result-count').textContent=`${AR(F.length)} من ${AR((ASMA.names||[]).length)} اسمًا`;
-  host.innerHTML=F.length?F.map(it=>{const src=(it.sources||[]).map(code=>ASMA.sources[code]).filter(Boolean)[0];return `<div class="asma-card">${laterRegister(`asma:${it.n}`,{kind:'اسم من أسماء الله الحسنى',title:it.name,text:it.meaning,source:src?.title||'',tab:'asma'})}<button data-asmoid="${it.n}"><span class="asma-num">${AR(it.n)}</span><span class="asma-name">${it.name}</span><span class="asma-qc">القرآن: ${it.quranCount}</span><span class="x">←</span></button>${src?`<div class="learn-source">المصدر: <a href="${src.url}" target="_blank" rel="noopener">${src.title}</a></div>`:''}</div>`}).join(''):'<div class="nafs-empty">لا توجد أسماء مطابقة لبحثك.</div>';
+  host.innerHTML=F.length?F.map(it=>{const src=(it.sources||[]).map(code=>ASMA.sources[code]).filter(Boolean)[0];return `<div class="asma-card">${laterRegister(`asma:${it.n}`,{kind:'اسم من أسماء الله الحسنى',title:it.name,text:it.meaning,source:src?.title||'',tab:'asma'})}<button data-asmoid="${it.n}" aria-label="فتح تفاصيل اسم ${it.name}"><span class="asma-num">${AR(it.n)}</span><span class="asma-name">${it.name}</span><span class="asma-qc">وروده في مرجع القرآن: ${it.quranCount}</span><span class="x">فتح التفاصيل ←</span></button>${src?`<div class="learn-source asma-list-source">المرجع: <a href="${src.url}" target="_blank" rel="noopener">${src.short||src.title}</a></div>`:''}</div>`}).join(''):'<div class="nafs-empty">لا توجد أسماء مطابقة لبحثك.</div>';
 }
 function cleanDorarHtml(html){
   const d=document.createElement('div'); d.innerHTML=html||'';
@@ -1597,8 +1599,8 @@ function switchTab(t){
   document.querySelectorAll('#zseg button').forEach(b=>b.setAttribute('aria-current',b.dataset.z===t));
   document.getElementById('page-title').textContent=TITLES[t]||'';
   if(t==='history') renderHistory();
-  if(t==='quran') openQuran();
-  if(t==='tasbih'){ renderTasbih(); renderQuran() }
+  if(t==='quran'){ openQuran(); renderQuran() }
+  if(t==='tasbih') renderTasbih();
   if(t==='asma') hAsma();
   if(t==='azkar') renderAzkar();
   if(t==='dua') renderDua();

@@ -67,3 +67,20 @@ v24 R5 — clarity/data architecture checks
 - [PASS] History has plain weekly summary + recorded-gap UI; old tracker/28-day detail remains available.
 - [PASS] History wording says analysis is based on what was recorded in Rafiq, not a judgement of faith.
 - [PASS] DATA_ARCHITECTURE.md documents no current cloud backend/database and no analytics addition.
+
+R6 checks:
+- PASS: app/adiya.json parses; new `sahaba` category contains 5 items, each with visible source text and verification URL.
+- PASS: attribution metadata (`who` + explanatory note) distinguishes Prophetic teaching from companion-authored supplication.
+- PASS: app/asma.json parses and includes short list labels for sources.
+- PASS: Asma card CSS reserves bookmark space and uses responsive grid rather than the former crowded flex row.
+- PASS: app/app.js passes `node --check`.
+- PASS: manifest remains 24.0.0.
+- PASS: sources.html documents companion-dua provenance.
+
+R7 checks
+- Confirmed q-pages/q-plus/q-minus/q-bar/q-status IDs exist exactly once after moving the card.
+- Confirmed ورد القرآن no longer appears inside v-tasbih.
+- Confirmed ورد القرآن appears inside v-quran.
+- Confirmed switchTab(quran) renders the tracker and switchTab(tasbih) does not.
+- Manifest remains 24.0.0.
+

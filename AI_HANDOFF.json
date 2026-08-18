@@ -1,5 +1,5 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-R5-2026-08-19",
+  "state_id": "RAFIQ-HANDOFF-v24-R7-2026-08-19",
   "project": "رفيق يومك",
   "version": "v24",
   "platform": "Chrome MV3 side-panel extension",
@@ -36,7 +36,8 @@
     "ishkaliat_playlist": "https://www.youtube.com/playlist?list=PLnpYU8_AiEPeOynF9Q35m_3QgRq-yFtaC",
     "riyad_commentary_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/76e12fcc-d35a-417d-a68b-954c0bf06bc6",
     "nawawi40_commentary_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/7c9cb3e2-3b02-4ad9-97dc-5db895d9a98c",
-    "nawawi40_text": "https://sunnah.com/nawawi40"
+    "nawawi40_text": "https://sunnah.com/nawawi40",
+    "sahaba_dua_verification": "Dorar individual hadith/athar links stored per item in app/adiya.json"
   },
   "roadmap": [
     "source integrity and regression testing",
@@ -78,7 +79,15 @@
     "R5: Ishkaliat tab is always discoverable; disabled state uses explicit user opt-in instead of hiding the tab",
     "R5: Bank of Deeds shows evidence phrase directly tied to each action before the source link; Khabia uses hidden-charity hadith",
     "R5: History opens with plain-language weekly activity and lowest-recorded areas, with detailed legacy stats collapsed below",
-    "R5: DATA_ARCHITECTURE.md documents no current cloud backend/database and the existing PWABuilder TWA URL; no backend/analytics added"
+    "R5: DATA_ARCHITECTURE.md documents no current cloud backend/database and the existing PWABuilder TWA URL; no backend/analytics added",
+    "R6: added sourced أدعية الصحابة category with 5 verified items and explicit distinction between a companion-authored supplication and a Prophetic supplication taught to a companion",
+    "R6: du'a cards support who + clickable source URL + category intro",
+    "R6: Names of Allah list cards rebuilt as a responsive grid with reserved bookmark space, wrapped Quran-count metadata and compact source label to prevent overlap",
+    "R6: sources page and AI handoff document the new companion-dua provenance and Asma layout regression rule",
+    "Quran daily wird/pages tracker moved out of the dhikr/tasbih view and into the Mushaf/Quran tab.",
+    "Quran tab now renders the existing local data.pages tracker and khatma organizational goal; no data migration.",
+    "Full tasbih link moved into the tasbih header; dhikr no longer owns Quran wird UI.",
+    "Information architecture rule: Quran reading/search/wird belong to المصحف; adhkar/dua/tasbih/Asma belong to الذكر."
   ],
   "data_architecture": {
     "cloud_backend": false,

@@ -823,6 +823,32 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .nw-intro{margin-top:12px;background:linear-gradient(145deg,var(--wash),var(--card));border:1px solid var(--line);border-radius:18px;padding:14px}.nw-intro b{font-family:Amiri,serif;font-size:22px;color:var(--deep)}.nw-intro p{font-size:11.5px;color:var(--soft);line-height:1.8;margin:4px 0 0}
 .nw-grid{display:grid;gap:9px;margin-top:10px}.nw-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 13px 12px}.nw-card .top{display:flex;gap:9px;align-items:flex-start;padding-left:30px}.nw-card .num{width:31px;height:31px;border-radius:10px;background:var(--wash);display:grid;place-items:center;color:var(--gold);font-size:11px;font-weight:700;flex:none}.nw-card .title{font-family:Amiri,serif;font-size:19px;color:var(--deep);line-height:1.45}.nw-card .excerpt{font-size:11.5px;color:var(--soft);line-height:1.75;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.nw-card .openhint{font-size:10px;color:var(--gold);margin-top:7px}.nw-card>.save-later{position:absolute;left:9px;top:9px;z-index:2}
 @media(max-width:430px){.hadith-detail{padding-inline:12px}.hadith-matn{font-size:18.5px}.hadith-reader-hero{padding:14px}}
+
+/* v24 R6 — companion du'a + Asma layout stability */
+.dua-cat-note{margin:4px 0 11px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--wash);color:var(--soft);font-size:11.5px;line-height:1.8}
+.dua-who{display:inline-flex;align-items:center;max-width:100%;margin-bottom:8px;padding:5px 9px;border-radius:999px;background:var(--wash);color:var(--deep);font-size:11px;font-weight:600}
+.dua-card .s a{color:var(--deep);text-decoration:none;font-weight:600;overflow-wrap:anywhere}.dua-card .s a:hover{text-decoration:underline}
+
+.asma-card{padding:0;overflow:hidden}
+.asma-card>.save-later{left:12px;top:12px;z-index:4}
+.asma-card>button[data-asmoid]{
+  position:relative;width:100%;min-height:92px;border:0;background:transparent;color:var(--ink);cursor:pointer;
+  display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-areas:"num name" "num meta" "num open";
+  column-gap:11px;row-gap:4px;align-items:start;text-align:right;padding:14px 54px 12px 14px;
+}
+.asma-card>button[data-asmoid]:hover{background:color-mix(in srgb,var(--wash) 48%,transparent)}
+.asma-card .asma-num{grid-area:num;width:36px;height:36px;margin-top:2px;border-radius:11px;background:var(--wash);display:grid;place-items:center;font-size:11px;color:var(--deep);flex:none}
+.asma-card .asma-name{grid-area:name;min-width:0;font-family:Amiri,serif;font-size:24px;line-height:1.35;color:var(--deep);font-weight:700;overflow-wrap:anywhere}
+.asma-card .asma-qc{grid-area:meta;display:inline-flex;width:max-content;max-width:100%;white-space:normal;font-size:10.5px;line-height:1.55;color:var(--soft);background:var(--wash);border-radius:999px;padding:4px 8px;overflow-wrap:anywhere}
+.asma-card .x{grid-area:open;justify-self:start;font-size:10.5px!important;line-height:1.5;color:var(--gold)!important;margin-top:1px}
+.asma-card>.asma-list-source{margin:0 12px 12px;padding:7px 9px;overflow-wrap:anywhere}
+.asma-head,.asma-detail-hero,.asma-dsec{min-width:0}.asma-detail-hero h2,.asma-detail-hero p,.asma-tx,.asma-method,.asma-dbody,.asma-dhead{overflow-wrap:anywhere}
+.asma-srcs{display:flex;flex-wrap:wrap;gap:7px}.asma-srcs a{max-width:100%;overflow-wrap:anywhere}
+@media(max-width:430px){
+  .asma-card>button[data-asmoid]{grid-template-columns:34px minmax(0,1fr);column-gap:9px;padding:13px 50px 11px 12px;min-height:88px}
+  .asma-card .asma-num{width:32px;height:32px}.asma-card .asma-name{font-size:22px}.asma-card .asma-qc{font-size:10px}
+  .asma-dhead{align-items:flex-start;flex-direction:column}.asma-detail-hero{padding:15px}.asma-detail-hero h2{font-size:30px}
+}
 </style>
 
 <header><div class="wrap hrow">
@@ -941,6 +967,23 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <!-- ============ QURAN ============ -->
 <div id="v-quran" class="hide">
   <div class="q-hero" id="q-resume"></div>
+
+  <section class="quran-wird-card">
+    <div class="sec-head"><span>ورد القرآن</span></div>
+    <div class="item">
+      <div class="row"><span class="name" style="margin:0">صفحات قرأتها اليوم</span>
+        <div class="opts">
+          <button id="q-minus" aria-label="إنقاص عدد صفحات ورد القرآن">−</button>
+          <span id="q-pages" style="min-width:44px;text-align:center;font-size:17px;
+            font-variant-numeric:tabular-nums;align-self:center">0</span>
+          <button id="q-plus" aria-label="زيادة عدد صفحات ورد القرآن">+</button>
+        </div></div>
+      <div class="prog"><i id="q-bar" style="width:0%"></i></div>
+      <div class="muted" id="q-status"></div>
+      <div class="zk-source">ملاحظة: هدف الصفحات تنظيمي بحسب مدة الختمة التي تختارها، وليس عددًا شرعيًا مخصوصًا.</div>
+    </div>
+  </section>
+
   <div class="aya-day" id="aya-day"></div>
   <input class="q-search" id="q-search" type="search" placeholder="ابحث باسم سورة أو كلمة من القرآن…" aria-label="بحث في القرآن">
   <div class="search-count" id="q-result-count"></div>
@@ -990,7 +1033,13 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <!-- ============ TASBIH ============ -->
 <div id="v-tasbih" class="hide">
   <section>
-    <div class="sec-head"><span>السبحة</span><span class="pct" id="tasbih-today"></span></div>
+    <div class="sec-head">
+      <span>السبحة</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="pct" id="tasbih-today"></span>
+        <a href="./tasbih.html" style="text-decoration:none;font-size:12px;color:var(--deep);border:1px solid var(--line);border-radius:9px;padding:5px 11px">السبحة الكاملة ←</a>
+      </div>
+    </div>
     <div class="counter">
       <div class="dhikr" id="dhikr-text"></div>
       <div class="zk-source" id="dhikr-source"></div>
@@ -1002,22 +1051,6 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
         <button id="prev-dhikr">السابق</button>
         <button id="next-dhikr">التالي</button>
       </div>
-    </div>
-  </section>
-  <section>
-    <div class="sec-head"><span>ورد القرآن</span>
-      <a href="./tasbih.html" style="text-decoration:none;font-size:12px;color:var(--deep);
-        border:1px solid var(--line);border-radius:9px;padding:5px 11px">السبحة الكاملة ←</a></div>
-    <div class="item">
-      <div class="row"><span class="name" style="margin:0">صفحات قرأتها اليوم</span>
-        <div class="opts">
-          <button id="q-minus">−</button>
-          <span id="q-pages" style="min-width:44px;text-align:center;font-size:17px;
-            font-variant-numeric:tabular-nums;align-self:center">0</span>
-          <button id="q-plus">+</button>
-        </div></div>
-      <div class="prog"><i id="q-bar" style="width:0%"></i></div>
-      <div class="muted" id="q-status"></div><div class="zk-source">ملاحظة: هدف الصفحات تنظيمي بحسب مدة الختمة التي تختارها، وليس عددًا شرعيًا مخصوصًا.</div>
     </div>
   </section>
 </div>
