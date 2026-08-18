@@ -829,24 +829,36 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .dua-who{display:inline-flex;align-items:center;max-width:100%;margin-bottom:8px;padding:5px 9px;border-radius:999px;background:var(--wash);color:var(--deep);font-size:11px;font-weight:600}
 .dua-card .s a{color:var(--deep);text-decoration:none;font-weight:600;overflow-wrap:anywhere}.dua-card .s a:hover{text-decoration:underline}
 
-.asma-card{padding:0;overflow:hidden}
-.asma-card>.save-later{left:12px;top:12px;z-index:4}
-.asma-card>button[data-asmoid]{
-  position:relative;width:100%;min-height:92px;border:0;background:transparent;color:var(--ink);cursor:pointer;
-  display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-areas:"num name" "num meta" "num open";
-  column-gap:11px;row-gap:4px;align-items:start;text-align:right;padding:14px 54px 12px 14px;
-}
-.asma-card>button[data-asmoid]:hover{background:color-mix(in srgb,var(--wash) 48%,transparent)}
-.asma-card .asma-num{grid-area:num;width:36px;height:36px;margin-top:2px;border-radius:11px;background:var(--wash);display:grid;place-items:center;font-size:11px;color:var(--deep);flex:none}
-.asma-card .asma-name{grid-area:name;min-width:0;font-family:Amiri,serif;font-size:24px;line-height:1.35;color:var(--deep);font-weight:700;overflow-wrap:anywhere}
-.asma-card .asma-qc{grid-area:meta;display:inline-flex;width:max-content;max-width:100%;white-space:normal;font-size:10.5px;line-height:1.55;color:var(--soft);background:var(--wash);border-radius:999px;padding:4px 8px;overflow-wrap:anywhere}
-.asma-card .x{grid-area:open;justify-self:start;font-size:10.5px!important;line-height:1.5;color:var(--gold)!important;margin-top:1px}
-.asma-card>.asma-list-source{margin:0 12px 12px;padding:7px 9px;overflow-wrap:anywhere}
+
+/* v24 R8 — Asma cards rebuilt as a real three-column row.
+   Number | content | bookmark. No absolute-positioned action over text. */
+#asma-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:10px;margin-top:8px}
+.asma-card{min-width:0;margin:0;border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:hidden;box-shadow:0 1px 0 color-mix(in srgb,var(--line) 55%,transparent)}
+.asma-card-row{display:grid;grid-template-columns:38px minmax(0,1fr) 32px;gap:11px;align-items:start;padding:14px 13px 12px;min-width:0}
+.asma-card .asma-num{position:static!important;width:38px;height:38px;margin:1px 0 0;border-radius:12px;background:var(--wash);display:grid;place-items:center;font-size:11px;color:var(--gold);font-weight:700;flex:none}
+.asma-card .asma-open{min-width:0;width:100%;border:0;background:transparent;padding:0;color:var(--ink);text-align:right;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.asma-card .asma-open:hover .asma-name{color:var(--gold)}
+.asma-card .asma-name{min-width:0;width:100%;font-family:Amiri,serif;font-size:25px;line-height:1.35;color:var(--deep);font-weight:700;overflow-wrap:anywhere;transition:color .14s ease}
+.asma-card .asma-meaning{display:block;min-width:0;width:100%;font-size:11.5px;line-height:1.7;color:var(--ink);overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.asma-card .asma-card-meta{display:inline-flex;max-width:100%;margin-top:2px;padding:3px 7px;border-radius:999px;background:var(--wash);font-size:9.8px;line-height:1.55;color:var(--soft);white-space:normal;overflow-wrap:anywhere}
+.asma-card .asma-openhint{font-size:10px;line-height:1.5;color:var(--gold);margin-top:2px}
+.asma-card-row>.save-later{position:static!important;inset:auto!important;width:32px!important;height:32px!important;margin:1px 0 0!important;align-self:start;justify-self:end;z-index:auto!important}
+.asma-card>.save-later{position:static!important}
+.asma-list-source{margin:0!important;padding:8px 13px 9px!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;background:color-mix(in srgb,var(--wash) 60%,var(--card))!important;display:flex;align-items:flex-start;gap:7px;flex-wrap:wrap;min-width:0;font-size:10px!important;line-height:1.6!important;color:var(--soft)!important}
+.asma-list-source .asma-source-label{flex:none;color:var(--gold);font-weight:700}
+.asma-list-source a{min-width:0;max-width:100%;color:var(--deep)!important;text-decoration:none!important;font-weight:500;overflow-wrap:anywhere}
+.asma-list-source a:hover{text-decoration:underline!important}
 .asma-head,.asma-detail-hero,.asma-dsec{min-width:0}.asma-detail-hero h2,.asma-detail-hero p,.asma-tx,.asma-method,.asma-dbody,.asma-dhead{overflow-wrap:anywhere}
+.asma-detail-hero .learn-source,.asma-dbody>.learn-source{display:block;max-width:100%;overflow-wrap:anywhere}
 .asma-srcs{display:flex;flex-wrap:wrap;gap:7px}.asma-srcs a{max-width:100%;overflow-wrap:anywhere}
+@media(max-width:620px){#asma-list{grid-template-columns:1fr}}
 @media(max-width:430px){
-  .asma-card>button[data-asmoid]{grid-template-columns:34px minmax(0,1fr);column-gap:9px;padding:13px 50px 11px 12px;min-height:88px}
-  .asma-card .asma-num{width:32px;height:32px}.asma-card .asma-name{font-size:22px}.asma-card .asma-qc{font-size:10px}
+  .asma-card-row{grid-template-columns:34px minmax(0,1fr) 30px;gap:9px;padding:12px 11px 11px}
+  .asma-card .asma-num{width:34px;height:34px;border-radius:11px}
+  .asma-card .asma-name{font-size:23px}
+  .asma-card .asma-meaning{font-size:11px;line-height:1.65}
+  .asma-card-row>.save-later{width:30px!important;height:30px!important}
+  .asma-list-source{padding:7px 11px 8px!important}
   .asma-dhead{align-items:flex-start;flex-direction:column}.asma-detail-hero{padding:15px}.asma-detail-hero h2{font-size:30px}
 }
 </style>

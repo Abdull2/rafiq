@@ -355,3 +355,23 @@ Information-architecture rule going forward:
 - `المصحف` owns Qur'an reading, Qur'an search, resume reading, and the daily Qur'an wird/progress tracker.
 - Home may show a shortcut/status for the Qur'an wird, but opening it should route to `المصحف`, not `الذكر`.
 
+## 18) v24 R8 — Names of Allah card UI rebuilt after second overlap report
+
+Owner reported that the **أسماء الله الحسنى** layout was still visually broken after the R6 patch. The previous fix still depended on an absolutely positioned bookmark and a full-width clickable grid, which could collide with content in RTL/narrow layouts.
+
+Implemented in R8:
+- Rebuilt each Asma list card structurally instead of adding another spacing patch. The card is now a true three-column RTL row: **number | content | bookmark**.
+- The saved-later `＋/✓` control now occupies its own grid column and is **not absolutely positioned over the card text**. Do not reintroduce absolute positioning for the Asma bookmark.
+- The clickable content is a separate `.asma-open` control containing the name, a two-line meaning preview, a small Qur'an-reference count chip, and a clear `المعنى والأثر والأدلة ←` hint.
+- The source/reference is a dedicated footer row below the content, so it cannot collide with the name or bookmark.
+- `#asma-list` is responsive: one column on narrow/mobile widths and can use multiple columns only when there is genuinely enough width.
+- Added explicit min-width/wrapping rules for cards and detail/source content.
+- No religious content, Asma dataset, sources, or saved-later storage model changed in this release. This is a UI-structure repair only.
+- Public version remains **v24 / manifest `24.0.0`**.
+
+Regression rule for future AI:
+1. Test Asma list at narrow side-panel/mobile width before delivery.
+2. Bookmark must remain a dedicated grid cell; never overlay it on name/meaning text.
+3. Source stays in a separate footer row.
+4. Do not change the Asma religious dataset merely to solve layout problems.
+

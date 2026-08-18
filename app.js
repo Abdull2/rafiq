@@ -1302,7 +1302,22 @@ function hAsmaList(){
   const host=document.getElementById('asma-list'); if(!host||!ASMA)return;
   const q=asmaNorm(asmaQuery), F=(ASMA.names||[]).filter(x=>!q||asmaNorm(x.name+' '+x.meaning+' '+x.impact).includes(q));
   document.getElementById('asma-result-count').textContent=`${AR(F.length)} من ${AR((ASMA.names||[]).length)} اسمًا`;
-  host.innerHTML=F.length?F.map(it=>{const src=(it.sources||[]).map(code=>ASMA.sources[code]).filter(Boolean)[0];return `<div class="asma-card">${laterRegister(`asma:${it.n}`,{kind:'اسم من أسماء الله الحسنى',title:it.name,text:it.meaning,source:src?.title||'',tab:'asma'})}<button data-asmoid="${it.n}" aria-label="فتح تفاصيل اسم ${it.name}"><span class="asma-num">${AR(it.n)}</span><span class="asma-name">${it.name}</span><span class="asma-qc">وروده في مرجع القرآن: ${it.quranCount}</span><span class="x">فتح التفاصيل ←</span></button>${src?`<div class="learn-source asma-list-source">المرجع: <a href="${src.url}" target="_blank" rel="noopener">${src.short||src.title}</a></div>`:''}</div>`}).join(''):'<div class="nafs-empty">لا توجد أسماء مطابقة لبحثك.</div>';
+  host.innerHTML=F.length?F.map(it=>{
+    const src=(it.sources||[]).map(code=>ASMA.sources[code]).filter(Boolean)[0];
+    return `<article class="asma-card">
+      <div class="asma-card-row">
+        <span class="asma-num" aria-hidden="true">${AR(it.n)}</span>
+        <button class="asma-open" data-asmoid="${it.n}" aria-label="فتح تفاصيل اسم ${it.name}">
+          <span class="asma-name">${it.name}</span>
+          <span class="asma-meaning">${it.meaning}</span>
+          <span class="asma-card-meta">ورد اللفظ في المرجع: ${AR(it.quranCount)}</span>
+          <span class="asma-openhint">المعنى والأثر والأدلة ←</span>
+        </button>
+        ${laterRegister(`asma:${it.n}`,{kind:'اسم من أسماء الله الحسنى',title:it.name,text:it.meaning,source:src?.title||'',tab:'asma'})}
+      </div>
+      ${src?`<div class="asma-list-source"><span class="asma-source-label">المرجع</span><a href="${src.url}" target="_blank" rel="noopener">${src.short||src.title}</a></div>`:''}
+    </article>`;
+  }).join(''):'<div class="nafs-empty">لا توجد أسماء مطابقة لبحثك.</div>';
 }
 function cleanDorarHtml(html){
   const d=document.createElement('div'); d.innerHTML=html||'';

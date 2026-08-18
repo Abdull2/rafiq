@@ -23,3 +23,5 @@ R6 continuity:
 - `أدعية الصحابة` now exists in `app/adiya.json`; preserve the distinction between a companion's own du'a and a du'a taught to that companion by the Prophet ﷺ. Every item must retain a direct verification source.
 - Names of Allah cards were repaired for narrow widths with a responsive grid and reserved save-button space. Do not revert them to a crowded single flex row.
 Latest IA note (v24 R7): ورد القرآن belongs inside المصحف, not الذكر/السبحة. Preserve this placement.
+
+R8 Asma UI continuity: after a second overlap report, the Names of Allah list was structurally rebuilt. Preserve `.asma-card-row` as number | content | bookmark, keep the bookmark in a dedicated static grid cell, and keep the source as a separate footer. Do not revert to an absolutely positioned Asma bookmark or a crowded full-row layout.

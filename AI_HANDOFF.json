@@ -1,5 +1,5 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-R7-2026-08-19",
+  "state_id": "RAFIQ-HANDOFF-v24-R8-2026-08-19",
   "project": "رفيق يومك",
   "version": "v24",
   "platform": "Chrome MV3 side-panel extension",
@@ -87,7 +87,11 @@
     "Quran daily wird/pages tracker moved out of the dhikr/tasbih view and into the Mushaf/Quran tab.",
     "Quran tab now renders the existing local data.pages tracker and khatma organizational goal; no data migration.",
     "Full tasbih link moved into the tasbih header; dhikr no longer owns Quran wird UI.",
-    "Information architecture rule: Quran reading/search/wird belong to المصحف; adhkar/dua/tasbih/Asma belong to الذكر."
+    "Information architecture rule: Quran reading/search/wird belong to المصحف; adhkar/dua/tasbih/Asma belong to الذكر.",
+    "R8: Rebuilt Names of Allah list cards as a structural three-column RTL grid (number | content | bookmark).",
+    "R8: Removed absolute bookmark overlay from Asma cards; +/check now has its own fixed grid cell.",
+    "R8: Added meaning preview, compact metadata chip, clear detail hint, and separate source footer per Asma card.",
+    "R8: Asma list is responsive and falls back to one column on narrow widths; religious data/sources unchanged."
   ],
   "data_architecture": {
     "cloud_backend": false,

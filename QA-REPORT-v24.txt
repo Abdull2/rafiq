@@ -84,3 +84,11 @@ R7 checks
 - Confirmed switchTab(quran) renders the tracker and switchTab(tasbih) does not.
 - Manifest remains 24.0.0.
 
+v24 R8 — Asma layout regression checks
+- [PASS] Asma card markup uses `.asma-card-row` with dedicated number/content/bookmark cells.
+- [PASS] Asma bookmark is static in its own grid cell; no direct-card absolute overlay is used by the new markup.
+- [PASS] Asma source is rendered in a separate footer outside the clickable name/content control.
+- [PASS] Narrow-width CSS collapses Asma list to one column.
+- [PASS] JavaScript syntax and all JSON files parse.
+- [PASS] manifest remains 24.0.0.
+
