@@ -1,0 +1,20 @@
+# Never commit signing material
+*.keystore
+*.jks
+signing-key-info.txt
+
+# Generated Android/Bubblewrap files
+android/app/
+android/gradle/
+android/gradlew
+android/gradlew.bat
+android/build.gradle
+android/settings.gradle
+android/gradle.properties
+android/*.apk
+android/*.aab
+android/assetlinks.json
+
+# Local artifacts
+/dist/
+/smoke-test.png

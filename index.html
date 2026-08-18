@@ -147,6 +147,8 @@ textarea{min-height:70px;resize:vertical}
   background:var(--card);color:var(--deep);font-size:13px;cursor:pointer}
 .zikr.done{opacity:.5}
 .zikr.done button{background:var(--wash)}
+.zikr.tap-count{cursor:pointer;transition:.12s}.zikr.tap-count:active{background:var(--wash);transform:scale(.995)}
+.zikr.tap-count .txt::after{content:"  · اضغط للعد";font-family:"IBM Plex Sans Arabic",sans-serif;font-size:9.5px;color:var(--soft);white-space:nowrap}.zikr.done.tap-count .txt::after{content:"  · تم"}
 
 /* progress */
 .prog{height:9px;border-radius:99px;background:var(--wash);overflow:hidden;margin:10px 0 6px}
@@ -260,15 +262,63 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .acc-head .acc-x{font-size:15px;color:var(--soft);flex:none}
 .acc-body{border-top:1px solid var(--line)}
 
-/* compact rating rows */
-.r-row{display:flex;align-items:center;gap:10px;padding:11px 15px;border-top:1px solid var(--line)}
+/* clear rating rows */
+.r-row{display:block;padding:11px 15px;border-top:1px solid var(--line)}
 .r-row:first-child{border-top:0}
-.r-row .nm{flex:1;font-size:14px}
-.dots{display:flex;gap:5px;flex:none}
-.dots button{width:26px;height:26px;border-radius:9px;border:1px solid var(--line);
-  background:transparent;color:var(--soft);font-size:11px;cursor:pointer;padding:0;line-height:1}
-.dots button[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.r-row .nm{font-size:14px;line-height:1.6}
+.dots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px;width:100%}
+.dots button{min-height:34px;border-radius:10px;border:1px solid var(--line);
+  background:transparent;color:var(--soft);font-size:11.5px;cursor:pointer;padding:5px 3px;line-height:1.2}
+.dots button[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff;font-weight:600}
+[data-theme="dark"] .dots button[aria-pressed="true"]{color:#12160F}
 .dots button.weak[aria-pressed="true"]{background:var(--clay);border-color:var(--clay);color:#fff}
+
+/* ===== todo ===== */
+.todo-add{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;padding:12px 13px;border-bottom:1px solid var(--line)}
+.todo-add input{min-width:0;margin:0}
+.todo-add button{border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--deep);padding:8px 10px;cursor:pointer;font-size:12px}
+.todo-add button.primary{background:var(--deep);border-color:var(--deep);color:#fff;font-weight:600}
+.todo-add button.on{background:color-mix(in srgb,var(--gold) 15%,var(--card));border-color:var(--gold);color:var(--gold)}
+.todo-summary{display:flex;justify-content:space-between;gap:8px;padding:8px 13px;font-size:11px;color:var(--soft);background:var(--wash)}
+.todo-group-title{padding:9px 13px 5px;font-size:11px;color:var(--gold);font-weight:600}
+.todo-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:9px;align-items:center;padding:10px 13px;border-top:1px solid var(--line)}
+.todo-row:first-child{border-top:0}
+.todo-check{width:28px;height:28px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--deep);cursor:pointer;font-size:15px}
+.todo-check.on{background:var(--deep);border-color:var(--deep);color:#fff}
+.todo-text{font-size:13.5px;line-height:1.55;overflow-wrap:anywhere}
+.todo-row.done .todo-text{text-decoration:line-through;color:var(--soft);opacity:.75}
+.todo-badge{display:inline-block;margin-inline-start:5px;font-size:9.5px;color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,transparent);border-radius:999px;padding:2px 6px;vertical-align:1px}
+.todo-actions{display:flex;gap:4px}
+.todo-actions button{border:0;background:transparent;color:var(--soft);font-size:11px;padding:5px;cursor:pointer}
+.todo-empty{padding:18px 13px;text-align:center;color:var(--soft);font-size:12.5px;line-height:1.7}
+@media(max-width:390px){.todo-add{grid-template-columns:1fr auto}.todo-add #todo-prio{grid-row:2;grid-column:1/-1;justify-self:start}.dots button{font-size:10.5px}}
+
+/* ===== irtaqi 40-day journey ===== */
+.irt-journey{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:12px;overflow:hidden}
+.irt-jhead{padding:13px 14px;background:var(--wash)}
+.irt-jhead .top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.irt-jhead .top b{font-size:14px;color:var(--deep)}
+.irt-jhead .top span{font-size:11px;color:var(--soft)}
+.irt-jprog{height:7px;border-radius:999px;background:var(--card);overflow:hidden;margin-top:9px}
+.irt-jprog i{display:block;height:100%;background:var(--deep);border-radius:999px}
+.irt-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;padding:12px 13px;border-top:1px solid var(--line)}
+.irt-grid button{aspect-ratio:1;border-radius:7px;border:1px solid var(--line);background:var(--card);color:var(--soft);font-size:9px;padding:0;cursor:pointer}
+.irt-grid button.done{background:var(--deep);border-color:var(--deep);color:#fff}
+.irt-grid button.today{box-shadow:0 0 0 2px var(--gold) inset;color:var(--deep);font-weight:700}
+.irt-grid button.sel{outline:2px solid var(--sage);outline-offset:1px}
+.irt-grid button.future{opacity:.55}
+.irt-daycard{padding:14px;border-top:1px solid var(--line)}
+.irt-focus{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.irt-focus span{font-size:10.5px;background:var(--wash);color:var(--deep);border-radius:999px;padding:5px 8px}
+.irt-task{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+.irt-task:first-of-type{border-top:0}
+.irt-task button{width:30px;height:30px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--deep);cursor:pointer}
+.irt-task button.on{background:var(--deep);border-color:var(--deep);color:#fff}
+.irt-task .tt{font-size:13.5px;line-height:1.7}
+.irt-task .sm{font-size:10.5px;color:var(--soft);margin-top:3px;line-height:1.6}
+.irt-tip{margin-top:10px;padding:10px 11px;border-radius:11px;background:var(--wash);font-size:11.5px;color:var(--soft);line-height:1.8}
+.irt-weak-list{display:flex;gap:6px;overflow:auto;margin-top:10px;padding-bottom:2px}
+.irt-weak-list span{white-space:nowrap;font-size:10.5px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:5px 8px}
 
 /* ===== quran ===== */
 @font-face{font-family:'Hafs';src:url('./hafs.woff2') format('woff2');font-display:swap}
@@ -598,7 +648,16 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div class="pray-strip" id="prayer-log"></div>
 
   <div class="mood-strip" id="mood"></div>
-  <div class="rating-key"><span class="rk-title">مقياس التقييم:</span><span>١ ضعيف</span><span>٢ متوسط</span><span>٣ جيد</span><span>٤ ممتاز</span></div>
+
+  <div class="acc" id="acc-todo">
+    <button class="acc-head" data-acc="todo"><span class="ttl">مهامي اليوم</span>
+      <span class="mini-bar"><i id="todo-bar" style="width:0%"></i></span><span class="val" id="todo-val"></span><span class="acc-x">－</span></button>
+    <div class="acc-body" id="todo-body">
+      <div class="todo-add"><input id="todo-new" type="text" maxlength="180" placeholder="أضف مهمة واضحة…">
+        <button id="todo-prio" type="button">☆ مهم</button><button id="todo-add" class="primary" type="button">إضافة</button></div>
+      <div id="todo-list"></div>
+    </div>
+  </div>
 
   <div id="sections"></div>
 
@@ -851,7 +910,7 @@ const SECTIONS=[
   ['musaada','مساعدة الآخرين'],['ghayth','كظم الغيظ'],['lisan','تجنّب الأذى باللسان'],['silat','صلة الرحم']]}
 ];
 const ALL_ITEMS=SECTIONS.flatMap(s=>s.items);
-const SCALE=[['ضعيف',1],['متوسط',2],['جيد',3],['ممتاز',4]];
+const SCALE=[['نادرًا',1],['أحيانًا',2],['غالبًا',3],['دائمًا',4]];
 const MOODS=['مطمئن','نشيط','متعب','مهموم','مشتّت','راضٍ'];
 const PRAYERS=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];
 const P_STATES=[['jamaah','جماعة'],['time','في وقتها'],['late','متأخرة'],['missed','فائتة']];
@@ -932,6 +991,52 @@ function save(msg){ clearTimeout(saveT); saveT=setTimeout(async()=>{
   await store.set('day:'+current,data); toast(msg); paintStrip();
 },350) }
 
+/* ================= todo ================= */
+let todoItems=[], todoImportant=false;
+async function loadTodo(){ todoItems=(await store.get('todo-items'))||[]; renderTodo() }
+const todoEsc=x=>(x||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function todoDatePlus(k,n){const d=fromIso(k);d.setDate(d.getDate()+n);return iso(d)}
+async function saveTodo(){await store.set('todo-items',todoItems);renderTodo()}
+function renderTodo(){
+  const host=document.getElementById('todo-list'); if(!host)return;
+  const todayKey=iso(new Date());
+  const due=todoItems.filter(x=>x.due===current);
+  const overdue=current===todayKey?todoItems.filter(x=>!x.done&&x.due<todayKey).sort((a,b)=>(b.important?1:0)-(a.important?1:0)||String(a.due).localeCompare(String(b.due))):[];
+  const open=due.filter(x=>!x.done).sort((a,b)=>(b.important?1:0)-(a.important?1:0)||(a.created||0)-(b.created||0)), done=due.filter(x=>x.done).sort((a,b)=>(b.doneAt||0)-(a.doneAt||0));
+  const pct=due.length?Math.round(done.length/due.length*100):0;
+  const val=document.getElementById('todo-val'); if(val)val.textContent=due.length?`${AR(done.length)}/${AR(due.length)}`:'';
+  const bar=document.getElementById('todo-bar'); if(bar)bar.style.width=pct+'%';
+  const row=(x,late=false)=>`<div class="todo-row ${x.done?'done':''}" data-todo="${x.id}">
+    <button class="todo-check ${x.done?'on':''}" data-todo-check="${x.id}" aria-label="${x.done?'إلغاء الإنجاز':'تم'}">${x.done?'✓':''}</button>
+    <div class="todo-text">${todoEsc(x.text)}${x.important?'<span class="todo-badge">مهم</span>':''}${late?'<span class="todo-badge">متأخرة</span>':''}</div>
+    <div class="todo-actions">${late?`<button data-todo-today="${x.id}" title="رحّل لليوم">لليوم</button>`:`<button data-todo-next="${x.id}" title="رحّل للغد">غدًا</button>`}<button data-todo-del="${x.id}" title="حذف">حذف</button></div></div>`;
+  let html=`<div class="todo-summary"><span>${due.length?`أنجزت ${AR(done.length)} من ${AR(due.length)}`:'لا مهام لهذا اليوم'}</span><span>${pct?AR(pct)+'%':''}</span></div>`;
+  if(overdue.length)html+=`<div class="todo-group-title">تحتاج قرارًا · ${AR(overdue.length)} متأخرة</div>${overdue.map(x=>row(x,true)).join('')}`;
+  if(open.length)html+=`<div class="todo-group-title">قيد التنفيذ</div>${open.map(x=>row(x)).join('')}`;
+  if(done.length)html+=`<div class="todo-group-title">تم اليوم ✓</div>${done.map(x=>row(x)).join('')}`;
+  if(!overdue.length&&!due.length)html+=`<div class="todo-empty">اكتب أهم ما تريد إنجازه اليوم. اجعل القائمة قصيرة وواضحة.</div>`;
+  host.innerHTML=html;
+}
+async function addTodo(){
+  const inp=document.getElementById('todo-new'), text=inp.value.trim(); if(!text){inp.focus();return}
+  todoItems.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text,due:current,important:todoImportant,done:false,created:Date.now()});
+  inp.value=''; todoImportant=false; const p=document.getElementById('todo-prio');p.classList.remove('on');p.textContent='☆ مهم';
+  await saveTodo(); toast('أُضيفت المهمة');
+}
+document.getElementById('todo-add').onclick=addTodo;
+document.getElementById('todo-new').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addTodo()}});
+document.getElementById('todo-prio').onclick=e=>{todoImportant=!todoImportant;e.currentTarget.classList.toggle('on',todoImportant);e.currentTarget.textContent=todoImportant?'★ مهمة':'☆ مهم'};
+document.getElementById('todo-list').onclick=async e=>{
+  const id=e.target.dataset.todoCheck||e.target.dataset.todoDel||e.target.dataset.todoNext||e.target.dataset.todoToday; if(!id)return;
+  const x=todoItems.find(t=>t.id===id); if(!x)return;
+  if(e.target.dataset.todoCheck){x.done=!x.done;x.doneAt=x.done?Date.now():null}
+  else if(e.target.dataset.todoDel){todoItems=todoItems.filter(t=>t.id!==id)}
+  else if(e.target.dataset.todoNext){x.due=todoDatePlus(current,1);x.done=false;x.doneAt=null}
+  else if(e.target.dataset.todoToday){x.due=iso(new Date());x.done=false;x.doneAt=null}
+  await saveTodo();
+};
+document.getElementById('acc-todo').querySelector('.acc-head').onclick=e=>{const h=e.currentTarget,b=h.nextElementSibling;const closed=b.classList.toggle('hide');h.querySelector('.acc-x').textContent=closed?'＋':'－'};
+
 /* ================= today ================= */
 function buildSections(){
   const host=document.getElementById('sections'); host.innerHTML='';
@@ -946,7 +1051,7 @@ function buildSections(){
       sec.items.map(([id,name])=>
         `<div class="r-row"><span class="nm">${name}</span><span class="dots">`+
         SCALE.map(([l,v])=>`<button class="${v<3?'weak':''}" data-item="${id}" data-val="${v}"
-          aria-pressed="false" title="${l}">${AR(v)}</button>`).join('')+`</span></div>`).join('')+
+          aria-pressed="false" title="${l}">${l}</button>`).join('')+`</span></div>`).join('')+
       `</div>`;
     host.appendChild(d);
   });
@@ -1050,7 +1155,7 @@ async function load(day){
   document.getElementById('dateline').textContent=arabicDate(day);
   document.getElementById('datepick').value=day;
   ['tomorrow','best','worst'].forEach(f=>document.getElementById(f).value=data[f]||'');
-  paintRatings(); paintMood(); paintPrayerLog(); buildStrip(); renderAzkar(); renderQuran(); paintRing();
+  paintRatings(); paintMood(); paintPrayerLog(); buildStrip(); renderAzkar(); renderQuran(); renderTodo(); paintRing();
 }
 
 /* ================= salah tab ================= */
@@ -1086,11 +1191,16 @@ async function renderAzkar(){
   host.onclick=e=>{
     const t=e.target.closest('button[data-az]');
     if(t){ azkarMode=t.dataset.az; renderAzkar(); return }
-    const b=e.target.closest('button[data-z]'); if(!b)return;
-    const sid=b.dataset.set||azkarMode, set=AZ.sets.find(x=>x.id===sid); if(!set)return;
-    const i=+b.dataset.z, z=set.items[i], key=sid+i;
-    data.azkar[key]=((data.azkar[key]||0)+1)>z.n?0:(data.azkar[key]||0)+1;
-    renderAzkarList(); save('') };
+    const target=e.target.closest('[data-z]'); if(!target)return;
+    if(e.target.closest('button[data-z]')||target.classList.contains('tap-count')){
+      const sid=target.dataset.set||azkarMode, set=AZ.sets.find(x=>x.id===sid); if(!set)return;
+      const i=+target.dataset.z, z=set.items[i], key=sid+i, cur=data.azkar[key]||0;
+      if(cur>=z.n)return;
+      data.azkar[key]=cur+1;
+      if(navigator.vibrate)navigator.vibrate(10);
+      if(data.azkar[key]>=z.n){toast('تم الذكر — تقبّل الله');if(navigator.vibrate)navigator.vibrate([20,35,20])}
+      renderAzkarList(); save('');
+    } };
   document.getElementById('az-search').oninput=e=>{azkarQuery=e.target.value;renderAzkarList()};
   renderAzkarList();
 }
@@ -1100,13 +1210,13 @@ function renderAzkarList(){
   if(q){
     const hits=[]; AZ.sets.forEach(set=>set.items.forEach((z,i)=>{if(searchNorm(set.name+' '+z.t+' '+(z.note||'')).includes(q))hits.push({set,z,i})}));
     cnt.textContent=`${AR(hits.length)} نتيجة في جميع الأذكار`;
-    box.innerHTML=hits.length?`<section>${hits.map(({set,z,i})=>{const c=data.azkar[set.id+i]||0;return `<div class="zikr ${c>=z.n?'done':''}"><div class="search-source">${set.name}</div><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}<div class="bar"><span class="cnt">${AR(c)} / ${AR(z.n)}</span><button data-z="${i}" data-set="${set.id}">${c>=z.n?'تم ✓':'قرأت'}</button></div></div>`}).join('')}</section>`:'<div class="nafs-empty">لا توجد أذكار مطابقة لبحثك.</div>';
+    box.innerHTML=hits.length?`<section>${hits.map(({set,z,i})=>{const c=data.azkar[set.id+i]||0;return `<div class="zikr ${c>=z.n?'done':''} ${['morning','evening'].includes(set.id)?'tap-count':''}" ${['morning','evening'].includes(set.id)?`data-z="${i}" data-set="${set.id}" role="button" tabindex="0"`:''}><div class="search-source">${set.name}</div><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}<div class="bar"><span class="cnt">${AR(c)} / ${AR(z.n)}</span><button data-z="${i}" data-set="${set.id}">${c>=z.n?'تم ✓':'قرأت'}</button></div></div>`}).join('')}</section>`:'<div class="nafs-empty">لا توجد أذكار مطابقة لبحثك.</div>';
     return;
   }
   const set=AZ.sets.find(x=>x.id===azkarMode)||AZ.sets[0]; if(!set)return;
   const L=set.items; let done=0;
   const rows=L.map((z,i)=>{ const c=data.azkar[set.id+i]||0; if(c>=z.n)done++;
-    return `<div class="zikr ${c>=z.n?'done':''}"><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}<div class="bar"><span class="cnt">${AR(c)} / ${AR(z.n)}</span><button data-z="${i}" data-set="${set.id}">${c>=z.n?'تم ✓':'قرأت'}</button></div></div>`}).join('');
+    return `<div class="zikr ${c>=z.n?'done':''} ${['morning','evening'].includes(set.id)?'tap-count':''}" ${['morning','evening'].includes(set.id)?`data-z="${i}" data-set="${set.id}" role="button" tabindex="0"`:''}><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}<div class="bar"><span class="cnt">${AR(c)} / ${AR(z.n)}</span><button data-z="${i}" data-set="${set.id}">${c>=z.n?'تم ✓':'قرأت'}</button></div></div>`}).join('');
   cnt.textContent=`${AR(L.length)} ذكرًا · أنجزت ${AR(done)}`;
   box.innerHTML=`<section><div class="sec-head"><span>${set.name}</span><span class="pct">${AR(done)} / ${AR(L.length)}</span></div><div class="az-time">${set.time||''}</div>${rows}</section>`;
 }
@@ -1234,6 +1344,11 @@ function renderTimes(){
   if(settings.lat&&settings.lng)
     document.getElementById('qibla-deg').textContent=Math.round(qiblaBearing(+settings.lat,+settings.lng))+'° من الشمال';
 }
+document.getElementById('acc-notes').onclick=e=>{
+  const h=e.target.closest('.acc-head'); if(!h)return;
+  const b=h.nextElementSibling; const closed=b.classList.toggle('hide');
+  h.querySelector('.acc-x').textContent=closed?'＋':'－';
+};
 document.getElementById('acc-times').onclick=e=>{
   const h=e.target.closest('.acc-head'); if(!h)return;
   const b=h.nextElementSibling; const open=b.classList.toggle('hide');
@@ -1834,11 +1949,13 @@ function khHtml(){
 }
 
 /* ================= ارتقِ ================= */
-let IRT=null, irtAns={}, irtHist=[], irtPlan=[], irtDone={};
+let IRT=null, irtAns={}, irtHist=[], irtPlan=[], irtDone={}, irtJourney=null, irtViewDay=null;
 async function loadIrt(){ if(IRT)return IRT;
-  try{ IRT=await (await fetch('./irtaqi.json')).json() }catch{ IRT={axes:[],ranks:[]} }
+  try{ IRT=await (await fetch('./irtaqi.json?v='+Date.now())).json() }catch{ IRT={axes:[],ranks:[]} }
   irtHist=(await store.get('irt-hist'))||[]; irtPlan=(await store.get('irt-plan'))||[];
-  irtDone=(await store.get('irt-done'))||{}; return IRT }
+  irtDone=(await store.get('irt-done'))||{}; irtJourney=(await store.get('irt-journey'))||null;
+  if(!irtJourney&&irtHist.length){irtJourney=irtBuildJourney(irtHist[irtHist.length-1]);await store.set('irt-journey',irtJourney)}
+  return IRT }
 const irtRank=p=>IRT.ranks.slice().reverse().find(r=>p>=r.min)||IRT.ranks[0];
 function irtScores(ans){
   const per={}; let tot=0,n=0;
@@ -1847,79 +1964,81 @@ function irtScores(ans){
     per[a.id]=c?Math.round(s/(a.q.length*3)*100):0; tot+=s; n+=a.q.length*3 });
   return {per,total:n?Math.round(tot/n*100):0}
 }
+function irtDaysBetween(a,b){return Math.floor((fromIso(b)-fromIso(a))/86400000)}
+function irtBuildJourney(result){
+  const ordered=IRT.axes.slice().sort((a,b)=>(result.per[a.id]||0)-(result.per[b.id]||0));
+  const alloc=[10,8,7,6,5,4], stages=['تأسيس','تثبيت','ترقية','مراجعة'];
+  const days=[]; let no=1;
+  ordered.forEach((a,rank)=>{
+    const len=alloc[rank]||4;
+    for(let j=0;j<len;j++){
+      const pi=Math.min(a.plan.length-1,Math.floor(j*a.plan.length/len));
+      const stage=stages[Math.min(3,Math.floor(j*4/len))];
+      let support='';
+      if(rank>0&&j%2===1){const prev=ordered[rank-1];support=prev.plan[0]||''}
+      days.push({n:no++,axis:a.id,ax:a.name,t:a.plan[pi],stage,support});
+    }
+  });
+  return {version:2,start:iso(new Date()),created:Date.now(),total:40,days:days.slice(0,40),order:ordered.map(a=>a.id),source:{per:result.per,total:result.total}};
+}
+function irtCurrentDay(){if(!irtJourney)return 1;return Math.max(1,Math.min(41,irtDaysBetween(irtJourney.start,iso(new Date()))+1))}
+function irtDoneKey(n){return `journey:${irtJourney.start}:${n}`}
+function irtDayComplete(day){const d=irtDone[irtDoneKey(day.n)]||{};return !!d.main&&(!day.support||!!d.support)}
+function irtDoneCount(){return irtJourney?irtJourney.days.filter(irtDayComplete).length:0}
 async function irtRender(){
   await loadIrt();
-  const last=irtHist[irtHist.length-1];
-  const host=document.getElementById('irt-body');
-  if(!last){ irtQuiz(); return }
-  const {per,total}=last;
-  const rank=irtRank(total);
-  const weak=IRT.axes.slice().sort((a,b)=>per[a.id]-per[b.id]).slice(0,2).map(a=>a.id);
-  const prev=irtHist.length>1?irtHist[irtHist.length-2].total:null;
-  const diff=prev!=null?total-prev:null;
-  const d=hToday();
-  host.innerHTML=
-   `<div class="irt-hero">
-      <div class="sc">مرتبتك الحالية</div>
-      <div class="rank">${rank.name}</div>
-      <div class="sc">${AR(total)}% من اللياقة الإيمانية${diff!=null?(diff>=0?' · ▲ '+AR(diff):' · ▼ '+AR(-diff))+' عن القياس السابق':''}</div>
-      <div class="d">${rank.d}</div>
-      <button data-irt="requiz">أعد القياس</button>
+  const last=irtHist[irtHist.length-1], host=document.getElementById('irt-body');
+  if(!last){irtQuiz();return}
+  if(!irtJourney){irtJourney=irtBuildJourney(last);await store.set('irt-journey',irtJourney)}
+  const {per,total}=last, rank=irtRank(total), ordered=IRT.axes.slice().sort((a,b)=>per[a.id]-per[b.id]);
+  const cur=irtCurrentDay(), finished=cur>40, selected=irtViewDay||Math.min(cur,40), day=irtJourney.days[selected-1], doneN=irtDoneCount();
+  const pct=Math.round(doneN/40*100);
+  host.innerHTML=`<div class="irt-hero">
+      <div class="sc">نتيجة آخر تقييم</div><div class="rank">${rank.name}</div>
+      <div class="sc">${AR(total)}% · الخطة تبدأ بالأكثر احتياجًا ثم تنتقل لما بعده</div>
+      <div class="irt-weak-list">${ordered.slice(0,4).map((a,i)=>`<span>${i+1}. ${a.name} ${AR(per[a.id])}%</span>`).join('')}</div>
+      <div class="d">خطة ٤٠ يومًا مبنية على إجاباتك: تركيز متدرّج على أضعف المحاور، مع تثبيت ما سبق بدل إضافة أعمال كثيرة دفعة واحدة.</div>
+      <button data-irt="requiz">إعادة التقييم وبناء خطة جديدة</button>
     </div>
-    <div class="sec-head" style="margin-top:14px;border-radius:12px">محاورك</div>`+
-    IRT.axes.map(a=>`<div class="ax-row"><div class="top"><b>${a.name}</b>
-      <span>${AR(per[a.id])}%${weak.includes(a.id)?' — الأضعف':''}</span></div>
-      <div class="ax-bar"><i class="${weak.includes(a.id)?'weak':''}" style="width:${per[a.id]}%"></i></div></div>`).join('')+
-    `<div class="sec-head" style="margin-top:14px;border-radius:12px">خطة اليوم — من نقاط ضعفك</div>
-     <div class="card" style="background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden">`+
-     (irtPlan.length? irtPlan.map((it,i)=>{
-        const on=!!(irtDone[d]&&irtDone[d][i]);
-        let st=0; for(let j=0;;j++){ const dd=new Date(); dd.setDate(dd.getDate()-j);
-          if(irtDone[iso(dd)]&&irtDone[iso(dd)][i]) st++; else break }
-        return `<div class="plan-row"><button class="pchk ${on?'on':''}" data-pl="${i}">✓</button>
-          <div><div class="nm">${it.t}</div><div class="ax">${it.ax}</div></div>
-          <span class="st">${st>1?AR(st)+' 🔥':''}</span></div>`}).join('')
-      : '<div class="plan-row"><div class="nm">لا خطة بعد — أعد القياس لتوليدها.</div></div>')+
-     `</div>
-     <p class="note" style="font-size:12px;color:var(--soft);line-height:1.8;margin-top:12px">
-      القياس تقديري لمساعدتك على معرفة موضع الخلل، وليس حكمًا على إيمانك — فالإيمان بيد الله ولا يُقاس بجدول.</p>`;
+    <div class="irt-journey"><div class="irt-jhead"><div class="top"><b>${finished?'أتممت مدة الخطة':'رحلتك — اليوم '+AR(cur)+' من ٤٠'}</b><span>${AR(doneN)} يوم مكتمل · ${AR(pct)}%</span></div><div class="irt-jprog"><i style="width:${pct}%"></i></div></div>
+      <div class="irt-grid">${irtJourney.days.map(x=>{const c=irtDayComplete(x),future=x.n>cur;return `<button data-jday="${x.n}" class="${c?'done':''} ${x.n===cur?'today':''} ${x.n===selected?'sel':''} ${future?'future':''}" title="اليوم ${x.n} — ${x.ax}">${AR(x.n)}</button>`}).join('')}</div>
+      ${irtDayCard(day,selected,cur)}
+    </div>
+    <p class="note" style="font-size:12px;color:var(--soft);line-height:1.8;margin-top:12px">الخطة أداة تنظيم ومحاسبة وليست حكمًا على إيمانك. إن فات يوم، ارجع للخطة بلا جلد للذات ولا تضاعف المطلوب.</p>`;
   host.onclick=irtClick;
+}
+function irtDayCard(day,n,cur){
+  if(!day)return '';
+  const state=irtDone[irtDoneKey(n)]||{}, future=n>cur;
+  return `<div class="irt-daycard"><div class="irt-focus"><span>اليوم ${AR(n)}</span><span>${day.ax}</span><span>${day.stage}</span></div>
+    <div class="irt-task"><button data-jtask="main" data-day="${n}" class="${state.main?'on':''}" ${future?'disabled':''}>${state.main?'✓':''}</button><div><div class="tt">${day.t}</div><div class="sm">المهمة الأساسية لهذا اليوم — اجعلها قابلة للتنفيذ فعلًا.</div></div></div>
+    ${day.support?`<div class="irt-task"><button data-jtask="support" data-day="${n}" class="${state.support?'on':''}" ${future?'disabled':''}>${state.support?'✓':''}</button><div><div class="tt">${day.support}</div><div class="sm">تثبيت لما سبق، حتى لا نعالج محورًا ونفقد الذي قبله.</div></div></div>`:''}
+    <div class="irt-tip">${future?'هذه معاينة ليوم قادم. سيُفتح التتبع عند وصول يومه.':n<cur?'يمكنك تصحيح تسجيل هذا اليوم إن كنت قد أنجزته.':'ركّز على المطلوب اليوم فقط. لا تحاول تنفيذ أيام الخطة مقدمًا.'}</div></div>`;
 }
 function irtQuiz(){
   const host=document.getElementById('irt-body');
   const L=[['لا','0'],['أحيانًا','1'],['غالبًا','2'],['دائمًا','3']];
-  host.innerHTML=`<div class="irt-hero"><div class="rank">قياس اللياقة الإيمانية</div>
-      <div class="d">أجب بصدق عن ٢٤ سؤالًا — النتيجة لك وحدك، ولا يراها أحد.</div></div>`+
+  host.innerHTML=`<div class="irt-hero"><div class="rank">قياس نقطة البداية</div><div class="d">أجب بصدق عن ٢٤ سؤالًا. الهدف معرفة أين نبدأ، لا إعطاء حكم على إيمانك.</div></div>`+
     IRT.axes.map(a=>`<div class="sec-head" style="margin-top:14px;border-radius:12px">${a.name}</div>`+
-      a.q.map((q,i)=>`<div class="qz"><div class="qt">${q}</div><div class="opts">`+
-        L.map(([lb,v])=>`<button data-q="${a.id}:${i}" data-v="${v}"
-          aria-pressed="${irtAns[a.id+':'+i]==+v}">${lb}</button>`).join('')+
-        `</div></div>`).join('')).join('')+
-    `<button class="primary" id="irt-done" style="width:100%;padding:14px;border-radius:14px;border:0;
-      background:var(--deep);color:#fff;font-size:15px;font-weight:600;margin-top:16px;cursor:pointer">
-      احسب مرتبتي وأنشئ خطتي</button>`;
+      a.q.map((q,i)=>`<div class="qz"><div class="qt">${q}</div><div class="opts">${L.map(([lb,v])=>`<button data-q="${a.id}:${i}" data-v="${v}" aria-pressed="${irtAns[a.id+':'+i]==+v}">${lb}</button>`).join('')}</div></div>`).join('')).join('')+
+    `<button class="primary" id="irt-done" style="width:100%;padding:14px;border-radius:14px;border:0;background:var(--deep);color:#fff;font-size:15px;font-weight:600;margin-top:16px;cursor:pointer">احسب النتيجة وابنِ خطة ٤٠ يومًا</button>`;
   host.onclick=irtClick;
 }
 async function irtClick(e){
   const q=e.target.closest('button[data-q]');
-  if(q){ irtAns[q.dataset.q]=+q.dataset.v;
-    document.querySelectorAll(`button[data-q="${q.dataset.q}"]`).forEach(b=>
-      b.setAttribute('aria-pressed',b===q)); return }
+  if(q){irtAns[q.dataset.q]=+q.dataset.v;document.querySelectorAll(`button[data-q="${q.dataset.q}"]`).forEach(b=>b.setAttribute('aria-pressed',b===q));return}
   if(e.target.id==='irt-done'){
-    const need=IRT.axes.reduce((n,a)=>n+a.q.length,0);
-    if(Object.keys(irtAns).length<need){ toast('أكمل جميع الأسئلة'); return }
-    const {per,total}=irtScores(irtAns);
-    irtHist.push({d:Date.now(),per,total});
-    const weak=IRT.axes.slice().sort((a,b)=>per[a.id]-per[b.id]).slice(0,2);
-    irtPlan=[]; weak.forEach(a=>a.plan.forEach(t=>irtPlan.push({t,ax:a.name})));
-    await store.set('irt-hist',irtHist); await store.set('irt-plan',irtPlan);
-    toast('تمّ القياس — هذه خطتك'); irtRender(); return }
-  if(e.target.closest('button[data-irt="requiz"]')){ irtAns={}; irtQuiz(); return }
-  const pl=e.target.closest('button[data-pl]');
-  if(pl){ const d=hToday(); irtDone[d]=irtDone[d]||{};
-    const i=pl.dataset.pl;
-    if(irtDone[d][i]) delete irtDone[d][i]; else irtDone[d][i]=1;
-    await store.set('irt-done',irtDone); irtRender() }
+    const need=IRT.axes.reduce((n,a)=>n+a.q.length,0); if(Object.keys(irtAns).length<need){toast('أكمل جميع الأسئلة');return}
+    const result=irtScores(irtAns); irtHist.push({d:Date.now(),per:result.per,total:result.total});
+    irtJourney=irtBuildJourney(result);irtViewDay=1;
+    await store.set('irt-hist',irtHist);await store.set('irt-journey',irtJourney);toast('تم التقييم — بدأت خطة ٤٠ يومًا');irtRender();return
+  }
+  if(e.target.closest('button[data-irt="requiz"]')){irtAns={};irtQuiz();return}
+  const jd=e.target.closest('button[data-jday]');if(jd){irtViewDay=+jd.dataset.jday;irtRender();return}
+  const jt=e.target.closest('button[data-jtask]');if(jt&&!jt.disabled){
+    const n=+jt.dataset.day,key=irtDoneKey(n);irtDone[key]=irtDone[key]||{};const f=jt.dataset.jtask;irtDone[key][f]=irtDone[key][f]?0:1;
+    await store.set('irt-done',irtDone);irtViewDay=n;if(irtDayComplete(irtJourney.days[n-1]))toast('اكتمل يوم الخطة ✓');irtRender();
+  }
 }
 
 /* ================= tabs ================= */
@@ -1957,7 +2076,7 @@ document.getElementById('go-today').onclick=()=>load(iso(new Date()));
 function shift(n){const d=fromIso(current);d.setDate(d.getDate()+n);load(iso(d))}
 
 /* ================= feedback ================= */
-const FEEDBACK_VERSION='v20.4';
+const FEEDBACK_VERSION='v21.0';
 const feedbackSheet=document.getElementById('feedback-sheet');
 const feedbackText=document.getElementById('feedback-text');
 function feedbackPayload(){
@@ -2020,7 +2139,7 @@ document.getElementById('btn-geo').onclick=()=>{
   },()=>toast('تعذّر تحديد الموقع — أدخله يدويًا')) };
 
 document.getElementById('btn-export').onclick=async()=>{
-  const keys=await store.keys('day:'); const out={settings,qada,days:{}};
+  const keys=await store.keys('day:'); const out={settings,qada,days:{},todo:await store.get('todo-items'),irtHist:await store.get('irt-hist'),irtJourney:await store.get('irt-journey'),irtDone:await store.get('irt-done')};
   for(const k of keys) out.days[k]=await store.get(k);
   const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
@@ -2031,8 +2150,12 @@ document.getElementById('file-in').onchange=async e=>{
   try{ const j=JSON.parse(await f.text());
     if(j.settings){settings=j.settings; await store.set('settings',settings)}
     if(j.qada){qada=j.qada; await store.set('qada',qada)}
+    if(j.todo){todoItems=j.todo;await store.set('todo-items',todoItems)}
+    if(j.irtHist)await store.set('irt-hist',j.irtHist);
+    if(j.irtJourney)await store.set('irt-journey',j.irtJourney);
+    if(j.irtDone)await store.set('irt-done',j.irtDone);
     for(const [k,v] of Object.entries(j.days||{})) await store.set(k,v);
-    await load(current); fillSettings(); toast('تم الاستيراد');
+    await load(current); fillSettings(); renderTodo(); toast('تم الاستيراد');
   }catch{ toast('الملف غير صالح') } };
 
 /* theme */
@@ -2047,6 +2170,7 @@ document.getElementById('btn-theme').onclick=async()=>{
   qada=(await store.get('qada'))||{};
   if(settings.theme) document.documentElement.setAttribute('data-theme',settings.theme);
   buildMoods(); buildSections(); buildPrayerLog();
+  await loadTodo();
   await load(current);
   renderNext(); setInterval(renderNext,1000);
   const h=(location.hash||'').replace('#','');
