@@ -1,9 +1,15 @@
 {
-  "state_id": "RAFIQ-HANDOFF-1.6.0-2026-08-18",
+  "state_id": "RAFIQ-HANDOFF-v24-2026-08-18",
   "project": "رفيق يومك",
-  "version": "1.6.0",
+  "version": "v24",
   "platform": "Chrome MV3 side-panel extension",
-  "read_first": ["AI_HANDOFF.md", "manifest.json", "app/app.js", "app/index.html"],
+  "read_first": [
+    "AI_HANDOFF.md",
+    "CONTENT_PROVENANCE-ISHKALIAT.md",
+    "manifest.json",
+    "app/app.js",
+    "app/index.html"
+  ],
   "product_thesis": "الدين ثابت والمشكلة تختلف؛ رفيق بوابة يومية تربط المستخدم بالقرآن والذكر والعلم وتساعده في مشكلاته الواقعية بمصدر ظاهر وخطوة عملية.",
   "non_negotiables": [
     "Every religious claim displayed in the app must have a visible source; unsourced religious claims are removed or rewritten.",
@@ -13,25 +19,41 @@
     "Age and male/female personalization is local-only and used only where meaningful.",
     "Do not invent sacred counts, durations, promises, or spiritual ranks.",
     "Keep + / Saved for later across content.",
-    "Do not restore the previously rejected home-page tagline; preserve the current calmer copy."
+    "Do not restore the previously rejected home-page tagline; preserve the current calmer copy.",
+    "The Ishkaliat track is opt-in, does not classify religiosity, and every displayed idea links to the original Dr. Ahmed Abdelmonem video + timestamp; supplied summaries are not treated as verbatim transcripts."
   ],
   "storage_keys": {
-    "profile": "profile-v1",
+    "profile": "profile-v1 {age, gender, advancedIssues}",
     "saved_later": "saved-later-v1",
-    "onboarding": "onboarding-seen-v3"
+    "onboarding": "onboarding-seen-v3",
+    "qalb_paths": "qalb-paths-v1 (selected heart/obstacle/Fiqh-al-Nafs paths, local progress, check-ins)"
   },
   "key_sources": {
     "essentials": "https://risala.prh.gov.sa/ar/contents/251",
     "fiqh_nafs": "https://makany.co/",
     "who_depression": "https://www.who.int/news-room/fact-sheets/detail/depression",
-    "nhs_depression": "https://www.nhs.uk/mental-health/conditions/depression-in-adults/diagnosis/"
+    "nhs_depression": "https://www.nhs.uk/mental-health/conditions/depression-in-adults/diagnosis/",
+    "ishkaliat_playlist": "https://www.youtube.com/playlist?list=PLnpYU8_AiEPeOynF9Q35m_3QgRq-yFtaC"
   },
   "roadmap": [
     "source integrity and regression testing",
-    "deep-link saved items to exact content",
+    "deep-link saved items and personal paths to exact content",
+    "refine personal-path prioritization without diagnosing users",
+    "verify/refine Ishkaliat summaries against actual transcripts/official text when available",
     "expand real-life obstacles with rigorous sources",
     "more meaningful age/sex personalization",
     "licensed human audio for adhkar when a verified source/licence exists",
     "continued large-tab UX/accessibility cleanup"
+  ],
+  "manifest_version_string": "24.0.0",
+  "current_release_changes": [
+    "source UI redesigned; default blue religious/reference links replaced by calm source cards",
+    "RTL back navigation standardized",
+    "Fiqh al-Nafs list/detail UX rebuilt",
+    "personal مساري feature added for heart diseases, obstacles and Fiqh al-Nafs using existing sourced content only",
+    "ارتقِ references moved out of assessment questions into post-assessment plan/reference UI",
+    "female wording adapted for mosque-specific assessment questions",
+    "privacy and backup/export updated for qalb-paths-v1",
+    "every future release must update AI_HANDOFF.md/json, prompt, release notes and version"
   ]
 }

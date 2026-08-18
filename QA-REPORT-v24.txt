@@ -1,0 +1,21 @@
+رفيق يومك — QA v24
+==================
+تاريخ الفحص: 2026-08-18
+
+اختبارات تمت قبل تسليم النسخة:
+- JavaScript syntax: app/app.js + background.js — PASS
+- JSON parse: جميع ملفات app/*.json + AI_HANDOFF.json — PASS
+- manifest version = 24.0.0 — PASS
+- CSS v24 block موجود مرة واحدة — PASS
+- Static HTML IDs غير مكررة — PASS
+- مساري / qalb-paths-v1 + backup/import + privacy disclosure — PASS
+- فقه النفس: 15 موضوعًا؛ summary/psych/iman/questions/flags/steps لها source mapping — PASS
+- العقبات: 22 مسألة؛ why/answer/steps source mapping — PASS
+- أمراض/أعمال القلوب: التعريفات والقوائم والخطوات والأدلة source mapping — PASS
+- بنك الأعمال: source mapping — PASS
+- إشكاليات: 13 محاضرة؛ روابط الفيديو + timestamps structurally present — PASS
+- ارتقِ: 6 محاور لها مصادر، ولا تُرسم المصادر داخل irtQuiz() — PASS
+- source-card + RTL back + Fiqh al-Nafs detail UI tokens — PASS
+
+ملاحظة منتج:
+«مساري» ليس تشخيصًا ولا بروتوكول علاج طبي/نفسي. هو طبقة تنظيم ومتابعة تعيد استخدام المحتوى الموثق الموجود أصلًا في رفيق، مع مراجعة ذاتية محلية (أخف / كما هي / أشد).

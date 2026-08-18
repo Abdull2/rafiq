@@ -1,9 +1,9 @@
 # NEXT AI — READ THIS FIRST
 
 **Project:** رفيق يومك (Rafiq Yomak)  
-**State ID:** `RAFIQ-HANDOFF-1.6.0-2026-08-18`  
+**State ID:** `RAFIQ-HANDOFF-v24-2026-08-18`  
 **Current artifact type:** Chrome Manifest V3 side-panel extension  
-**Current release:** `1.6.0`
+**Current release:** `v24` (Chrome manifest version `24.0.0`)
 
 > This file is the continuity record for future AI sessions. Before changing code or content, inspect this file, `manifest.json`, `app/app.js`, `app/index.html`, and the relevant JSON data. Do not ask the owner to repeat decisions already documented here unless a conflict genuinely requires a decision.
 
@@ -39,7 +39,7 @@ Bottom navigation (6 tabs):
 - **المصحف** — Qur'an
 - **العلم** — Riyad al-Salihin + ما لا يسع المسلم جهله + الفقه الميسر
 - **الذكر** — adhkar + du'a + السبحة + أسماء الله الحسنى
-- **القلب** — أمراض القلوب + أعمال القلوب + العقبات + بنك الأعمال + فقه النفس
+- **القلب** — **مساري** + أمراض القلوب + أعمال القلوب + العقبات + بنك الأعمال + فقه النفس + **إشكاليات (مسار متقدم اختياري)**
 - **ارتقِ** — practical improvement journey
 
 Header includes **محفوظاتي** bookmark icon.
@@ -68,7 +68,7 @@ For crowded multi-section areas, prefer horizontally scrollable segmented chips 
 - Removed unsourced/weakly framed sections temporarily.
 - Removed dubious sacred counts and clarified organizational counters.
 
-### v1.6 (CURRENT)
+### v1.6
 - Restored and rebuilt **العقبات، فقه النفس، بنك الأعمال** with visible sources.
 - `فقه النفس` is explicitly based at a methodological level on **فقه النفس | مكاني**, supervised by Dr. عبد الرحمن ذاكر الهاشمي, while religious claims retain independent religious evidence.
 - Added medical boundary: the app does not diagnose depression/anxiety/etc.; persistent or function-impairing symptoms require qualified professional assessment; self-harm risk is urgent.
@@ -80,6 +80,26 @@ For crowded multi-section areas, prefer horizontally scrollable segmented chips 
 - Re-audited the compact in-app tasbih: fixed religious counts are shown only where sourced; other counters are explicitly organizational, and the source is visible under the dhikr.
 - Added the explicit official source for **ما لا يسع المسلم جهله**.
 - Updated privacy policy to disclose age/sex personalization and saved-local content.
+
+### v1.7 (previous internal build)
+- Added **إشكاليات — مسار متقدم** inside `القلب`, based on the 13 Dr. Ahmed Abdelmonem lecture links supplied by the owner.
+- The supplied Markdown was a Gemini-generated summary, **not a verified verbatim transcript**. Therefore all app wording is explicitly educational paraphrase, and every idea links to the original YouTube video + timestamp. See `CONTENT_PROVENANCE-ISHKALIAT.md` and `references/raw-user-ishkaliat-notes.md`.
+- Advanced content is opt-in via `profile-v1.advancedIssues`; do not ask users to label themselves “religious/devout” and do not score religiosity. UX label: **إظهار «إشكاليات» — المسار المتقدم**.
+- Added 13 lecture cards / 65 sourced ideas with search, thematic chips, save-later support, full-video links, and point-level timestamp links.
+- Added all 13 lecture links to `app/sources.html`.
+- Updated privacy copy for the local advanced-track preference and user-clicked external source links.
+- Backup export/import now includes profile personalization and saved-later items.
+
+### v24 (CURRENT — owner canonical version)
+- Owner reset the canonical release number to **v24**; `manifest.json` uses Chrome-compatible `24.0.0`. Future releases must continue from the owner’s canonical numbering, not the earlier internal 1.x sequence.
+- **Source UI cleanup:** religious/reference links now use calm source cards instead of default blue underlined links. This especially fixes the compact tasbih source presentation.
+- **Back navigation cleanup:** shared `.back` buttons are now intentional RTL pills with a right-pointing return arrow; the Qur'an reader back control was aligned to RTL as well.
+- **Fiqh al-Nafs UX rebuilt:** search/category filters remain, but results are now clean topic cards; each topic opens a dedicated detail view with separate psychological explanation, iman compass, reflection questions, practical steps, medical boundary, visible sources, save-later and personal-path CTA.
+- Added **`مساري`** inside `القلب`. A user can choose one or multiple real problems from `العقبات`, a heart disease from `أمراض القلوب`, or a Fiqh al-Nafs topic and start a local personal follow-up path. Storage key: `qalb-paths-v1`.
+- Personal paths do **not** diagnose or invent religious treatment. They reuse the already sourced content/steps from `qalb.json`, present them as progress stations, and add only product-level tracking/review (`أخف / كما هي / أشد`). Mental-health paths repeat the professional-care boundary.
+- Backup/export now includes `qalbPaths` and import restores them. Privacy policy explicitly discloses the locally stored selected problem paths and review state.
+- **ارتقِ source placement fixed:** axis references were removed from between assessment questions. **مراجع «ارتقِ»** now appear only after the assessment, in a dedicated collapsible references section and inside the resulting plan where relevant. Female wording for the two mosque-specific prayer questions is also adapted during the assessment.
+- Every future code/content change must append a dated entry to this handoff (or the current release section) and update `AI_HANDOFF.json`, `PROMPT_FOR_NEXT_AI.txt`, release notes and manifest version.
 
 ## 5) Source policy and currently important references
 
@@ -103,6 +123,15 @@ Methodological reference:
 - Site states the method uses العقل والوحي والنظر with revelation as the reference and is supervised by **د. عبد الرحمن ذاكر الهاشمي**, physician and educational/psychological treatment consultant.
 - App content must say “مستفاد من المنهج / صياغة تعليمية” unless a specific talk/text is directly verified.
 
+### إشكاليات — د. أحمد عبد المنعم
+Source/provenance rule:
+- User supplied 13 YouTube links plus AI-generated summaries/timestamps.
+- Treat those summaries as **secondary notes**, not authoritative transcripts.
+- App copy must say it is a non-verbatim educational summary.
+- Every displayed idea needs the original video + timestamp immediately underneath.
+- Do not turn lecture commentary into a fatwa. When Rafiq states a religious ruling or primary-text claim itself, retain/attach primary Qur'an/hadith/scholarly evidence as appropriate.
+- Full implementation/provenance: `CONTENT_PROVENANCE-ISHKALIAT.md`; structured content: `app/ishkaliat.json`.
+
 ### Medical boundary
 Reference examples:
 - WHO depression fact sheet: `https://www.who.int/news-room/fact-sheets/detail/depression`
@@ -111,7 +140,7 @@ Reference examples:
 
 ## 6) Personalization rules
 
-Storage key: `profile-v1` with `{age, gender}` where gender is `male` or `female`.
+Storage key: `profile-v1` with `{age, gender, advancedIssues}` where gender is `male` or `female`; `advancedIssues` is a local-only content preference for showing the optional advanced track.
 
 Current logic:
 - `audience`, `minAge`, `maxAge` on content items.
@@ -144,7 +173,18 @@ Major content registers a `＋` via `laterRegister()` and stores title/text/sour
 
 Known enhancement: implement **deep links to the exact saved item**, not just the parent tab; add optional filters by type and “mark as read/done”.
 
-## 9) Known technical files
+
+## 9) Personal problem-path model (v24)
+
+Storage key: `qalb-paths-v1`.
+
+- Supported path origins now: `problem` (heart disease), `obstacle` (specific real-life issue), and `nafs` (Fiqh al-Nafs topic).
+- Stored objects reference source content by IDs and store only local progress/check-ins; they do not copy a new unsourced treatment protocol.
+- A path is an organizational follow-up layer: understand the issue → work through already-sourced practical steps → return to the relevant iman anchor where present → review whether the issue feels `أخف / كما هي / أشد`.
+- Multiple active paths are supported because different users can have different simultaneous real-life concerns.
+- For mental-health-related paths, the app must keep the explicit rule: education/support does not replace diagnosis, clinician follow-up, medication, therapy, or urgent help when appropriate.
+
+## 10) Known technical files
 
 - `manifest.json` — MV3 manifest/version/permissions.
 - `background.js` — side panel/context menu/background behavior.
@@ -152,11 +192,14 @@ Known enhancement: implement **deep links to the exact saved item**, not just th
 - `app/app.js` — main UI/application logic.
 - `app/qalb.json` — heart diseases/works/obstacles/Fiqh al-Nafs/bank deeds.
 - `app/knowledge.json` — essentials + fiqh data and general references.
+- `app/ishkaliat.json` — optional advanced lecture-based issues track; every point has a source timestamp.
+- `CONTENT_PROVENANCE-ISHKALIAT.md` — provenance/attribution rules for the advanced track.
+- `references/raw-user-ishkaliat-notes.md` — raw owner-supplied secondary notes; not authoritative.
 - `app/azkar.json`, `app/adiya.json`, `app/riyad.json`, `app/quran.json`, `app/asma.json`, `app/irtaqi.json` — content data.
 - `app/sources.html` — public scientific/source methodology page.
 - `app/privacy.html` — privacy disclosures.
 
-## 10) Testing gates before each release
+## 11) Testing gates before each release
 
 At minimum:
 1. `manifest.json` parses and version is bumped.
@@ -168,24 +211,26 @@ At minimum:
    - every Fiqh al-Nafs block has methodological/religious/medical source labels as applicable;
    - every bank deed has a source;
    - every essentials/fiqh card shows the general reference and specific references;
-   - adhkar/du'a/heart/Qur'an/hadith source labels remain visible.
+   - adhkar/du'a/heart/Qur'an/hadith source labels remain visible;
+   - every `ishkaliat.json` intro/point has an original video + timestamp, and the UI shows it directly under that content.
 6. Verify `＋` does not accidentally open a heart tile (event-propagation regression).
 7. Test onboarding/profile for male + female and at least teen + adult ages.
 8. Test dark/light, narrow side-panel width, scrolling segmented navigation, search, saved list, and settings.
 9. If permissions or data use change, update `privacy.html` and Chrome Web Store disclosures before upload.
 
-## 11) Near-term roadmap
+## 12) Near-term roadmap
 
 Priority order:
 1. Reliability + source integrity.
 2. Exact-item deep linking from `محفوظاتي`.
-3. More real-life obstacle cases with careful source mapping (family, boundaries, friendship, marriage, loneliness, pornography/sexual temptation, debt/money, job stress, study failure, social media, comparison, grief) — no sensationalism.
-4. More precise age/sex personalization where genuinely needed.
-5. Licensed/authorized **human audio** for adhkar if a trustworthy audio source/licence is secured; do not scrape random recitations.
-6. Continued UX cleanup in large content areas.
-7. Full regression/accessibility test before store release.
+3. Verify/refine the new `إشكاليات` summaries against actual transcripts/official text if supplied, while preserving point-level original-video timestamps.
+4. More real-life obstacle cases with careful source mapping (family, boundaries, friendship, marriage, loneliness, pornography/sexual temptation, debt/money, job stress, study failure, social media, comparison, grief) — no sensationalism.
+5. More precise age/sex personalization where genuinely needed.
+6. Licensed/authorized **human audio** for adhkar if a trustworthy audio source/licence is secured; do not scrape random recitations.
+7. Continued UX cleanup in large content areas.
+8. Full regression/accessibility test before store release.
 
-## 12) Instructions to the next AI
+## 13) Instructions to the next AI
 
 - Read this file before proposing changes.
 - Treat the current ZIP/source as source of truth over memories of earlier versions.

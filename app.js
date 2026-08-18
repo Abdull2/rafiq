@@ -97,7 +97,7 @@ const toast=m=>{const t=document.getElementById('toast');t.textContent=m||'تم 
   t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1200)};
 
 /* ================= profile personalization ================= */
-let profile={age:null,gender:null};
+let profile={age:null,gender:null,advancedIssues:false};
 const isFemale=()=>profile.gender==='female';
 const g=(male,female)=>isFemale()?female:male;
 const pText=x=>{
@@ -106,6 +106,8 @@ const pText=x=>{
   return isFemale()?(x.femaleText||x.t||x.maleText||''):(x.maleText||x.t||x.femaleText||'');
 };
 const profileAge=()=>Number(profile.age)||0;
+const issuesEnabled=()=>profile.advancedIssues===true;
+const issueTabButton=(active=false)=>issuesEnabled()?`<button data-k="ishkaliat"${active?' aria-current="true"':''}>⌁ إشكاليات</button>`:'';
 function audienceOk(x){
   if(!x)return true;
   if(x.audience&&x.audience!=='all'&&x.audience!==profile.gender)return false;
@@ -395,7 +397,7 @@ async function renderAzkar(){
 function renderAzkarList(){
   const box=document.getElementById('az-results'), cnt=document.getElementById('az-result-count'); if(!box||!cnt)return;
   const q=searchNorm(azkarQuery);
-  const sourceHtml=z=>z.source?`<div class="zk-source">المصدر: ${z.source.url?`<a href="${z.source.url}" target="_blank" rel="noopener">${z.source.label}</a>`:z.source.label}</div>`:'';
+  const sourceHtml=z=>z.source?`<div class="zk-source source-ref"><span class="src-mark">↗</span><span class="src-copy"><span class="src-label">المصدر</span>${z.source.url?`<a href="${z.source.url}" target="_blank" rel="noopener">${z.source.label}</a>`:`<span class="src-text">${z.source.label}</span>`}</span></div>`:'';
   const actions=(set,z,i,c)=>{const lid=`azkar:${set.id}:${i}`;const plus=laterRegister(lid,{kind:'ذكر',title:set.name||'الأذكار',text:z.t,source:z.source?.label||'',tab:'azkar'});return `<div class="bar"><span class="cnt">${AR(c)} / ${AR(z.n)}</span><span class="zk-actions">${plus}<button class="listen" data-speak="${set.id}:${i}" type="button" aria-label="استمع إلى الذكر">🔊 استمع</button><button data-z="${i}" data-set="${set.id}">${c>=z.n?'تم ✓':'قرأت'}</button></span></div>`};
   if(q){
     const hits=[]; AZ.sets.forEach(set=>set.items.forEach((z,i)=>{if(searchNorm(set.name+' '+z.t+' '+(z.note||'')).includes(q))hits.push({set,z,i})}));
@@ -417,7 +419,7 @@ function renderTasbih(){
   const d=DHIKR[dIdx];
   document.getElementById('dhikr-text').textContent=d.t;
   const src=document.getElementById('dhikr-source');
-  if(src)src.innerHTML=d.source?`المصدر: <a href="${d.source.u}" target="_blank" rel="noopener">${d.source.t}</a>`:'';
+  if(src)src.innerHTML=d.source?`<span class="src-mark">↗</span><span class="src-copy"><span class="src-label">المصدر</span><a href="${d.source.u}" target="_blank" rel="noopener">${d.source.t}</a></span>`:'';
   document.getElementById('count').textContent=tCount;
   document.getElementById('target-line').textContent=d.n?`العدد الوارد ${d.n} — اليوم ${data.tasbih[dIdx]||0}`:`عداد اختياري للتنظيم — اليوم ${data.tasbih[dIdx]||0}`;
   const tot=Object.values(data.tasbih).reduce((a,b)=>a+b,0);
@@ -734,7 +736,7 @@ async function renderSunnah(){
     document.getElementById('rs-books').innerHTML=`<div class="hd-card"><div class="lbl">فهرس رياض الصالحين</div><div class="t" style="font-size:17px">٢٠ كتابًا بالترتيب الأصلي</div><div class="r">الأبواب التفصيلية داخل الكتب غير ممثلة في ملف البيانات الحالي. نص الأحاديث معروض كما ورد في المصدر الرقمي، ولم نضف تشكيلًا آليًا حفاظًا على سلامة النص.</div></div><div class="bk-wrap">`+RS.books.map((b,i)=>`<div class="bk-row" data-b="${i}"><div><div class="bk-name">${b.name}</div><div class="bk-n">${AR(b.items.length)} حديثًا</div></div><span class="bk-n">﴾</span></div>`).join('')+'</div>';
   } else {
     const b=RS.books[rsBook]; cnt.textContent=`${AR(b.items.length)} حديثًا في ${b.name}`;
-    document.getElementById('rs-books').innerHTML=`<button class="back" id="rs-back" style="margin-top:12px">← كل الكتب</button><div class="hd-card"><div class="lbl">الكتاب ${AR(rsBook+1)} من ٢٠</div><div class="t">${b.name}</div><div class="r">${AR(b.items.length)} حديثًا · الترتيب مطابق لفهرس رياض الصالحين</div></div>`;
+    document.getElementById('rs-books').innerHTML=`<button class="back" id="rs-back">كل الكتب</button><div class="hd-card"><div class="lbl">الكتاب ${AR(rsBook+1)} من ٢٠</div><div class="t">${b.name}</div><div class="r">${AR(b.items.length)} حديثًا · الترتيب مطابق لفهرس رياض الصالحين</div></div>`;
     document.getElementById('rs-list').innerHTML=b.items.map(h=>{ const k=rsBook+':'+h.n,f=rsFav.includes(k); return `<div class="hd-item"><div class="num">رياض الصالحين ${AR(h.n)}</div><div class="tx">${h.t}</div><div class="learn-source">المصدر: رياض الصالحين — ${b.name} — الحديث ${AR(h.n)}؛ التخريج داخل النص.</div><div class="acts">${laterRegister(`hadith:${k}`,{kind:'حديث',title:b.name,text:h.t,source:`رياض الصالحين — الحديث ${h.n}`,tab:'sunnah'})}<button data-f="${k}" class="${f?'on':''}">${f?'★ محفوظ':'☆ حفظ'}</button><button data-c="${k}">نسخ</button></div></div>`}).join('');
   }
 }
@@ -779,7 +781,7 @@ async function renderKnowledge(){
 document.getElementById('learn-seg').onclick=e=>{const b=e.target.closest('button[data-learn]');if(!b)return;learnMode=b.dataset.learn;learnQuery='';learnGroup='all';renderKnowledge();scrollTo({top:0,behavior:'smooth'})};
 
 /* ================= القلب (مدمج) ================= */
-let HD=null, hKind='problems', hCur=null, hTrack={}, hJournal={}, hProg={}, hQuery='';
+let HD=null, hKind='problems', hCur=null, hTrack={}, hJournal={}, hProg={}, hQuery='', hPaths=[], hPathCur=null, nafsCur=null;
 const hToday=()=>iso(new Date());
 const hDone=(k,i,d)=>!!(hTrack[d]&&hTrack[d][k+':'+i]);
 function hStreak(k,i){ let s=0;
@@ -790,7 +792,7 @@ const hList=p=>p.causes||p.fruits||[];
 async function loadH(){ if(HD)return HD;
   try{ HD=await (await fetch('./qalb.json?v='+Date.now())).json() }catch{ HD={problems:[],works:[],obstacles:[]} }
   hTrack=(await store.get('qalb-track'))||{}; hJournal=(await store.get('qalb-journal'))||{};
-  hProg=(await store.get('qalb-prog'))||{}; return HD }
+  hProg=(await store.get('qalb-prog'))||{}; hPaths=(await store.get('qalb-paths-v1'))||[]; return HD }
 function hPct(p){
   if(p.items){ let t=0,n=0;
     p.items.forEach(it=>it.steps.forEach((st,i)=>{ if(st.track){t++; if(hDone(p.id+'/'+it.id,i,hToday()))n++ }}));
@@ -799,16 +801,72 @@ function hPct(p){
   let n=0; c.forEach((x,i)=>{ if(x.track&&hDone(p.id,i,hToday()))n++ });
   return Math.round(n/tr.length*100) }
 const hFind=id=>(HD.problems||[]).concat(HD.works||[],HD.obstacles||[]).find(x=>x.id===id);
+const hPathActive=()=>hPaths.filter(x=>x.status!=='archived');
+const hPathTab=(active=false)=>`<button data-k="path"${active?' aria-current="true"':''}>◎ مساري${hPathActive().length?` · ${AR(hPathActive().length)}`:''}</button>`;
+function hPathKey(type,parentId,itemId=''){return [type,parentId,itemId].filter(Boolean).join(':')}
+function hPathFind(key){return hPaths.find(x=>x.key===key)}
+function hPathResolve(path){
+  if(!path)return null;
+  if(path.type==='problem'){
+    const p=(HD.problems||[]).find(x=>x.id===path.parentId); if(!p)return null;
+    return {type:'problem',kind:'مرض من أمراض القلوب',title:p.name,sub:p.sub||'',summary:p.def||'',summarySource:p.defSource,steps:hSteps(p),proof:p.proof,proofSource:p.proofSource,medical:false};
+  }
+  if(path.type==='obstacle'){
+    const cat=(HD.obstacles||[]).find(x=>x.id===path.parentId), it=cat?.items?.find(x=>x.id===path.itemId); if(!cat||!it)return null;
+    const q=isFemale()?(it.qFemale||it.q):(it.qMale||it.q);
+    return {type:'obstacle',kind:'عقبة حياتية',title:q,sub:cat.name,summary:it.answer||'',summarySource:it.answerSource,steps:it.steps||[],medical:(cat.id==='wellbeing'||/قلق|حزن|اكتئاب|نفس/.test(q)),flags:it.flags||[]};
+  }
+  if(path.type==='nafs'){
+    const it=(HD.nafs||[]).find(x=>x.id===path.parentId); if(!it)return null;
+    return {type:'nafs',kind:'فقه النفس',title:it.q,sub:(HD.nafsGroups||[]).find(g=>g.id===it.group)?.name||'',summary:it.summary||'',summarySource:it.summarySource,steps:it.steps||[],proof:it.iman,proofSource:it.imanSource,medical:true,flags:it.flags||[]};
+  }
+  return null;
+}
+function hPathButton(type,parentId,itemId=''){
+  const key=hPathKey(type,parentId,itemId),on=!!hPathFind(key);
+  return `<button class="path-start ${on?'on':''}" data-path-start="${laterEsc(key)}">${on?'✓ موجود في مساري':'ابدأ مسارًا لهذه المشكلة'}</button>`;
+}
+async function hPathStart(key){
+  if(hPathFind(key)){toast('هذه المشكلة موجودة في مسارك');hPathCur=key;hPathsRender();return}
+  const [type,parentId,itemId='']=key.split(':');
+  hPaths.unshift({key,type,parentId,itemId,start:Date.now(),status:'active',done:{},checkins:[]});
+  await store.set('qalb-paths-v1',hPaths); toast('أضفتها إلى مسارك'); hPathCur=key; hPathsRender();
+}
+function hPathStops(def){
+  if(!def)return [];
+  const stops=[{id:'understand',t:'افهم المشكلة أولًا',d:def.summary,s:def.summarySource}];
+  (def.steps||[]).slice(0,4).forEach((st,i)=>stops.push({id:'step'+i,t:st.t||`خطوة ${i+1}`,d:st.d||'',s:st.s||st.source}));
+  if(def.proof)stops.push({id:'anchor',t:def.type==='nafs'?'البوصلة الإيمانية':'ارجع إلى الأصل',d:def.proof,s:def.proofSource});
+  return stops;
+}
+function hPathProgress(path,def){const stops=hPathStops(def);if(!stops.length)return 0;const n=stops.filter(x=>path.done?.[x.id]).length;return Math.round(n/stops.length*100)}
+async function hPathsRender(){
+  await loadH(); hPathCur=null;
+  const active=hPathActive(),host=document.getElementById('v-qalb');
+  host.innerHTML=`<div class="h-tabs">${hPathTab(true)}<button data-k="problems">♡ أمراض القلوب</button><button data-k="works">◇ أعمال القلوب</button><button data-k="obstacles">↗ العقبات</button><button data-k="deeds">＋ بنك الأعمال</button><button data-k="nafs">◌ فقه النفس</button>${issueTabButton(false)}</div>
+    <div class="path-hero"><div class="kicker">مساري الشخصي</div><h2>مشكلتك لها باب ومسار</h2><p>اختر المشكلة التي تشغلك الآن من العقبات أو أمراض القلوب أو فقه النفس. رفيق يجمع لك أصل الفكرة والخطوات الموجودة في المحتوى نفسه، ويحفظ تقدمك محليًا على جهازك. يمكنك فتح أكثر من مسار.</p></div>
+    ${active.length?`<div class="path-list">${active.map(p=>{const d=hPathResolve(p);if(!d)return'';const pct=hPathProgress(p,d);return `<div class="path-card"><div class="top"><div><div class="kind">${d.kind}${d.sub?' · '+d.sub:''}</div><h3>${d.title}</h3><div class="sub">بدأ ${new Intl.DateTimeFormat('ar-EG',{day:'numeric',month:'short'}).format(new Date(p.start))}</div></div><button class="path-open" data-path-open="${laterEsc(p.key)}">افتح المسار</button></div><div class="path-progress"><i style="width:${pct}%"></i></div><div class="path-meta"><span>${AR(pct)}% من المحطات</span><span>${(p.checkins||[]).length?`آخر مراجعة: ${(p.checkins||[]).slice(-1)[0].state}`:'لم تسجل مراجعة بعد'}</span></div></div>`}).join('')}</div>`:`<div class="path-empty"><b>ابدأ من المشكلة التي تشغلك فعلًا</b><p>لا يوجد اختبار يقرر مشكلتك نيابة عنك. اختر الباب الأقرب إلى واقعك، ثم اضغط «ابدأ مسارًا» داخل المسألة.</p><div class="path-picks"><button data-path-go="obstacles">العقبات اليومية</button><button data-path-go="problems">أمراض القلوب</button><button data-path-go="nafs">فقه النفس</button></div></div>`}`;
+  host.onclick=hClick;
+}
+function hPathDetail(key){
+  const path=hPathFind(key),def=hPathResolve(path);if(!path||!def){hPathsRender();return}hPathCur=key;
+  const stops=hPathStops(def),pct=hPathProgress(path,def),last=(path.checkins||[]).slice(-1)[0];
+  const danger=def.medical?`<div class="path-danger">إن كانت الأعراض شديدة أو مستمرة أو تعطل حياتك، أو لديك تشخيص قائم، فهذا المسار مساند فقط ولا يستبدل الطبيب أو المختص أو العلاج الموصوف.</div>`:'';
+  document.getElementById('v-qalb').innerHTML=`<button class="back" id="path-back">مساري</button><div class="path-detail-head"><div class="kind">${def.kind}${def.sub?' · '+def.sub:''}</div><h2>${def.title}</h2><p>هذا مسار تنظيم ومتابعة مبني على المحتوى الموثق الموجود أصلًا في رفيق، وليس تشخيصًا أو فتوى شخصية.</p><div class="path-progress"><i style="width:${pct}%"></i></div><div class="path-meta"><span>${AR(pct)}%</span><span>${AR(stops.filter(x=>path.done?.[x.id]).length)} من ${AR(stops.length)} محطات</span></div></div>
+    <div class="h-sec" style="margin-top:12px">${stops.map(st=>`<div class="path-stop"><button data-path-stop="${st.id}" class="${path.done?.[st.id]?'on':''}">✓</button><div><div class="pt">${st.t}</div><div class="pd">${st.d||''}</div>${hSourceHtml(st.s)}</div></div>`).join('')}<div class="path-review"><b>كيف تبدو المشكلة بعد التجربة؟</b><div class="choices"><button data-path-state="أخف" class="${last?.state==='أخف'?'on':''}">أخف</button><button data-path-state="كما هي" class="${last?.state==='كما هي'?'on':''}">كما هي</button><button data-path-state="أشد" class="${last?.state==='أشد'?'on':''}">أشد</button></div>${danger}</div></div>
+    <div class="path-actions"><button data-path-archive="${laterEsc(key)}">إنهاء وإخفاء المسار</button><button class="danger" data-path-reset="${laterEsc(key)}">تصفير التقدم</button></div>`;
+  document.getElementById('v-qalb').onclick=hClick;scrollTo({top:0,behavior:'smooth'});
+}
 
 async function hRender(){
   await loadH(); hCur=null;
   document.getElementById('v-qalb').innerHTML=
-   `<div class="h-tabs">
+   `<div class="h-tabs">${hPathTab(false)}
       <button data-k="problems" aria-current="${hKind==='problems'}">♡ أمراض القلوب</button>
       <button data-k="works" aria-current="${hKind==='works'}">◇ أعمال القلوب</button>
       <button data-k="obstacles">↗ العقبات</button>
       <button data-k="deeds">＋ بنك الأعمال</button>
-      <button data-k="nafs">◌ فقه النفس</button>
+      <button data-k="nafs">◌ فقه النفس</button>${issueTabButton(false)}
     </div>
     <p class="h-src"><b>قاعدة رفيق:</b> كل توجيه ديني تحته مصدره، وفقه النفس مستفاد من منهج مكاني مع فصل واضح بين التثقيف وبين التشخيص والعلاج الطبي.</p>
     <input id="heart-search" class="q-search" type="search" value="${hQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في هذا القسم: رياء، توكل، صبر، شهوة…" aria-label="بحث في القلب">
@@ -840,9 +898,10 @@ function hProgHtml(id,label){
 }
 function hSourceHtml(s){
   if(!s)return '';
-  if(typeof s==='string')return `<div class="h-src-line">المصدر: ${s}</div>`;
+  const mark='<span class="src-mark">↗</span>';
+  if(typeof s==='string')return `<div class="h-src-line source-ref">${mark}<span class="src-copy"><span class="src-label">المصدر</span><span class="src-text">${s}</span></span></div>`;
   const t=s.t||s.label||'مرجع';
-  return `<div class="h-src-line">المصدر: ${s.u?`<a href="${s.u}" target="_blank" rel="noopener">${t} ↗</a>`:t}</div>`;
+  return `<div class="h-src-line source-ref">${mark}<span class="src-copy"><span class="src-label">المصدر</span>${s.u?`<a href="${s.u}" target="_blank" rel="noopener">${t}</a>`:`<span class="src-text">${t}</span>`}</span></div>`;
 }
 function hListHtml(items){
   return (items||[]).map(x=>{
@@ -883,6 +942,7 @@ function hOpen(id){
         <div class="h-obb hide">
           <div class="h-obs"><div class="lb">لماذا قد تحدث؟</div><ul>${hListHtml(it.why||[])}</ul></div>
           <div class="h-obs"><div class="lb">الجواب باختصار</div><div class="tx">${it.answer}</div>${hSourceHtml(it.answerSource)}</div>
+          <div class="path-inline"><span>هذه هي مشكلتك الآن؟ اجمعها في «مساري» وتابع خطواتها بدل أن تضيع بين الأقسام.</span>${hPathButton('obstacle',p.id,it.id)}</div>
           <div class="h-obs" style="padding-bottom:0"><div class="lb">خطوات التجاوز</div></div>
           ${hStepsHtml(key,it.steps||[])}
           ${src?`<div class="h-obs"><div class="lb">المصادر والتوسع</div>${src}</div>`:''}
@@ -897,8 +957,8 @@ function hOpen(id){
   }
   const jr=(hJournal[p.id]||[]).slice().reverse();
   document.getElementById('v-qalb').innerHTML=
-    `<button class="back" id="h-back" style="margin-top:12px">← رجوع</button>
-     <div class="h-cathero"><h2>${p.name}</h2><p>${p.sub||''}</p></div>
+    `<button class="back" id="h-back">رجوع</button>
+     <div class="h-cathero"><h2>${p.name}</h2><p>${p.sub||''}</p>${(!isOb&&(HD.problems||[]).some(x=>x.id===p.id))?`<div class="nafs-actions">${hPathButton('problem',p.id)}</div>`:''}</div>
      ${p.def?`<div class="h-sec"><div class="h-bd">${p.def}${hSourceHtml(p.defSource)}</div></div>`:''}
      ${body}
      ${links.length?`<div class="h-sec"><div class="h-sh">مراجع إضافية</div><div class="h-links">${links.join('')}</div></div>`:''}
@@ -917,8 +977,19 @@ function hOpen(id){
 async function hClick(e){
   if(e.target.closest('.save-later'))return;
   const kt=e.target.closest('.h-tabs button');
-  if(kt){ const k=kt.dataset.k; dCat=null; if(k==='nafs'){hNafs();return} if(k==='deeds'){hDeeds();return} if(k==='obstacles'){hKind='obstacles';hObstacles();return} if(['problems','works'].includes(k)){hKind=k;hRender();return} }
+  if(kt){ const k=kt.dataset.k; dCat=null; if(k==='path'){hPathsRender();return} if(k==='ishkaliat'){hIshkaliat();return} if(k==='nafs'){hNafs();return} if(k==='deeds'){hDeeds();return} if(k==='obstacles'){hKind='obstacles';hObstacles();return} if(['problems','works'].includes(k)){hKind=k;hRender();return} }
+  const pgo=e.target.closest('button[data-path-go]'); if(pgo){const k=pgo.dataset.pathGo;if(k==='obstacles'){hKind='obstacles';hObstacles()}else if(k==='nafs'){hNafs()}else{hKind='problems';hRender()}return}
+  const pstart=e.target.closest('button[data-path-start]'); if(pstart){await hPathStart(pstart.dataset.pathStart);return}
+  const popen=e.target.closest('button[data-path-open]'); if(popen){hPathDetail(popen.dataset.pathOpen);return}
+  if(e.target.closest('#path-back')){hPathsRender();return}
+  const pstop=e.target.closest('button[data-path-stop]'); if(pstop&&hPathCur){const p=hPathFind(hPathCur);if(!p)return;p.done=p.done||{};p.done[pstop.dataset.pathStop]=!p.done[pstop.dataset.pathStop];await store.set('qalb-paths-v1',hPaths);hPathDetail(hPathCur);return}
+  const pstate=e.target.closest('button[data-path-state]'); if(pstate&&hPathCur){const p=hPathFind(hPathCur);if(!p)return;(p.checkins=p.checkins||[]).push({d:Date.now(),state:pstate.dataset.pathState});await store.set('qalb-paths-v1',hPaths);toast('سُجلت مراجعتك');hPathDetail(hPathCur);return}
+  const parch=e.target.closest('button[data-path-archive]'); if(parch){const p=hPathFind(parch.dataset.pathArchive);if(p){p.status='archived';await store.set('qalb-paths-v1',hPaths);toast('أُغلق المسار');hPathsRender()}return}
+  const preset=e.target.closest('button[data-path-reset]'); if(preset){const p=hPathFind(preset.dataset.pathReset);if(p){p.done={};p.checkins=[];await store.set('qalb-paths-v1',hPaths);toast('تم تصفير التقدم');hPathDetail(p.key)}return}
+  const nopen=e.target.closest('[data-nafs-id]'); if(nopen){hNafsDetail(nopen.dataset.nafsId);return}
+  if(e.target.closest('#nafs-back')){nafsCur=null;hNafs();return}
   const ng=e.target.closest('button[data-ng]'); if(ng){ nafsGroup=ng.dataset.ng; hNafs(); return }
+  const ig=e.target.closest('button[data-ig]'); if(ig){ issueGroup=ig.dataset.ig; hIshkaliat(); return }
   if(e.target.closest('#d-back')){ dCat=null; hDeeds(); return }
   const dc=e.target.closest('[data-dcat]'); if(dc){ dCat=dc.dataset.dcat; hDeeds(); return }
   const dd=e.target.closest('button[data-dd]');
@@ -985,7 +1056,7 @@ async function hClick(e){
 async function hObstacles(){
   await loadH(); hKind='obstacles'; hCur=null;
   const cats=(HD.obstacles||[]).filter(audienceOk), q=searchNorm(hQuery);
-  document.getElementById('v-qalb').innerHTML=`<div class="h-tabs"><button data-k="problems">♡ أمراض القلوب</button><button data-k="works">◇ أعمال القلوب</button><button data-k="obstacles" aria-current="true">↗ العقبات</button><button data-k="deeds">＋ بنك الأعمال</button><button data-k="nafs">◌ فقه النفس</button></div><div class="nafs-hero"><h2>${g('مشكلتك مختلفة… والدين ثابت.','مشكلتك مختلفة… والدين ثابت.')}</h2><p>العقبات هنا للحياة الواقعية: أسرة، دراسة، عمل، علاقات، هاتف، فتور، قلق وأسئلة. ${g('اختر ما يشبه موقفك','اختاري ما يشبه موقفكِ')}؛ وكل جواب وخطوة تحته مصدره.</p></div><input id="heart-search" class="q-search" type="search" value="${laterEsc(hQuery)}" placeholder="ابحث: أسرة، علاقة، دراسة، قلق، هاتف…"><div class="search-count" id="heart-result-count"></div><div id="heart-list"></div>`;
+  document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}<button data-k="problems">♡ أمراض القلوب</button><button data-k="works">◇ أعمال القلوب</button><button data-k="obstacles" aria-current="true">↗ العقبات</button><button data-k="deeds">＋ بنك الأعمال</button><button data-k="nafs">◌ فقه النفس</button>${issueTabButton(false)}</div><div class="nafs-hero"><h2>${g('مشكلتك مختلفة… والدين ثابت.','مشكلتك مختلفة… والدين ثابت.')}</h2><p>العقبات هنا للحياة الواقعية: أسرة، دراسة، عمل، علاقات، هاتف، فتور، قلق وأسئلة. ${g('اختر ما يشبه موقفك','اختاري ما يشبه موقفكِ')}؛ وكل جواب وخطوة تحته مصدره.</p></div><input id="heart-search" class="q-search" type="search" value="${laterEsc(hQuery)}" placeholder="ابحث: أسرة، علاقة، دراسة، قلق، هاتف…"><div class="search-count" id="heart-result-count"></div><div id="heart-list"></div>`;
   const render=()=>{const qq=searchNorm(hQuery), F=cats.filter(x=>!qq||searchNorm(deepSearchText(x)).includes(qq));document.getElementById('heart-result-count').textContent=`${AR(F.length)} من ${AR(cats.length)} أبواب`;document.getElementById('heart-list').innerHTML=F.length?`<div class="h-grid">${F.map(p=>`<div class="h-tile" data-id="${p.id}">${laterRegister(`obstaclecat:${p.id}`,{kind:'العقبات',title:p.name,text:p.sub||'',source:'مصادر داخل كل مسألة',tab:'qalb'})}<div class="ic">${p.icon||'↗'}</div><div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div><div class="st">${AR((p.items||[]).filter(audienceOk).length)} مسائل</div></div>`).join('')}</div>`:'<div class="nafs-empty">لا توجد نتيجة مطابقة.</div>'};
   document.getElementById('v-qalb').onclick=hClick;document.getElementById('heart-search').oninput=e=>{hQuery=e.target.value;render()};render();
 }
@@ -994,34 +1065,30 @@ async function hObstacles(){
 let nafsGroup='all', nafsQuery='';
 function nafsNorm(x){ return searchNorm(x) }
 function hNafsList(){
-  const N=HD.nafs||[], q=nafsNorm(nafsQuery);
-  const G=Object.fromEntries((HD.nafsGroups||[]).map(g=>[g.id,g.name]));
+  const N=HD.nafs||[], q=nafsNorm(nafsQuery), GM=Object.fromEntries((HD.nafsGroups||[]).map(g=>[g.id,g]));
   const F=N.filter(audienceOk).filter(it=>(nafsGroup==='all'||it.group===nafsGroup) && (!q||nafsNorm([it.q,it.summary,it.psych,it.iman,...(it.questions||[])].join(' ')).includes(q)));
-  const host=document.getElementById('nafs-list'); if(!host)return; const cnt=document.getElementById('nafs-result-count'); if(cnt)cnt.textContent=`${AR(F.length)} من ${AR(N.length)} موضوعًا`;
-  host.innerHTML=F.length?F.map((it,k)=>{
-    const key='nafs/'+it.id;
-    return `<div class="h-ob">${laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الشرعية/الطبية الظاهرة',tab:'qalb'})}<button class="h-obh" data-ob="${k}">
-      <span><span class="nafs-path">${G[it.group]||''}</span><span class="q">${it.q}</span></span><span class="x">＋</span></button>
-      <div class="h-obb hide">
-        <div class="h-obs"><div class="lb">الفكرة في سطرين</div><div class="tx">${it.summary}</div>${hSourceHtml(it.summarySource)}</div>
-        <div class="h-obs"><div class="nafs-pair">
-          <div class="nafs-box"><b>ما الذي يحدث في النفس؟</b>${it.psych}${hSourceHtml(it.psychSource)}</div>
-          <div class="nafs-box"><b>البوصلة الإيمانية</b>${it.iman}${hSourceHtml(it.imanSource)}</div>
-        </div></div>
-        <div class="h-obs"><div class="lb">أسئلة لقراءة النفس</div><ul class="nafs-questions">${(it.questions||[]).map(x=>`<li>${x}</li>`).join('')}</ul>${hSourceHtml(it.questionsSource)}</div>
-        <div class="h-obs" style="padding-bottom:0"><div class="lb">خطوات عملية</div></div>
-        ${hStepsHtml(key,it.steps||[])}
-        ${(it.flags||[]).length?`<div class="h-obs"><div class="flags"><div class="fl-t">متى يكون المختص مهمًا؟</div><ul>${it.flags.map(f=>`<li>${f}</li>`).join('')}</ul>${hSourceHtml(it.flagsSource)}</div></div>`:''}
-        ${(it.sources||[]).length?`<div class="h-obs"><div class="lb">المصادر والتوسع</div>${it.sources.map(x=>`<a href="${x.u}" target="_blank" rel="noopener" class="h-lnk">${x.t} ↗</a>`).join('')}</div>`:''}
-      </div></div>`}).join(''):'<div class="nafs-empty">لا توجد نتائج مطابقة. جرّب كلمة أخرى أو اختر كل المسارات.</div>';
+  const host=document.getElementById('nafs-list'); if(!host)return; const cnt=document.getElementById('nafs-result-count'); if(cnt)cnt.textContent=`${AR(F.length)} من ${AR(N.filter(audienceOk).length)} موضوعًا`;
+  host.innerHTML=F.length?`<div class="nafs-topic-list">${F.map(it=>{const gr=GM[it.group]||{};return `<div class="nafs-topic">${laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الظاهرة',tab:'qalb'})}<button class="nafs-open" data-nafs-id="${it.id}"><span class="ni">${gr.icon||'◌'}</span><span><span class="ng">${gr.name||'فقه النفس'}</span><span class="nq">${it.q}</span><span class="ns">${it.summary||''}</span></span><span class="go">→</span></button></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة. جرّب كلمة أخرى أو اختر كل المسارات.</div>';
 }
+function hNafsDetail(id){
+  const it=(HD.nafs||[]).find(x=>x.id===id);if(!it){hNafs();return}nafsCur=id;const gr=(HD.nafsGroups||[]).find(g=>g.id===it.group)||{};
+  const plus=laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الظاهرة',tab:'qalb'});
+  document.getElementById('v-qalb').innerHTML=`<button class="back" id="nafs-back">فقه النفس</button><div class="nafs-detail-hero"><div class="crumb">${gr.icon||'◌'} ${gr.name||'فقه النفس'}</div><h2>${it.q}</h2><p>${it.summary}</p>${hSourceHtml(it.summarySource)}<div class="nafs-actions">${hPathButton('nafs',it.id)}${plus}</div></div>
+    <div class="nafs-detail-grid"><div class="nafs-detail-card"><h3>ما الذي يحدث في النفس؟</h3><div class="tx">${it.psych}</div>${hSourceHtml(it.psychSource)}</div><div class="nafs-detail-card"><h3>البوصلة الإيمانية</h3><div class="tx">${it.iman}</div>${hSourceHtml(it.imanSource)}</div></div>
+    <div class="h-sec" style="margin-top:10px"><div class="h-sh">أسئلة تساعدك على فهم نفسك</div><div class="h-bd"><div class="nafs-qcards">${(it.questions||[]).map((x,i)=>`<div class="nafs-qcard"><i>${AR(i+1)}</i><span>${x}</span></div>`).join('')}</div>${hSourceHtml(it.questionsSource)}</div></div>
+    <div class="h-sec"><div class="h-sh">خطوات عملية</div>${hStepsHtml('nafs/'+it.id,it.steps||[])}</div>
+    ${(it.flags||[]).length?`<div class="h-sec"><div class="h-sh">متى يكون المختص مهمًا؟</div><div class="h-bd"><div class="flags"><ul>${it.flags.map(f=>`<li>${f}</li>`).join('')}</ul>${hSourceHtml(it.flagsSource)}</div></div></div>`:''}
+    ${(it.sources||[]).length?`<div class="h-sec"><div class="h-sh">المصادر والتوسع</div><div class="h-links">${it.sources.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${x.t}</a>`).join('')}</div></div>`:''}`;
+  document.getElementById('v-qalb').onclick=hClick;scrollTo({top:0,behavior:'smooth'});
+}
+
 function hNafs(){
   const groups=HD.nafsGroups||[];
   document.getElementById('v-qalb').innerHTML=
-   `<div class="h-tabs">
+   `<div class="h-tabs">${hPathTab(false)}
       <button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button>
       <button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button>
-      <button data-k="nafs" aria-current="true">فقه النفس</button></div>
+      <button data-k="nafs" aria-current="true">فقه النفس</button>${issueTabButton(false)}</div>
     <div class="nafs-hero"><h2>فقه النفس — من الفهم إلى التزكية</h2><p>${HD.meta?.nafsMethod||'صياغة تعليمية مستفادة من فقه النفس | مكاني.'}</p><div class="learn-source">المصدر المنهجي: <a href="${HD.meta?.nafsUrl||'https://makany.co/'}" target="_blank" rel="noopener">فقه النفس | مكاني — بإشراف د. عبد الرحمن ذاكر الهاشمي ↗</a></div></div>
     <input id="nafs-search" class="q-search" type="search" value="${nafsQuery.replace(/"/g,'&quot;')}" placeholder="ابحث: قلق، غضب، كمالية، تعلق، وسواس…" aria-label="بحث في فقه النفس">
     <div class="search-count" id="nafs-result-count"></div>
@@ -1031,6 +1098,69 @@ function hNafs(){
   document.getElementById('v-qalb').onclick=hClick;
   document.getElementById('nafs-search').oninput=e=>{nafsQuery=e.target.value;hNafsList()};
   hNafsList();
+}
+
+
+/* ---------- إشكاليات — مسار متقدم اختياري ---------- */
+let ISH=null, issueGroup='all', issueQuery='';
+async function loadIsh(){
+  if(ISH)return ISH;
+  try{ISH=await (await fetch('./ishkaliat.json?v='+Date.now())).json()}
+  catch{ISH={meta:{},groups:[],items:[]}}
+  return ISH;
+}
+function issueAt(video,sec){
+  const join=video.includes('?')?'&':'?';
+  return `${video}${join}t=${Math.max(0,+sec||0)}s`;
+}
+function issueSource(it,at,sec,label='المصدر'){
+  const url=issueAt(it.video,sec);
+  return `<div class="h-src-line">${label}: <a href="${url}" target="_blank" rel="noopener">${it.title} — ${at} ↗</a></div>`;
+}
+function issueSearchText(it){
+  return [it.title,it.subtitle,it.intro,...(it.tags||[]),...(it.points||[]).flatMap(p=>[p.title,p.text])].join(' ');
+}
+function hIshkaliatList(){
+  const host=document.getElementById('ish-list'),cnt=document.getElementById('ish-result-count'); if(!host||!cnt)return;
+  const q=searchNorm(issueQuery), items=(ISH.items||[]).filter(it=>(issueGroup==='all'||it.group===issueGroup)&&(!q||searchNorm(issueSearchText(it)).includes(q)));
+  cnt.textContent=`${AR(items.length)} من ${AR((ISH.items||[]).length)} محاضرة`;
+  const groupNames=Object.fromEntries((ISH.groups||[]).map(g=>[g.id,g.name]));
+  host.innerHTML=items.length?items.map((it,k)=>{
+    const plus=laterRegister(`ish:${it.id}`,{kind:'إشكاليات',title:it.title,text:it.subtitle,source:`${ISH.meta?.speaker||'د. أحمد عبد المنعم'} — ${it.video}`,tab:'qalb'});
+    return `<div class="h-ob ish-card">${plus}<button class="h-obh" data-ob="${k}">
+      <span><span class="ish-path">${groupNames[it.group]||''}</span><span class="q">${it.title}</span><span class="ish-sub">${it.subtitle||''}</span></span><span class="x">＋</span></button>
+      <div class="h-obb hide">
+        <div class="h-obs ish-intro"><div class="lb">الفكرة العامة</div><div class="tx">${it.intro||''}</div>${issueSource(it,it.introAt||'00:00',it.introSec||0)}</div>
+        <div class="h-obs"><div class="lb">أهم الإشكالات والمحاور</div>
+          <div class="ish-points">${(it.points||[]).map(p=>`<div class="ish-point"><b>${p.title}</b><p>${p.text}</p>${issueSource(it,p.at,p.sec,'المصدر')}</div>`).join('')}</div>
+        </div>
+        <div class="h-obs ish-full"><a class="h-lnk" href="${it.video}" target="_blank" rel="noopener">شاهد المحاضرة كاملة على YouTube ↗</a></div>
+      </div></div>`;
+  }).join(''):'<div class="nafs-empty">لا توجد نتيجة مطابقة. جرّب كلمة أخرى أو اختر كل المحاور.</div>';
+}
+async function hIshkaliat(){
+  await loadIsh();
+  if(!issuesEnabled()){
+    document.getElementById('v-qalb').innerHTML=`<button class="back" id="ish-disabled-back">القلب</button><div class="nafs-hero"><h2>إشكاليات — مسار متقدم</h2><p>هذا المسار اختياري. يمكنك تفعيله من «تخصيص رفيق» إذا كان هذا النوع من المحتوى يناسبك.</p></div>`;
+    document.getElementById('ish-disabled-back').onclick=()=>hRender(); return;
+  }
+  document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}
+      <button data-k="problems">♡ أمراض القلوب</button><button data-k="works">◇ أعمال القلوب</button>
+      <button data-k="obstacles">↗ العقبات</button><button data-k="deeds">＋ بنك الأعمال</button>
+      <button data-k="nafs">◌ فقه النفس</button>${issueTabButton(true)}</div>
+    <div class="nafs-hero ish-hero"><div class="ish-kicker">مسار متقدم اختياري</div><h2>${ISH.meta?.title||'إشكاليات'}</h2>
+      <p>${ISH.meta?.audience||''}</p>
+      <div class="ish-method">${ISH.meta?.method||''}</div>
+      <div class="learn-source">المصدر العام: <a href="${ISH.meta?.playlist||'#'}" target="_blank" rel="noopener">سلسلة المحاضرات — ${ISH.meta?.speaker||'د. أحمد عبد المنعم'} / ${ISH.meta?.channel||''} ↗</a></div>
+    </div>
+    <input id="ish-search" class="q-search" type="search" value="${laterEsc(issueQuery)}" placeholder="ابحث: فتور، ثغر، خلاف، بناء معرفي، مثالية…" aria-label="بحث في إشكاليات">
+    <div class="search-count" id="ish-result-count"></div>
+    <div class="nafs-groups ish-groups"><button data-ig="all" class="${issueGroup==='all'?'on':''}">كل المحاور</button>${(ISH.groups||[]).map(g=>`<button data-ig="${g.id}" class="${issueGroup===g.id?'on':''}">${g.icon||''} ${g.name}</button>`).join('')}</div>
+    <div class="nafs-note"><b>طريقة القراءة:</b> اعتبر الملخص بداية فقط. النص داخل رفيق ليس اقتباسًا حرفيًا عن المحاضر؛ تحت كل فكرة رابط الفيديو من التوقيت المرتبط بها، ومنه يمكنك الرجوع إلى السياق الكامل.</div>
+    <div id="ish-list"></div>`;
+  document.getElementById('v-qalb').onclick=hClick;
+  document.getElementById('ish-search').oninput=e=>{issueQuery=e.target.value;hIshkaliatList()};
+  hIshkaliatList();
 }
 
 /* ---------- أسماء الله الحسنى ---------- */
@@ -1111,7 +1241,7 @@ async function hAsmaDetail(n){
     const more=document.getElementById('asma-more'); if(more){more.style.display=asmaVerseLimit<vv.length?'block':'none';more.textContent=`عرض المزيد (${AR(Math.min(50,vv.length-asmaVerseLimit))})`}
   };
   const asmaImmediateSources=(it.sources||[]).map(code=>ASMA.sources[code]).filter(Boolean).map(x=>`<div class="learn-source">المصدر/المرجع: <a href="${x.url}" target="_blank" rel="noopener">${x.title}</a></div>`).join('');
-  document.getElementById('v-asma').innerHTML=`<button class="back" id="asma-back" style="margin-top:12px">← الأسماء الحسنى</button>
+  document.getElementById('v-asma').innerHTML=`<button class="back" id="asma-back">الأسماء الحسنى</button>
     <div class="asma-detail-hero"><div class="num">الاسم رقم ${AR(it.n)}</div><h2>${it.name}</h2><p>${it.meaning}</p>${asmaImmediateSources}</div>
     <div class="asma-dsec"><div class="asma-dhead"><span>أثر الإيمان بالاسم</span></div><div class="asma-dbody"><div class="asma-tx">${it.impact}</div>${asmaImmediateSources}</div></div>
     <div class="asma-dsec"><div class="asma-dhead"><span>القرآن الكريم</span><span>${AR(vv.length)} موضعًا لفظيًا</span></div><div class="asma-dbody"><div class="asma-method">العدد السابق في البطاقة (${it.quranCount}) من المرجع التعليمي المستخدم في النسخة السابقة. أما القائمة هنا فتُستخرج آليًا من نص المصحف الموجود داخل التطبيق بمطابقة لفظ الاسم بعد إزالة التشكيل. لذلك قد تختلف؛ وبعض الألفاظ المشتركة قد تَرِد في سياق لا يكون فيه اللفظ اسمًا لله، فثبوت الاسم يُرجع فيه إلى الدليل والمصدر العقدي.</div><div id="asma-verses"></div><button id="asma-more" class="asma-more">عرض المزيد</button></div></div>
@@ -1147,7 +1277,7 @@ async function hDeeds(){
   const flat=[]; D.forEach(c=>c.items.forEach((it,i)=>flat.push([c,it,i]))); const pick=flat.length?flat[(seed+skip)%flat.length]:null, w=dCount(7), host=document.getElementById('v-qalb');
 
   if(dCat){
-    const c=D.find(x=>x.id===dCat); host.innerHTML=`<button class="back" id="d-back" style="margin-top:12px">← بنك الأعمال</button><div class="h-cathero"><h2>${c.name}</h2><p>${c.sub||''}</p></div><div class="h-sec">`+c.items.map((it,i)=>{ const k=dKey(c.id,i),on=hDone(k,0,hToday()); let times=0; for(let j=0;j<30;j++){const dd=new Date();dd.setDate(dd.getDate()-j);if(hDone(k,0,iso(dd)))times++} return `<div class="h-cure">${laterRegister(`deed:${c.id}:${i}`,{kind:'بنك الأعمال',title:c.name,text:pText(it),source:it.s?.t||'',tab:'qalb'})}<button class="h-chk ${on?'on':''}" data-k="${k}" data-i="0">✓</button><div><div class="t">${pText(it)}</div>${hSourceHtml(it.s)}${times?`<div class="stk">${g('فعلته','فعلتِه')} ${AR(times)} مرة هذا الشهر</div>`:''}</div></div>`}).join('')+`</div>`; host.onclick=hClick; return;
+    const c=D.find(x=>x.id===dCat); host.innerHTML=`<button class="back" id="d-back">بنك الأعمال</button><div class="h-cathero"><h2>${c.name}</h2><p>${c.sub||''}</p></div><div class="h-sec">`+c.items.map((it,i)=>{ const k=dKey(c.id,i),on=hDone(k,0,hToday()); let times=0; for(let j=0;j<30;j++){const dd=new Date();dd.setDate(dd.getDate()-j);if(hDone(k,0,iso(dd)))times++} return `<div class="h-cure">${laterRegister(`deed:${c.id}:${i}`,{kind:'بنك الأعمال',title:c.name,text:pText(it),source:it.s?.t||'',tab:'qalb'})}<button class="h-chk ${on?'on':''}" data-k="${k}" data-i="0">✓</button><div><div class="t">${pText(it)}</div>${hSourceHtml(it.s)}${times?`<div class="stk">${g('فعلته','فعلتِه')} ${AR(times)} مرة هذا الشهر</div>`:''}</div></div>`}).join('')+`</div>`; host.onclick=hClick; return;
   }
 
   host.innerHTML=`${hDeedsTabs()}<input id="deeds-search" class="q-search" type="search" value="${deedsQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في بنك الأعمال: صدقة، والدين، علم، خفاء…" aria-label="بحث في بنك الأعمال"><div class="search-count" id="deeds-result-count"></div><div id="deeds-results"></div>`;
@@ -1160,12 +1290,12 @@ function renderDeedsContent(D,pick,w){
   host.innerHTML=`${pick?`<div class="h-p40" style="background:linear-gradient(150deg,var(--gold),#8A6A2F)"><div class="hh">عمل اليوم — ${pick[0].name}</div><div class="nn" style="font-size:19px;line-height:1.7">${pText(pick[1])}</div>${hSourceHtml(pick[1].s)}<div style="display:flex;gap:8px;margin-top:12px"><button data-dd="${dKey(pick[0].id,pick[2])}" style="flex:2;margin:0">${hDone(dKey(pick[0].id,pick[2]),0,hToday())?'✓ تم بحمد الله':'تم'}</button><button data-skip="1" style="flex:1;margin:0;background:rgba(255,255,255,.14)">غيّره</button></div></div>`:''}<div class="kh-card" id="kh-card">${khHtml()}</div><div class="h-sec" style="margin-top:12px"><div class="h-sh">هذا الأسبوع</div><div class="h-bd" style="display:flex;gap:10px"><div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.n)}</div><div style="font-size:11px;color:var(--soft)">عملًا صالحًا</div></div><div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.cats)} / ٦</div><div style="font-size:11px;color:var(--soft)">أبوابًا لمستها</div></div></div></div><div class="h-grid">${D.map(c=>{let t=0;c.items.forEach((_,i)=>{if(hDone(dKey(c.id,i),0,hToday()))t++});return `<div class="h-tile" data-dcat="${c.id}"><div class="ic">${c.icon}</div><div class="nm" style="font-size:18px">${c.name}</div><div class="ds">${c.sub||''}</div><div class="st">${AR(c.items.length)} عملًا${t?' · اليوم '+AR(t)+' ✓':''}</div></div>`}).join('')}</div>`;
 }
 function hDeedsTabs(){
-  return `<div class="h-tabs">
+  return `<div class="h-tabs">${hPathTab(false)}
     <button data-k="problems">♡ أمراض القلوب</button>
     <button data-k="works">◇ أعمال القلوب</button>
     <button data-k="obstacles">↗ العقبات</button>
     <button data-k="deeds" aria-current="true">＋ بنك الأعمال</button>
-    <button data-k="nafs">◌ فقه النفس</button></div>`;
+    <button data-k="nafs">◌ فقه النفس</button>${issueTabButton(false)}</div>`;
 }
 function khHtml(){
   if(!khOpen) return `<div class="kh-lock">
@@ -1200,6 +1330,7 @@ async function loadIrt(){ if(IRT)return IRT;
   if(!irtJourney&&irtHist.length){irtJourney=irtBuildJourney(irtHist[irtHist.length-1]);await store.set('irt-journey',irtJourney)}
   return IRT }
 const irtRank=p=>IRT.ranks.slice().reverse().find(r=>p>=r.min)||IRT.ranks[0];
+function irtQuestionText(a,i,q){if(a.id==='faraid'&&i===1&&isFemale())return 'أحافظ على الفرائض في وقتها وأتهيأ لها دون تسويف';if(a.id==='faraid'&&i===3&&isFemale())return 'أبدأ الصلاة في أول وقتها قدر استطاعتي';return q}
 function irtScores(ans){
   const per={}; let tot=0,n=0;
   IRT.axes.forEach(a=>{ let s=0,c=0;
@@ -1238,7 +1369,7 @@ async function irtRender(){
   const pct=Math.round(doneN/40*100);
   host.innerHTML=`<div class="irt-hero">
       <div class="sc">نتيجة آخر تقييم</div><div class="rank">${rank.name}</div>
-      <div class="sc">${AR(total)}% · الخطة تبدأ بالأكثر احتياجًا ثم تنتقل لما بعده</div><div class="learn-source" style="color:#fff;opacity:.85">مدة ٤٠ يومًا تنظيمية داخل التطبيق وليست عددًا تعبديًا أو سنة مخصوصة.</div>
+      <div class="sc">${AR(total)}% · الخطة تبدأ بالأكثر احتياجًا ثم تنتقل لما بعده</div><div class="sc" style="margin-top:7px;opacity:.8">مدة ٤٠ يومًا تنظيمية داخل التطبيق وليست عددًا تعبديًا أو سنة مخصوصة.</div>
       <div class="irt-weak-list">${ordered.slice(0,4).map((a,i)=>`<span>${i+1}. ${a.name} ${AR(per[a.id])}%</span>`).join('')}</div>
       <div class="d">خطة ٤٠ يومًا مبنية على إجاباتك: تركيز متدرّج على أضعف المحاور، مع تثبيت ما سبق بدل إضافة أعمال كثيرة دفعة واحدة.</div>
       <button data-irt="requiz">إعادة التقييم وبناء خطة جديدة</button>
@@ -1247,12 +1378,13 @@ async function irtRender(){
       <div class="irt-grid">${irtJourney.days.map(x=>{const c=irtDayComplete(x),future=x.n>cur;return `<button data-jday="${x.n}" class="${c?'done':''} ${x.n===cur?'today':''} ${x.n===selected?'sel':''} ${future?'future':''}" title="اليوم ${x.n} — ${x.ax}">${AR(x.n)}</button>`}).join('')}</div>
       ${irtDayCard(day,selected,cur)}
     </div>
-    <p class="note" style="font-size:12px;color:var(--soft);line-height:1.8;margin-top:12px">الخطة أداة تنظيم ومحاسبة وليست حكمًا على إيمانك، والـ٤٠ يومًا مدة تصميمية وليست عددًا شرعيًا. مصادر كل محور تظهر أسفل محتواه.</p>`;
+    <details class="irt-source-drawer"><summary>مراجع محاور «ارتقِ»</summary><div class="body">${IRT.axes.map(a=>`<div class="irt-source-axis"><b>${a.name}</b><div class="source-stack">${(a.sources||[]).map(s=>`<div class="learn-source">${s}</div>`).join('')}</div></div>`).join('')}</div></details>
+    <p class="note" style="font-size:12px;color:var(--soft);line-height:1.8;margin-top:12px">الخطة أداة تنظيم ومحاسبة وليست حكمًا على إيمانك، والـ٤٠ يومًا مدة تصميمية وليست عددًا شرعيًا. المراجع موجودة بعد القياس داخل قسم مستقل، لا بين أسئلة الاختبار.</p>`;
   host.onclick=irtClick;
 }
 function irtDayCard(day,n,cur){
   if(!day)return '';
-  const state=irtDone[irtDoneKey(n)]||{}, future=n>cur, ax=IRT.axes.find(a=>a.id===day.axis), src=(ax?.sources||[]).map(s=>`<div class="learn-source">المصدر: ${s}</div>`).join('');
+  const state=irtDone[irtDoneKey(n)]||{}, future=n>cur, ax=IRT.axes.find(a=>a.id===day.axis), src=(ax?.sources||[]).length?`<details class="irt-source-drawer" style="margin-top:8px"><summary>مرجع هذا المحور</summary><div class="body source-stack">${(ax.sources||[]).map(s=>`<div class="learn-source">${s}</div>`).join('')}</div></details>`:'';
   return `<div class="irt-daycard"><div class="irt-focus"><span>اليوم ${AR(n)}</span><span>${day.ax}</span><span>${day.stage}</span></div>
     <div class="irt-task"><button data-jtask="main" data-day="${n}" class="${state.main?'on':''}" ${future?'disabled':''}>${state.main?'✓':''}</button><div><div class="tt">${day.t}</div><div class="sm">المهمة الأساسية لهذا اليوم — اجعلها قابلة للتنفيذ فعلًا.</div>${src}</div></div>
     ${day.support?`<div class="irt-task"><button data-jtask="support" data-day="${n}" class="${state.support?'on':''}" ${future?'disabled':''}>${state.support?'✓':''}</button><div><div class="tt">${day.support}</div><div class="sm">تثبيت لما سبق، حتى لا نعالج محورًا ونفقد الذي قبله.</div></div></div>`:''}
@@ -1262,8 +1394,8 @@ function irtQuiz(){
   const host=document.getElementById('irt-body');
   const L=[['لا','0'],['أحيانًا','1'],['غالبًا','2'],['دائمًا','3']];
   host.innerHTML=`<div class="irt-hero"><div class="rank">قياس نقطة البداية</div><div class="d">أجب بصدق عن ٢٤ سؤالًا. الهدف معرفة أين نبدأ، لا إعطاء حكم على إيمانك.</div></div>`+
-    IRT.axes.map(a=>`<div class="sec-head" style="margin-top:14px;border-radius:12px">${a.name}</div>${(a.sources||[]).map(s=>`<div class="learn-source">المصدر: ${s}</div>`).join('')}`+
-      a.q.map((q,i)=>`<div class="qz"><div class="qt">${q}</div><div class="opts">${L.map(([lb,v])=>`<button data-q="${a.id}:${i}" data-v="${v}" aria-pressed="${irtAns[a.id+':'+i]==+v}">${lb}</button>`).join('')}</div></div>`).join('')).join('')+
+    IRT.axes.map(a=>`<div class="sec-head" style="margin-top:14px;border-radius:12px">${a.name}</div>`+
+      a.q.map((q,i)=>`<div class="qz"><div class="qt">${irtQuestionText(a,i,q)}</div><div class="opts">${L.map(([lb,v])=>`<button data-q="${a.id}:${i}" data-v="${v}" aria-pressed="${irtAns[a.id+':'+i]==+v}">${lb}</button>`).join('')}</div></div>`).join('')).join('')+
     `<button class="primary" id="irt-done" style="width:100%;padding:14px;border-radius:14px;border:0;background:var(--deep);color:#fff;font-size:15px;font-weight:600;margin-top:16px;cursor:pointer">احسب النتيجة وابنِ خطة ٤٠ يومًا</button>`;
   host.onclick=irtClick;
 }
@@ -1333,7 +1465,7 @@ document.getElementById('go-today').onclick=()=>load(iso(new Date()));
 function shift(n){const d=fromIso(current);d.setDate(d.getDate()+n);load(iso(d))}
 
 /* ================= feedback ================= */
-const FEEDBACK_VERSION='v1.4.0';
+const FEEDBACK_VERSION='v1.7.0';
 const feedbackSheet=document.getElementById('feedback-sheet');
 const feedbackText=document.getElementById('feedback-text');
 function feedbackPayload(){
@@ -1396,7 +1528,7 @@ document.getElementById('btn-geo').onclick=()=>{
   },()=>toast('تعذّر تحديد الموقع — أدخله يدويًا')) };
 
 document.getElementById('btn-export').onclick=async()=>{
-  const keys=await store.keys('day:'); const out={settings,qada,days:{},todo:await store.get('todo-items'),irtHist:await store.get('irt-hist'),irtJourney:await store.get('irt-journey'),irtDone:await store.get('irt-done')};
+  const keys=await store.keys('day:'); const out={settings,qada,profile,savedLater:laterItems,qalbPaths:await store.get('qalb-paths-v1'),days:{},todo:await store.get('todo-items'),irtHist:await store.get('irt-hist'),irtJourney:await store.get('irt-journey'),irtDone:await store.get('irt-done')};
   for(const k of keys) out.days[k]=await store.get(k);
   const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
@@ -1407,6 +1539,9 @@ document.getElementById('file-in').onchange=async e=>{
   try{ const j=JSON.parse(await f.text());
     if(j.settings){settings=j.settings; await store.set('settings',settings)}
     if(j.qada){qada=j.qada; await store.set('qada',qada)}
+    if(j.profile){profile={age:null,gender:null,advancedIssues:false,...j.profile};await store.set('profile-v1',profile);paintProfileUI()}
+    if(Array.isArray(j.savedLater)){laterItems=j.savedLater;await store.set('saved-later-v1',laterItems);updateLaterBadge()}
+    if(Array.isArray(j.qalbPaths)){hPaths=j.qalbPaths;await store.set('qalb-paths-v1',hPaths)}
     if(j.todo){todoItems=j.todo;await store.set('todo-items',todoItems)}
     if(j.irtHist)await store.set('irt-hist',j.irtHist);
     if(j.irtJourney)await store.set('irt-journey',j.irtJourney);
@@ -1416,8 +1551,8 @@ document.getElementById('file-in').onchange=async e=>{
   }catch{ toast('الملف غير صالح') } };
 
 /* theme */
-document.getElementById('btn-profile')?.addEventListener('click',()=>{document.getElementById('profile-panel')?.classList.remove('hide');const a=document.getElementById('profile-edit-age');if(a)a.value=profile.age||'';const gEl=document.querySelector(`input[name="profile-edit-gender"][value="${profile.gender||'male'}"]`);if(gEl)gEl.checked=true});
-document.getElementById('profile-save')?.addEventListener('click',async()=>{const age=+(document.getElementById('profile-edit-age')?.value||0),gender=document.querySelector('input[name="profile-edit-gender"]:checked')?.value;if(!gender||age<10||age>100){toast('أدخل بيانات صحيحة');return}profile={age,gender};await store.set('profile-v1',profile);paintProfileUI();document.getElementById('profile-panel')?.classList.add('hide');toast(g('تم تحديث التخصيص','تم تحديث التخصيص'));if(tab==='qalb')hRender()});
+document.getElementById('btn-profile')?.addEventListener('click',()=>{document.getElementById('profile-panel')?.classList.remove('hide');const a=document.getElementById('profile-edit-age');if(a)a.value=profile.age||'';const gEl=document.querySelector(`input[name="profile-edit-gender"][value="${profile.gender||'male'}"]`);if(gEl)gEl.checked=true;const adv=document.getElementById('profile-edit-issues');if(adv)adv.checked=issuesEnabled()});
+document.getElementById('profile-save')?.addEventListener('click',async()=>{const age=+(document.getElementById('profile-edit-age')?.value||0),gender=document.querySelector('input[name="profile-edit-gender"]:checked')?.value,advancedIssues=!!document.getElementById('profile-edit-issues')?.checked;if(!gender||age<10||age>100){toast('أدخل بيانات صحيحة');return}profile={...profile,age,gender,advancedIssues};await store.set('profile-v1',profile);paintProfileUI();document.getElementById('profile-panel')?.classList.add('hide');toast(g('تم تحديث التخصيص','تم تحديث التخصيص'));if(tab==='qalb')hRender()});
 document.getElementById('profile-close')?.addEventListener('click',()=>document.getElementById('profile-panel')?.classList.add('hide'));
 document.getElementById('btn-saved')?.addEventListener('click',openSavedPanel);
 document.getElementById('saved-close')?.addEventListener('click',()=>document.getElementById('saved-panel')?.classList.add('hide'));
@@ -1433,13 +1568,13 @@ document.getElementById('btn-theme').onclick=async()=>{
 const onboarding=document.getElementById('onboarding'); let onbStep=0;
 function paintOnboarding(){document.querySelectorAll('.onb-step').forEach(x=>x.classList.toggle('on',+x.dataset.onb===onbStep));document.querySelectorAll('.onb-dots i').forEach((x,i)=>x.classList.toggle('on',i===onbStep));document.getElementById('onboarding-prev')?.classList.toggle('hide',onbStep===0);const n=document.getElementById('onboarding-next');if(n)n.textContent=onbStep===3?'ابدأ مع رفيق':'التالي'}
 document.getElementById('onboarding-prev')?.addEventListener('click',()=>{onbStep=Math.max(0,onbStep-1);paintOnboarding()});
-document.getElementById('onboarding-next')?.addEventListener('click',async()=>{if(onbStep===1){const age=+(document.getElementById('profile-age')?.value||0),gender=document.querySelector('input[name="profile-gender"]:checked')?.value;if(!gender||age<10||age>100){toast('اختر النوع واكتب عمرًا صحيحًا');return}profile={age,gender};await store.set('profile-v1',profile);paintProfileUI()}if(onbStep<3){onbStep++;paintOnboarding();return}await store.set('onboarding-seen-v3',true);onboarding?.classList.add('hide');toast(g('أهلًا بك في رفيق','أهلًا بكِ في رفيق'));hQuery='';if(tab==='qalb')hRender()});
+document.getElementById('onboarding-next')?.addEventListener('click',async()=>{if(onbStep===1){const age=+(document.getElementById('profile-age')?.value||0),gender=document.querySelector('input[name="profile-gender"]:checked')?.value;if(!gender||age<10||age>100){toast('اختر النوع واكتب عمرًا صحيحًا');return}profile={...profile,age,gender};await store.set('profile-v1',profile);paintProfileUI()}if(onbStep===2){profile={...profile,advancedIssues:!!document.getElementById('profile-issues')?.checked};await store.set('profile-v1',profile)}if(onbStep<3){onbStep++;paintOnboarding();return}await store.set('onboarding-seen-v3',true);onboarding?.classList.add('hide');toast(g('أهلًا بك في رفيق','أهلًا بكِ في رفيق'));hQuery='';if(tab==='qalb')hRender()});
 
 /* ================= boot ================= */
 (async function(){
   settings=(await store.get('settings'))||{method:'EGYPT',asr:'1',khatma:30};
   qada=(await store.get('qada'))||{};
-  profile=(await store.get('profile-v1'))||{age:null,gender:null};
+  profile={age:null,gender:null,advancedIssues:false,...((await store.get('profile-v1'))||{})};
   paintProfileUI();
   await loadLater();
   if(settings.theme) document.documentElement.setAttribute('data-theme',settings.theme);
