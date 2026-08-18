@@ -23,6 +23,60 @@
 .q-search{width:100%;box-sizing:border-box;margin:12px 0 4px;padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);font:inherit;outline:none;transition:.15s}.q-search:focus{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 10%,transparent)}.q-search::placeholder{color:var(--soft);opacity:.8}.search-count{font-size:11px;color:var(--soft);margin:4px 2px 10px;min-height:16px}.search-source{font-size:10.5px;color:var(--gold);margin-bottom:5px}.q-vtxt{font-family:Hafs,Amiri,serif;font-size:16px;line-height:1.9;color:var(--ink)}
 .asma-head{margin:12px 0;padding:16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,var(--wash),var(--card))}.asma-head h2{font-family:Amiri,serif;font-size:25px;margin:0 0 5px;color:var(--deep)}.asma-head p{font-size:12.5px;line-height:1.8;color:var(--soft);margin:0}.asma-count{font-size:11px;color:var(--soft);margin:4px 2px 10px}.asma-card{border:1px solid var(--line);border-radius:15px;background:var(--card);margin:8px 0;overflow:hidden}.asma-card>button{width:100%;border:0;background:transparent;color:var(--ink);padding:13px 14px;display:flex;align-items:center;gap:10px;text-align:right;cursor:pointer}.asma-num{width:28px;height:28px;border-radius:50%;background:var(--wash);display:grid;place-items:center;font-size:11px;color:var(--deep);flex:none}.asma-name{font-family:Amiri,serif;font-size:21px;color:var(--deep);flex:1}.asma-qc{font-size:10.5px;color:var(--soft)}.asma-body{padding:0 14px 14px;border-top:1px solid var(--line)}.asma-block{margin-top:12px}.asma-lb{font-size:11px;color:var(--gold);font-weight:600;margin-bottom:4px}.asma-tx{font-size:13px;line-height:1.8}.asma-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.asma-pill{background:var(--wash);border-radius:11px;padding:9px;font-size:11px;line-height:1.55}.asma-srcs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.asma-srcs a{font-size:10.5px;text-decoration:none;color:var(--deep);border:1px solid var(--line);border-radius:999px;padding:5px 8px;background:var(--paper)}
 .nafs-hero{margin:12px 0;background:linear-gradient(145deg,var(--wash),var(--card));border:1px solid var(--line);border-radius:16px;padding:16px}.nafs-hero h2{font-family:Amiri,serif;color:var(--deep);margin:0 0 5px;font-size:24px}.nafs-hero p{margin:0;color:var(--soft);font-size:12.5px;line-height:1.8}.nafs-groups{display:flex;gap:7px;overflow-x:auto;margin:0 0 10px}.nafs-groups button{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:999px;padding:8px 11px;font-size:11px;cursor:pointer}.nafs-groups button.on{background:var(--deep);color:#fff;border-color:var(--deep)}.nafs-path{font-size:10px;color:var(--gold);margin-bottom:3px}.nafs-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.nafs-box{border-radius:12px;padding:11px;background:var(--wash);font-size:12.5px;line-height:1.75}.nafs-box b{display:block;color:var(--deep);margin-bottom:4px}.nafs-questions{margin:5px 0 0;padding-right:18px;font-size:12.5px;line-height:1.8}.nafs-empty{text-align:center;color:var(--soft);padding:28px 10px;font-size:13px}@media(max-width:430px){.nafs-pair,.asma-meta{grid-template-columns:1fr}}
+
+/* ===== v1.4 home discovery ===== */
+.home-welcome{margin-top:12px;border:1px solid var(--line);border-radius:22px;padding:18px 16px;background:linear-gradient(145deg,var(--wash),var(--card))}
+.home-welcome .eyebrow{font-size:11px;color:var(--gold);margin-bottom:4px}
+.home-welcome h2{font-family:Amiri,serif;color:var(--deep);font-size:28px;line-height:1.35;margin:0 0 5px}
+.home-welcome p{margin:0;color:var(--soft);font-size:12.5px;line-height:1.9}
+.home-journey{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}
+.home-go{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:13px;text-align:right;color:var(--ink);cursor:pointer;min-height:106px;display:flex;flex-direction:column;gap:4px}
+.home-go:active{transform:scale(.99)}
+.home-go .ico{font-size:20px;color:var(--gold);line-height:1}
+.home-go b{font-family:Amiri,serif;font-size:18px;color:var(--deep);line-height:1.45}
+.home-go span{font-size:11.5px;color:var(--soft);line-height:1.65}
+.home-go .go{margin-top:auto;font-size:10.5px;color:var(--deep)}
+.home-go.wide{grid-column:1/-1;min-height:auto;display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:10px}
+.home-go.wide .ico{grid-row:1/3}.home-go.wide b{font-size:17px}.home-go.wide span{grid-column:2}.home-go.wide .go{grid-column:3;grid-row:1/3;margin:0}
+.evening-gate{margin-top:12px;background:var(--deep);color:#fff;border-radius:18px;padding:14px 15px;display:flex;align-items:center;gap:11px;cursor:pointer;border:0;width:100%;text-align:right}
+.evening-gate .moon{font-size:22px}.evening-gate b{display:block;font-family:Amiri,serif;font-size:20px}.evening-gate span{display:block;font-size:11px;opacity:.82}.evening-gate i{margin-inline-start:auto;font-style:normal;font-size:18px}
+.home-evening{margin-top:10px}.home-evening.hide{display:none!important}
+
+/* ===== learning hub ===== */
+.learn-seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px}
+.learn-seg button{padding:9px 6px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--soft);font-size:11.5px;cursor:pointer;line-height:1.5}
+.learn-seg button[aria-current="true"]{background:var(--deep);color:#fff;border-color:var(--deep)}
+.learn-intro{background:var(--wash);border:1px solid var(--line);border-radius:15px;padding:12px 14px;margin-top:10px;font-size:12px;color:var(--soft);line-height:1.9}
+.learn-intro b{color:var(--deep)}
+.learn-card{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:9px;overflow:hidden}
+.learn-card summary{list-style:none;cursor:pointer;padding:13px 14px;display:flex;align-items:center;gap:10px}
+.learn-card summary::-webkit-details-marker{display:none}
+.learn-card summary::after{content:'＋';margin-inline-start:auto;color:var(--gold);font-size:17px}
+.learn-card[open] summary::after{content:'－'}
+.learn-card .ln{width:29px;height:29px;border-radius:9px;background:var(--wash);color:var(--deep);display:grid;place-items:center;font-size:11px;flex:none}
+.learn-card .lt{font-family:Amiri,serif;font-size:19px;color:var(--deep)}
+.learn-body{border-top:1px solid var(--line);padding:12px 14px 14px}
+.learn-lead{font-size:13px;line-height:1.95;margin:0 0 8px}
+.learn-body ul{margin:5px 0 8px;padding-inline-start:19px}.learn-body li{font-size:12.5px;line-height:1.9;margin-bottom:3px}
+.learn-source{font-size:10.5px;color:var(--gold);line-height:1.8;margin-top:7px}.learn-source a{color:var(--deep);text-decoration:none}
+.learn-source a:hover{text-decoration:underline}
+.learn-disclaimer{font-size:10.5px;color:var(--soft);line-height:1.8;margin:10px 2px 0}
+
+/* ===== azkar audio ===== */
+.zikr .bar .zk-actions{display:flex;gap:6px;align-items:center}.zikr .bar .listen{padding:7px 10px;color:var(--gold)}
+.zikr .zk-source{font-size:10.5px;color:var(--soft);margin-top:6px;line-height:1.7}.zikr .zk-source a{color:var(--deep);text-decoration:none}
+.audio-note{font-size:10.5px;color:var(--soft);background:var(--wash);border-radius:10px;padding:7px 10px;margin:8px 15px 0;line-height:1.7}
+
+/* ===== onboarding story ===== */
+.onboarding-card{overflow:hidden}
+.onb-step{display:none}.onb-step.on{display:block}
+.onb-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:14px}
+.onb-feature{border:1px solid var(--line);background:var(--wash);border-radius:12px;padding:9px 6px;font-size:11px;color:var(--deep);line-height:1.55}
+.onb-feature b{display:block;font-size:17px;margin-bottom:3px}
+.onb-dots{display:flex;justify-content:center;gap:6px;margin-top:15px}.onb-dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}.onb-dots i.on{background:var(--deep)}
+.onb-nav{display:flex;gap:8px;margin-top:14px}.onb-nav button{margin:0}.onb-nav .ghost{background:var(--wash);color:var(--deep);border:1px solid var(--line)}
+@media(max-width:430px){.home-journey{grid-template-columns:1fr}.home-go.wide{grid-column:auto}.learn-seg{grid-template-columns:1fr}.onb-feature-grid{grid-template-columns:1fr}}
+
 </style>
 <style>
 :root{
@@ -615,6 +669,24 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 <!-- ============ TODAY ============ -->
 <div id="v-today">
+
+  <div class="home-welcome">
+    <div class="eyebrow">رفيق يومك أثناء التصفح</div>
+    <h2>كل ما تحتاجه أقرب مما تتخيّل.</h2>
+    <p>اقرأ، اذكر، تعلّم، وراجع يومك بهدوء — بدون قوائم طويلة ولا ضغط.</p>
+  </div>
+  <div class="home-journey" id="home-journey">
+    <button class="home-go" data-home-go="quran"><span class="ico">﴿</span><b>هل قرأت وردك اليوم؟</b><span>افتح المصحف وكمل من آخر صفحة توقفت عندها.</span><span class="go">إلى المصحف ←</span></button>
+    <button class="home-go" data-home-go="azkar"><span class="ico">☾</span><b>قلت أذكارك؟</b><span>صباح، مساء، نوم، رقية ودعاء — ومع خيار الاستماع.</span><span class="go">إلى الذكر ←</span></button>
+    <button class="home-go" data-home-go="sunnah" data-learn-go="essentials"><span class="ico">◫</span><b>تعرف اللي لازم تعرفه؟</b><span>«ما لا يسع المسلم جهله» في بطاقات قصيرة بمصادرها.</span><span class="go">ابدأ التعلّم ←</span></button>
+    <button class="home-go" data-home-go="sunnah" data-learn-go="fiqh"><span class="ico">◇</span><b>مسألة فقهية في يومك؟</b><span>الفقه الميسر: طهارة، صلاة، صيام، زكاة وحج بطريقة عملية.</span><span class="go">افتح الفقه ←</span></button>
+    <button class="home-go" data-home-go="qalb"><span class="ico">♡</span><b>كيف حال قلبك؟</b><span>اقرأ عن أعمال القلوب والعقبات وخطوات العلاج التربوي.</span><span class="go">إلى القلب ←</span></button>
+    <button class="home-go" data-home-go="irtaqi"><span class="ico">↗</span><b>خطوة صغيرة ترتقي بك</b><span>خطة عملية بدل محاولة إصلاح كل شيء مرة واحدة.</span><span class="go">إلى ارتقِ ←</span></button>
+    <button class="home-go wide" data-home-go="prayer"><span class="ico">◌</span><b id="home-prayer-title">الصلاة القادمة</b><span id="home-prayer-sub">حدّد موقعك من الإعدادات لعرض الموعد.</span><span class="go">المواقيت ←</span></button>
+  </div>
+
+  <button class="evening-gate" id="evening-toggle" type="button"><span class="moon">☾</span><span><b>قبل أن تنام: خلاصة اليوم</b><span>٥ أسئلة أساسية فقط + حالك اليوم، وأغلق يومك في أقل من دقيقة.</span></span><i id="evening-x">＋</i></button>
+  <div class="home-evening hide" id="evening-panel">
   <div class="hero">
     <div class="hero-top">
       <div class="hero-date">
@@ -659,20 +731,21 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
   <div class="mood-title">كيف كان حالك اليوم؟ <span>اختياري</span></div>
   <div class="mood-strip" id="mood"></div>
+  </div>
 
-  <div class="acc" id="acc-todo">
+  <div class="acc evening-extra hide" id="acc-todo">
     <button class="acc-head" data-acc="todo"><span class="ttl">مهامي اليوم</span>
-      <span class="mini-bar"><i id="todo-bar" style="width:0%"></i></span><span class="val" id="todo-val"></span><span class="acc-x">－</span></button>
-    <div class="acc-body" id="todo-body">
+      <span class="mini-bar"><i id="todo-bar" style="width:0%"></i></span><span class="val" id="todo-val"></span><span class="acc-x">＋</span></button>
+    <div class="acc-body hide" id="todo-body">
       <div class="todo-add"><input id="todo-new" type="text" maxlength="180" placeholder="أضف مهمة واضحة…">
         <button id="todo-prio" type="button">☆ مهم</button><button id="todo-add" class="primary" type="button">إضافة</button></div>
       <div id="todo-list"></div>
     </div>
   </div>
 
-  <div id="sections"></div>
+  <div id="sections" class="evening-extra hide"></div>
 
-  <div class="acc" id="acc-notes">
+  <div class="acc evening-extra hide" id="acc-notes">
     <button class="acc-head" data-acc="notes"><span>ملاحظة للغد <small style="font-weight:400;color:var(--ink-soft)">· اختياري</small></span><span class="acc-x">＋</span></button>
     <div class="acc-body hide">
       <div class="field"><label for="tomorrow">شيء واحد فقط أريد أن أتذكره غدًا</label>
@@ -724,7 +797,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <div class="wrap"><div class="zseg hide" id="zseg">
   <button data-z="azkar">الأذكار</button>
   <button data-z="dua">الدعاء</button>
-  <button data-z="tasbih">المسبحة والورد</button>
+  <button data-z="tasbih">السبحة</button>
   <button data-z="asma">أسماء الله الحسنى</button>
 </div></div>
 
@@ -743,7 +816,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <!-- ============ TASBIH ============ -->
 <div id="v-tasbih" class="hide">
   <section>
-    <div class="sec-head"><span>المسبحة</span><span class="pct" id="tasbih-today"></span></div>
+    <div class="sec-head"><span>السبحة</span><span class="pct" id="tasbih-today"></span></div>
     <div class="counter">
       <div class="dhikr" id="dhikr-text"></div>
       <div class="count-num" id="count">0</div>
@@ -759,7 +832,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <section>
     <div class="sec-head"><span>ورد القرآن</span>
       <a href="./tasbih.html" style="text-decoration:none;font-size:12px;color:var(--deep);
-        border:1px solid var(--line);border-radius:9px;padding:5px 11px">المسبحة الكاملة ←</a></div>
+        border:1px solid var(--line);border-radius:9px;padding:5px 11px">السبحة الكاملة ←</a></div>
     <div class="item">
       <div class="row"><span class="name" style="margin:0">صفحات قرأتها اليوم</span>
         <div class="opts">
@@ -779,11 +852,20 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 <!-- ============ SUNNAH ============ -->
 <div id="v-sunnah" class="hide">
-  <div class="hd-card" id="hadith-day"></div>
-  <input class="q-search" id="rs-search" type="search" placeholder="ابحث بكلمة من الحديث أو اسم الكتاب…" aria-label="بحث في رياض الصالحين">
-  <div class="search-count" id="rs-result-count"></div>
-  <div id="rs-books"></div>
-  <div id="rs-list"></div>
+  <div class="learn-seg" id="learn-seg">
+    <button data-learn="riyad" aria-current="true">رياض الصالحين</button>
+    <button data-learn="essentials">ما لا يسع المسلم جهله</button>
+    <button data-learn="fiqh">الفقه الميسر</button>
+  </div>
+  <div id="learn-riyad">
+    <div class="hd-card" id="hadith-day"></div>
+    <input class="q-search" id="rs-search" type="search" placeholder="ابحث بكلمة من الحديث أو اسم الكتاب…" aria-label="بحث في رياض الصالحين">
+    <div class="search-count" id="rs-result-count"></div>
+    <div id="rs-books"></div>
+    <div id="rs-list"></div>
+  </div>
+  <div id="learn-essentials" class="hide"></div>
+  <div id="learn-fiqh" class="hide"></div>
 </div>
 
 <!-- ============ IRTAQI ============ -->
@@ -814,14 +896,27 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 </div>
 
 
-<!-- one-step first-use intro -->
+<!-- first-use story -->
 <div class="onboarding hide" id="onboarding" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
   <div class="onboarding-card">
     <div class="onboarding-logo" aria-hidden="true">ر</div>
-    <h2 id="onboarding-title">أهلًا بك في رفيق</h2>
-    <p>رفيق يساعدك على الذكر، المحاسبة، والقراءة أثناء تصفحك.</p>
-    <p class="tiny">ابدأ من أي قسم، وخلاصة اليوم لا تحتاج أكثر من دقيقة.</p>
-    <button id="onboarding-start" type="button">ابدأ مع رفيق</button>
+    <div class="onb-step on" data-onb="0">
+      <h2 id="onboarding-title">رفيق… مش تطبيق يزود عليك.</h2>
+      <p>رفيق يساعدك على الذكر، القراءة، التعلّم ومراجعة يومك أثناء تصفحك — بخطوات قصيرة تقدر ترجع لها في أي وقت.</p>
+      <div class="onb-feature-grid"><div class="onb-feature"><b>﴿</b>مصحف وورد</div><div class="onb-feature"><b>☾</b>أذكار ودعاء</div><div class="onb-feature"><b>◫</b>علم وفقه</div></div>
+    </div>
+    <div class="onb-step" data-onb="1">
+      <h2>كل باب يوصلك لخطوة عملية.</h2>
+      <p>من الصفحة الرئيسية ستجد سؤالًا بسيطًا يقودك لما تحتاجه: «قرأت وردك؟» «قلت أذكارك؟» «محتاج تعرف الحكم؟» أو «كيف حال قلبك؟».</p>
+      <p class="tiny">ولا تحتاج أن تحفظ مكان أي ميزة؛ الصفحة الرئيسية تعرّفك بكل ما داخل رفيق.</p>
+    </div>
+    <div class="onb-step" data-onb="2">
+      <h2>وفي آخر اليوم… دقيقة واحدة.</h2>
+      <p>خلاصة اليوم أصبحت ٥ أسئلة أساسية فقط. لا نريد تقييمًا مرهقًا قبل النوم؛ الهدف أن تغلق يومك بوعي وتبدأ غدًا بخفة.</p>
+      <p class="tiny">بيانات يومك تُحفظ محليًا على جهازك. وبعض الميزات الخارجية مذكورة بوضوح في سياسة الخصوصية.</p>
+    </div>
+    <div class="onb-dots"><i class="on"></i><i></i><i></i></div>
+    <div class="onb-nav"><button id="onboarding-prev" class="ghost hide" type="button">السابق</button><button id="onboarding-next" type="button">التالي</button></div>
   </div>
 </div>
 
@@ -830,7 +925,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <nav><div style="grid-template-columns:repeat(6,1fr)">
   <button data-tab="today"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="M8 20h8"/><path d="M5 8h14"/><path d="M5 8l-2.5 5a3 3 0 0 0 5 0Z"/><path d="M19 8l2.5 5a3 3 0 0 1-5 0Z"/><circle cx="12" cy="4.5" r="1.2"/></svg></em>يومي</button>
   <button data-tab="quran"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.4 5.2 8.4 4.5 6 4.5H3.5v13H6c2.4 0 4.4.7 6 2 1.6-1.3 3.6-2 6-2h2.5v-13H18c-2.4 0-4.4.7-6 2Z"/><path d="M12 6.5v13"/></svg></em>المصحف</button>
-  <button data-tab="sunnah"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5c0 4-3.8 7.2-8.5 7.2-.9 0-1.8-.1-2.6-.3L4.5 20.5l1.2-3.4a6.9 6.9 0 0 1-2.2-5c0-4 3.8-7.2 8.5-7.2s8.5 3.2 8.5 7.1Z"/><path d="M8.5 10h7"/><path d="M8.5 13h4.5"/></svg></em>أحاديث</button>
+  <button data-tab="sunnah"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5c0 4-3.8 7.2-8.5 7.2-.9 0-1.8-.1-2.6-.3L4.5 20.5l1.2-3.4a6.9 6.9 0 0 1-2.2-5c0-4 3.8-7.2 8.5-7.2s8.5 3.2 8.5 7.1Z"/><path d="M8.5 10h7"/><path d="M8.5 13h4.5"/></svg></em>العلم</button>
   <button data-tab="azkar"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17.6 15.8A6.5 6.5 0 1 1 12.4 5a5.4 5.4 0 0 0 5.2 10.8Z"/><path d="M19.6 6.2l.7 1.5 1.6.2-1.2 1.1.3 1.6-1.4-.8-1.4.8.3-1.6-1.2-1.1 1.6-.2Z"/></svg></em>الذكر</button>
   <button data-tab="qalb"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.3A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7 2.7C19 15.6 12 20 12 20Z"/></svg></em>القلب</button>
   <button data-tab="irtaqi"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5v-3.5"/><path d="M9.5 19.5v-7"/><path d="M14.5 19.5v-10.5"/><path d="M19.5 19.5V5.5"/><path d="M17 8l2.5-2.5L22 8"/></svg></em>ارتقِ</button>

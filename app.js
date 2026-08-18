@@ -279,6 +279,7 @@ function todayTimes(){
   return computeTimes(fromIso(current),+settings.lat,+settings.lng,settings.method||'EGYPT',+(settings.asr||1));
 }
 function renderNext(){
+  paintHomePrayer();
   const T=todayTimes(); const box=document.getElementById('next-box');
   if(!T){ document.getElementById('next-name').textContent='—';
     document.getElementById('next-cd').textContent='';
@@ -293,6 +294,16 @@ function renderNext(){
     (h?h+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   document.getElementById('next-at').textContent='الأذان '+hhmm(T[nxt[0]]);
 }
+/* ================= audio for azkar ================= */
+function cleanForSpeech(t){return (t||'').replace(/[۞۩۝﴿﴾]/g,' ').replace(/[\u06D6-\u06ED]/g,' ').replace(/\s+/g,' ').trim()}
+function speakAzkar(setId,i){
+  const set=AZ.sets.find(x=>x.id===setId), z=set&&set.items[+i]; if(!z)return;
+  if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){toast('الاستماع غير مدعوم على هذا الجهاز');return}
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(cleanForSpeech(z.t)); u.lang='ar-SA'; u.rate=.82; u.pitch=1;
+  const voices=window.speechSynthesis.getVoices(); const ar=voices.find(v=>/^ar([_-]|$)/i.test(v.lang)); if(ar)u.voice=ar;
+  window.speechSynthesis.speak(u); toast('بدأ الاستماع');
+}
 /* ================= azkar ================= */
 async function loadAzkar(){ if(AZ.sets.length)return;
   try{ AZ=await (await fetch('./azkar.json?v='+Date.now())).json() }catch{ AZ={sets:[]} } }
@@ -302,8 +313,10 @@ async function renderAzkar(){
   host.innerHTML=`<input id="az-search" class="q-search" type="search" value="${azkarQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في كل الأذكار: نوم، استغفار، حفظ…" aria-label="بحث في الأذكار">
     <div class="search-count" id="az-result-count"></div>
     <div class="az-tabs">${AZ.sets.map(x=>`<button data-az="${x.id}" aria-current="${x.id===azkarMode}">${x.name}</button>`).join('')}</div>
+    <div class="audio-note">🔊 زر «استمع» يستخدم صوت القراءة العربي المتاح في جهازك/متصفحك. إن لم يوجد صوت عربي مناسب يمكنك الاكتفاء بالقراءة.</div>
     <div id="az-results"></div>`;
   host.onclick=e=>{
+    const sp=e.target.closest('button[data-speak]'); if(sp){const [sid,i]=sp.dataset.speak.split(':');speakAzkar(sid,+i);return}
     const t=e.target.closest('button[data-az]');
     if(t){ azkarMode=t.dataset.az; renderAzkar(); return }
     const target=e.target.closest('[data-z]'); if(!target)return;
@@ -322,16 +335,18 @@ async function renderAzkar(){
 function renderAzkarList(){
   const box=document.getElementById('az-results'), cnt=document.getElementById('az-result-count'); if(!box||!cnt)return;
   const q=searchNorm(azkarQuery);
+  const sourceHtml=z=>z.source?`<div class="zk-source">المصدر: ${z.source.url?`<a href="${z.source.url}" target="_blank" rel="noopener">${z.source.label}</a>`:z.source.label}</div>`:'';
+  const actions=(set,z,i,c)=>`<div class="bar"><span class="cnt">${AR(c)} / ${AR(z.n)}</span><span class="zk-actions"><button class="listen" data-speak="${set.id}:${i}" type="button" aria-label="استمع إلى الذكر">🔊 استمع</button><button data-z="${i}" data-set="${set.id}">${c>=z.n?'تم ✓':'قرأت'}</button></span></div>`;
   if(q){
     const hits=[]; AZ.sets.forEach(set=>set.items.forEach((z,i)=>{if(searchNorm(set.name+' '+z.t+' '+(z.note||'')).includes(q))hits.push({set,z,i})}));
     cnt.textContent=`${AR(hits.length)} نتيجة في جميع الأذكار`;
-    box.innerHTML=hits.length?`<section>${hits.map(({set,z,i})=>{const c=data.azkar[set.id+i]||0;return `<div class="zikr ${c>=z.n?'done':''} ${['morning','evening'].includes(set.id)?'tap-count':''}" ${['morning','evening'].includes(set.id)?`data-z="${i}" data-set="${set.id}" role="button" tabindex="0"`:''}><div class="search-source">${set.name}</div><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}<div class="bar"><span class="cnt">${AR(c)} / ${AR(z.n)}</span><button data-z="${i}" data-set="${set.id}">${c>=z.n?'تم ✓':'قرأت'}</button></div></div>`}).join('')}</section>`:'<div class="nafs-empty">لا توجد أذكار مطابقة لبحثك.</div>';
+    box.innerHTML=hits.length?`<section>${hits.map(({set,z,i})=>{const c=data.azkar[set.id+i]||0;return `<div class="zikr ${c>=z.n?'done':''} ${['morning','evening'].includes(set.id)?'tap-count':''}" ${['morning','evening'].includes(set.id)?`data-z="${i}" data-set="${set.id}" role="button" tabindex="0"`:''}><div class="search-source">${set.name}</div><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}${sourceHtml(z)}${actions(set,z,i,c)}</div>`}).join('')}</section>`:'<div class="nafs-empty">لا توجد أذكار مطابقة لبحثك.</div>';
     return;
   }
   const set=AZ.sets.find(x=>x.id===azkarMode)||AZ.sets[0]; if(!set)return;
   const L=set.items; let done=0;
   const rows=L.map((z,i)=>{ const c=data.azkar[set.id+i]||0; if(c>=z.n)done++;
-    return `<div class="zikr ${c>=z.n?'done':''} ${['morning','evening'].includes(set.id)?'tap-count':''}" ${['morning','evening'].includes(set.id)?`data-z="${i}" data-set="${set.id}" role="button" tabindex="0"`:''}><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}<div class="bar"><span class="cnt">${AR(c)} / ${AR(z.n)}</span><button data-z="${i}" data-set="${set.id}">${c>=z.n?'تم ✓':'قرأت'}</button></div></div>`}).join('');
+    return `<div class="zikr ${c>=z.n?'done':''} ${['morning','evening'].includes(set.id)?'tap-count':''}" ${['morning','evening'].includes(set.id)?`data-z="${i}" data-set="${set.id}" role="button" tabindex="0"`:''}><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}${sourceHtml(z)}${actions(set,z,i,c)}</div>`}).join('');
   cnt.textContent=`${AR(L.length)} ذكرًا · أنجزت ${AR(done)}`;
   box.innerHTML=`<section><div class="sec-head"><span>${set.name}</span><span class="pct">${AR(done)} / ${AR(L.length)}</span></div><div class="az-time">${set.time||''}</div>${rows}</section>`;
 }
@@ -380,7 +395,7 @@ async function renderTracker(){
    ['أذكار الصباح', d=>d&&Object.keys(d.azkar||{}).some(k=>k.startsWith('morning')&&d.azkar[k]>0)],
    ['أذكار المساء', d=>d&&Object.keys(d.azkar||{}).some(k=>k.startsWith('evening')&&d.azkar[k]>0)],
    ['ورد القرآن', d=>d&&(d.pages||0)>0],
-   ['المسبحة', d=>d&&Object.values(d.tasbih||{}).reduce((a,b)=>a+b,0)>0],
+   ['السبحة', d=>d&&Object.values(d.tasbih||{}).reduce((a,b)=>a+b,0)>0],
    ['علاج القلب', (d,k)=>qalbOn(k)]
   ];
   const wd=k=>new Intl.DateTimeFormat('ar-EG',{weekday:'narrow'}).format(fromIso(k));
@@ -675,6 +690,26 @@ document.getElementById('rs-list').onclick=async e=>{
     const h=RS.books[+bi].items.find(x=>x.n==n);
     try{ navigator.clipboard?.writeText(h.t) }catch{}
     toast('نُسخ الحديث') } };
+
+
+/* ================= العلم: رياض الصالحين + الأساسيات + الفقه ================= */
+let LEARN=null, learnMode='riyad';
+async function loadLearn(){if(LEARN)return LEARN;try{LEARN=await (await fetch('./knowledge.json?v='+Date.now())).json()}catch{LEARN={meta:{},essentials:[],fiqh:[]}}return LEARN}
+function learnSources(item,fiqh=false){
+  const ss=item.sources||[]; let out=ss.map(s=>`<div class="learn-source">المصدر: ${s.url?`<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`:s.label}</div>`).join('');
+  if(fiqh){out+=(item.refs||[]).map(x=>`<div class="learn-source">المصدر: ${x}</div>`).join('');out+=`<div class="learn-source"><a href="${LEARN.meta.fiqhUrl}" target="_blank" rel="noopener">فتح مرجع «الفقه الميسر في ضوء الكتاب والسنة»</a></div>`}
+  return out;
+}
+function learnCards(items,fiqh=false){return items.map((x,i)=>`<details class="learn-card"><summary><span class="ln">${AR(i+1)}</span><span class="lt">${x.title}</span></summary><div class="learn-body"><p class="learn-lead">${x.lead}</p>${x.bullets?.length?`<ul>${x.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>`:''}${learnSources(x,fiqh)}</div></details>`).join('')}
+async function renderKnowledge(){
+  await loadLearn();
+  document.querySelectorAll('#learn-seg button').forEach(b=>b.setAttribute('aria-current',b.dataset.learn===learnMode));
+  ['riyad','essentials','fiqh'].forEach(x=>document.getElementById('learn-'+x)?.classList.toggle('hide',x!==learnMode));
+  if(learnMode==='riyad'){renderSunnah();return}
+  if(learnMode==='essentials')document.getElementById('learn-essentials').innerHTML=`<div class="learn-intro"><b>ما لا يسع المسلم جهله</b><br>خريطة تأسيسية مختصرة للأصول التي يحتاجها المسلم في عبادته ويومه. كل بطاقة معها مصدرها، وفي التفاصيل والنوازل نرجع لأهل العلم.</div>${learnCards(LEARN.essentials)}<div class="learn-disclaimer">${LEARN.meta.note}</div>`;
+  if(learnMode==='fiqh')document.getElementById('learn-fiqh').innerHTML=`<div class="learn-intro"><b>الفقه الميسر</b><br>${LEARN.meta.fiqhBook}<br>نعرض هنا ملخصات عملية قصيرة، لا نقلًا حرفيًا من الكتاب.</div>${learnCards(LEARN.fiqh,true)}<div class="learn-disclaimer">${LEARN.meta.note}</div>`;
+}
+document.getElementById('learn-seg').onclick=e=>{const b=e.target.closest('button[data-learn]');if(!b)return;learnMode=b.dataset.learn;renderKnowledge();scrollTo({top:0,behavior:'smooth'})};
 
 /* ================= القلب (مدمج) ================= */
 let HD=null, hKind='problems', hCur=null, hTrack={}, hJournal={}, hProg={}, hQuery='';
@@ -1162,8 +1197,22 @@ async function irtClick(e){
   }
 }
 
+
+/* ================= home journey ================= */
+const eveningPanel=document.getElementById('evening-panel');
+function setEvening(open){eveningPanel?.classList.toggle('hide',!open);document.querySelectorAll('.evening-extra').forEach(el=>el.classList.toggle('hide',!open));const x=document.getElementById('evening-x');if(x)x.textContent=open?'－':'＋';if(open)setTimeout(()=>eveningPanel?.scrollIntoView({behavior:'smooth',block:'start'}),50)}
+document.getElementById('evening-toggle')?.addEventListener('click',()=>setEvening(eveningPanel?.classList.contains('hide')));
+document.getElementById('home-journey')?.addEventListener('click',e=>{
+  const b=e.target.closest('[data-home-go]');if(!b)return;
+  const go=b.dataset.homeGo;
+  if(go==='prayer'){const body=document.querySelector('#acc-times .acc-body');body?.classList.remove('hide');const x=document.querySelector('#acc-times .acc-x');if(x)x.textContent='－';document.getElementById('acc-times')?.scrollIntoView({behavior:'smooth',block:'center'});renderTimes();return}
+  if(b.dataset.learnGo)learnMode=b.dataset.learnGo;
+  switchTab(go);
+});
+function paintHomePrayer(){const T=todayTimes(),title=document.getElementById('home-prayer-title'),sub=document.getElementById('home-prayer-sub');if(!title||!sub)return;if(!T){title.textContent='الصلاة القادمة';sub.textContent='حدّد موقعك من الإعدادات لعرض الموعد.';return}const now=new Date(),h=now.getHours()+now.getMinutes()/60;const rows=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];let n=rows.find(([k])=>T[k]>h);if(!n)n=rows[0];title.textContent=`الصلاة القادمة: ${n[1]}`;sub.textContent=`موعدها ${hhmm(T[n[0]])} · اضغط لعرض كل المواقيت`}
+
 /* ================= tabs ================= */
-const TITLES={today:'اليوم',quran:'المصحف',read:'المصحف',azkar:'الأذكار',dua:'الدعاء',tasbih:'الورد والمسبحة',asma:'أسماء الله الحسنى',sunnah:'أحاديث — رياض الصالحين',qalb:'القلب',irtaqi:'ارتقِ',history:'السجل'};
+const TITLES={today:'اليوم',quran:'المصحف',read:'المصحف',azkar:'الأذكار',dua:'الدعاء',tasbih:'السبحة',asma:'أسماء الله الحسنى',sunnah:'العلم',qalb:'القلب',irtaqi:'ارتقِ',history:'السجل'};
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 function switchTab(t){
   tab=t;
@@ -1182,7 +1231,7 @@ function switchTab(t){
   if(t==='asma') hAsma();
   if(t==='azkar') renderAzkar();
   if(t==='dua') renderDua();
-  if(t==='sunnah') renderSunnah();
+  if(t==='sunnah') renderKnowledge();
   if(t==='qalb') hRender();
   if(t==='irtaqi') irtRender();
   scrollTo({top:0,behavior:'smooth'});
@@ -1197,7 +1246,7 @@ document.getElementById('go-today').onclick=()=>load(iso(new Date()));
 function shift(n){const d=fromIso(current);d.setDate(d.getDate()+n);load(iso(d))}
 
 /* ================= feedback ================= */
-const FEEDBACK_VERSION='v21.0';
+const FEEDBACK_VERSION='v1.4.0';
 const feedbackSheet=document.getElementById('feedback-sheet');
 const feedbackText=document.getElementById('feedback-text');
 function feedbackPayload(){
@@ -1286,12 +1335,10 @@ document.getElementById('btn-theme').onclick=async()=>{
   settings.theme=cur; await store.set('settings',settings) };
 
 /* ================= first-use intro ================= */
-const onboarding=document.getElementById('onboarding');
-document.getElementById('onboarding-start')?.addEventListener('click',async()=>{
-  await store.set('onboarding-seen-v1',true);
-  onboarding?.classList.add('hide');
-  toast('أهلًا بك في رفيق');
-});
+const onboarding=document.getElementById('onboarding'); let onbStep=0;
+function paintOnboarding(){document.querySelectorAll('.onb-step').forEach(x=>x.classList.toggle('on',+x.dataset.onb===onbStep));document.querySelectorAll('.onb-dots i').forEach((x,i)=>x.classList.toggle('on',i===onbStep));document.getElementById('onboarding-prev')?.classList.toggle('hide',onbStep===0);const n=document.getElementById('onboarding-next');if(n)n.textContent=onbStep===2?'ابدأ مع رفيق':'التالي'}
+document.getElementById('onboarding-prev')?.addEventListener('click',()=>{onbStep=Math.max(0,onbStep-1);paintOnboarding()});
+document.getElementById('onboarding-next')?.addEventListener('click',async()=>{if(onbStep<2){onbStep++;paintOnboarding();return}await store.set('onboarding-seen-v2',true);onboarding?.classList.add('hide');toast('أهلًا بك في رفيق')});
 
 /* ================= boot ================= */
 (async function(){
@@ -1302,8 +1349,8 @@ document.getElementById('onboarding-start')?.addEventListener('click',async()=>{
   await loadTodo();
   await load(current);
   renderNext(); setInterval(renderNext,1000);
-  const onboardingSeen=await store.get('onboarding-seen-v1');
-  if(!onboardingSeen) document.getElementById('onboarding')?.classList.remove('hide');
+  const onboardingSeen=await store.get('onboarding-seen-v2');
+  if(!onboardingSeen){paintOnboarding();document.getElementById('onboarding')?.classList.remove('hide')}
   const h=(location.hash||'').replace('#','');
   if(['today','quran','azkar','dua','tasbih','asma','sunnah','qalb','irtaqi','history'].includes(h)) switchTab(h);
 })();
