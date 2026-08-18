@@ -1,0 +1,37 @@
+{
+  "state_id": "RAFIQ-HANDOFF-1.6.0-2026-08-18",
+  "project": "رفيق يومك",
+  "version": "1.6.0",
+  "platform": "Chrome MV3 side-panel extension",
+  "read_first": ["AI_HANDOFF.md", "manifest.json", "app/app.js", "app/index.html"],
+  "product_thesis": "الدين ثابت والمشكلة تختلف؛ رفيق بوابة يومية تربط المستخدم بالقرآن والذكر والعلم وتساعده في مشكلاته الواقعية بمصدر ظاهر وخطوة عملية.",
+  "non_negotiables": [
+    "Every religious claim displayed in the app must have a visible source; unsourced religious claims are removed or rewritten.",
+    "Fiqh al-Nafs content is educational synthesis inspired by Makany methodology unless a specific quote is verified.",
+    "Mental-health content never replaces qualified medical/psychological care.",
+    "Nightly review stays lightweight: 5 essentials, quick choices, optional mood, one optional tomorrow note.",
+    "Age and male/female personalization is local-only and used only where meaningful.",
+    "Do not invent sacred counts, durations, promises, or spiritual ranks.",
+    "Keep + / Saved for later across content.",
+    "Do not restore the previously rejected home-page tagline; preserve the current calmer copy."
+  ],
+  "storage_keys": {
+    "profile": "profile-v1",
+    "saved_later": "saved-later-v1",
+    "onboarding": "onboarding-seen-v3"
+  },
+  "key_sources": {
+    "essentials": "https://risala.prh.gov.sa/ar/contents/251",
+    "fiqh_nafs": "https://makany.co/",
+    "who_depression": "https://www.who.int/news-room/fact-sheets/detail/depression",
+    "nhs_depression": "https://www.nhs.uk/mental-health/conditions/depression-in-adults/diagnosis/"
+  },
+  "roadmap": [
+    "source integrity and regression testing",
+    "deep-link saved items to exact content",
+    "expand real-life obstacles with rigorous sources",
+    "more meaningful age/sex personalization",
+    "licensed human audio for adhkar when a verified source/licence exists",
+    "continued large-tab UX/accessibility cleanup"
+  ]
+}

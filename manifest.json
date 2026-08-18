@@ -3,7 +3,7 @@
   "name": "رفيق يومك",
   "short_name": "رفيق",
   "description": "رفيق يومك: قرآن وأذكار وعلم وفقه ومحاسبة يومية خفيفة ودفتر رفيق في لوحة جانبية أثناء التصفح.",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "minimum_chrome_version": "114",
   "permissions": [
     "sidePanel",

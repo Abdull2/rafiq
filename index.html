@@ -60,6 +60,10 @@
 .learn-body ul{margin:5px 0 8px;padding-inline-start:19px}.learn-body li{font-size:12.5px;line-height:1.9;margin-bottom:3px}
 .learn-source{font-size:10.5px;color:var(--gold);line-height:1.8;margin-top:7px}.learn-source a{color:var(--deep);text-decoration:none}
 .learn-source a:hover{text-decoration:underline}
+.h-src-line{font-size:10.5px;color:var(--soft);line-height:1.7;margin-top:7px}.h-src-line a{color:var(--deep);text-decoration:none}.h-src-line a:hover{text-decoration:underline}
+.mus-source{font-size:10.5px;color:#8A744C;text-align:center;border-top:1px solid #E7DCC5;padding:8px 10px 0;margin-top:8px;line-height:1.7}
+[data-theme="dark"] .mus-source{color:#B7A47F;border-color:#30382A}
+
 .learn-disclaimer{font-size:10.5px;color:var(--soft);line-height:1.8;margin:10px 2px 0}
 
 /* ===== azkar audio ===== */
@@ -650,6 +654,23 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .asma-dsec{margin:10px 0;border:1px solid var(--line);border-radius:15px;background:var(--card);overflow:hidden}.asma-dhead{padding:12px 14px;font-weight:600;color:var(--deep);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;align-items:center}.asma-dbody{padding:13px 14px}.asma-verse{padding:12px 0;border-bottom:1px solid var(--line)}.asma-verse:last-child{border-bottom:0}.asma-verse .ref{font-size:11px;color:var(--gold);margin-bottom:5px}.asma-verse .txt{font-family:Hafs,Amiri,serif;font-size:20px;line-height:2.1}.asma-more{width:100%;margin-top:10px;border:1px solid var(--line);background:var(--wash);color:var(--deep);border-radius:11px;padding:10px;cursor:pointer}.asma-method{font-size:11.5px;line-height:1.8;color:var(--soft);background:var(--wash);padding:10px;border-radius:11px}.asma-hadith-seed{padding:11px;border-radius:12px;background:var(--wash);margin-bottom:9px;font-size:12.5px;line-height:1.8}.asma-hadith-seed a{color:var(--deep);font-weight:600;text-decoration:none}.asma-live{font-size:12px;line-height:1.8}.asma-live .result{display:block;padding:11px 0;border-bottom:1px solid var(--line)}.asma-live .result:last-child{border-bottom:0}.asma-live a{color:var(--deep)}.asma-live-note{font-size:11px;color:var(--soft);line-height:1.7;margin-bottom:8px}.asma-ext{display:inline-block;margin-top:8px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:var(--deep);font-size:11px;background:var(--paper)}
 
 
+
+/* ===== v1.6 personalization + save later + compact navigation ===== */
+.learn-seg,.h-tabs{display:flex!important;grid-template-columns:none!important;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:3px;overscroll-behavior-inline:contain}
+.learn-seg::-webkit-scrollbar,.h-tabs::-webkit-scrollbar,.learn-groups::-webkit-scrollbar{display:none}
+.learn-seg button,.h-tabs button{flex:0 0 auto;white-space:nowrap;min-width:max-content;padding-inline:12px!important}
+.learn-seg button span{font-size:14px;margin-left:3px}
+.learn-tools{margin-top:8px}.learn-tools .q-search{margin-bottom:8px}
+.learn-groups{display:flex;gap:6px;overflow-x:auto;margin:0 0 8px;scrollbar-width:none}
+.learn-groups button{flex:none;white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:999px;padding:7px 10px;font-size:11px;cursor:pointer}
+.learn-groups button.on{background:var(--deep);border-color:var(--deep);color:#fff}
+.save-later{width:29px;height:29px;border:1px solid var(--line)!important;border-radius:9px!important;background:var(--wash)!important;color:var(--deep)!important;display:grid!important;place-items:center;padding:0!important;font-size:18px!important;line-height:1!important;cursor:pointer;flex:none}
+.learn-card summary>.save-later{margin-inline-start:auto}.learn-card summary::after{display:none}
+.h-tile,.h-ob,.asma-card,.hd-item,.dua-card,.zikr{position:relative}.h-tile>.save-later,.h-ob>.save-later,.asma-card>.save-later{position:absolute;left:9px;top:9px;z-index:3}
+.saved-head{position:relative}.saved-head #saved-count{position:absolute;top:-5px;left:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--gold);color:#fff;font-size:9px;display:grid;place-items:center}
+.saved-note,.profile-privacy{font-size:11.5px;color:var(--soft);line-height:1.8;padding:11px 14px;background:var(--wash)}
+.saved-box,.profile-box{max-height:min(82vh,760px);overflow:auto}.saved-row{padding:13px 14px;border-top:1px solid var(--line)}.saved-kind{font-size:10px;color:var(--gold)}.saved-title{font-family:Amiri,serif;font-size:19px;color:var(--deep);margin-top:2px}.saved-text{font-size:12.5px;color:var(--ink);line-height:1.8;margin-top:4px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.saved-source{font-size:10.5px;color:var(--soft);margin-top:5px}.saved-actions{display:flex;gap:7px;margin-top:9px}.saved-actions button{border:1px solid var(--line);background:var(--card);color:var(--deep);border-radius:9px;padding:7px 10px;font-size:11px;cursor:pointer}.saved-empty{padding:28px 16px;text-align:center;color:var(--soft);font-size:13px;line-height:1.8}.sheet-x{border:0;background:none;color:var(--deep);font-size:18px;cursor:pointer}.profile-form{margin-top:14px;text-align:right}.profile-form>label,.profile-box .field label{font-size:12px;color:var(--deep);display:block}.profile-form input[type=number],#profile-edit-age{width:100%;margin-top:6px;border:1px solid var(--line);background:var(--paper);border-radius:11px;padding:10px;font:inherit}.gender-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.gender-pick label{border:1px solid var(--line);background:var(--wash);border-radius:11px;padding:9px 11px;text-align:center;font-size:12px;cursor:pointer}.gender-pick input{accent-color:var(--deep)}
+@media(max-width:430px){.learn-seg{display:flex!important}.onb-feature-grid{grid-template-columns:repeat(3,1fr)}.h-grid{grid-template-columns:1fr 1fr}.header .icon{width:35px;height:35px}}
 </style>
 
 <header><div class="wrap hrow">
@@ -658,6 +679,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <div class="sub" id="dateline" style="display:none"></div>
   </div>
   <div style="display:flex;gap:7px">
+    <button class="icon saved-head" id="btn-saved" aria-label="محفوظاتي" title="محفوظاتي"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.5h12v15l-6-3.5-6 3.5Z"/></svg><span id="saved-count"></span></button>
     <button class="icon" id="btn-feedback" aria-label="إرسال ملاحظة" title="إرسال ملاحظة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 9.2 9.2 0 0 1-3.1-.5L4 20l1.5-4.1A7.1 7.1 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/><path d="M8.5 10h7M8.5 13h4.5"/></svg></button>
     <button class="icon" id="btn-history" aria-label="السجل">▤</button>
     <button class="icon" id="btn-theme" aria-label="الوضع الليلي">◐</button>
@@ -671,21 +693,21 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <div id="v-today">
 
   <div class="home-welcome">
-    <div class="eyebrow">رفيق يومك أثناء التصفح</div>
+    <div class="eyebrow" id="home-profile-line">رفيق يومك أثناء التصفح</div>
     <h2>كل ما تحتاجه أقرب مما تتخيّل.</h2>
-    <p>اقرأ، اذكر، تعلّم، وراجع يومك بهدوء — بدون قوائم طويلة ولا ضغط.</p>
+    <p>اقرأ، اذكر، تعلّم، وراجع يومك بهدوء — وارجع لما تحتاجه في الوقت المناسب.</p>
   </div>
   <div class="home-journey" id="home-journey">
-    <button class="home-go" data-home-go="quran"><span class="ico">﴿</span><b>هل قرأت وردك اليوم؟</b><span>افتح المصحف وكمل من آخر صفحة توقفت عندها.</span><span class="go">إلى المصحف ←</span></button>
+    <button class="home-go" data-home-go="quran"><span class="ico">﴿</span><b>هل قرأت وردك اليوم؟</b><span id="home-quran-copy">المصحف يفتح من آخر صفحة توقفت عندها.</span><span class="go">إلى المصحف ←</span></button>
     <button class="home-go" data-home-go="azkar"><span class="ico">☾</span><b>قلت أذكارك؟</b><span>صباح، مساء، نوم، رقية ودعاء — ومع خيار الاستماع.</span><span class="go">إلى الذكر ←</span></button>
-    <button class="home-go" data-home-go="sunnah" data-learn-go="essentials"><span class="ico">◫</span><b>تعرف اللي لازم تعرفه؟</b><span>«ما لا يسع المسلم جهله» في بطاقات قصيرة بمصادرها.</span><span class="go">ابدأ التعلّم ←</span></button>
-    <button class="home-go" data-home-go="sunnah" data-learn-go="fiqh"><span class="ico">◇</span><b>مسألة فقهية في يومك؟</b><span>الفقه الميسر: طهارة، صلاة، صيام، زكاة وحج بطريقة عملية.</span><span class="go">افتح الفقه ←</span></button>
+    <button class="home-go" data-home-go="sunnah" data-learn-go="essentials"><span class="ico">◫</span><b>تعرف اللي لازم تعرفه؟</b><span>«ما لا يسع المسلم جهله» في بطاقات قصيرة بمصادرها.</span><span class="go">إلى التعلّم ←</span></button>
+    <button class="home-go" data-home-go="sunnah" data-learn-go="fiqh"><span class="ico">◇</span><b>مسألة فقهية في يومك؟</b><span>الفقه الميسر: طهارة، صلاة، صيام، زكاة وحج بطريقة عملية.</span><span class="go">إلى الفقه ←</span></button>
     <button class="home-go" data-home-go="qalb"><span class="ico">♡</span><b>كيف حال قلبك؟</b><span>اقرأ عن أعمال القلوب والعقبات وخطوات العلاج التربوي.</span><span class="go">إلى القلب ←</span></button>
     <button class="home-go" data-home-go="irtaqi"><span class="ico">↗</span><b>خطوة صغيرة ترتقي بك</b><span>خطة عملية بدل محاولة إصلاح كل شيء مرة واحدة.</span><span class="go">إلى ارتقِ ←</span></button>
     <button class="home-go wide" data-home-go="prayer"><span class="ico">◌</span><b id="home-prayer-title">الصلاة القادمة</b><span id="home-prayer-sub">حدّد موقعك من الإعدادات لعرض الموعد.</span><span class="go">المواقيت ←</span></button>
   </div>
 
-  <button class="evening-gate" id="evening-toggle" type="button"><span class="moon">☾</span><span><b>قبل أن تنام: خلاصة اليوم</b><span>٥ أسئلة أساسية فقط + حالك اليوم، وأغلق يومك في أقل من دقيقة.</span></span><i id="evening-x">＋</i></button>
+  <button class="evening-gate" id="evening-toggle" type="button"><span class="moon">☾</span><span><b id="evening-title">قبل أن تنام: خلاصة اليوم</b><span id="evening-copy">٥ أسئلة أساسية فقط + حالك اليوم، وأغلق يومك في أقل من دقيقة.</span></span><i id="evening-x">＋</i></button>
   <div class="home-evening hide" id="evening-panel">
   <div class="hero">
     <div class="hero-top">
@@ -784,7 +806,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div class="mushaf" id="mushaf">
     <div class="mus-head"><span id="mus-juz"></span><span id="mus-sura"></span></div>
     <div class="mus-body" id="mus-body"></div>
-    <div class="mus-foot"><span id="mus-page"></span></div>
+    <div class="mus-source">المصدر: القرآن الكريم — النص المحلي بالرسم العثماني، برواية حفص عن عاصم. المرجع العام: مجمع الملك فهد لطباعة المصحف الشريف.</div><div class="mus-foot"><span id="mus-page"></span></div>
   </div>
 
   <div class="rd-nav">
@@ -819,6 +841,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <div class="sec-head"><span>السبحة</span><span class="pct" id="tasbih-today"></span></div>
     <div class="counter">
       <div class="dhikr" id="dhikr-text"></div>
+      <div class="zk-source" id="dhikr-source"></div>
       <div class="count-num" id="count">0</div>
       <div class="muted" id="target-line"></div>
       <button class="tap" id="tap" style="margin-top:16px">سبِّح</button>
@@ -842,7 +865,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
           <button id="q-plus">+</button>
         </div></div>
       <div class="prog"><i id="q-bar" style="width:0%"></i></div>
-      <div class="muted" id="q-status"></div>
+      <div class="muted" id="q-status"></div><div class="zk-source">ملاحظة: هدف الصفحات تنظيمي بحسب مدة الختمة التي تختارها، وليس عددًا شرعيًا مخصوصًا.</div>
     </div>
   </section>
 </div>
@@ -853,9 +876,9 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <!-- ============ SUNNAH ============ -->
 <div id="v-sunnah" class="hide">
   <div class="learn-seg" id="learn-seg">
-    <button data-learn="riyad" aria-current="true">رياض الصالحين</button>
-    <button data-learn="essentials">ما لا يسع المسلم جهله</button>
-    <button data-learn="fiqh">الفقه الميسر</button>
+    <button data-learn="riyad" aria-current="true"><span>◫</span> رياض الصالحين</button>
+    <button data-learn="essentials"><span>⌁</span> ما لا يسع المسلم جهله</button>
+    <button data-learn="fiqh"><span>⚖</span> الفقه الميسر</button>
   </div>
   <div id="learn-riyad">
     <div class="hd-card" id="hadith-day"></div>
@@ -901,21 +924,30 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div class="onboarding-card">
     <div class="onboarding-logo" aria-hidden="true">ر</div>
     <div class="onb-step on" data-onb="0">
-      <h2 id="onboarding-title">رفيق… مش تطبيق يزود عليك.</h2>
-      <p>رفيق يساعدك على الذكر، القراءة، التعلّم ومراجعة يومك أثناء تصفحك — بخطوات قصيرة تقدر ترجع لها في أي وقت.</p>
-      <div class="onb-feature-grid"><div class="onb-feature"><b>﴿</b>مصحف وورد</div><div class="onb-feature"><b>☾</b>أذكار ودعاء</div><div class="onb-feature"><b>◫</b>علم وفقه</div></div>
+      <h2 id="onboarding-title">رفيق… يمشي مع يومك.</h2>
+      <p>رفيق يساعدك على الذكر، القراءة، التعلّم، وفهم ما تمر به وأنت تتصفح — من غير ما تحتاج تحفظ كل أبواب التطبيق.</p>
+      <div class="onb-feature-grid"><div class="onb-feature"><b>﴿</b>مصحف وورد</div><div class="onb-feature"><b>☾</b>أذكار ودعاء</div><div class="onb-feature"><b>⌁</b>علم وفقه</div></div>
     </div>
     <div class="onb-step" data-onb="1">
-      <h2>كل باب يوصلك لخطوة عملية.</h2>
-      <p>من الصفحة الرئيسية ستجد سؤالًا بسيطًا يقودك لما تحتاجه: «قرأت وردك؟» «قلت أذكارك؟» «محتاج تعرف الحكم؟» أو «كيف حال قلبك؟».</p>
-      <p class="tiny">ولا تحتاج أن تحفظ مكان أي ميزة؛ الصفحة الرئيسية تعرّفك بكل ما داخل رفيق.</p>
+      <h2>خلّي رفيق يكلمك بالطريقة المناسبة لك.</h2>
+      <p>العمر والنوع يساعدان رفيق على اختيار الصياغة وبعض الموضوعات المناسبة — مثل الحجاب، الشباب، العلاقات أو نصائح المرحلة العمرية.</p>
+      <div class="profile-form">
+        <label>العمر<input id="profile-age" type="number" inputmode="numeric" min="10" max="100" placeholder="مثال: 21"></label>
+        <div class="gender-pick"><label><input type="radio" name="profile-gender" value="male"> ذكر</label><label><input type="radio" name="profile-gender" value="female"> أنثى</label></div>
+      </div>
+      <p class="tiny">تُحفظ هذه البيانات محليًا داخل المتصفح للتخصيص، ولا تُرسل إلى خوادم رفيق.</p>
     </div>
     <div class="onb-step" data-onb="2">
-      <h2>وفي آخر اليوم… دقيقة واحدة.</h2>
-      <p>خلاصة اليوم أصبحت ٥ أسئلة أساسية فقط. لا نريد تقييمًا مرهقًا قبل النوم؛ الهدف أن تغلق يومك بوعي وتبدأ غدًا بخفة.</p>
-      <p class="tiny">بيانات يومك تُحفظ محليًا على جهازك. وبعض الميزات الخارجية مذكورة بوضوح في سياسة الخصوصية.</p>
+      <h2>مشكلتك مختلفة… والباب المناسب أقرب.</h2>
+      <p>من الصفحة الرئيسية أو «القلب» ستجد أبوابًا للمشاكل اليومية: أسرة، علاقات، دراسة، شغل، قلق، هاتف، فتور وأسئلة — مع مصدر تحت كل توجيه.</p>
+      <p class="tiny">ولو ظهرت مادة مهمة في وقت غير مناسب، علامة ＋ تحفظها في «محفوظاتي» للرجوع إليها لاحقًا.</p>
     </div>
-    <div class="onb-dots"><i class="on"></i><i></i><i></i></div>
+    <div class="onb-step" data-onb="3">
+      <h2>وفي آخر اليوم… دقيقة واحدة.</h2>
+      <p>خلاصة اليوم ٥ أسئلة أساسية فقط؛ لإغلاق اليوم بوعي من غير تحويل آخره إلى اختبار.</p>
+      <p class="tiny">و«فقه النفس» للتثقيف والتزكية، وليس تشخيصًا طبيًا ولا بديلًا عن علاج قائم. عند أعراض مستمرة أو معطلة للحياة، رفيق يذكّر بطلب تقييم من مختص.</p>
+    </div>
+    <div class="onb-dots"><i class="on"></i><i></i><i></i><i></i></div>
     <div class="onb-nav"><button id="onboarding-prev" class="ghost hide" type="button">السابق</button><button id="onboarding-next" type="button">التالي</button></div>
   </div>
 </div>
@@ -923,19 +955,40 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <div class="toast" id="toast">تم الحفظ</div>
 
 <nav><div style="grid-template-columns:repeat(6,1fr)">
-  <button data-tab="today"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="M8 20h8"/><path d="M5 8h14"/><path d="M5 8l-2.5 5a3 3 0 0 0 5 0Z"/><path d="M19 8l2.5 5a3 3 0 0 1-5 0Z"/><circle cx="12" cy="4.5" r="1.2"/></svg></em>يومي</button>
+  <button data-tab="today"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.5 12 3l8.5 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.5 20v-6h5v6"/></svg></em>يومي</button>
   <button data-tab="quran"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.4 5.2 8.4 4.5 6 4.5H3.5v13H6c2.4 0 4.4.7 6 2 1.6-1.3 3.6-2 6-2h2.5v-13H18c-2.4 0-4.4.7-6 2Z"/><path d="M12 6.5v13"/></svg></em>المصحف</button>
-  <button data-tab="sunnah"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5c0 4-3.8 7.2-8.5 7.2-.9 0-1.8-.1-2.6-.3L4.5 20.5l1.2-3.4a6.9 6.9 0 0 1-2.2-5c0-4 3.8-7.2 8.5-7.2s8.5 3.2 8.5 7.1Z"/><path d="M8.5 10h7"/><path d="M8.5 13h4.5"/></svg></em>العلم</button>
-  <button data-tab="azkar"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17.6 15.8A6.5 6.5 0 1 1 12.4 5a5.4 5.4 0 0 0 5.2 10.8Z"/><path d="M19.6 6.2l.7 1.5 1.6.2-1.2 1.1.3 1.6-1.4-.8-1.4.8.3-1.6-1.2-1.1 1.6-.2Z"/></svg></em>الذكر</button>
-  <button data-tab="qalb"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.3A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7 2.7C19 15.6 12 20 12 20Z"/></svg></em>القلب</button>
-  <button data-tab="irtaqi"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5v-3.5"/><path d="M9.5 19.5v-7"/><path d="M14.5 19.5v-10.5"/><path d="M19.5 19.5V5.5"/><path d="M17 8l2.5-2.5L22 8"/></svg></em>ارتقِ</button>
+  <button data-tab="sunnah"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h6.5c1.2 0 1.5.5 1.5 1.6v12c0-1.2-.8-1.8-2.2-1.8H4Z"/><path d="M20 5.5h-6.5c-1.2 0-1.5.5-1.5 1.6v12c0-1.2.8-1.8 2.2-1.8H20Z"/><path d="M8 9h1.5M14.5 9H16"/></svg></em>العلم</button>
+  <button data-tab="azkar"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="16" cy="17" r="2"/><path d="M9.5 8.5 10.7 10M13.4 13.5l1.2 1.6"/><path d="M18 5v4M16 7h4"/></svg></em>الذكر</button>
+  <button data-tab="qalb"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.3A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7 2.7C19 15.6 12 20 12 20Z"/><path d="M9 12h6"/></svg></em>القلب</button>
+  <button data-tab="irtaqi"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h4v-4h4v-4h4V7h4"/><path d="m17 4 3 3-3 3"/></svg></em>ارتقِ</button>
 </div></nav>
+
+<!-- saved for later -->
+<div class="sheet hide" id="saved-panel">
+  <div class="box saved-box">
+    <div class="sec-head"><span>محفوظاتي — لوقت لاحق</span><button id="saved-close" class="sheet-x">✕</button></div>
+    <div class="saved-note">أي مادة عليها علامة ＋ يمكن حفظها هنا. الحفظ محلي على جهازك.</div>
+    <div id="saved-list"></div>
+  </div>
+</div>
+
+<!-- profile personalization -->
+<div class="sheet hide" id="profile-panel">
+  <div class="box profile-box">
+    <div class="sec-head"><span>تخصيص رفيق</span><button id="profile-close" class="sheet-x">✕</button></div>
+    <div class="field"><label>العمر</label><input id="profile-edit-age" type="number" min="10" max="100" inputmode="numeric"></div>
+    <div class="field"><label>النوع</label><div class="gender-pick"><label><input type="radio" name="profile-edit-gender" value="male"> ذكر</label><label><input type="radio" name="profile-edit-gender" value="female"> أنثى</label></div></div>
+    <div class="profile-privacy">يُستخدم العمر والنوع لتخصيص الصياغة وإخفاء/إظهار موضوعات تحتاج معالجة مختلفة. البيانات تُحفظ محليًا.</div>
+    <button class="h-primary" id="profile-save">حفظ التخصيص</button>
+  </div>
+</div>
 
 <!-- settings sheet -->
 <div class="sheet hide" id="settings">
   <div class="box">
     <div class="sec-head" style="border-radius:0"><span>الإعدادات</span>
       <button id="close-settings" style="border:0;background:none;color:var(--deep);font-size:19px;cursor:pointer">✕</button></div>
+    <div class="field"><label>تخصيص رفيق</label><button id="btn-profile" style="width:100%;padding:10px;border-radius:11px;border:1px solid var(--line);background:var(--wash);color:var(--deep);cursor:pointer">تعديل العمر والنوع</button><div class="muted" style="margin-top:6px;font-size:11px">يُستخدمان محليًا لتخصيص الصياغة وبعض الموضوعات.</div></div>
     <div class="field"><label>الموقع (لحساب المواقيت والقبلة)</label>
       <div class="row"><button id="btn-geo" style="flex:1;padding:10px;border-radius:11px;
         border:1px solid var(--line);background:var(--wash);color:var(--deep);cursor:pointer">تحديد موقعي تلقائيًا</button></div>

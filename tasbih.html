@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>المسبحة — عدّاد الذكر</title>
+<title>السبحة — عدّاد الذكر</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <meta name="theme-color" content="#0B3A2F">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -41,6 +41,7 @@ h1{font-family:Amiri,serif;font-size:24px;margin:0;color:var(--gold)}
 .stage{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:20px 16px 24px;text-align:center}
 .zikr{font-family:Amiri,serif;font-size:26px;line-height:1.6;min-height:44px;color:var(--gold)}
 .fadl{font-size:12.5px;color:var(--soft);margin-top:8px;line-height:1.7;min-height:20px}
+.src{font-size:11px;color:var(--soft);line-height:1.7;margin-top:5px}.src a{color:var(--gold);text-decoration:none}.row .src{margin-top:5px}
 .ring{position:relative;width:250px;height:250px;margin:16px auto 6px}
 .ring svg{transform:rotate(-90deg)}
 .ring .mid{position:absolute;inset:0;display:grid;place-content:center;gap:2px}
@@ -115,7 +116,7 @@ input[type=text],input[type=number]{width:100%;background:var(--bg);border:1px s
 
 <div class="wrap">
 <header>
-  <h1 id="title">المسبحة</h1>
+  <h1 id="title">السبحة</h1>
   <div class="tools">
     <button class="icon" id="b-sound" title="الصوت">♪</button>
     <button class="icon" id="b-vibe" title="الاهتزاز">📳</button>
@@ -128,6 +129,7 @@ input[type=text],input[type=number]{width:100%;background:var(--bg);border:1px s
   <div class="stage">
     <div class="zikr" id="zikr">سُبْحَانَ اللهِ وَبِحَمْدِهِ</div>
     <div class="fadl" id="fadl"></div>
+    <div class="src" id="src"></div>
 
     <div class="ring" id="ring">
       <svg width="250" height="250" viewBox="0 0 250 250">
@@ -145,6 +147,7 @@ input[type=text],input[type=number]{width:100%;background:var(--bg);border:1px s
     <div class="tapzone" id="tapzone">اضغط في أي مكان داخل الدائرة أو هنا للتسبيح</div>
 
     <div class="targets" id="targets"></div>
+    <div class="src">تنبيه: أرقام أهداف العدّاد اختيارية للتنظيم، ولا تُنسب للسنة إلا إذا ذكر المصدر عددًا محددًا.</div>
 
     <div class="ctrl">
       <button id="b-undo">تراجع −١</button>
@@ -161,14 +164,6 @@ input[type=text],input[type=number]{width:100%;background:var(--bg);border:1px s
     <div class="head"><span>الأذكار</span>
       <button class="icon" id="b-add" style="width:32px;height:32px;font-size:18px">＋</button></div>
     <div id="list"></div>
-  </section>
-</div>
-
-<!-- ============ 99 NAMES ============ -->
-<div id="v-names" class="hide">
-  <section>
-    <div class="head"><span>أسماء الله الحسنى</span><span class="c" id="names-hint">اضغط الاسم لتذكره</span></div>
-    <div id="names"></div>
   </section>
 </div>
 
@@ -200,9 +195,8 @@ input[type=text],input[type=number]{width:100%;background:var(--bg);border:1px s
 <div class="toast" id="toast"></div>
 
 <nav><div>
-  <button data-t="count" aria-current="true"><em>◍</em>المسبحة</button>
+  <button data-t="count" aria-current="true"><em>◍</em>السبحة</button>
   <button data-t="list"><em>☰</em>الأذكار</button>
-  <button data-t="names"><em>﷽</em>الأسماء</button>
   <button data-t="stats"><em>▤</em>إحصائيات</button>
 </div></nav>
 
@@ -227,28 +221,26 @@ const store={
 
 /* ================= data ================= */
 const BASE=[
- {id:'sub_hamd',t:'سُبْحَانَ اللهِ وَبِحَمْدِهِ',n:100,f:'من قالها مئة مرة في يومه حُطَّت خطاياه وإن كانت مثل زبد البحر.'},
- {id:'sub_azim',t:'سُبْحَانَ اللهِ العَظِيمِ',n:100,f:'كلمة خفيفة على اللسان ثقيلة في الميزان.'},
- {id:'hamd',t:'الحَمْدُ لِلَّهِ',n:33,f:'الحمد لله تملأ الميزان.'},
- {id:'akbar',t:'اللهُ أَكْبَرُ',n:33,f:'من الباقيات الصالحات.'},
- {id:'tahlil',t:'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',n:100,f:'من قالها مئة مرة كانت له عدل عشر رقاب وحُفظ من الشيطان يومه.'},
- {id:'istighfar',t:'أَسْتَغْفِرُ اللهَ وَأَتُوبُ إِلَيْهِ',n:100,f:'كان النبي ﷺ يستغفر في اليوم أكثر من سبعين مرة.'},
- {id:'salat_nabi',t:'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ',n:100,f:'من صلى عليه صلاةً صلى الله عليه بها عشرًا.'},
- {id:'hawqala',t:'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',n:100,f:'كنز من كنوز الجنة.'},
- {id:'baqiyat',t:'سُبْحَانَ اللهِ، وَالحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللهُ، وَاللهُ أَكْبَرُ',n:100,f:'الباقيات الصالحات، أحبُّ الكلام إلى الله.'},
- {id:'sub_bihamdih',t:'سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ العَظِيمِ',n:100,f:'كلمتان حبيبتان إلى الرحمن.'},
- {id:'hasbi',t:'حَسْبِيَ اللهُ لَا إِلَهَ إِلَّا هُوَ، عَلَيْهِ تَوَكَّلْتُ',n:7,f:'تُقال سبعًا صباحًا ومساءً؛ كفاه الله ما أهمّه.'},
- {id:'ya_hayy',t:'يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ',n:33,f:'دعاء الكرب والهمّ.'}
+ {id:'sub_hamd',t:'سُبْحَانَ اللهِ وَبِحَمْدِهِ',n:100,f:'من قالها مائة مرة في يومه حُطَّت خطاياه وإن كانت مثل زبد البحر.',src:'حديث أبي هريرة — صحيح؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/10620'},
+ {id:'tahlil',t:'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',n:100,f:'ثبت في الحديث فضل قولها مائة مرة في اليوم.',src:'حديث أبي هريرة — صحيح؛ الدرر السنية',u:'https://dorar.net/h/PgrcNHyQ'},
+ {id:'istighfar',t:'أَسْتَغْفِرُ اللهَ وَأَتُوبُ إِلَيْهِ',n:100,f:'ثبت أن النبي ﷺ كان يتوب إلى الله ويستغفره في اليوم مائة مرة.',src:'صحيح الحديث؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/37239'},
+ {id:'salat_nabi',t:'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ',n:1,f:'من صلى على النبي ﷺ صلاة صلى الله عليه بها عشرًا. لا يحدد رفيق لهذا الذكر عددًا يوميًا مخصوصًا.',src:'صحيح مسلم (408)؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/40098'},
+ {id:'hawqala',t:'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',n:1,f:'ورد أنها كنز من كنوز الجنة. لا يحدد رفيق عددًا مخصوصًا هنا.',src:'حديث صحيح؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/138399'},
+ {id:'baqiyat',t:'سُبْحَانَ اللهِ، وَالحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللهُ، وَاللهُ أَكْبَرُ',n:1,f:'ثبت أن هذه الكلمات الأربع من أحب الكلام إلى الله. لا يحدد رفيق عددًا مخصوصًا هنا.',src:'صحيح مسلم؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/21255'},
+ {id:'sub_bihamdih',t:'سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ العَظِيمِ',n:1,f:'كلمتان حبيبتان إلى الرحمن، خفيفتان على اللسان، ثقيلتان في الميزان.',src:'صحيح البخاري؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/3023'},
+ {id:'ya_hayy',t:'يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ',n:1,f:'دعاء مأثور؛ لا يحدد رفيق له عددًا مخصوصًا في السبحة.',src:'حصن المسلم من أذكار الكتاب والسنة — سعيد بن علي القحطاني',u:'https://islamhouse.com/ar/books/2522/'}
 ];
-const SEQ=[{t:'سُبْحَانَ اللهِ',n:33},{t:'الحَمْدُ لِلَّهِ',n:33},{t:'اللهُ أَكْبَرُ',n:33},
- {t:'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',n:1}];
+const SEQ=[
+ {t:'سُبْحَانَ اللهِ',n:33},{t:'الحَمْدُ لِلَّهِ',n:33},{t:'اللهُ أَكْبَرُ',n:33},
+ {t:'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',n:1}
+];
+const SEQ_SOURCE={src:'تسبيح دبر الصلاة 33، والتحميد 33، والتكبير 33، وتمام المائة بالتهليل — صحيح مسلم؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/62319'};
 const TARGETS=[33,99,100,313,1000];
-const NAMES=['الرَّحْمَنُ','الرَّحِيمُ','المَلِكُ','القُدُّوسُ','السَّلَامُ','المُؤْمِنُ','المُهَيْمِنُ','العَزِيزُ','الجَبَّارُ','المُتَكَبِّرُ','الخَالِقُ','البَارِئُ','المُصَوِّرُ','الغَفَّارُ','القَهَّارُ','الوَهَّابُ','الرَّزَّاقُ','الفَتَّاحُ','العَلِيمُ','القَابِضُ','البَاسِطُ','الخَافِضُ','الرَّافِعُ','المُعِزُّ','المُذِلُّ','السَّمِيعُ','البَصِيرُ','الحَكَمُ','العَدْلُ','اللَّطِيفُ','الخَبِيرُ','الحَلِيمُ','العَظِيمُ','الغَفُورُ','الشَّكُورُ','العَلِيُّ','الكَبِيرُ','الحَفِيظُ','المُقِيتُ','الحَسِيبُ','الجَلِيلُ','الكَرِيمُ','الرَّقِيبُ','المُجِيبُ','الوَاسِعُ','الحَكِيمُ','الوَدُودُ','المَجِيدُ','البَاعِثُ','الشَّهِيدُ','الحَقُّ','الوَكِيلُ','القَوِيُّ','المَتِينُ','الوَلِيُّ','الحَمِيدُ','المُحْصِي','المُبْدِئُ','المُعِيدُ','المُحْيِي','المُمِيتُ','الحَيُّ','القَيُّومُ','الوَاجِدُ','المَاجِدُ','الوَاحِدُ','الأَحَدُ','الصَّمَدُ','القَادِرُ','المُقْتَدِرُ','المُقَدِّمُ','المُؤَخِّرُ','الأَوَّلُ','الآخِرُ','الظَّاهِرُ','البَاطِنُ','الوَالِي','المُتَعَالِي','البَرُّ','التَّوَّابُ','المُنْتَقِمُ','العَفُوُّ','الرَّءُوفُ','مَالِكُ المُلْكِ','ذُو الجَلَالِ وَالإِكْرَامِ','المُقْسِطُ','الجَامِعُ','الغَنِيُّ','المُغْنِي','المَانِعُ','الضَّارُّ','النَّافِعُ','النُّورُ','الهَادِي','البَدِيعُ','البَاقِي','الوَارِثُ','الرَّشِيدُ','الصَّبُورُ'];
 
 /* ================= state ================= */
 const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const AR=n=>n.toLocaleString('ar-EG');
-let cfg={sound:true,vibe:true,theme:'dark',target:33,idx:0},
+let cfg={sound:true,vibe:true,theme:'dark',target:100,idx:0},
     custom=[], today={}, count=0, rounds=0, seqIdx=-1, wake=null, tab='count';
 const DHIKR=()=>BASE.concat(custom);
 const cur=()=> seqIdx>=0 ? SEQ[seqIdx] : DHIKR()[cfg.idx];
@@ -273,6 +265,8 @@ function paint(){
   const c=cur(), tg=target();
   document.getElementById('zikr').textContent=c.t;
   document.getElementById('fadl').textContent= seqIdx>=0 ? 'تسبيح ما بعد الصلاة — '+(seqIdx+1)+' من ٤' : (c.f||'');
+  const sr=seqIdx>=0?SEQ_SOURCE:c;
+  document.getElementById('src').innerHTML=sr&&sr.src?`المصدر: ${sr.u?`<a href="${sr.u}" target="_blank" rel="noopener">${sr.src}</a>`:sr.src}`:'هذا نص أضافه المستخدم؛ لا ينسبه رفيق إلى السنة.';
   document.getElementById('num').textContent=AR(count);
   document.getElementById('of').textContent='من '+AR(tg);
   document.getElementById('rounds').textContent= rounds? 'أكملت '+AR(rounds)+' دورة':'';
@@ -321,7 +315,7 @@ function renderList(){
   const host=document.getElementById('list');
   host.innerHTML=DHIKR().map((d,i)=>
     `<div class="row ${i===cfg.idx&&seqIdx<0?'sel':''}" data-i="${i}">
-      <span class="t">${d.t}</span><span class="c">${AR(today[d.id]||0)} · هدف ${AR(d.n)}</span></div>`).join('');
+      <span class="t">${d.t}</span><span class="c">${AR(today[d.id]||0)} · هدف ${AR(d.n)}</span><div class="src">${d.src?`المصدر: ${d.u?`<a href="${d.u}" target="_blank" rel="noopener">${d.src}</a>`:d.src}`:'نص أضافه المستخدم — لا ينسبه رفيق إلى السنة.'}</div></div>`).join('');
   host.onclick=async e=>{ const r=e.target.closest('.row'); if(!r)return;
     cfg.idx=+r.dataset.i; seqIdx=-1; cfg.target=DHIKR()[cfg.idx].n; count=0; rounds=0;
     await store.set('tas:cfg',cfg); paint(); switchTab('count') };
@@ -332,24 +326,9 @@ document.getElementById('save-new').onclick=async()=>{
   const t=document.getElementById('new-text').value.trim();
   const n=+document.getElementById('new-target').value||33;
   if(!t){toast('اكتب نص الذكر');return}
-  custom.push({id:'c'+Date.now(),t,n,f:''}); await store.set('tas:custom',custom);
+  custom.push({id:'c'+Date.now(),t,n,f:'',src:''}); await store.set('tas:custom',custom);
   document.getElementById('new-text').value='';
   document.getElementById('add-sheet').classList.add('hide'); renderList(); toast('أُضيف الذكر') };
-
-/* ================= 99 names ================= */
-function renderNames(){
-  const host=document.getElementById('names');
-  host.innerHTML=NAMES.map((n,i)=>
-    `<div class="row" data-n="${i}"><span class="name99"><b>${n}</b></span>
-     <span class="c">${AR(i+1)}</span></div>`).join('');
-  host.onclick=async e=>{ const r=e.target.closest('.row'); if(!r)return;
-    const nm=NAMES[+r.dataset.n];
-    custom=custom.filter(c=>c.id!=='name_tmp');
-    custom.push({id:'name_tmp',t:'يَا '+nm,n:33,f:'من أسماء الله الحسنى'});
-    await store.set('tas:custom',custom);
-    cfg.idx=DHIKR().length-1; cfg.target=33; seqIdx=-1; count=0; rounds=0;
-    await store.set('tas:cfg',cfg); paint(); switchTab('count') };
-}
 
 /* ================= stats ================= */
 async function renderStats(){
@@ -401,14 +380,13 @@ document.getElementById('file-in').onchange=async e=>{
     await boot(); toast('تم الاستيراد') }catch{ toast('الملف غير صالح') } };
 
 /* ================= tabs & toggles ================= */
-const T={count:'المسبحة',list:'الأذكار',names:'أسماء الله الحسنى',stats:'إحصائياتك'};
+const T={count:'السبحة',list:'الأذكار',stats:'إحصائياتك'};
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.t));
 function switchTab(t){ tab=t;
-  ['count','list','names','stats'].forEach(v=>document.getElementById('v-'+v).classList.toggle('hide',v!==t));
+  ['count','list','stats'].forEach(v=>document.getElementById('v-'+v).classList.toggle('hide',v!==t));
   document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.t===t));
   document.getElementById('title').textContent=T[t];
   if(t==='list') renderList();
-  if(t==='names') renderNames();
   if(t==='stats') renderStats();
   scrollTo({top:0,behavior:'smooth'}) }
 
@@ -428,7 +406,7 @@ addEventListener('keydown',e=>{ if(tab==='count'&&(e.code==='Space'||e.code==='E
 
 /* ================= boot ================= */
 async function boot(){
-  cfg=Object.assign({sound:true,vibe:true,theme:'dark',target:33,idx:0},await store.get('tas:cfg')||{});
+  cfg=Object.assign({sound:true,vibe:true,theme:'dark',target:100,idx:0},await store.get('tas:cfg')||{});
   custom=(await store.get('tas:custom'))||[];
   today=(await store.get('tas:'+iso(new Date())))||{};
   document.documentElement.setAttribute('data-theme',cfg.theme);
