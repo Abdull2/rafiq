@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "رفيق يومك",
+  "short_name": "رفيق",
+  "description": "رفيق يومك: قرآن وأذكار وقراءة ومحاسبة يومية خفيفة ودفتر رفيق في لوحة جانبية أثناء التصفح.",
+  "version": "1.3.0",
+  "minimum_chrome_version": "114",
+  "permissions": [
+    "sidePanel",
+    "activeTab",
+    "contextMenus",
+    "storage",
+    "geolocation",
+    "alarms"
+  ],
+  "optional_permissions": [
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://dorar.net/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "app/index.html"
+  },
+  "action": {
+    "default_title": "فتح رفيق يومك"
+  },
+  "omnibox": {
+    "keyword": "rafiq"
+  },
+  "commands": {
+    "open-rafiq-search": {
+      "suggested_key": {
+        "default": "Alt+Shift+R",
+        "mac": "Alt+Shift+R"
+      },
+      "description": "فتح البحث الذكي في رفيق"
+    },
+    "open-rafiq-notebook": {
+      "suggested_key": {
+        "default": "Alt+Shift+N",
+        "mac": "Alt+Shift+N"
+      },
+      "description": "فتح دفتر رفيق"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}
