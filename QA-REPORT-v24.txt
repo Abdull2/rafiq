@@ -19,3 +19,25 @@
 
 ملاحظة منتج:
 «مساري» ليس تشخيصًا ولا بروتوكول علاج طبي/نفسي. هو طبقة تنظيم ومتابعة تعيد استخدام المحتوى الموثق الموجود أصلًا في رفيق، مع مراجعة ذاتية محلية (أخف / كما هي / أشد).
+
+
+v24 R2 — مساري discoverability checks
+- [PASS] direct path button exists on heart-disease cards only (not Works of the Heart).
+- [PASS] direct path button exists on each Fiqh al-Nafs topic card.
+- [PASS] direct path button exists on each specific obstacle before expansion.
+- [PASS] quick button handler runs before parent tile/open handlers and stops propagation.
+- [PASS] obstacle expand/collapse targets `.h-obb` explicitly after quick-row insertion.
+- [PASS] archived paths are reactivated.
+- [PASS] empty My Path screen offers concern-based routing; no diagnosis is inferred.
+- [PASS] manifest remains 24.0.0 per owner release numbering.
+
+v24 R3 — saved-state + Irtaqi v3 checks
+- [PASS] saved-later button initial render reads `saved-later-v1` and shows ✓ for saved IDs.
+- [PASS] toggleLater synchronizes every visible duplicate button and updates aria-pressed/title/label.
+- [PASS] quick My Path button sync helper forces ✓ for active/reactivated paths.
+- [PASS] Irtaqi JSON parses and includes 6 axes / 24 questions.
+- [PASS] Irtaqi framework includes 4 sourced principles; source URLs are displayed only post-assessment.
+- [PASS] Irtaqi v3 prioritization includes foundation axes before growth/nawafil and preserves the explicit organizational-only 40-day disclaimer.
+- [PASS] old Irtaqi journey versions (<3) auto-rebuild from last saved assessment.
+- [PASS] new journey uses a unique id in completion keys to prevent same-day re-assessment progress collisions.
+- [PASS] each Irtaqi task object has a visible task-level source mapping.

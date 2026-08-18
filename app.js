@@ -139,14 +139,26 @@ function paintProfileUI(){
 /* ================= احفظها لوقت لاحق ================= */
 let laterItems=[], laterRegistry={};
 const laterEsc=x=>(x||'').toString().replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function laterRegister(id,item){laterRegistry[id]=item||{};return `<button class="save-later" data-later="${laterEsc(id)}" type="button" title="احفظها لوقت لاحق" aria-label="احفظها لوقت لاحق">＋</button>`}
+const laterHas=id=>laterItems.some(v=>v.id===id);
+function laterRegister(id,item){
+  laterRegistry[id]=item||{}; const on=laterHas(id);
+  return `<button class="save-later ${on?'on':''}" data-later="${laterEsc(id)}" type="button" title="${on?'محفوظ — اضغط للإزالة':'احفظها لوقت لاحق'}" aria-label="${on?'محفوظ في محفوظاتي':'احفظها لوقت لاحق'}" aria-pressed="${on?'true':'false'}">${on?'✓':'＋'}</button>`
+}
 async function loadLater(){laterItems=(await store.get('saved-later-v1'))||[];updateLaterBadge()}
 function updateLaterBadge(){const b=document.getElementById('saved-count');if(b)b.textContent=laterItems.length?AR(laterItems.length):''}
+function syncLaterButtons(id){
+  const on=laterHas(id);
+  document.querySelectorAll('.save-later[data-later]').forEach(b=>{
+    if(b.dataset.later!==id)return;
+    b.classList.toggle('on',on); b.textContent=on?'✓':'＋'; b.setAttribute('aria-pressed',on?'true':'false');
+    b.setAttribute('aria-label',on?'محفوظ في محفوظاتي':'احفظها لوقت لاحق'); b.title=on?'محفوظ — اضغط للإزالة':'احفظها لوقت لاحق';
+  });
+}
 async function toggleLater(id){
   const x=laterRegistry[id]; if(!x)return;
   const i=laterItems.findIndex(v=>v.id===id);
-  if(i>=0){laterItems.splice(i,1);toast('أزيلت من المحفوظات')}else{laterItems.unshift({...x,id,savedAt:Date.now()});toast('حُفظت لوقت لاحق')}
-  await store.set('saved-later-v1',laterItems);updateLaterBadge();renderSavedPanel();
+  if(i>=0){laterItems.splice(i,1);toast('أزيلت من محفوظاتي')}else{laterItems.unshift({...x,id,savedAt:Date.now()});toast('تم الحفظ في محفوظاتي ✓')}
+  await store.set('saved-later-v1',laterItems);updateLaterBadge();syncLaterButtons(id);renderSavedPanel();
 }
 function savedSourceHtml(x){return x?.source?`<div class="saved-source">${laterEsc(x.source)}</div>`:''}
 function renderSavedPanel(){
@@ -823,11 +835,34 @@ function hPathResolve(path){
   return null;
 }
 function hPathButton(type,parentId,itemId=''){
-  const key=hPathKey(type,parentId,itemId),on=!!hPathFind(key);
+  const key=hPathKey(type,parentId,itemId),found=hPathFind(key),on=!!found&&found.status!=='archived';
   return `<button class="path-start ${on?'on':''}" data-path-start="${laterEsc(key)}">${on?'✓ موجود في مساري':'ابدأ مسارًا لهذه المشكلة'}</button>`;
 }
+function hPathQuickButton(type,parentId,itemId=''){
+  const key=hPathKey(type,parentId,itemId),found=hPathFind(key),on=!!found&&found.status!=='archived';
+  return `<button type="button" class="path-quick ${on?'on':''}" data-path-quick="${laterEsc(key)}" aria-label="${on?'موجود في مساري':'أضف المشكلة إلى مساري'}" aria-pressed="${on?'true':'false'}">${on?'✓ في مساري':'＋ أضف لمساري'}</button>`;
+}
+function syncPathQuickButtons(key){
+  const found=hPathFind(key),on=!!found&&found.status!=='archived';
+  document.querySelectorAll('[data-path-quick]').forEach(b=>{
+    if(b.dataset.pathQuick!==key)return;
+    b.classList.toggle('on',on); b.textContent=on?'✓ في مساري':'＋ أضف لمساري';
+    b.setAttribute('aria-label',on?'موجود في مساري':'أضف المشكلة إلى مساري'); b.setAttribute('aria-pressed',on?'true':'false');
+  });
+}
+async function hPathQuickAdd(btn,key){
+  const found=hPathFind(key);
+  if(found&&found.status!=='archived'){syncPathQuickButtons(key);toast('✓ هذه المشكلة موجودة بالفعل في مسارك');return}
+  if(found&&found.status==='archived'){found.status='active';found.start=Date.now();await store.set('qalb-paths-v1',hPaths);syncPathQuickButtons(key);toast('أعدنا المشكلة إلى «مساري» ✓');return}
+  const [type,parentId,itemId='']=key.split(':');
+  hPaths.unshift({key,type,parentId,itemId,start:Date.now(),status:'active',done:{},checkins:[]});
+  await store.set('qalb-paths-v1',hPaths);syncPathQuickButtons(key);
+  toast('تمت إضافتها إلى «مساري» ✓');
+}
 async function hPathStart(key){
-  if(hPathFind(key)){toast('هذه المشكلة موجودة في مسارك');hPathCur=key;hPathsRender();return}
+  const found=hPathFind(key);
+  if(found&&found.status!=='archived'){toast('هذه المشكلة موجودة في مسارك');hPathCur=key;hPathsRender();return}
+  if(found&&found.status==='archived'){found.status='active';found.start=Date.now();await store.set('qalb-paths-v1',hPaths);toast('أعدنا المشكلة إلى مسارك');hPathCur=key;hPathsRender();return}
   const [type,parentId,itemId='']=key.split(':');
   hPaths.unshift({key,type,parentId,itemId,start:Date.now(),status:'active',done:{},checkins:[]});
   await store.set('qalb-paths-v1',hPaths); toast('أضفتها إلى مسارك'); hPathCur=key; hPathsRender();
@@ -845,7 +880,7 @@ async function hPathsRender(){
   const active=hPathActive(),host=document.getElementById('v-qalb');
   host.innerHTML=`<div class="h-tabs">${hPathTab(true)}<button data-k="problems">♡ أمراض القلوب</button><button data-k="works">◇ أعمال القلوب</button><button data-k="obstacles">↗ العقبات</button><button data-k="deeds">＋ بنك الأعمال</button><button data-k="nafs">◌ فقه النفس</button>${issueTabButton(false)}</div>
     <div class="path-hero"><div class="kicker">مساري الشخصي</div><h2>مشكلتك لها باب ومسار</h2><p>اختر المشكلة التي تشغلك الآن من العقبات أو أمراض القلوب أو فقه النفس. رفيق يجمع لك أصل الفكرة والخطوات الموجودة في المحتوى نفسه، ويحفظ تقدمك محليًا على جهازك. يمكنك فتح أكثر من مسار.</p></div>
-    ${active.length?`<div class="path-list">${active.map(p=>{const d=hPathResolve(p);if(!d)return'';const pct=hPathProgress(p,d);return `<div class="path-card"><div class="top"><div><div class="kind">${d.kind}${d.sub?' · '+d.sub:''}</div><h3>${d.title}</h3><div class="sub">بدأ ${new Intl.DateTimeFormat('ar-EG',{day:'numeric',month:'short'}).format(new Date(p.start))}</div></div><button class="path-open" data-path-open="${laterEsc(p.key)}">افتح المسار</button></div><div class="path-progress"><i style="width:${pct}%"></i></div><div class="path-meta"><span>${AR(pct)}% من المحطات</span><span>${(p.checkins||[]).length?`آخر مراجعة: ${(p.checkins||[]).slice(-1)[0].state}`:'لم تسجل مراجعة بعد'}</span></div></div>`}).join('')}</div>`:`<div class="path-empty"><b>ابدأ من المشكلة التي تشغلك فعلًا</b><p>لا يوجد اختبار يقرر مشكلتك نيابة عنك. اختر الباب الأقرب إلى واقعك، ثم اضغط «ابدأ مسارًا» داخل المسألة.</p><div class="path-picks"><button data-path-go="obstacles">العقبات اليومية</button><button data-path-go="problems">أمراض القلوب</button><button data-path-go="nafs">فقه النفس</button></div></div>`}`;
+    ${active.length?`<div class="path-list">${active.map(p=>{const d=hPathResolve(p);if(!d)return'';const pct=hPathProgress(p,d);return `<div class="path-card"><div class="top"><div><div class="kind">${d.kind}${d.sub?' · '+d.sub:''}</div><h3>${d.title}</h3><div class="sub">بدأ ${new Intl.DateTimeFormat('ar-EG',{day:'numeric',month:'short'}).format(new Date(p.start))}</div></div><button class="path-open" data-path-open="${laterEsc(p.key)}">افتح المسار</button></div><div class="path-progress"><i style="width:${pct}%"></i></div><div class="path-meta"><span>${AR(pct)}% من المحطات</span><span>${(p.checkins||[]).length?`آخر مراجعة: ${(p.checkins||[]).slice(-1)[0].state}`:'لم تسجل مراجعة بعد'}</span></div></div>`}).join('')}</div>`:`<div class="path-empty"><b>ما الذي يشغلك هذه الأيام؟</b><p>ابدأ من إحساسك أو موقفك الحالي. سنوصلك للباب الأقرب، وأنت تختار المشكلة التي تشبه واقعك ثم تضيفها لمسارك.</p><div class="path-suggestions"><button data-path-preset="worry">هم أو قلق</button><button data-path-preset="futuur">فتور</button><button data-path-preset="sin">ذنب يتكرر</button><button data-path-preset="family">مشكلة أسرية</button><button data-path-preset="relation">علاقة أو ارتباط</button><button data-path-preset="heart">مرض قلب</button></div><div class="path-picks"><button data-path-go="obstacles">كل العقبات</button><button data-path-go="problems">أمراض القلوب</button><button data-path-go="nafs">فقه النفس</button></div></div>`}`;
   host.onclick=hClick;
 }
 function hPathDetail(key){
@@ -879,7 +914,7 @@ function hRenderList(){
   const items=(HD[hKind]||[]).filter(audienceOk), q=searchNorm(hQuery), F=items.filter(p=>!q||searchNorm(deepSearchText(p)).includes(q));
   const cnt=document.getElementById('heart-result-count'), host=document.getElementById('heart-list'); if(!cnt||!host)return;
   cnt.textContent=`${AR(F.length)} من ${AR(items.length)} بابًا`;
-  host.innerHTML=F.length?`<div class="h-grid">${F.map(p=>{ const pct=hPct(p),j=(hJournal[p.id]||[]).length; return `<div class="h-tile" data-id="${p.id}">${laterRegister(`heart:${hKind}:${p.id}`,{kind:'القلب',title:p.name,text:p.sub||'',source:p.defSource?.t||'',tab:'qalb'})}<div class="ic">${p.icon||'◈'}</div><div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div><div class="pr"><i style="width:${pct}%"></i></div><div class="st">${pct?'اليوم '+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة في هذا القسم.</div>';
+  host.innerHTML=F.length?`<div class="h-grid">${F.map(p=>{ const pct=hPct(p),j=(hJournal[p.id]||[]).length,pathBtn=hKind==='problems'?hPathQuickButton('problem',p.id):''; return `<div class="h-tile" data-id="${p.id}">${laterRegister(`heart:${hKind}:${p.id}`,{kind:'القلب',title:p.name,text:p.sub||'',source:p.defSource?.t||'',tab:'qalb'})}<div class="ic">${p.icon||'◈'}</div><div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div>${pathBtn?`<div class="path-quick-wrap">${pathBtn}</div>`:''}<div class="pr"><i style="width:${pct}%"></i></div><div class="st">${pct?'اليوم '+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة في هذا القسم.</div>';
 }
 function hProgHtml(id,label){
   const p=hProg[id];
@@ -938,7 +973,7 @@ function hOpen(id){
         `<a href="${x.u}" target="_blank" rel="noopener" class="h-lnk">${x.t||'المصدر'} ↗</a>`).join('');
       const qq=isFemale()?(it.qFemale||it.q):(it.qMale||it.q);
       return `<div class="h-ob">${laterRegister(`obstacle:${p.id}:${it.id}`,{kind:'عقبة',title:p.name,text:qq,source:it.answerSource?.t||'',tab:'qalb'})}<button class="h-obh" data-ob="${k}">
-          <span class="q">${qq}</span><span class="x">＋</span></button>
+          <span class="q">${qq}</span><span class="x">⌄</span></button><div class="path-ob-quick">${hPathQuickButton('obstacle',p.id,it.id)}</div>
         <div class="h-obb hide">
           <div class="h-obs"><div class="lb">لماذا قد تحدث؟</div><ul>${hListHtml(it.why||[])}</ul></div>
           <div class="h-obs"><div class="lb">الجواب باختصار</div><div class="tx">${it.answer}</div>${hSourceHtml(it.answerSource)}</div>
@@ -978,7 +1013,9 @@ async function hClick(e){
   if(e.target.closest('.save-later'))return;
   const kt=e.target.closest('.h-tabs button');
   if(kt){ const k=kt.dataset.k; dCat=null; if(k==='path'){hPathsRender();return} if(k==='ishkaliat'){hIshkaliat();return} if(k==='nafs'){hNafs();return} if(k==='deeds'){hDeeds();return} if(k==='obstacles'){hKind='obstacles';hObstacles();return} if(['problems','works'].includes(k)){hKind=k;hRender();return} }
-  const pgo=e.target.closest('button[data-path-go]'); if(pgo){const k=pgo.dataset.pathGo;if(k==='obstacles'){hKind='obstacles';hObstacles()}else if(k==='nafs'){hNafs()}else{hKind='problems';hRender()}return}
+  const pgo=e.target.closest('button[data-path-go]'); if(pgo){const k=pgo.dataset.pathGo;if(k==='obstacles'){hKind='obstacles';hQuery='';hObstacles()}else if(k==='nafs'){nafsQuery='';hNafs()}else{hKind='problems';hQuery='';hRender()}return}
+  const ppreset=e.target.closest('button[data-path-preset]'); if(ppreset){const k=ppreset.dataset.pathPreset;if(k==='worry'){nafsQuery='قلق';nafsGroup='all';hNafs()}else if(k==='futuur'){hQuery='فتور';hObstacles()}else if(k==='sin'){hQuery='ذنب';hObstacles()}else if(k==='family'){hQuery='أسرة';hObstacles()}else if(k==='relation'){hQuery='علاقة';hObstacles()}else{hKind='problems';hQuery='';hRender()}return}
+  const pquick=e.target.closest('button[data-path-quick]'); if(pquick){e.preventDefault();e.stopPropagation();await hPathQuickAdd(pquick,pquick.dataset.pathQuick);return}
   const pstart=e.target.closest('button[data-path-start]'); if(pstart){await hPathStart(pstart.dataset.pathStart);return}
   const popen=e.target.closest('button[data-path-open]'); if(popen){hPathDetail(popen.dataset.pathOpen);return}
   if(e.target.closest('#path-back')){hPathsRender();return}
@@ -1014,8 +1051,8 @@ async function hClick(e){
   const back=e.target.closest('#h-back'); if(back){ hRender(); return }
   const tile=e.target.closest('.h-tile'); if(tile){ hOpen(tile.dataset.id); return }
   const oh=e.target.closest('.h-obh');
-  if(oh){ const b=oh.nextElementSibling; const op=b.classList.toggle('hide');
-    oh.querySelector('.x').textContent=op?'＋':'－'; return }
+  if(oh){ const b=oh.parentElement.querySelector('.h-obb'); if(!b)return; const op=b.classList.toggle('hide');
+    oh.querySelector('.x').textContent=op?'⌄':'⌃'; return }
   const chk=e.target.closest('button[data-k]');
   if(chk){ const d=hToday(); hTrack[d]=hTrack[d]||{};
     const kk=chk.dataset.k+':'+chk.dataset.i;
@@ -1068,7 +1105,7 @@ function hNafsList(){
   const N=HD.nafs||[], q=nafsNorm(nafsQuery), GM=Object.fromEntries((HD.nafsGroups||[]).map(g=>[g.id,g]));
   const F=N.filter(audienceOk).filter(it=>(nafsGroup==='all'||it.group===nafsGroup) && (!q||nafsNorm([it.q,it.summary,it.psych,it.iman,...(it.questions||[])].join(' ')).includes(q)));
   const host=document.getElementById('nafs-list'); if(!host)return; const cnt=document.getElementById('nafs-result-count'); if(cnt)cnt.textContent=`${AR(F.length)} من ${AR(N.filter(audienceOk).length)} موضوعًا`;
-  host.innerHTML=F.length?`<div class="nafs-topic-list">${F.map(it=>{const gr=GM[it.group]||{};return `<div class="nafs-topic">${laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الظاهرة',tab:'qalb'})}<button class="nafs-open" data-nafs-id="${it.id}"><span class="ni">${gr.icon||'◌'}</span><span><span class="ng">${gr.name||'فقه النفس'}</span><span class="nq">${it.q}</span><span class="ns">${it.summary||''}</span></span><span class="go">→</span></button></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة. جرّب كلمة أخرى أو اختر كل المسارات.</div>';
+  host.innerHTML=F.length?`<div class="nafs-topic-list">${F.map(it=>{const gr=GM[it.group]||{};return `<div class="nafs-topic">${laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الظاهرة',tab:'qalb'})}<button class="nafs-open" data-nafs-id="${it.id}"><span class="ni">${gr.icon||'◌'}</span><span><span class="ng">${gr.name||'فقه النفس'}</span><span class="nq">${it.q}</span><span class="ns">${it.summary||''}</span></span><span class="go">←</span></button><div class="nafs-path-quick">${hPathQuickButton('nafs',it.id)}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة. جرّب كلمة أخرى أو اختر كل المسارات.</div>';
 }
 function hNafsDetail(id){
   const it=(HD.nafs||[]).find(x=>x.id===id);if(!it){hNafs();return}nafsCur=id;const gr=(HD.nafsGroups||[]).find(g=>g.id===it.group)||{};
@@ -1324,13 +1361,19 @@ function khHtml(){
 /* ================= ارتقِ ================= */
 let IRT=null, irtAns={}, irtHist=[], irtPlan=[], irtDone={}, irtJourney=null, irtViewDay=null;
 async function loadIrt(){ if(IRT)return IRT;
-  try{ IRT=await (await fetch('./irtaqi.json?v='+Date.now())).json() }catch{ IRT={axes:[],ranks:[]} }
+  try{ IRT=await (await fetch('./irtaqi.json?v='+Date.now())).json() }catch{ IRT={axes:[],ranks:[],framework:{}} }
   irtHist=(await store.get('irt-hist'))||[]; irtPlan=(await store.get('irt-plan'))||[];
   irtDone=(await store.get('irt-done'))||{}; irtJourney=(await store.get('irt-journey'))||null;
-  if(!irtJourney&&irtHist.length){irtJourney=irtBuildJourney(irtHist[irtHist.length-1]);await store.set('irt-journey',irtJourney)}
+  // v3 rebuilds old score-only journeys into the new Sharia-priority framework.
+  if(irtHist.length&&(!irtJourney||+irtJourney.version<3)){
+    irtJourney=irtBuildJourney(irtHist[irtHist.length-1]); await store.set('irt-journey',irtJourney)
+  }
   return IRT }
 const irtRank=p=>IRT.ranks.slice().reverse().find(r=>p>=r.min)||IRT.ranks[0];
-function irtQuestionText(a,i,q){if(a.id==='faraid'&&i===1&&isFemale())return 'أحافظ على الفرائض في وقتها وأتهيأ لها دون تسويف';if(a.id==='faraid'&&i===3&&isFemale())return 'أبدأ الصلاة في أول وقتها قدر استطاعتي';return q}
+function irtQuestionText(a,i,q){
+  if(a.id==='faraid'&&i===3&&isFemale())return 'أحافظ على الصلوات في وقتها وأتهيأ لها دون تسويف حتى مع تغيّر ظروف يومي';
+  return typeof q==='string'?q:(isFemale()?(q.female||q.t||q.male):(q.male||q.t||q.female));
+}
 function irtScores(ans){
   const per={}; let tot=0,n=0;
   IRT.axes.forEach(a=>{ let s=0,c=0;
@@ -1339,64 +1382,110 @@ function irtScores(ans){
   return {per,total:n?Math.round(tot/n*100):0}
 }
 function irtDaysBetween(a,b){return Math.floor((fromIso(b)-fromIso(a))/86400000)}
+const irtAxis=id=>IRT.axes.find(a=>a.id===id);
+const irtScore=(per,id)=>Number(per?.[id]||0);
+function irtSourceHtml(s,compact=false){
+  if(!s)return '';
+  if(typeof s==='string')return `<div class="irt-src ${compact?'compact':''}"><span class="src-mark">↗</span><span>${laterEsc(s)}</span></div>`;
+  const label=s.label||s.t||'المصدر';
+  return `<div class="irt-src ${compact?'compact':''}"><span class="src-mark">↗</span>${s.url||s.u?`<a href="${s.url||s.u}" target="_blank" rel="noopener">${laterEsc(label)}</a>`:`<span>${laterEsc(label)}</span>`}</div>`;
+}
+function irtTaskText(task){
+  if(!task)return '';
+  if(typeof task==='string')return task;
+  if(isFemale()&&task.female)return task.female;
+  if(!isFemale()&&task.male)return task.male;
+  return task.t||task.male||task.female||'';
+}
+function irtTaskAt(axis,score,dayIndex){
+  const list=axis?.plan||[]; if(!list.length)return {t:'ثبّت العمل الصالح القائم عندك اليوم.'};
+  const start=score<30?0:score<55?1:score<78?2:Math.min(3,list.length-1);
+  const step=Math.floor(dayIndex/5); return list[Math.min(list.length-1,start+step)]||list[list.length-1];
+}
+function irtLowest(ids,per,exclude=[]){
+  return ids.filter(id=>irtAxis(id)&&!exclude.includes(id)).sort((a,b)=>irtScore(per,a)-irtScore(per,b))[0]||ids.find(id=>irtAxis(id));
+}
 function irtBuildJourney(result){
-  const ordered=IRT.axes.slice().sort((a,b)=>(result.per[a.id]||0)-(result.per[b.id]||0));
-  const alloc=[10,8,7,6,5,4], stages=['تأسيس','تثبيت','ترقية','مراجعة'];
-  const days=[]; let no=1;
-  ordered.forEach((a,rank)=>{
-    const len=alloc[rank]||4;
-    for(let j=0;j<len;j++){
-      const pi=Math.min(a.plan.length-1,Math.floor(j*a.plan.length/len));
-      const stage=stages[Math.min(3,Math.floor(j*4/len))];
-      let support='';
-      if(rank>0&&j%2===1){const prev=ordered[rank-1];support=prev.plan[0]||''}
-      days.push({n:no++,axis:a.id,ax:a.name,t:a.plan[pi],stage,support});
+  const per=result.per||{}, foundation=['faraid','rights','ilm'].filter(irtAxis), devotion=['quran','dhikr'].filter(irtAxis);
+  const allNonGrowth=[...foundation,...devotion];
+  const p1=(irtScore(per,'faraid')<80&&irtAxis('faraid'))?'faraid':irtLowest(foundation,per);
+  const nextFoundation=irtLowest(foundation,per,[p1]);
+  const p2=(nextFoundation&&irtScore(per,nextFoundation)<75)?nextFoundation:irtLowest(devotion,per);
+  const p3=irtLowest(devotion,per,[p2])||irtLowest(allNonGrowth,per,[p1,p2]);
+  const foundationsStable=foundation.every(id=>irtScore(per,id)>=68), devotionStable=devotion.every(id=>irtScore(per,id)>=52);
+  const p4=(foundationsStable&&devotionStable&&irtAxis('nawafil'))?'nawafil':irtLowest(allNonGrowth,per,[p1,p2,p3]);
+  const principles=Object.fromEntries((IRT.framework?.principles||[]).map(x=>[x.id,x]));
+  const phases=[
+    {axis:p1,stage:'الأصل أولًا',principle:principles['obligations-first'],reason:'نبدأ هنا لأن الخطة لا تقدّم نافلة أو زيادة على واجب ظاهر يحتاج تثبيتًا.'},
+    {axis:p2||p1,stage:'تثبيت الواجب والحقوق',principle:principles['knowledge'],reason:'بعد أول باب، نثبّت بابًا لازمًا آخر أو نصل ما نقص من العلم والحقوق قبل التكثير.'},
+    {axis:p3||p2||p1,stage:'زاد ثابت من الوحي',principle:principles['consistency'],reason:'بعد حماية الأصل، نضيف زادًا قليلًا قابلًا للدوام من القرآن أو الذكر بحسب نتيجتك.'},
+    {axis:p4||p3||p1,stage:(p4==='nawafil'?'زيادة بعد الثبات':'إصلاح ما بقي'),principle:(p4==='nawafil'?principles['obligations-first']:principles['ease']),reason:(p4==='nawafil'?'ظهرت قاعدة مستقرة نسبيًا؛ لذلك يمكن إضافة نافلة واحدة ثابتة دون مزاحمة واجب.':'لا تزال الأولوية لباب أساسي؛ فلا نضيف تكاليف جديدة قبل أن يستقر الأصل.')}
+  ];
+  const days=[]; let no=1, previous=null;
+  phases.forEach((ph,phaseIndex)=>{
+    const axis=irtAxis(ph.axis); if(!axis)return;
+    for(let j=0;j<10;j++){
+      const task=irtTaskAt(axis,irtScore(per,axis.id),j);
+      let support=null;
+      if(previous&&previous.id!==axis.id){support=previous.maintenance||previous.plan?.[0]||null}
+      else if(axis.id!=='faraid'&&irtAxis('faraid')&&irtScore(per,'faraid')<88){support=irtAxis('faraid').maintenance}
+      days.push({n:no++,axis:axis.id,ax:axis.name,stage:ph.stage,phase:phaseIndex+1,reason:ph.reason,principle:ph.principle||null,task,support,supportAxis:support?(previous?.name||irtAxis('faraid')?.name||'تثبيت الأصل'):''});
     }
+    previous=axis;
   });
-  return {version:2,start:iso(new Date()),created:Date.now(),total:40,days:days.slice(0,40),order:ordered.map(a=>a.id),source:{per:result.per,total:result.total}};
+  return {version:3,id:String(Date.now()),start:iso(new Date()),created:Date.now(),total:40,days:days.slice(0,40),phases:phases.map(p=>({axis:p.axis,stage:p.stage})),source:{per:result.per,total:result.total}};
 }
 function irtCurrentDay(){if(!irtJourney)return 1;return Math.max(1,Math.min(41,irtDaysBetween(irtJourney.start,iso(new Date()))+1))}
-function irtDoneKey(n){return `journey:${irtJourney.start}:${n}`}
+function irtDoneKey(n){return `journey:${irtJourney.id||irtJourney.start}:${n}`}
 function irtDayComplete(day){const d=irtDone[irtDoneKey(day.n)]||{};return !!d.main&&(!day.support||!!d.support)}
 function irtDoneCount(){return irtJourney?irtJourney.days.filter(irtDayComplete).length:0}
+function irtFrameworkHtml(){
+  const f=IRT.framework||{}, ps=f.principles||[];
+  if(!ps.length)return '';
+  return `<div class="irt-framework"><div class="irt-framework-head"><span>كيف بُنيت الخطة؟</span><small>ترتيب شرعي + تدرّج عملي</small></div><p>${f.intro||''}</p><div class="irt-principles">${ps.map(p=>`<div class="irt-principle"><b>${p.title}</b><span>${p.text}</span>${irtSourceHtml(p.source,true)}</div>`).join('')}</div></div>`;
+}
 async function irtRender(){
   await loadIrt();
   const last=irtHist[irtHist.length-1], host=document.getElementById('irt-body');
   if(!last){irtQuiz();return}
-  if(!irtJourney){irtJourney=irtBuildJourney(last);await store.set('irt-journey',irtJourney)}
-  const {per,total}=last, rank=irtRank(total), ordered=IRT.axes.slice().sort((a,b)=>per[a.id]-per[b.id]);
+  if(!irtJourney||+irtJourney.version<3){irtJourney=irtBuildJourney(last);await store.set('irt-journey',irtJourney)}
+  const {per,total}=last, rank=irtRank(total);
+  const priorityOrder=['faraid','rights','ilm','quran','dhikr','nawafil'].map(irtAxis).filter(Boolean);
   const cur=irtCurrentDay(), finished=cur>40, selected=irtViewDay||Math.min(cur,40), day=irtJourney.days[selected-1], doneN=irtDoneCount();
-  const pct=Math.round(doneN/40*100);
+  const pct=Math.round(doneN/40*100), phaseNo=Math.min(4,Math.ceil(selected/10));
   host.innerHTML=`<div class="irt-hero">
-      <div class="sc">نتيجة آخر تقييم</div><div class="rank">${rank.name}</div>
-      <div class="sc">${AR(total)}% · الخطة تبدأ بالأكثر احتياجًا ثم تنتقل لما بعده</div><div class="sc" style="margin-top:7px;opacity:.8">مدة ٤٠ يومًا تنظيمية داخل التطبيق وليست عددًا تعبديًا أو سنة مخصوصة.</div>
-      <div class="irt-weak-list">${ordered.slice(0,4).map((a,i)=>`<span>${i+1}. ${a.name} ${AR(per[a.id])}%</span>`).join('')}</div>
-      <div class="d">خطة ٤٠ يومًا مبنية على إجاباتك: تركيز متدرّج على أضعف المحاور، مع تثبيت ما سبق بدل إضافة أعمال كثيرة دفعة واحدة.</div>
+      <div class="sc">نتيجة آخر تقييم — قراءة تنظيمية فقط</div><div class="rank">${rank.name}</div>
+      <div class="sc">${AR(total)}% · لكن ترتيب الخطة لا يعتمد على الرقم وحده</div>
+      <div class="irt-weak-list">${priorityOrder.map(a=>`<span>${a.name} ${AR(per[a.id])}%</span>`).join('')}</div>
+      <div class="d">نبدأ بالفرائض والحقوق والعلم اللازم، ثم نبني وردًا ثابتًا من القرآن والذكر، ولا نجعل النوافل مرحلة أساسية إلا بعد قدر معقول من ثبات الأصل.</div>
       <button data-irt="requiz">إعادة التقييم وبناء خطة جديدة</button>
     </div>
-    <div class="irt-journey"><div class="irt-jhead"><div class="top"><b>${finished?'أتممت مدة الخطة':'رحلتك — اليوم '+AR(cur)+' من ٤٠'}</b><span>${AR(doneN)} يوم مكتمل · ${AR(pct)}%</span></div><div class="irt-jprog"><i style="width:${pct}%"></i></div></div>
+    ${irtFrameworkHtml()}
+    <div class="irt-journey"><div class="irt-jhead"><div class="top"><b>${finished?'أتممت مدة الخطة':'رحلتك — اليوم '+AR(cur)+' من ٤٠'}</b><span>${AR(doneN)} يوم مكتمل · ${AR(pct)}%</span></div><div class="irt-jprog"><i style="width:${pct}%"></i></div><div class="irt-phase-line">المرحلة ${AR(phaseNo)} من ٤ · ${day?.stage||''}</div></div>
       <div class="irt-grid">${irtJourney.days.map(x=>{const c=irtDayComplete(x),future=x.n>cur;return `<button data-jday="${x.n}" class="${c?'done':''} ${x.n===cur?'today':''} ${x.n===selected?'sel':''} ${future?'future':''}" title="اليوم ${x.n} — ${x.ax}">${AR(x.n)}</button>`}).join('')}</div>
       ${irtDayCard(day,selected,cur)}
     </div>
-    <details class="irt-source-drawer"><summary>مراجع محاور «ارتقِ»</summary><div class="body">${IRT.axes.map(a=>`<div class="irt-source-axis"><b>${a.name}</b><div class="source-stack">${(a.sources||[]).map(s=>`<div class="learn-source">${s}</div>`).join('')}</div></div>`).join('')}</div></details>
-    <p class="note" style="font-size:12px;color:var(--soft);line-height:1.8;margin-top:12px">الخطة أداة تنظيم ومحاسبة وليست حكمًا على إيمانك، والـ٤٠ يومًا مدة تصميمية وليست عددًا شرعيًا. المراجع موجودة بعد القياس داخل قسم مستقل، لا بين أسئلة الاختبار.</p>`;
+    <details class="irt-source-drawer"><summary>كل مراجع «ارتقِ»</summary><div class="body">${IRT.axes.map(a=>`<div class="irt-source-axis"><b>${a.name}</b><div class="source-stack">${(a.sources||[]).map(s=>irtSourceHtml(s,true)).join('')}</div></div>`).join('')}</div></details>
+    <p class="note" style="font-size:12px;color:var(--soft);line-height:1.8;margin-top:12px">الأربعون يومًا مدة تنظيمية لمتابعة التدرّج وليست عددًا تعبديًا ولا سنة مخصوصة. الخطة لا تزكي المستخدم ولا تستبدل سؤال أهل العلم في المسائل الشخصية.</p>`;
   host.onclick=irtClick;
 }
 function irtDayCard(day,n,cur){
   if(!day)return '';
-  const state=irtDone[irtDoneKey(n)]||{}, future=n>cur, ax=IRT.axes.find(a=>a.id===day.axis), src=(ax?.sources||[]).length?`<details class="irt-source-drawer" style="margin-top:8px"><summary>مرجع هذا المحور</summary><div class="body source-stack">${(ax.sources||[]).map(s=>`<div class="learn-source">${s}</div>`).join('')}</div></details>`:'';
+  const state=irtDone[irtDoneKey(n)]||{}, future=n>cur, taskText=irtTaskText(day.task), supportText=irtTaskText(day.support);
   return `<div class="irt-daycard"><div class="irt-focus"><span>اليوم ${AR(n)}</span><span>${day.ax}</span><span>${day.stage}</span></div>
-    <div class="irt-task"><button data-jtask="main" data-day="${n}" class="${state.main?'on':''}" ${future?'disabled':''}>${state.main?'✓':''}</button><div><div class="tt">${day.t}</div><div class="sm">المهمة الأساسية لهذا اليوم — اجعلها قابلة للتنفيذ فعلًا.</div>${src}</div></div>
-    ${day.support?`<div class="irt-task"><button data-jtask="support" data-day="${n}" class="${state.support?'on':''}" ${future?'disabled':''}>${state.support?'✓':''}</button><div><div class="tt">${day.support}</div><div class="sm">تثبيت لما سبق، حتى لا نعالج محورًا ونفقد الذي قبله.</div></div></div>`:''}
-    <div class="irt-tip">${future?'هذه معاينة ليوم قادم. سيُفتح التتبع عند وصول يومه.':n<cur?'يمكنك تصحيح تسجيل هذا اليوم إن كنت قد أنجزته.':'ركّز على المطلوب اليوم فقط. لا تحاول تنفيذ أيام الخطة مقدمًا.'}</div></div>`;
+    <div class="irt-why"><b>لماذا هذه الخطوة الآن؟</b><p>${day.reason||''}</p>${day.principle?irtSourceHtml(day.principle.source,true):''}</div>
+    <div class="irt-task"><button data-jtask="main" data-day="${n}" class="${state.main?'on':''}" ${future?'disabled':''}>${state.main?'✓':''}</button><div><div class="tt">${taskText}</div><div class="sm">مهمة واحدة أساسية؛ المقصود الثبات لا جمع أكبر عدد من الأعمال.</div>${irtSourceHtml(day.task?.source||null,true)}</div></div>
+    ${day.support?`<div class="irt-task support"><button data-jtask="support" data-day="${n}" class="${state.support?'on':''}" ${future?'disabled':''}>${state.support?'✓':''}</button><div><div class="tt">${supportText}</div><div class="sm">تثبيت قصير لباب سابق حتى لا يكون الإصلاح على حساب ما ثبت.</div>${irtSourceHtml(day.support?.source||null,true)}</div></div>`:''}
+    <div class="irt-tip">${future?'هذه معاينة ليوم قادم. سيُفتح التتبع عند وصول يومه.':n<cur?'يمكنك تصحيح تسجيل هذا اليوم إن كنت قد أنجزته.':'إن كانت المهمة فوق طاقتك، خفّف مقدارها مع الحفاظ على أصل الواجب. لا تنفذ أيام الخطة مقدمًا.'}</div></div>`;
 }
 function irtQuiz(){
   const host=document.getElementById('irt-body');
   const L=[['لا','0'],['أحيانًا','1'],['غالبًا','2'],['دائمًا','3']];
-  host.innerHTML=`<div class="irt-hero"><div class="rank">قياس نقطة البداية</div><div class="d">أجب بصدق عن ٢٤ سؤالًا. الهدف معرفة أين نبدأ، لا إعطاء حكم على إيمانك.</div></div>`+
+  const totalQ=IRT.axes.reduce((n,a)=>n+a.q.length,0);
+  host.innerHTML=`<div class="irt-hero"><div class="rank">قياس نقطة البداية</div><div class="d">أجب بصدق عن ${AR(totalQ)} سؤالًا. هذا ليس اختبار صلاح أو إيمان؛ هو فقط لمعرفة ما الذي يحتاج تثبيتًا أولًا، مع أولوية شرعية للفرائض والحقوق.</div></div>`+
     IRT.axes.map(a=>`<div class="sec-head" style="margin-top:14px;border-radius:12px">${a.name}</div>`+
       a.q.map((q,i)=>`<div class="qz"><div class="qt">${irtQuestionText(a,i,q)}</div><div class="opts">${L.map(([lb,v])=>`<button data-q="${a.id}:${i}" data-v="${v}" aria-pressed="${irtAns[a.id+':'+i]==+v}">${lb}</button>`).join('')}</div></div>`).join('')).join('')+
-    `<button class="primary" id="irt-done" style="width:100%;padding:14px;border-radius:14px;border:0;background:var(--deep);color:#fff;font-size:15px;font-weight:600;margin-top:16px;cursor:pointer">احسب النتيجة وابنِ خطة ٤٠ يومًا</button>`;
+    `<button class="primary" id="irt-done" style="width:100%;padding:14px;border-radius:14px;border:0;background:var(--deep);color:#fff;font-size:15px;font-weight:600;margin-top:16px;cursor:pointer">احسب النتيجة وابنِ الخطة</button>`;
   host.onclick=irtClick;
 }
 async function irtClick(e){
@@ -1406,7 +1495,7 @@ async function irtClick(e){
     const need=IRT.axes.reduce((n,a)=>n+a.q.length,0); if(Object.keys(irtAns).length<need){toast('أكمل جميع الأسئلة');return}
     const result=irtScores(irtAns); irtHist.push({d:Date.now(),per:result.per,total:result.total});
     irtJourney=irtBuildJourney(result);irtViewDay=1;
-    await store.set('irt-hist',irtHist);await store.set('irt-journey',irtJourney);toast('تم التقييم — بدأت خطة ٤٠ يومًا');irtRender();return
+    await store.set('irt-hist',irtHist);await store.set('irt-journey',irtJourney);toast('تم التقييم — بُنيت الخطة بترتيب الأولويات');irtRender();return
   }
   if(e.target.closest('button[data-irt="requiz"]')){irtAns={};irtQuiz();return}
   const jd=e.target.closest('button[data-jday]');if(jd){irtViewDay=+jd.dataset.jday;irtRender();return}

@@ -10,3 +10,8 @@
 - حافظ على source-card UI وأزرار الرجوع RTL الجديدة.
 
 بعد **كل تعديل**: اختبر النسخة، حدّث manifest version حسب رقم المالك، وأضف بالتحديد ما غيّرته إلى AI_HANDOFF.md وAI_HANDOFF.json وRELEASE-NOTES، وحدّث هذا الـprompt إذا تغيرت قاعدة منتج مهمة.
+
+LATEST v24 UX NOTE: “مساري” must have direct visible + أضف لمساري actions on problem cards; do not hide path creation only inside detail pages. Read section 14 of AI_HANDOFF.md.
+
+V24 R3 CONTINUITY NOTE:
+Before editing, read AI_HANDOFF.md section 15. Preserve the saved-state UX: generic ＋ must visibly become ✓ immediately and survive re-render. Preserve Irtaqi v3's Sharia-priority plan: obligations/rights/necessary knowledge first, then Quran/dhikr, then nawafil only after a reasonable foundation. Sources belong under post-assessment principles/tasks, not between quiz questions. Any new release/change must update AI_HANDOFF.md + AI_HANDOFF.json + PROMPT_FOR_NEXT_AI.txt + RELEASE-NOTES-v24.txt + QA-REPORT-v24.txt.

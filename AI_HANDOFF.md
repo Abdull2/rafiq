@@ -240,3 +240,37 @@ Priority order:
 - When adding psychological content, maintain the medical boundary and do not make diagnostic claims.
 - Keep the owner's interaction cost low: make a reasonable implementation, test it, then report exactly what changed and any decisions still genuinely needed.
 
+
+
+## 14) v24 UX revision — direct “Add to My Path” discoverability
+
+Owner feedback after v24: the personal-path feature existed, but the action to save a problem into `مساري` was not discoverable enough. The UX was revised **without changing the public version family (still v24 / manifest 24.0.0)**.
+
+Implemented behavior:
+- Heart-disease cards now show a visible `＋ أضف لمساري` action directly on the card; the user does not have to open the detail page first.
+- Fiqh al-Nafs topic cards now show the same direct action.
+- Every specific obstacle/question shows `＋ أضف لمساري` before its details are expanded.
+- Tapping the quick action saves locally to `qalb-paths-v1` and stays on the current browsing screen, showing `✓ في مساري` plus a toast.
+- If a previously archived path is selected again, it is reactivated rather than blocked as a duplicate.
+- The empty `مساري` screen now starts from the user's lived concern (`هم أو قلق`, `فتور`, `ذنب يتكرر`, `مشكلة أسرية`, `علاقة أو ارتباط`, `مرض قلب`) and routes to the most relevant section/search. This is navigation/personal organization, **not diagnosis**.
+- The existing full `ابدأ مسارًا لهذه المشكلة` action remains in detail views.
+- `＋` for `محفوظاتي` remains a separate concept: save to read later vs. add a real concern to `مساري`. Keep these two actions visually/textually distinct in future work.
+
+Testing requirement added: verify quick-path buttons do not trigger the parent card/open event, and that obstacle expand/collapse still works after inserting the quick action row.
+
+## 15) v24 R3 — saved-state feedback + mature Sharia-priority «ارتقِ» plan
+
+Owner feedback: the generic `＋` save-for-later control did save content, but the icon did not visibly change, so users could not tell the item was saved. Owner also requested that the post-assessment `ارتقِ` plan become more mature and visibly grounded in Sharia principles.
+
+Implemented:
+- Generic `محفوظاتي` buttons now render from saved state: `＋` when unsaved and `✓` when saved. This state is synchronized immediately after click across all duplicate instances, includes `aria-pressed`, updated title/label, and a strong visual selected state.
+- Quick `＋ أضف لمساري` buttons were hardened too: even if a stale button is clicked for an already-active path, the UI is force-synchronized to `✓ في مساري`; reactivated archived paths also update immediately.
+- `ارتقِ` moved from a pure “lowest score first” algorithm to a **Sharia-priority framework**. The plan now explicitly follows: (1) obligations/prayer + rights + necessary knowledge, (2) stable Qur'an/dhikr, (3) optional growth/nawafil only after a reasonable foundation.
+- New plan principles are visible after the assessment, not inside quiz questions: **الفرائض قبل النوافل**, **القليل الدائم قبل الكثير المنقطع**, **بلا تكلف ولا إنهاك**, and **اعرف حكم ما تعمل**. Each principle has a clickable source.
+- Core verified references used in the plan include: hadith al-wali (Sahih al-Bukhari 6502; Dorar), “أحب الأعمال إلى الله أدومها وإن قل” (Bukhari/Muslim; Dorar), “إن الدين يسر” (Bukhari 39; Dorar), Qur'an 16:43, 4:103, 49:12, 17:23, 47:24, 33:41–42, 33:56, and relevant verified hadith links for rights, Qur'an learning, istighfar, and witr.
+- `ارتقِ` assessment remains a **self-organization tool, not a judgement of faith**. The 40-day duration remains explicitly organizational, not a sacred number or Sunnah. v3 journeys receive a unique journey ID so a new assessment on the same date does not inherit old completion marks.
+- Existing v2 `ارتقِ` journeys are automatically rebuilt once from the last saved assessment into the v3 framework; no user re-entry is required.
+- Each daily plan card now explains **“لماذا هذه الخطوة الآن؟”**, shows one primary task, at most one maintenance task, and displays the direct source beside the relevant task. This is intentionally different from dumping all references into the assessment.
+- The assessment axes were matured to: `الصلاة والفرائض`, `ترك الأذى وحقوق العباد`, `العلم اللازم والتزكية`, `القرآن`, `الذكر والدعاء`, `النوافل والزيادة`. It still contains 24 questions total.
+
+Important continuation rule: do not regress `ارتقِ` into a score-maximization/gamification system. When adding plan tasks, separate **religiously fixed acts/counts** from **organizational product choices**, and put the source under the task itself.

@@ -1,5 +1,5 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-2026-08-18",
+  "state_id": "RAFIQ-HANDOFF-v24-R3-2026-08-19",
   "project": "رفيق يومك",
   "version": "v24",
   "platform": "Chrome MV3 side-panel extension",
@@ -54,6 +54,16 @@
     "ارتقِ references moved out of assessment questions into post-assessment plan/reference UI",
     "female wording adapted for mosque-specific assessment questions",
     "privacy and backup/export updated for qalb-paths-v1",
-    "every future release must update AI_HANDOFF.md/json, prompt, release notes and version"
+    "every future release must update AI_HANDOFF.md/json, prompt, release notes and version",
+    "direct + أضف لمساري action added on heart-disease cards, Fiqh al-Nafs cards, and each specific obstacle",
+    "quick path add stays in the current screen and changes to ✓ في مساري instead of forcing navigation",
+    "archived personal paths can be reactivated",
+    "empty مساري starts from user concerns such as worry, fatigue, recurring sin, family/relationship issues, or heart disease and routes to relevant content without diagnosing",
+    "generic Saved-for-later + now changes immediately to a persistent visual checkmark and syncs duplicate buttons",
+    "quick My Path buttons are force-synced to ✓ when an active/reactivated path exists",
+    "Irtaqi plan upgraded to v3 Sharia-priority framework: obligations/rights/necessary knowledge before devotional growth and nawafil",
+    "Irtaqi post-assessment UI shows sourced plan principles and a sourced reason/task card; sources remain out of quiz questions",
+    "Irtaqi v2 journeys auto-migrate from the last assessment to v3 and use a unique journey id to avoid same-day progress collisions",
+    "Irtaqi assessment remains 24 questions across prayer/obligations, rights, necessary knowledge, Quran, dhikr, and nawafil"
   ]
 }
