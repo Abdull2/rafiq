@@ -25,3 +25,10 @@ R6 continuity:
 Latest IA note (v24 R7): ورد القرآن belongs inside المصحف, not الذكر/السبحة. Preserve this placement.
 
 R8 Asma UI continuity: after a second overlap report, the Names of Allah list was structurally rebuilt. Preserve `.asma-card-row` as number | content | bookmark, keep the bookmark in a dedicated static grid cell, and keep the source as a separate footer. Do not revert to an absolutely positioned Asma bookmark or a crowded full-row layout.
+
+
+LATEST v24 R9 NOTE — SEERAH:
+- Knowledge now includes `السيرة المختصرة` backed by app/seerah.json.
+- Primary source: `رسول الإسلام محمد ﷺ` — Scientific Committee, Presidency of Religious Affairs at the Grand Mosque and Prophet's Mosque (risala.prh.gov.sa/ar/contents/321).
+- Every seerah station must keep a visible source. Do not add famous but unverified stories/dates/details.
+- Rafiq summaries are paraphrases, not verbatim source text. Read section 19 of AI_HANDOFF.md before changing seerah.

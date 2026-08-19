@@ -375,3 +375,23 @@ Regression rule for future AI:
 3. Source stays in a separate footer row.
 4. Do not change the Asma religious dataset merely to solve layout problems.
 
+
+
+## 19) v24 R9 — sourced concise Prophetic biography in Knowledge
+
+Owner asked for an authenticated concise seerah inside Rafiq. Added a new **السيرة المختصرة** section inside the Knowledge tab.
+
+Implemented:
+- Added `app/seerah.json` with 11 concise educational stations: lineage/upbringing, Khadijah and family life, first revelation, Makkan call, Isra/Mi'raj and prayer, migration, Madinah and spread of the message, Prophetic character, meaning of the message, signs of Prophethood with the Qur'an as the greatest enduring sign, and completion of the message/death.
+- Primary source for every station: **«رسول الإسلام محمد ﷺ»** by the Scientific Committee of the Presidency of Religious Affairs at the Grand Mosque and the Prophet's Mosque: `https://risala.prh.gov.sa/ar/contents/321`.
+- Rafiq text is explicitly labeled an educational paraphrase, not a verbatim reproduction of the source.
+- Added an expansion reference from the official Ibn Uthaymeen Foundation: **«التعليق على نور اليقين في سيرة سيد المرسلين»**.
+- Each station shows its linked source immediately beneath the content and supports `＋/✓` Saved Later.
+- Added search and chronological/category filters.
+- `app/sources.html` documents both the primary source and expansion reference.
+- Public version remains **v24 / manifest 24.0.0**.
+
+Seerah source-integrity rule for future AI:
+1. Do not add popular stories, miracle narratives, battle details, dates, or quotations merely because they are famous. Add only when a reliable source is available and visible in the UI.
+2. Keep Rafiq summaries clearly distinguished from verbatim words of a scholar/book.
+3. The official Presidency book is the current primary backbone for the concise section; deeper chronology may be expanded later only with vetted seerah references.

@@ -92,3 +92,15 @@ v24 R8 — Asma layout regression checks
 - [PASS] JavaScript syntax and all JSON files parse.
 - [PASS] manifest remains 24.0.0.
 
+
+
+v24 R9 — concise seerah checks
+- [PASS] `app/seerah.json` parses and contains 11 unique stations.
+- [PASS] Knowledge navigation includes `السيرة المختصرة` and a dedicated render container.
+- [PASS] Every seerah station has a non-empty visible source label + URL.
+- [PASS] Primary seerah source is the Presidency of Religious Affairs official `رسول الإسلام محمد ﷺ` resource.
+- [PASS] Expansion reference points to the official Ibn Uthaymeen Foundation page for `التعليق على نور اليقين في سيرة سيد المرسلين`.
+- [PASS] Seerah cards support Saved Later via the existing ＋/✓ system.
+- [PASS] Rafiq UI explicitly says the seerah text is an educational paraphrase, not a verbatim quotation.
+- [PASS] JavaScript syntax and all JSON files parse.
+- [PASS] manifest remains 24.0.0.

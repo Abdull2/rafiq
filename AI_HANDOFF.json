@@ -1,5 +1,5 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-R8-2026-08-19",
+  "state_id": "RAFIQ-HANDOFF-v24-R9-2026-08-19",
   "project": "رفيق يومك",
   "version": "v24",
   "platform": "Chrome MV3 side-panel extension",
@@ -37,7 +37,9 @@
     "riyad_commentary_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/76e12fcc-d35a-417d-a68b-954c0bf06bc6",
     "nawawi40_commentary_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/7c9cb3e2-3b02-4ad9-97dc-5db895d9a98c",
     "nawawi40_text": "https://sunnah.com/nawawi40",
-    "sahaba_dua_verification": "Dorar individual hadith/athar links stored per item in app/adiya.json"
+    "sahaba_dua_verification": "Dorar individual hadith/athar links stored per item in app/adiya.json",
+    "seerah_primary": "https://risala.prh.gov.sa/ar/contents/321",
+    "seerah_expansion_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/912876fb-29ac-4750-b214-fee87b56a2f7?categ_id=c206a512-4395-4445-9c32-ef649e81f7d2&categ_title=%D8%A7%D9%84%D8%B3%D9%8A%D8%B1%D8%A9+%D8%A7%D9%84%D9%86%D8%A8%D9%88%D9%8A%D8%A9"
   },
   "roadmap": [
     "source integrity and regression testing",
@@ -91,7 +93,10 @@
     "R8: Rebuilt Names of Allah list cards as a structural three-column RTL grid (number | content | bookmark).",
     "R8: Removed absolute bookmark overlay from Asma cards; +/check now has its own fixed grid cell.",
     "R8: Added meaning preview, compact metadata chip, clear detail hint, and separate source footer per Asma card.",
-    "R8: Asma list is responsive and falls back to one column on narrow widths; religious data/sources unchanged."
+    "R8: Asma list is responsive and falls back to one column on narrow widths; religious data/sources unchanged.",
+    "R9: Added السيرة المختصرة as a new Knowledge section with 11 concise sourced stations.",
+    "R9: Primary source is رسول الإسلام محمد ﷺ by the Scientific Committee of the Presidency of Religious Affairs at the Two Holy Mosques; each station links the source visibly.",
+    "R9: Added official Ibn Uthaymeen Foundation commentary on Nur al-Yaqin as an expansion reference; summaries are educational paraphrases, not quotations."
   ],
   "data_architecture": {
     "cloud_backend": false,
