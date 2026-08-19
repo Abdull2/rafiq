@@ -1,5 +1,5 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-R12-2026-08-19",
+  "state_id": "RAFIQ-HANDOFF-v24-R14-2026-08-19",
   "project": "رفيق يومك",
   "version": "v24",
   "platform": "Chrome MV3 side-panel extension",
@@ -7,6 +7,7 @@
     "AI_HANDOFF.md",
     "CONTENT_PROVENANCE-ISHKALIAT.md",
     "DATA_SAFETY.md",
+    "MUSHAF_PROVENANCE.md",
     "manifest.json",
     "app/app.js",
     "app/index.html"
@@ -46,7 +47,17 @@
     "seerah_expansion_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/912876fb-29ac-4750-b214-fee87b56a2f7?categ_id=c206a512-4395-4445-9c32-ef649e81f7d2&categ_title=%D8%A7%D9%84%D8%B3%D9%8A%D8%B1%D8%A9+%D8%A7%D9%84%D9%86%D8%A8%D9%88%D9%8A%D8%A9",
     "seerah_detail_siyar": "https://shamela.ws/book/22669",
     "companions_primary_siyar": "https://shamela.ws/book/22669",
-    "companions_verification_isaba": "https://shamela.ws/book/9767"
+    "companions_verification_isaba": "https://shamela.ws/book/9767",
+    "hisn_official": "https://risala.prh.gov.sa/ar/content/51",
+    "hisn_digital_dataset": "https://github.com/asellam/HisnElMuslim",
+    "hisn_digital_cdn": "https://cdn.jsdelivr.net/gh/asellam/HisnElMuslim@main/hisn.json",
+    "mokhtasar_tafsir_official_reader": "https://mokhtasr.com/ar/books/200?aya=1&sura=1",
+    "mokhtasar_tafsir_center_source": "https://www.tafsir.sa/publication/5294/al-mkhtsr-fy-at-tfsyr",
+    "mokhtasar_api_docs": "https://mokhtasr.com/en/api-doc",
+    "mokhtasar_terms": "https://mokhtasr.com/ar/pages/terms-and-conditions",
+    "mushaf_kfqc_official": "https://dm.qurancomplex.gov.sa/",
+    "mushaf_quranpedia_svg": "https://github.com/quranpedia/quran-svg",
+    "mushaf_quranpedia_pinned_revision": "0198423eb867ba26051aba6ac902cd5d10aadd1b"
   },
   "roadmap": [
     "source integrity and regression testing",
@@ -60,12 +71,13 @@
   ],
   "manifest_version_string": "24.0.0",
   "current_release_changes": [
-    "Quran tab opens Mushaf reader directly; first state starts at Al-Fatihah and saved quran-pos resumes safely.",
-    "Mushaf swipe preserved: left next / right previous; index button opens existing Quran tools/wird/search screen.",
-    "Adhkar major sections show an official Hisn al-Muslim source banner; Hisn al-Muslim overview tab links to Risala al-Haramain.",
-    "Knowledge tabs are text-only; Nawawi 40 is first/default and Riyad al-Salihin is second.",
-    "Riyad al-Salihin now has a visible introduction with book-text source and official Ibn Uthaymeen commentary source.",
-    "No persistent storage key/schema/stable saved-content ID changed; Data Safety schema stays v1."
+    "Primary Mushaf reading now uses fixed 604-page Madinah Mushaf Hafs/KFQC SVG pages so browser width/font changes cannot reflow Quranic words between printed lines or page boundaries.",
+    "Canonical Mushaf authority is the King Fahd Glorious Quran Printing Complex digital Mushaf; Quranpedia quran-svg is only the interactive technical SVG/ayah-polygon layer, pinned to revision 0198423eb867ba26051aba6ac902cd5d10aadd1b.",
+    "Remote SVG is sanitized before DOM insertion; ayah polygons support selection/tafsir targeting without modifying the Quran glyph layer.",
+    "Owner-corrected RTL paging gesture is permanent: finger swipe left-to-right (dx>0) opens NEXT page; right-to-left opens previous page.",
+    "Exact-page loading failure falls back to local textual Quran with an explicit warning that fallback is not the page-accurate printed Mushaf view.",
+    "Al-Mukhtasar remains an official deep-link in the current no-backend build. Future inline official API text must use a secret-holding proxy/backend; never expose the Bearer token in public PWA/extension JavaScript.",
+    "No user-data storage key/schema or existing stable saved-content ID changed; quran-pos and Data Safety schema v1 remain unchanged."
   ],
   "data_architecture": {
     "cloud_backend": false,

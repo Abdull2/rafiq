@@ -17,7 +17,9 @@
     "notifications"
   ],
   "host_permissions": [
-    "https://dorar.net/*"
+    "https://dorar.net/*",
+    "https://cdn.jsdelivr.net/*",
+    "https://raw.githubusercontent.com/*"
   ],
   "background": {
     "service_worker": "background.js"

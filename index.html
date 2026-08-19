@@ -1002,6 +1002,19 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <div id="v-quran" class="hide">
   <div class="q-hero" id="q-resume"></div>
 
+  <section class="tafsir-source-card">
+    <div class="sec-head"><span>المختصر في تفسير القرآن الكريم</span></div>
+    <div class="item">
+      <div class="tafsir-source-title">تفسير مختصر موثوق بجوار المصحف</div>
+      <p>إعداد مركز تفسير للدراسات القرآنية، بصياغة مختصرة تركز على المعنى الأوضح ومقاصد السور والهدايات.</p>
+      <div class="tafsir-source-actions">
+        <a href="https://mokhtasr.com/ar/books/200?aya=1&sura=1" target="_blank" rel="noopener">فتح النسخة الرسمية الكاملة ↗</a>
+        <a class="subtle" href="https://www.tafsir.sa/publication/5294/al-mkhtsr-fy-at-tfsyr" target="_blank" rel="noopener">تعريف مركز تفسير بالكتاب ↗</a>
+      </div>
+      <div class="tafsir-rights-note">عند قراءة المصحف: اضغط الآية ثم «التفسير» لفتح تفسيرها مباشرة من المصدر الرسمي. لا ينسخ رفيق النص الكامل داخل ملفاته لأن شروط دار المختصر تقصر إعادة النشر على الاستعمال الشخصي غير التجاري دون إذن.</div>
+    </div>
+  </section>
+
   <section class="quran-wird-card">
     <div class="sec-head"><span>ورد القرآن</span></div>
     <div class="item">
@@ -1027,6 +1040,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <div id="v-read" class="hide">
   <div class="rd-bar">
     <button class="rd-btn rd-index-btn" id="rd-back" aria-label="فتح فهرس المصحف والبحث" title="فهرس المصحف والبحث">الفهرس</button>
+    <button class="rd-btn rd-tafsir-btn" id="rd-tafsir" aria-label="فتح تفسير الآية المحددة من المختصر" title="المختصر في التفسير">التفسير</button>
     <span class="rd-title" id="rd-title"></span>
     <button class="rd-btn" id="rd-minus">أ−</button>
     <button class="rd-btn" id="rd-plus">أ+</button>
@@ -1034,10 +1048,13 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
   <div class="mushaf" id="mushaf">
     <div class="mus-head"><span id="mus-juz"></span><span id="mus-sura"></span></div>
-    <div class="mushaf-swipe-hint" id="mushaf-swipe-hint">اسحب لليسار للصفحة التالية</div>
-    <div class="mus-body" id="mus-body"></div>
-    <div class="mus-source">مرجع مراجعة النص والرسم: <a href="https://qurancomplex.gov.sa/" target="_blank" rel="noopener">مجمع الملك فهد لطباعة المصحف الشريف ↗</a></div><div class="mus-foot"><span id="mus-page"></span></div>
+    <div class="mushaf-swipe-hint" id="mushaf-swipe-hint">اسحب من اليسار إلى اليمين للصفحة التالية</div>
+    <div class="mus-body printed" id="mus-body"></div>
+    <div class="mushaf-render-note" id="mushaf-render-note" hidden></div>
+    <div class="mus-source">صفحة مصحف المدينة النبوية برواية حفص، مطابقة لتخطيط طبعة مجمع الملك فهد. <a href="https://dm.qurancomplex.gov.sa/" target="_blank" rel="noopener">المصدر الرسمي ↗</a><span class="mus-tech-src">العرض التفاعلي مبني على ملفات KFQC المتجهية مع طبقة تحديد الآيات من Quranpedia.</span></div><div class="mus-foot"><span id="mus-page"></span></div>
   </div>
+
+  <div class="tafsir-current" id="tafsir-current"></div>
 
   <div class="rd-nav">
     <button id="rd-prev">الصفحة السابقة ›</button>
@@ -1325,6 +1342,43 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .learn-seg button>span{display:none!important}
 #riyad-intro{margin-bottom:10px}
 @media(max-width:430px){.hisn-sections{grid-template-columns:1fr}.rd-index-btn{min-width:52px!important;padding-inline:8px!important}.rd-title{font-size:18px}}
+
+/* v24 R13 — full Hisn reader + official Mokhtasar tafsir bridge */
+.rd-tafsir-btn{width:auto!important;min-width:58px!important;padding:0 10px!important;font-size:11px!important;font-weight:700!important;white-space:nowrap}
+.tafsir-source-card{margin-top:10px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--card)}
+.tafsir-source-title{font-family:Amiri,serif;font-size:19px;color:var(--deep);margin-bottom:4px}
+.tafsir-source-card p{font-size:11.5px;line-height:1.85;color:var(--soft);margin:0 0 10px}
+.tafsir-source-actions{display:flex;gap:8px;flex-wrap:wrap}.tafsir-source-actions a{border:1px solid var(--sage);border-radius:10px;padding:8px 10px;text-decoration:none;color:var(--deep);font-size:11px;font-weight:650;background:var(--wash)}.tafsir-source-actions a.subtle{border-color:var(--line);background:transparent;color:var(--soft)}
+.tafsir-rights-note{margin-top:9px;padding:8px 10px;border-radius:10px;background:var(--wash);font-size:9.7px;line-height:1.7;color:var(--soft)}
+.tafsir-current{margin:10px 0;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}.tafsir-current-copy{display:grid;gap:2px}.tafsir-current-copy>span{font-size:9.5px;color:var(--gold);font-weight:700}.tafsir-current-copy>b{font-size:12px;color:var(--deep)}.tafsir-current-copy>small{font-size:9.5px;color:var(--soft)}.tafsir-current>a{border:1px solid var(--sage);border-radius:10px;padding:8px 10px;text-decoration:none;color:var(--deep);font-size:10.5px;font-weight:700;white-space:nowrap}
+.hisn-reader{padding:14px}.hisn-reader-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.hisn-reader-top button{border:1px solid var(--line);background:var(--card);color:var(--deep);border-radius:10px;padding:7px 9px;font:inherit;font-size:10.5px;cursor:pointer}.hisn-reader-top span{font-size:10px;color:var(--soft)}
+.hisn-canonical-source{margin:10px 0;padding:10px;border:1px solid var(--sage);border-radius:12px;background:var(--card);display:grid;gap:3px}.hisn-canonical-source>span{font-size:9px;color:var(--gold);font-weight:700}.hisn-canonical-source>a{font-size:10.8px;color:var(--deep);text-decoration:none;line-height:1.65;font-weight:650}
+.hisn-digital-note{font-size:9.5px;color:var(--soft);line-height:1.7;margin:8px 0 12px}
+.hisn-index{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.hisn-index button{display:grid;grid-template-columns:auto 1fr;grid-template-areas:'num title' 'num meta';column-gap:8px;text-align:right;align-items:center;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:9px 10px;color:var(--deep);font:inherit;cursor:pointer}.hisn-index button>span{grid-area:num;font-size:10px;color:var(--gold);min-width:22px}.hisn-index button>b{grid-area:title;font-size:10.8px;line-height:1.55}.hisn-index button>small{grid-area:meta;font-size:9px;color:var(--soft);margin-top:2px}
+.hisn-entry{margin-top:10px;border:1px solid var(--line);border-radius:14px;background:var(--card);padding:12px}.hisn-entry-text{font-family:Amiri,serif;font-size:19px;line-height:2.05;color:var(--ink)}.hisn-repeat{margin-top:8px;display:inline-block;border-radius:999px;background:var(--wash);padding:4px 8px;font-size:9.5px;color:var(--deep)}.hisn-entry-ref{margin-top:9px;padding-top:8px;border-top:1px solid var(--line);display:grid;gap:2px;font-size:9.8px;line-height:1.7;color:var(--soft)}.hisn-entry-ref .src-label{color:var(--gold);font-weight:700}.hisn-entry-actions{display:flex;gap:7px;align-items:center;justify-content:flex-end;margin-top:9px;flex-wrap:wrap}.hisn-entry-actions button{border:1px solid var(--line);background:var(--wash);color:var(--deep);border-radius:9px;padding:7px 9px;font:inherit;font-size:10px;cursor:pointer}
+@media(max-width:560px){.hisn-index{grid-template-columns:1fr}.rd-tafsir-btn{min-width:54px!important;padding-inline:8px!important}.tafsir-current{align-items:stretch;flex-direction:column}.tafsir-current>a{text-align:center}}
+
+/* v24 R14 — printed Madinah Mushaf page layout: fixed lines, fixed page boundaries */
+#v-read{background:var(--bg)}
+.rd-bar{position:sticky;top:0;z-index:15;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(12px);padding-block:7px}
+.mushaf{background:#fcfaf4;border:0;border-radius:18px;margin-top:6px;padding:8px 8px 7px;box-shadow:0 8px 28px rgba(77,61,30,.07);overflow-x:auto;overscroll-behavior-x:contain}
+[data-theme="dark"] .mushaf{background:#f7f3e9;border:0}
+.mus-head{padding:4px 8px 7px;margin-bottom:5px;border-bottom:0;color:#8b7650;font-size:10.5px}
+.mushaf-swipe-hint{margin:0 auto 6px;max-width:max-content;background:rgba(250,247,239,.9);font-size:9.5px;padding:4px 8px}
+.mus-body.printed{width:100%;min-width:0;margin:0 auto;transition:width .16s ease;line-height:normal!important;text-align:initial!important;font-size:initial!important;word-spacing:normal!important;touch-action:pan-y}
+.mus-body.printed .mushaf-page-svg{display:block;width:100%;height:auto;max-width:none;margin:0 auto;background:#fcfaf4}
+.mus-body.printed .mushaf-page-svg *{pointer-events:none}
+.mus-body.printed .mushaf-page-svg .ayahPolygon{pointer-events:auto;cursor:pointer;fill:#d5a94d;fill-opacity:0!important;transition:fill-opacity .12s ease}
+.mus-body.printed .mushaf-page-svg .ayahPolygon:hover{fill-opacity:.12!important}
+.mus-body.printed .mushaf-page-svg .ayahPolygon.mark{fill-opacity:.25!important}
+.mushaf-page-loading{min-height:68vh;display:grid;place-items:center;color:#8b7650;font-size:12px}
+.mushaf-render-note{margin:7px 8px 2px;border-radius:10px;background:#fff2d9;color:#76551d;padding:7px 9px;font-size:9.5px;line-height:1.7}
+.mus-source{margin:7px 8px 0;padding-top:7px;border-top:1px solid rgba(139,118,80,.18);font-size:8.8px;line-height:1.65;color:#8b7650;text-align:center}
+.mus-source .mus-tech-src{display:block;opacity:.78;margin-top:2px}
+.mus-foot{border-top:0;margin-top:2px;padding-top:2px;color:#8b7650;font-size:10px}
+.mus-body.text-fallback{font-family:Hafs,Amiri,serif;text-align:justify;text-align-last:center;line-height:2.35;color:#1E1B14;word-spacing:-1px;padding:8px}
+[data-theme="dark"] .mus-body.text-fallback{color:#1E1B14}
+@media(max-width:560px){.mushaf{margin-inline:-4px;border-radius:12px;padding-inline:4px}.mus-head{padding-inline:6px}.rd-bar{gap:5px}.rd-btn{min-width:38px}.rd-title{font-size:16px}.mus-source{font-size:8.3px}}
 </style>
 
 <script src="./data-safety.js"></script>

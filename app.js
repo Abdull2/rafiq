@@ -91,8 +91,13 @@ const fromIso=k=>new Date(k+'T12:00:00');
 const blank=()=>({ratings:{},mood:'',tomorrow:'',best:'',worst:'',prayers:{},azkar:{},tasbih:{},pages:0});
 let current=iso(new Date()), data=blank(), settings={}, qada={}, tab='today';
 let dIdx=0, tCount=0, AZ={sets:[]}, azkarMode = new Date().getHours()<15 ? 'morning' : 'evening', azkarQuery='';
+let HISN=null, hisnChapter=null, hisnLoadError='';
+const HISN_DATA_URL='https://cdn.jsdelivr.net/gh/asellam/HisnElMuslim@main/hisn.json';
+const HISN_DATA_FALLBACK='https://raw.githubusercontent.com/asellam/HisnElMuslim/main/hisn.json';
+const HISN_CACHE_KEY='hisn-static-cache-v1-20260819';
 
 const AR=n=>Number(n).toLocaleString('ar-EG');
+const escHtml=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const toast=m=>{const t=document.getElementById('toast');t.textContent=m||'تم الحفظ';
   t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1200)};
 
@@ -370,13 +375,45 @@ function renderNext(){
 }
 /* ================= audio for azkar ================= */
 function cleanForSpeech(t){return (t||'').replace(/[۞۩۝﴿﴾]/g,' ').replace(/[\u06D6-\u06ED]/g,' ').replace(/\s+/g,' ').trim()}
-function speakAzkar(setId,i){
-  const set=AZ.sets.find(x=>x.id===setId), z=set&&set.items[+i]; if(!z)return;
+function speakArabicText(text){
   if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){toast('الاستماع غير مدعوم على هذا الجهاز');return}
   window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(cleanForSpeech(z.t)); u.lang='ar-SA'; u.rate=.82; u.pitch=1;
+  const u=new SpeechSynthesisUtterance(cleanForSpeech(text)); u.lang='ar-SA'; u.rate=.82; u.pitch=1;
   const voices=window.speechSynthesis.getVoices(); const ar=voices.find(v=>/^ar([_-]|$)/i.test(v.lang)); if(ar)u.voice=ar;
   window.speechSynthesis.speak(u); toast('بدأ الاستماع');
+}
+function speakAzkar(setId,i){
+  const set=AZ.sets.find(x=>x.id===setId), z=set&&set.items[+i]; if(!z)return;
+  speakArabicText(z.t);
+}
+function hisnHash(input){let h=2166136261;for(const c of String(input)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return (h>>>0).toString(36)}
+function normalizeHisn(raw){
+  if(!raw||typeof raw!=='object')return [];
+  return Object.entries(raw).map(([title,v],chapterIndex)=>({
+    id:`h-${hisnHash(title)}`,chapterIndex,title,
+    items:Array.isArray(v?.Adhkar)?v.Adhkar.map((z,itemIndex)=>({
+      id:`hisn:${hisnHash(title+'|'+(z?.Text||'')+'|'+(z?.Reference||''))}`,
+      itemIndex,text:z?.Text||'',count:Math.max(1,Number(z?.Count)||1),reference:z?.Reference||''
+    })):[]
+  }));
+}
+async function loadHisnFull(){
+  if(HISN)return HISN;
+  try{
+    const cached=localStorage.getItem(HISN_CACHE_KEY);
+    if(cached){HISN=normalizeHisn(JSON.parse(cached));if(HISN.length)return HISN}
+  }catch{}
+  let lastErr='';
+  for(const url of [HISN_DATA_URL,HISN_DATA_FALLBACK]){
+    try{
+      const r=await fetch(url,{cache:'force-cache'}); if(!r.ok)throw new Error('HTTP '+r.status);
+      const raw=await r.json(); const parsed=normalizeHisn(raw); if(!parsed.length)throw new Error('empty dataset');
+      HISN=parsed; hisnLoadError='';
+      try{localStorage.setItem(HISN_CACHE_KEY,JSON.stringify(raw))}catch{}
+      return HISN;
+    }catch(e){lastErr=String(e)}
+  }
+  hisnLoadError=lastErr||'تعذّر تحميل بيانات الكتاب'; HISN=[]; return HISN;
 }
 /* ================= azkar ================= */
 async function loadAzkar(){ if(AZ.sets.length)return;
@@ -384,15 +421,18 @@ async function loadAzkar(){ if(AZ.sets.length)return;
 async function renderAzkar(){
   await loadAzkar();
   const host=document.getElementById('az-wrap'); if(!host)return;
-  host.innerHTML=`<input id="az-search" class="q-search" type="search" value="${azkarQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في كل الأذكار: نوم، استغفار، حفظ…" aria-label="بحث في الأذكار">
+  host.innerHTML=`<input id="az-search" class="q-search" type="search" value="${azkarQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في كل الأذكار وحصن المسلم…" aria-label="بحث في الأذكار">
     <div class="search-count" id="az-result-count"></div>
-    <div class="az-tabs"><button data-az="hisn" aria-current="${azkarMode==='hisn'}">حصن المسلم</button>${AZ.sets.map(x=>`<button data-az="${x.id}" aria-current="${x.id===azkarMode}">${x.name}</button>`).join('')}</div>
+    <div class="az-tabs"><button data-az="hisn" aria-current="${azkarMode==='hisn'}">حصن المسلم كاملًا</button>${AZ.sets.map(x=>`<button data-az="${x.id}" aria-current="${x.id===azkarMode}">${x.name}</button>`).join('')}</div>
     <div class="audio-note">زر «استمع» يستخدم صوت القراءة العربي المتاح في جهازك/متصفحك. إن لم يوجد صوت عربي مناسب يمكنك الاكتفاء بالقراءة.</div>
     <div id="az-results"></div>`;
   host.onclick=e=>{
+    const hs=e.target.closest('button[data-hisn-speak]'); if(hs){const c=HISN?.[+hs.dataset.hisnChapter],z=c?.items?.[+hs.dataset.hisnSpeak];if(z)speakArabicText(z.text);return}
+    const hb=e.target.closest('button[data-hisn-back]'); if(hb){hisnChapter=null;renderAzkarList();return}
+    const hc=e.target.closest('button[data-hisn-chapter]'); if(hc){hisnChapter=+hc.dataset.hisnChapter;renderAzkarList();return}
     const sp=e.target.closest('button[data-speak]'); if(sp){const [sid,i]=sp.dataset.speak.split(':');speakAzkar(sid,+i);return}
     const t=e.target.closest('button[data-az]');
-    if(t){ azkarMode=t.dataset.az; renderAzkar(); return }
+    if(t){ azkarMode=t.dataset.az; if(azkarMode!=='hisn')hisnChapter=null; renderAzkar(); return }
     const target=e.target.closest('[data-z]'); if(!target)return;
     if(e.target.closest('button[data-z]')||target.classList.contains('tap-count')){
       const sid=target.dataset.set||azkarMode, set=AZ.sets.find(x=>x.id===sid); if(!set)return;
@@ -404,22 +444,42 @@ async function renderAzkar(){
       renderAzkarList(); save('');
     } };
   document.getElementById('az-search').oninput=e=>{azkarQuery=e.target.value;renderAzkarList()};
-  renderAzkarList();
+  await renderAzkarList();
 }
-function renderAzkarList(){
+function hisnItemHtml(ch,z){
+  const save=laterRegister(z.id,{kind:'ذكر من حصن المسلم',title:ch.title,text:z.text,source:`حصن المسلم — ${z.reference||'راجع المرجع الرسمي'}`,tab:'azkar'});
+  return `<article class="hisn-entry"><div class="hisn-entry-text">${escHtml(z.text).replace(/\n/g,'<br>')}</div>
+    ${z.count>1?`<div class="hisn-repeat">التكرار المذكور في الكتاب: ${AR(z.count)}</div>`:''}
+    <div class="hisn-entry-ref"><span class="src-label">التخريج في حصن المسلم</span><span>${escHtml(z.reference||'راجع المصدر الجامع')}</span></div>
+    <div class="hisn-entry-actions">${save}<button type="button" data-hisn-chapter="${ch.chapterIndex}" data-hisn-speak="${z.itemIndex}">🔊 استمع</button></div></article>`;
+}
+async function renderAzkarList(){
   const box=document.getElementById('az-results'), cnt=document.getElementById('az-result-count'); if(!box||!cnt)return;
   const q=searchNorm(azkarQuery);
   const sourceHtml=z=>z.source?`<div class="zk-source source-ref"><span class="src-mark">↗</span><span class="src-copy"><span class="src-label">المصدر</span>${z.source.url?`<a href="${z.source.url}" target="_blank" rel="noopener">${z.source.label}</a>`:`<span class="src-text">${z.source.label}</span>`}</span></div>`:'';
   const actions=(set,z,i,c)=>{const lid=`azkar:${set.id}:${i}`;const plus=laterRegister(lid,{kind:'ذكر',title:set.name||'الأذكار',text:z.t,source:z.source?.label||'',tab:'azkar'});return `<div class="bar"><span class="cnt">${AR(c)} / ${AR(z.n)}</span><span class="zk-actions">${plus}<button class="listen" data-speak="${set.id}:${i}" type="button" aria-label="استمع إلى الذكر">🔊 استمع</button><button data-z="${i}" data-set="${set.id}">${c>=z.n?'تم ✓':'قرأت'}</button></span></div>`};
   if(q){
-    const hits=[]; AZ.sets.forEach(set=>set.items.forEach((z,i)=>{if(searchNorm(set.name+' '+z.t+' '+(z.note||'')).includes(q))hits.push({set,z,i})}));
-    cnt.textContent=`${AR(hits.length)} نتيجة في جميع الأذكار`;
-    box.innerHTML=hits.length?`<section>${hits.map(({set,z,i})=>{const c=data.azkar[set.id+i]||0;return `<div class="zikr ${c>=z.n?'done':''} ${['morning','evening'].includes(set.id)?'tap-count':''}" ${['morning','evening'].includes(set.id)?`data-z="${i}" data-set="${set.id}" role="button" tabindex="0"`:''}><div class="search-source">${set.name}</div><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}${sourceHtml(z)}${actions(set,z,i,c)}</div>`}).join('')}</section>`:'<div class="nafs-empty">لا توجد أذكار مطابقة لبحثك.</div>';
+    const hits=[]; AZ.sets.forEach(set=>set.items.forEach((z,i)=>{if(searchNorm(set.name+' '+z.t+' '+(z.note||'')).includes(q))hits.push({type:'set',set,z,i})}));
+    const full=await loadHisnFull(); full.forEach(ch=>ch.items.forEach(z=>{if(searchNorm(ch.title+' '+z.text+' '+z.reference).includes(q))hits.push({type:'hisn',ch,z})}));
+    const shown=hits.slice(0,100);
+    cnt.textContent=`${AR(hits.length)} نتيجة${hits.length>100?' · نعرض أول '+AR(100):''}`;
+    box.innerHTML=shown.length?`<section>${shown.map(hit=>{if(hit.type==='hisn')return `<div class="search-source">حصن المسلم — ${escHtml(hit.ch.title)}</div>${hisnItemHtml(hit.ch,hit.z)}`;const {set,z,i}=hit,c=data.azkar[set.id+i]||0;return `<div class="zikr ${c>=z.n?'done':''} ${['morning','evening'].includes(set.id)?'tap-count':''}" ${['morning','evening'].includes(set.id)?`data-z="${i}" data-set="${set.id}" role="button" tabindex="0"`:''}><div class="search-source">${set.name}</div><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}${sourceHtml(z)}${actions(set,z,i,c)}</div>`}).join('')}</section>`:'<div class="nafs-empty">لا توجد أذكار مطابقة لبحثك.</div>';
     return;
   }
   if(azkarMode==='hisn'){
-    cnt.textContent='المرجع الجامع للأذكار';
-    box.innerHTML=`<section class="hisn-book"><div class="hisn-title">حصن المسلم من أذكار الكتاب والسنة</div><div class="hisn-author">الشيخ سعيد بن علي بن وهف القحطاني</div><p>مرجع مشهور يجمع أذكارًا وأدعية من الكتاب والسنة لأحوال المسلم اليومية. رفيق يعرض أبوابًا مختارة منه مع إبقاء مصدر كل ذكر ظاهرًا، ولا ينسب نصًا أو عددًا تعبديًا بلا مرجع.</p><a class="hisn-open" href="https://risala.prh.gov.sa/ar/content/51" target="_blank" rel="noopener">فتح النسخة المنشورة في رسالة الحرمين ↗</a><div class="hisn-sections">${AZ.sets.map(x=>`<button data-az="${x.id}">${x.name}</button>`).join('')}</div><div class="hisn-note">للتوسع في أبواب الاستيقاظ والوضوء والصلاة والسفر وغيرها افتح المرجع الكامل. ما يظهر داخل رفيق هو المحتوى الذي تمت إضافته ومراجعته داخل التطبيق.</div></section>`;
+    const full=await loadHisnFull();
+    if(!full.length){
+      cnt.textContent='حصن المسلم';
+      box.innerHTML=`<section class="hisn-book"><div class="hisn-title">حصن المسلم من أذكار الكتاب والسنة</div><div class="hisn-author">الشيخ سعيد بن علي بن وهف القحطاني</div><div class="hisn-note">تعذّر تحميل النسخة الرقمية الآن. يمكنك فتح النسخة الرسمية كاملة من رسالة الحرمين.</div><a class="hisn-open" href="https://risala.prh.gov.sa/ar/content/51" target="_blank" rel="noopener">فتح النسخة الرسمية الكاملة ↗</a></section>`;
+      return;
+    }
+    if(hisnChapter!==null&&full[hisnChapter]){
+      const ch=full[hisnChapter]; cnt.textContent=`${AR(ch.items.length)} ذكرًا في هذا الباب`;
+      box.innerHTML=`<section class="hisn-book hisn-reader"><div class="hisn-reader-top"><button type="button" data-hisn-back>← فهرس حصن المسلم</button><span>${AR(ch.chapterIndex+1)} / ${AR(full.length)}</span></div><div class="hisn-title">${escHtml(ch.title)}</div><div class="hisn-canonical-source"><span>المصدر الجامع</span><a href="https://risala.prh.gov.sa/ar/content/51" target="_blank" rel="noopener">حصن المسلم — سعيد بن علي بن وهف القحطاني — رسالة الحرمين ↗</a></div>${ch.items.map(z=>hisnItemHtml(ch,z)).join('')}</section>`;
+      return;
+    }
+    const total=full.reduce((n,ch)=>n+ch.items.length,0); cnt.textContent=`${AR(full.length)} بابًا · ${AR(total)} ذكرًا ودعاءً`;
+    box.innerHTML=`<section class="hisn-book"><div class="hisn-title">حصن المسلم كاملًا</div><div class="hisn-author">الشيخ سعيد بن علي بن وهف القحطاني</div><p>فهرس كامل لأبواب الكتاب مع متن الذكر، عدد التكرار المذكور في الكتاب، والتخريج الظاهر تحت كل نص.</p><div class="hisn-canonical-source"><span>المرجع الشرعي المعتمد</span><a href="https://risala.prh.gov.sa/ar/content/51" target="_blank" rel="noopener">النسخة المنشورة في رسالة الحرمين — رئاسة الشؤون الدينية بالحرمين ↗</a></div><div class="hisn-digital-note">النسخة الرقمية المستخدمة للفهرسة داخل رفيق مأخوذة من مشروع HisnElMuslim المفتوح بترخيص MIT؛ يذكر صاحبه أنه نقل النص من الكتاب وقارنه بنسخة رقمية لتصحيح الأخطاء. عند التعارض يُقدَّم المرجع الرسمي أعلاه.</div><div class="hisn-index">${full.map(ch=>`<button type="button" data-hisn-chapter="${ch.chapterIndex}"><span>${AR(ch.chapterIndex+1)}</span><b>${escHtml(ch.title)}</b><small>${AR(ch.items.length)} ذكرًا</small></button>`).join('')}</div></section>`;
     return;
   }
   const set=AZ.sets.find(x=>x.id===azkarMode)||AZ.sets[0]; if(!set)return;
@@ -431,7 +491,6 @@ function renderAzkarList(){
   const sectionSource=ss.label?`<div class="az-section-source"><span class="az-src-kicker">مصدر هذا القسم</span><a href="${ss.url||'#'}" target="_blank" rel="noopener">${ss.label}</a>${ss.note?`<span>${ss.note}</span>`:''}</div>`:'';
   box.innerHTML=`<section><div class="sec-head"><span>${set.name}</span><span class="pct">${AR(done)} / ${AR(L.length)}</span></div><div class="az-time">${set.time||''}</div>${sectionSource}${rows}</section>`;
 }
-
 
 /* ================= tasbih + quran ================= */
 function renderTasbih(){
@@ -574,7 +633,11 @@ document.getElementById('acc-times').onclick=e=>{
   if(!open) renderTimes() };
 
 /* ================= القرآن — عرض بالصفحات ================= */
-let Q=null, qPage=1, qFont=+(localStorage.getItem('qFont')||23), qAyaPage={};
+let Q=null, qPage=1, qFont=+(localStorage.getItem('qFont')||23), qZoom=+(localStorage.getItem('mushafZoom')||100), qAyaPage={}, qSelectedAyah=null;
+const MUSHAF_SVG_REV='0198423eb867ba26051aba6ac902cd5d10aadd1b';
+const MUSHAF_SVG_BASE=`https://cdn.jsdelivr.net/gh/quranpedia/quran-svg@${MUSHAF_SVG_REV}/mushafs/hafs/kfqc/svg/`;
+const MUSHAF_SVG_FALLBACK=`https://raw.githubusercontent.com/quranpedia/quran-svg/${MUSHAF_SVG_REV}/mushafs/hafs/kfqc/svg/`;
+const padMushafPage=p=>String(p).padStart(3,'0');
 function searchNorm(x){ return (x||'').toString().toLowerCase().replace(/[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06edـ]/g,'').replace(/ٱ/g,'ا').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim() }
 function deepSearchText(v){ if(v==null)return ''; if(typeof v==='string'||typeof v==='number')return String(v); if(Array.isArray(v))return v.map(deepSearchText).join(' '); if(typeof v==='object')return Object.entries(v).filter(([k])=>!['u','url','link','video'].includes(k)).map(([,x])=>deepSearchText(x)).join(' '); return '' }
 const QKEY='quran-pos';
@@ -598,7 +661,15 @@ async function openQuranReaderDefault(){
   await openPage(saved.page||1);
 }
 function openQuranTools(){ quranToolsRequested=true; switchTab('quran') }
-
+const MOKHTASAR_BOOK_URL='https://mokhtasr.com/ar/books/200';
+const mokhtasarAyahUrl=(s,a)=>`${MOKHTASAR_BOOK_URL}?aya=${encodeURIComponent(a||1)}&sura=${encodeURIComponent(s||1)}`;
+function firstAyahOnPage(){const run=(Q?.pages?.[qPage-1]||[])[0];return run?{s:+run[0],a:+run[1]}:{s:1,a:1}}
+function updateTafsirPanel(){
+  const el=document.getElementById('tafsir-current'); if(!el)return;
+  const t=qSelectedAyah||firstAyahOnPage(), su=Q&&suraOf(t.s);
+  el.innerHTML=`<div class="tafsir-current-copy"><span>المختصر في التفسير</span><b>${su?su.name:'السورة'} — الآية ${AR(t.a)}</b><small>يفتح التفسير من النسخة الرسمية لدار المختصر.</small></div><a href="${mokhtasarAyahUrl(t.s,t.a)}" target="_blank" rel="noopener">تفسير الآية ↗</a>`;
+}
+function openCurrentTafsir(){const t=qSelectedAyah||firstAyahOnPage();window.open(mokhtasarAyahUrl(t.s,t.a),'_blank','noopener')}
 
 function renderSurahList(){
   const raw=(document.getElementById('q-search').value||'').trim(), q=searchNorm(raw);
@@ -649,54 +720,124 @@ function renderAyaDay(){
   el.onclick=()=>openPage(s.page);
 }
 
+function renderQuranTextFallback(runs,mark){
+  let html='';
+  runs.forEach(([sn,from,to])=>{
+    const su=suraOf(sn);
+    if(from===1){ html+=`<div class="sura-band"><span>سُورَةُ ${su.name}</span></div>`;
+      if(sn!==1&&sn!==9) html+=`<div class="mus-bsm">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</div>` }
+    for(let i=from;i<=to;i++) html+=`<span class="ay ${mark.page===qPage&&mark.s===sn&&mark.a===i?'mark':''}" data-s="${sn}" data-a="${i}">${su.a[i-1]} </span>`;
+  });
+  const body=document.getElementById('mus-body');
+  body.classList.remove('printed'); body.classList.add('text-fallback');
+  body.style.width=''; body.style.fontSize=qFont+'px'; body.innerHTML=html;
+  const n=document.getElementById('mushaf-render-note');
+  if(n){n.hidden=false;n.textContent='تعذر تحميل صفحة مصحف المدينة المطابقة؛ يظهر مؤقتًا النص الاحتياطي حتى يتوفر الاتصال.'}
+}
+async function fetchMushafSvg(page){
+  const file=padMushafPage(page)+'.svg';
+  let lastErr=null;
+  for(const base of [MUSHAF_SVG_BASE,MUSHAF_SVG_FALLBACK]){
+    try{
+      const r=await fetch(base+file,{cache:'force-cache'});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const text=await r.text();
+      if(!text.includes('<svg'))throw new Error('invalid svg');
+      return text;
+    }catch(e){lastErr=e}
+  }
+  throw lastErr||new Error('mushaf page unavailable');
+}
+function safeMushafSvg(text,page){
+  const doc=new DOMParser().parseFromString(text,'image/svg+xml');
+  if(doc.querySelector('parsererror'))throw new Error('SVG parse error');
+  doc.querySelectorAll('script,foreignObject,iframe,object,embed').forEach(x=>x.remove());
+  const svg=doc.documentElement;
+  for(const el of [svg,...svg.querySelectorAll('*')]){
+    [...el.attributes].forEach(a=>{
+      const n=a.name.toLowerCase(),v=(a.value||'').trim().toLowerCase();
+      if(n.startsWith('on')||((n==='href'||n==='xlink:href')&&(v.startsWith('javascript:')||v.startsWith('data:text/html'))))el.removeAttribute(a.name);
+    });
+  }
+  svg.removeAttribute('width');svg.removeAttribute('height');
+  svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+  svg.setAttribute('role','img');
+  svg.setAttribute('aria-label',`صفحة ${page} من مصحف المدينة النبوية`);
+  svg.classList.add('mushaf-page-svg');
+  return document.importNode(svg,true);
+}
+function applyMushafZoom(){
+  const body=document.getElementById('mus-body'); if(!body)return;
+  if(body.classList.contains('printed')) body.style.width=qZoom+'%';
+}
+function highlightMushafAyah(){
+  const body=document.getElementById('mus-body'); if(!body||!qSelectedAyah)return;
+  body.querySelectorAll('.ayahPolygon.mark').forEach(x=>x.classList.remove('mark'));
+  const p=body.querySelector(`.ayahPolygon[surah="${qSelectedAyah.s}"][ayah="${qSelectedAyah.a}"]`);
+  if(p)p.classList.add('mark');
+}
+async function renderPrintedMushaf(page,runs,mark){
+  const body=document.getElementById('mus-body');
+  body.classList.remove('text-fallback'); body.classList.add('printed');
+  body.style.fontSize=''; body.innerHTML='<div class="mushaf-page-loading">جاري تحميل صفحة المصحف…</div>';
+  try{
+    const svg=safeMushafSvg(await fetchMushafSvg(page),page);
+    body.replaceChildren(svg); applyMushafZoom(); highlightMushafAyah();
+    const n=document.getElementById('mushaf-render-note'); if(n){n.hidden=true;n.textContent=''}
+    return true;
+  }catch(e){renderQuranTextFallback(runs,mark);return false}
+}
 async function openPage(p){
   await loadQuran();
   qPage=Math.min(604,Math.max(1,p));
   const runs=Q.pages[qPage-1]||[];
   const mark=(await store.get(QKEY))||{};
-  let html='', last=null;
-  runs.forEach(([sn,from,to])=>{
-    const su=suraOf(sn);
-    if(from===1){ html+=`<div class="sura-band"><span>سُورَةُ ${su.name}</span></div>`;
-      if(sn!==1&&sn!==9) html+=`<div class="mus-bsm">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</div>` }
-    for(let i=from;i<=to;i++)
-      html+=`<span class="ay ${mark.page===qPage&&mark.s===sn&&mark.a===i?'mark':''}"
-        data-s="${sn}" data-a="${i}">${su.a[i-1]} </span>`;
-    last=su;
-  });
-  const body=document.getElementById('mus-body');
-  body.style.fontSize=qFont+'px';
-  body.innerHTML=html;
+  const first=runs[0];
+  qSelectedAyah=(mark.s&&mark.a&&qAyaPage[mark.s+':'+mark.a]===qPage)?{s:+mark.s,a:+mark.a}:(first?{s:+first[0],a:+first[1]}:{s:1,a:1});
+  const suraNames=[...new Set(runs.map(r=>suraOf(r[0])?.name).filter(Boolean))];
+  const suraLabel=suraNames.length>2?`${suraNames[0]} · … · ${suraNames[suraNames.length-1]}`:suraNames.join(' · ');
   document.getElementById('mus-juz').textContent='الجزء '+JUZ_AR[juzOf(qPage)-1];
-  document.getElementById('mus-sura').textContent=last?last.name:'';
+  document.getElementById('mus-sura').textContent=suraLabel;
   document.getElementById('mus-page').textContent='صفحة '+AR(qPage)+' من ٦٠٤';
   const swipeHint=document.getElementById('mushaf-swipe-hint'); if(swipeHint)swipeHint.classList.toggle('hide',qPage!==1);
-  document.getElementById('rd-title').textContent=last?last.name:'المصحف';
-  await store.set(QKEY,{page:qPage,sura:last?last.name:'',s:mark.s,a:mark.a});
+  document.getElementById('rd-title').textContent=suraLabel||'المصحف';
+  updateTafsirPanel();
+  await renderPrintedMushaf(qPage,runs,mark);
+  await store.set(QKEY,{page:qPage,sura:suraLabel,s:(mark.s&&mark.a&&qAyaPage[mark.s+':'+mark.a]===qPage)?mark.s:null,a:(mark.s&&mark.a&&qAyaPage[mark.s+':'+mark.a]===qPage)?mark.a:null});
   if(tab!=='read') switchTab('read');
   scrollTo({top:0,behavior:'instant'});
+  // Warm the browser cache for the adjacent pages without touching user data.
+  [qPage+1,qPage-1].filter(x=>x>=1&&x<=604).forEach(x=>fetchMushafSvg(x).catch(()=>{}));
 }
 document.getElementById('mus-body').onclick=async e=>{
-  const a=e.target.closest('.ay'); if(!a)return;
-  document.querySelectorAll('.mus-body .ay').forEach(x=>x.classList.remove('mark'));
-  a.classList.add('mark');
+  const poly=e.target.closest?.('.ayahPolygon');
+  const fallback=e.target.closest?.('.ay');
+  if(!poly&&!fallback)return;
+  const sn=poly?+poly.getAttribute('surah'):+fallback.dataset.s;
+  const an=poly?+poly.getAttribute('ayah'):+fallback.dataset.a;
+  qSelectedAyah={s:sn,a:an};
+  if(poly)highlightMushafAyah();
+  else{document.querySelectorAll('.mus-body .ay').forEach(x=>x.classList.remove('mark'));fallback.classList.add('mark')}
+  updateTafsirPanel();
   const cur=(await store.get(QKEY))||{};
-  await store.set(QKEY,Object.assign(cur,{page:qPage,s:+a.dataset.s,a:+a.dataset.a}));
-  toast('حُفظ موضعك') };
+  await store.set(QKEY,Object.assign(cur,{page:qPage,s:sn,a:an}));
+  toast('حُفظ موضعك · التفسير جاهز') };
 document.getElementById('rd-back').onclick=openQuranTools;
+document.getElementById('rd-tafsir').onclick=openCurrentTafsir;
 document.getElementById('rd-prev').onclick=()=>openPage(qPage-1);
 document.getElementById('rd-next').onclick=()=>openPage(qPage+1);
 const setF=v=>{ qFont=Math.min(38,Math.max(15,v)); localStorage.setItem('qFont',qFont);
-  document.getElementById('mus-body').style.fontSize=qFont+'px' };
-document.getElementById('rd-plus').onclick=()=>setF(qFont+2);
-document.getElementById('rd-minus').onclick=()=>setF(qFont-2);
+  const body=document.getElementById('mus-body'); if(body.classList.contains('text-fallback'))body.style.fontSize=qFont+'px' };
+const setMushafZoom=v=>{qZoom=Math.min(145,Math.max(85,v));localStorage.setItem('mushafZoom',qZoom);applyMushafZoom()};
+document.getElementById('rd-plus').onclick=()=>document.getElementById('mus-body').classList.contains('printed')?setMushafZoom(qZoom+10):setF(qFont+2);
+document.getElementById('rd-minus').onclick=()=>document.getElementById('mus-body').classList.contains('printed')?setMushafZoom(qZoom-10):setF(qFont-2);
 
-/* سحب لتقليب الصفحات */
+/* سحب لتقليب الصفحات — في القراءة العربية: من اليسار إلى اليمين = الصفحة التالية */
 (function(){ const el=document.getElementById('mushaf'); let x0=null,y0=null;
   el.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
   el.addEventListener('touchend',e=>{ if(x0==null)return;
     const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
-    if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.6) openPage(qPage+(dx>0?-1:1));
+    if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.6) openPage(qPage+(dx>0?1:-1));
     x0=null },{passive:true}); })();
 
 document.getElementById('btn-history').onclick=()=>switchTab(tab==='history'?'today':'history');

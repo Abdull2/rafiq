@@ -68,3 +68,6 @@ Before every import, Rafiq creates an automatic safety snapshot. If validation/m
 5. If an ID must change, add an explicit old -> new mapping migration.
 6. Add new persistent keys to the Rafiq data registry in `app/data-safety.js`.
 7. Run `node qa/test_data_safety.js` from the package root plus `node --check` before packaging.
+
+## R13 note — static Hisn cache is not user data
+R13 may cache the public Hisn al-Muslim digital dataset in localStorage under `hisn-static-cache-v1-20260819` after the user opens the full book. This is replaceable static reference content, not a user record, so it is intentionally excluded from portable backups, safety snapshots and migrations. If a future release adds user-specific Hisn progress, bookmarks outside the existing `saved-later-v1`, notes, or reading state, that new persistent user key MUST be registered and migrated under the normal Data Safety rules.

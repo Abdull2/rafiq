@@ -46,8 +46,14 @@ LATEST v24 R11 NOTE:
 
 
 LATEST v24 R12 NOTE:
-- Quran bottom tab now opens the Mushaf reader directly. First state = Al-Fatihah/page 1; saved `quran-pos` resumes. `الفهرس` opens the tools/wird/search screen. Preserve left-swipe -> next page.
+- Quran bottom tab now opens the Mushaf reader directly. First state = Al-Fatihah/page 1; saved `quran-pos` resumes. `الفهرس` opens the tools/wird/search screen. Preserve the owner-corrected RTL gesture: finger swipe left-to-right (`dx > 0`) -> NEXT page; right-to-left -> previous page.
 - Adhkar major sections must show their trusted source above the section. Current book-level backbone is Hisn al-Muslim linked to the official Risala al-Haramain resource; item-level sources stay visible.
 - Knowledge tab labels are intentionally text-only. Order starts: الأربعون النووية ثم رياض الصالحين. Do not restore `42` or decorative glyphs in the tabs.
 - Riyad has separate book-text source and commentary source; do not conflate the two.
 - R12 changes no persistent user schema. R10 Data Safety remains mandatory.
+
+LATEST v24 R13 NOTE: `الذكر -> حصن المسلم كاملًا` now loads the complete Hisn digital transcription on demand from the MIT-licensed asellam/HisnElMuslim dataset while treating the official Risala al-Haramain edition as the canonical religious source. The static Hisn cache is NOT user data. The Mushaf now has an official Al-Mukhtasar tafsir bridge: selected ayah -> mokhtasr.com deep link. DO NOT copy the full Al-Mukhtasar text into Rafiq unless the owner supplies permission/license or an authorized official API token. Read section 22 of AI_HANDOFF.md and DATA_SAFETY.md before changes.
+
+
+LATEST v24 R14 NOTE:
+The primary Mushaf reader is now a fixed-page Madinah Mushaf, NOT reflowed ayah HTML. It fetches sanitized SVG pages from Quranpedia `hafs/kfqc`, pinned at commit `0198423eb867ba26051aba6ac902cd5d10aadd1b`, while treating the King Fahd Complex digital Mushaf as canonical. Exact printed line/page geometry is a permanent product requirement. If SVG loading fails, the text fallback must be visibly labeled non-exact. Owner-corrected paging gesture: left-to-right finger swipe (`dx>0`) = NEXT page. `quran-pos` and Data Safety v1 are unchanged. Read section 23 of AI_HANDOFF.md and MUSHAF_PROVENANCE.md before modifying Quran reader. Never embed an Al-Mukhtasar Bearer token in public JS; inline official tafsir requires a secret-holding proxy/backend.

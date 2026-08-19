@@ -436,7 +436,7 @@ Non-negotiable storage rule going forward:
 ## 21) v24 R12 — familiar Mushaf entry + sourced Adhkar + cleaned Knowledge navigation
 - Quran bottom tab now opens the **Mushaf reader directly**, not the tracker/search landing page. On a first reading state it opens page 1 (Al-Fatihah); when a saved reading position exists it resumes that page.
 - Existing `quran-pos` storage is preserved. No Quran/user-data storage key or shape changed.
-- Mushaf retains horizontal swipe paging: **swipe left -> next page**, swipe right -> previous page. A short hint is shown on page 1 only.
+- Mushaf retains horizontal swipe paging: **swipe from left to right -> next page**, swipe from right to left -> previous page. (This corrects the older R12 wording.) A short hint is shown on page 1 only.
 - The reader's `الفهرس` control opens the existing Quran tools screen containing resume, Qur'an wird, Ayah of the day, search, and surah index. The bottom Quran tab remains visually selected while reading.
 - Quran reader source line links to the King Fahd Glorious Qur'an Printing Complex as the review/reference authority.
 - Adhkar now has a visible section-level source banner above every major set. Current canonical book-level source is **حصن المسلم من أذكار الكتاب والسنة — سعيد بن علي بن وهف القحطاني**, linked to the official `رسالة الحرمين` resource (`risala.prh.gov.sa/ar/content/51`). Item-level sources remain visible.
@@ -450,7 +450,69 @@ Non-negotiable storage rule going forward:
 
 Regression rules:
 1. Quran tab should never dump a new user into a dashboard before showing the Mushaf; first reading state starts at Al-Fatihah.
-2. Preserve `quran-pos` semantics and the left-swipe -> next-page direction.
+2. Preserve `quran-pos` semantics. Permanent RTL paging rule: **left-to-right finger swipe (`dx > 0`) -> next page; right-to-left swipe -> previous page**.
 3. Every Adhkar major section keeps a visible trusted source banner *above* its contents, and every item keeps its own source below.
 4. Do not put icon glyphs/counts back into Knowledge tab labels unless the owner explicitly requests them.
 5. Keep Nawawi 40 before Riyad al-Salihin in Knowledge navigation.
+
+## 22) v24 R13 — full Hisn al-Muslim reader + official Al-Mukhtasar tafsir bridge
+
+Owner approved adding the complete Hisn al-Muslim experience and requested a complete, trusted "المختصر في التفسير" experience in the Mushaf tab.
+
+Implemented:
+- `الذكر -> حصن المسلم كاملًا` is now a real full-book reader rather than only an overview/link.
+- The full Hisn index is loaded on demand from the open-source `asellam/HisnElMuslim` JSON dataset (MIT license, Copyright 2021 Abdellah SELLAM). The dataset maintainer states that he transcribed it from the printed book and cross-compared it with a digital copy to correct errors.
+- The **religious/canonical source remains** the official `حصن المسلم من أذكار الكتاب والسنة — سعيد بن علي بن وهف القحطاني` resource published by `رسالة الحرمين / رئاسة الشؤون الدينية بالحرمين`: `https://risala.prh.gov.sa/ar/content/51`. The GitHub dataset is only a digital transcription layer, not an independent religious authority.
+- Full Hisn UX: complete chapter index, chapter reader, text, repetition count from the book dataset, visible book reference/takhrij below each item, device TTS, Saved Later, and search across the full Hisn corpus plus the existing curated adhkar sets.
+- External Hisn data is cached in localStorage under `hisn-static-cache-v1-20260819` only as **static content cache**. It is intentionally NOT part of the Data Safety user-data registry/backup and must never be treated as personal data.
+- If the remote dataset cannot load, Rafiq fails safely and shows the official Risala al-Haramain full-book link instead of inventing/missing text.
+- `app/privacy.html` now discloses the jsDelivr/GitHub static-content request; no journal, profile, worship log, geolocation, or other personal state is sent with that request by Rafiq.
+- Added third-party license attribution for the HisnElMuslim digital dataset.
+
+Al-Mukhtasar tafsir:
+- Added an official `المختصر في تفسير القرآن الكريم` card inside Qur'an tools and a visible `التفسير` action in the Mushaf reader.
+- When an ayah is selected, the tafsir action deep-links that exact surah/ayah to the official Dar al-Mukhtasar reader (`https://mokhtasr.com/ar/books/200?aya=...&sura=...`). A per-page tafsir card always shows the current ayah target.
+- Book authority/source is `مركز تفسير للدراسات القرآنية`; the official publication page is `https://www.tafsir.sa/publication/5294/al-mkhtsr-fy-at-tfsyr`.
+- **Do not bundle/copy the full Al-Mukhtasar text into Rafiq without explicit permission/license.** The official Dar al-Mukhtasar terms state that site/program material may not be reproduced/published/broadcast except for personal non-commercial use, while clear linking is allowed. Their API exists at `https://mokhtasr.com/ar/api-doc` but book-content endpoints require an Authorization token. If the owner later obtains an API token or written permission for Rafiq, native inline tafsir can be added using the official API instead of copying the book.
+- This release adds no cloud backend, analytics, account, or central database.
+- No persistent **user** data key/schema/stable saved-content ID was renamed or removed. Data Safety schema remains v1. The only new localStorage entry is a replaceable static Hisn content cache.
+- Public manifest remains `24.0.0`.
+
+R13 regression rules:
+1. Full Hisn must always identify the official Risala al-Haramain edition as the canonical book source, with the GitHub dataset described only as a digital transcription.
+2. Never silently substitute or invent a Hisn text/reference if the remote data fails; show the official book link.
+3. Search should include both the existing curated adhkar and the full Hisn dataset once available.
+4. Al-Mukhtasar text is not copied into project files without owner-provided permission/license. Use official deep links/API.
+5. Mushaf ayah -> tafsir must target the selected ayah; if no ayah is selected, use the first ayah on the current page.
+6. Do not register static Hisn cache as user data; do register any future *user-specific* Hisn progress/favorites key if such a feature is added.
+- Chrome MV3 note: R13 added host permissions for `https://cdn.jsdelivr.net/*` and `https://raw.githubusercontent.com/*` to fetch public Hisn JSON. R14 also uses the same origins for fixed Mushaf SVG page assets. Do not use those origins for telemetry or user-data upload. Remove a permission only after all current public-content fetches using that origin have been replaced and regression-tested.
+
+
+## 23) v24 R14 — exact printed Madinah Mushaf pages + corrected RTL page gesture
+
+Owner rejected flowing Quran text because browser reflow can move an ayah/word to a different line and therefore change the physical page composition. The Mushaf must behave like a familiar printed-Mushaf reader: line starts/ends and page starts/ends are fixed.
+
+Implemented:
+- Quran reader now renders the **604 fixed pages of Mushaf al-Madinah (Hafs / King Fahd Complex layout)** as vector SVG pages rather than reconstructing the page from verse strings. This prevents CSS/font width from changing where a Quranic line begins or ends.
+- Canonical authority remains the King Fahd Glorious Qur'an Printing Complex digital Mushaf. The interactive technical layer is Quranpedia `quran-svg`, `mushafs/hafs/kfqc/svg/`, pinned to commit `0198423eb867ba26051aba6ac902cd5d10aadd1b`. Do not silently switch this to an unpinned branch.
+- Quranpedia's transparent `.ayahPolygon` layer is used only for tap selection / tafsir targeting. It does not alter the printed glyph paths. Remote SVG is sanitized before DOM insertion (active-content elements and event attributes removed).
+- If exact SVG loading fails, Rafiq may show the existing text fallback **with a visible warning that it is not the page-accurate Mushaf view**. Never present the fallback as exact printed pagination.
+- Page 1 still opens for a new user and existing `quran-pos` still resumes for returning users. No storage key/schema/ID changed; Data Safety schema remains v1.
+- **Correct paging gesture (owner's explicit requirement): finger swipe left -> right (`dx > 0`) opens the NEXT page. Finger swipe right -> left opens the PREVIOUS page.** This supersedes contradictory R12 wording.
+- A+/A- changes SVG zoom only and must not reflow/recompose Quran lines.
+- Same remote hosts already permitted for R13 (`cdn.jsdelivr.net`, `raw.githubusercontent.com`) now also deliver public, read-only Mushaf SVG pages; no user data is uploaded to them. Privacy/source notices were updated.
+- Added `MUSHAF_PROVENANCE.md` and expanded `THIRD_PARTY_LICENSES.md`.
+- Public version remains v24 / manifest `24.0.0`.
+
+Mushaf regression rules for future AI:
+1. Never render the primary Mushaf reading view from independently flowing ayah spans. Fixed printed line/page geometry is a product requirement.
+2. Do not edit, reshape, justify, split, or recombine Quranic lines. Scaling the whole page is allowed; reflow is not.
+3. Keep `quran-pos` stable. Any future Quran persistence change requires a Data Safety migration.
+4. Keep left-to-right finger swipe = next page.
+5. Keep the King Fahd Complex as the canonical Mushaf source; technical mirrors/layers must be identified as such.
+6. Ayah tap overlays may be interactive, but they must not modify the Quran glyph layer.
+
+Al-Mukhtasar API architecture note:
+- Official API registration returns an application Bearer token, and `book-contents` can request tafsir by `sura` + `aya`.
+- **Do not put that Bearer token in public PWA/extension JavaScript.** It would be extractable by any user.
+- If the owner approves inline official tafsir later, use a minimal serverless/backend proxy holding the token in an environment secret: Rafiq -> `/api/tafsir?sura=&aya=` -> proxy adds Bearer -> official Mokhtasar API -> Rafiq renders the returned text. Current no-backend build keeps the official deep link.
