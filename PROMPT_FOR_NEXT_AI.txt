@@ -35,3 +35,11 @@ LATEST v24 R9 NOTE — SEERAH:
 
 LATEST v24 R10 DATA-SAFETY NOTE:
 Rafiq now has real users. Read DATA_SAFETY.md and section 20 of AI_HANDOFF.md before touching any persistent storage. `rafiq:data-version` is schema v1. Do not rename/delete a storage key, change a stored shape, or change a stable saved-content ID without a backward-compatible migration and rollback path. Every new persistent key/prefix must be registered in app/data-safety.js. Old partial muhasabah backups must remain importable non-destructively. No cloud backend/analytics was added.
+
+
+LATEST v24 R11 NOTE:
+- Start from R11, not older builds.
+- Seerah has 19 stations with quick summary + medium detail. Preserve ALL existing seerah IDs because Saved Later uses `seerah:<id>`.
+- `app/companions.json` batch 1 contains 20 famous companions with stable `companion:<id>` Saved Later IDs. Do not rename IDs without a Data Safety migration.
+- Companion/sirah historical reports must remain source-backed; independently verify any special virtue or disputed anecdote before presenting it as fact.
+- R10 Data Safety layer remains mandatory and unchanged.

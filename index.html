@@ -132,6 +132,22 @@
     .data-safety-card.ok{border-color:color-mix(in srgb,var(--deep) 30%,var(--line));background:color-mix(in srgb,var(--wash) 84%,var(--deep) 16%)}
     .data-safety-card.warn{border-color:#b9853c;background:color-mix(in srgb,var(--card) 88%,#b9853c 12%)}
     .data-btn{flex:1;padding:10px;border-radius:11px;border:1px solid var(--line);background:var(--card);color:var(--deep);cursor:pointer;font-family:inherit}
+
+/* v24 R11 — medium seerah + companions batch 1 */
+.learn-summary-copy{min-width:0;display:flex;flex-direction:column;gap:2px;align-items:flex-start}
+.learn-summary-hint,.companion-desc{font-size:10px;color:var(--soft);line-height:1.55;font-family:IBM,system-ui,sans-serif;font-weight:400}
+.learn-depth{margin-top:12px;border-top:1px solid var(--line);padding-top:11px;display:grid;gap:9px}
+.learn-depth-head{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.01em;margin-bottom:5px}.learn-depth-head.soft{color:var(--soft)}
+.learn-depth section{background:color-mix(in srgb,var(--wash) 66%,var(--card));border:1px solid var(--line);border-radius:13px;padding:10px 11px}
+.learn-depth h4{font-size:12.5px;color:var(--deep);margin:0 0 4px}.learn-depth p{font-size:12.2px;line-height:1.9;margin:0;color:var(--ink)}
+.source-stack{margin-top:11px;padding-top:8px;border-top:1px dashed var(--line)}
+.source-stack .source-ref{display:flex;align-items:flex-start;gap:6px}.source-stack .src-mark{color:var(--gold);flex:none}.source-stack .src-label{font-size:9px;color:var(--soft);font-weight:700}
+.learn-ref-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 5px}.learn-ref-row a{display:inline-flex;max-width:100%;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 8px;color:var(--deep);text-decoration:none;font-size:10.5px;line-height:1.6;overflow-wrap:anywhere}
+.learn-note{display:block;font-size:10.5px;color:var(--soft);line-height:1.75;margin-top:5px}
+.companion-tags{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 9px}.companion-tags span{font-size:9.5px;color:var(--gold);border:1px solid var(--line);background:var(--wash);border-radius:999px;padding:3px 7px}
+.companion-card .lt{line-height:1.45}.companion-card summary,.seerah-card summary{align-items:flex-start}
+@media(max-width:430px){.learn-ref-row{flex-direction:column;align-items:stretch}.learn-ref-row a{border-radius:11px}.learn-depth section{padding:9px 10px}.learn-summary-hint,.companion-desc{font-size:9.8px}}
+
 </style>
 <style>
 :root{
@@ -1081,7 +1097,8 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div class="learn-seg" id="learn-seg">
     <button data-learn="riyad" aria-current="true"><span>◫</span> رياض الصالحين</button>
     <button data-learn="nawawi"><span>٤٢</span> الأربعون النووية</button>
-    <button data-learn="seerah"><span>ﷺ</span> السيرة المختصرة</button>
+    <button data-learn="seerah"><span>ﷺ</span> السيرة النبوية</button>
+    <button data-learn="companions"><span>✦</span> الصحابة</button>
     <button data-learn="essentials"><span>⌁</span> ما لا يسع المسلم جهله</button>
     <button data-learn="fiqh"><span>⚖</span> الفقه الميسر</button>
   </div>
@@ -1094,6 +1111,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   </div>
   <div id="learn-nawawi" class="hide"></div>
   <div id="learn-seerah" class="hide"></div>
+  <div id="learn-companions" class="hide"></div>
   <div id="learn-essentials" class="hide"></div>
   <div id="learn-fiqh" class="hide"></div>
 

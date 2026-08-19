@@ -115,3 +115,15 @@ R10 — Data Safety / Existing User Protection
 - Settings now has `بياناتي والحماية`, including backup, restore, merge mode and data audit/status.
 - No backend, cloud database, account system or analytics introduced.
 - Public manifest remains 24.0.0.
+
+
+R11 — Medium Seerah + Companions Batch 1
+- Renamed the Knowledge label from «السيرة المختصرة» to «السيرة النبوية».
+- Expanded seerah to 19 sourced stations; each card keeps a fast summary and reveals medium detail on open.
+- Added direct Siyar A‘lam al-Nubala references for major events: revelation, Makkah, Abyssinia, Isra, Hijra, Badr, Uhud, Khandaq, Hudaybiyyah, Khaybar, Conquest, Tabuk, and final illness.
+- Preserved every legacy R9 seerah ID; new event IDs are additive, so existing Saved Later references keep working.
+- Added «الصحابة» to Knowledge with 24 famous figures in batch 1: the four caliphs, the ten promised Paradise, major early companions/scholars, and key women of Ahl al-Bayt/Mothers of Believers.
+- Each companion card provides a short intro, medium detail, category filters, Saved Later, and direct Siyar biography source.
+- Added al-Isaba as a general verification reference and documented the rule against unverified anecdotal reports.
+- No persistent data schema or storage-key changes; R10 Data Safety remains active.
+- Public manifest remains 24.0.0.

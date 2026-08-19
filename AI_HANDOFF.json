@@ -1,5 +1,5 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-R10-2026-08-19",
+  "state_id": "RAFIQ-HANDOFF-v24-R11-2026-08-19",
   "project": "رفيق يومك",
   "version": "v24",
   "platform": "Chrome MV3 side-panel extension",
@@ -43,7 +43,10 @@
     "nawawi40_text": "https://sunnah.com/nawawi40",
     "sahaba_dua_verification": "Dorar individual hadith/athar links stored per item in app/adiya.json",
     "seerah_primary": "https://risala.prh.gov.sa/ar/contents/321",
-    "seerah_expansion_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/912876fb-29ac-4750-b214-fee87b56a2f7?categ_id=c206a512-4395-4445-9c32-ef649e81f7d2&categ_title=%D8%A7%D9%84%D8%B3%D9%8A%D8%B1%D8%A9+%D8%A7%D9%84%D9%86%D8%A8%D9%88%D9%8A%D8%A9"
+    "seerah_expansion_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/912876fb-29ac-4750-b214-fee87b56a2f7?categ_id=c206a512-4395-4445-9c32-ef649e81f7d2&categ_title=%D8%A7%D9%84%D8%B3%D9%8A%D8%B1%D8%A9+%D8%A7%D9%84%D9%86%D8%A8%D9%88%D9%8A%D8%A9",
+    "seerah_detail_siyar": "https://shamela.ws/book/22669",
+    "companions_primary_siyar": "https://shamela.ws/book/22669",
+    "companions_verification_isaba": "https://shamela.ws/book/9767"
   },
   "roadmap": [
     "source integrity and regression testing",
@@ -107,7 +110,13 @@
     "R10: fuller portable backup covers day:*, tas:*, quran position/font, Saved Later, Heart/مساري, Irtaqi, favorites, todos, Khabia, profile/settings and extension notebook/prefs when available",
     "R10: new backups use SHA-256 integrity when available; old partial muhasabah backups remain supported via non-destructive merge",
     "R10: Settings now has بياناتي والحماية with backup/restore/merge/data-audit status",
-    "R10: no cloud backend/database/account/analytics added"
+    "R10: no cloud backend/database/account/analytics added",
+    "R11: seerah upgraded from 11 ultra-short stations to 19 stations with quick summary plus medium detail inside each expandable card.",
+    "R11: all pre-existing seerah content IDs were preserved exactly to protect Saved Later references; new event IDs are additive only.",
+    "R11: seerah medium-detail milestones use direct references to al-Dhahabi Siyar A‘lam al-Nubala pages, while the Presidency رسول الإسلام محمد ﷺ remains the general primary source and official Ibn Uthaymeen commentary remains the expansion book.",
+    "R11: added Knowledge tab الصحابة with batch 1 of 24 famous companions/companions women, each with a short intro, medium detail, categories, Saved Later, and direct Siyar biography link.",
+    "R11: al-Isaba fi Tamyiz al-Sahaba is documented as a general verification reference; app avoids colorful/disputed reports unless independently verified.",
+    "R11: no storage key/schema changes; R10 Data Safety layer remains unchanged and active."
   ],
   "data_architecture": {
     "cloud_backend": false,

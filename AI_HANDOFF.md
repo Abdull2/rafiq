@@ -419,3 +419,15 @@ Non-negotiable storage rule going forward:
 3. Preserve stable content IDs; if an ID must change, add an explicit old -> new mapping migration.
 4. A successful syntax build is not enough: run the Data Safety harness and validate JSON before packaging.
 5. Local safety is not cloud backup. Clearing app/site/extension data can still remove user records; downloaded backups remain important until/if the owner explicitly chooses cloud sync.
+
+
+## 16) v24 R11 — medium seerah + companions batch 1
+- Upgraded the Knowledge seerah from an ultra-short 11-station overview to **19 stations**.
+- Every old R9 seerah ID is preserved exactly: `origin`, `khadija`, `revelation`, `makkah`, `isra`, `migration`, `madinah`, `character`, `message`, `signs`, `farewell`. Do not rename them: users may have `seerah:<id>` in `saved-later-v1`.
+- New additive seerah IDs: `abyssinia`, `badr`, `uhud`, `khandaq`, `hudaybiyah`, `khaybar`, `conquest`, `tabuk`.
+- Seerah card UX is now: **quick summary -> open card -> medium detail -> visible source stack**.
+- General seerah source remains `رسول الإسلام محمد ﷺ` from the Presidency of Religious Affairs. Detailed milestones link directly to the relevant pages in al-Dhahabi's `سير أعلام النبلاء`. The official Ibn Uthaymeen Foundation `التعليق على نور اليقين` remains the book-level expansion reference.
+- Added `app/companions.json` with **24 famous companions/companions women**. Stable Saved Later IDs are `companion:<semantic-id>`; never rename without migration.
+- Companion UI has search + filters + quick intro + medium detail + direct Siyar biography source. `الإصابة في تمييز الصحابة` is a general cross-check reference.
+- Companion content rule: classical biography books can contain reports of differing strength. Rafiq should state only stable/basic facts by default; any special virtue, quotation, miracle-like story, or disputed anecdote that needs hadith grading must be separately verified before asserting it.
+- R11 changed **content and UI only**. No storage key, storage shape, or data schema change. R10 Data Safety remains in force.

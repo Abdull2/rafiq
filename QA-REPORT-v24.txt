@@ -114,3 +114,21 @@ v24 R10 — Data Safety QA
 - PASS: index.html loads data-safety.js before app.js and contains `بياناتي والحماية` controls.
 - PASS: migration v0 -> v1 does not rewrite existing user records.
 - NOTE: headless Chromium DOM smoke attempt timed out in the container environment and produced no useful DOM; do not claim a full browser visual regression was completed for R10.
+
+
+v24 R11 — medium seerah + companions batch 1 QA
+- PASS: app/seerah.json parses with 19 unique stations.
+- PASS: all 11 legacy R9 seerah IDs are preserved exactly, so existing `seerah:<id>` Saved Later references remain valid.
+- PASS: 8 new seerah IDs are additive only: abyssinia, badr, uhud, khandaq, hudaybiyah, khaybar, conquest, tabuk.
+- PASS: every seerah station has at least 2 medium-detail sections and at least one visible source URL.
+- PASS: Knowledge navigation label is now «السيرة النبوية» and cards render quick summary -> medium detail -> source stack.
+- PASS: app/companions.json parses with 24 unique stable semantic IDs.
+- PASS: companion batch includes the four caliphs, all ten promised Paradise, major early companions, scholars/narrators, and key women; Abu Hurayra, Ibn Abbas, Anas ibn Malik and Zayd ibn Thabit are included.
+- PASS: every companion record has 3 medium-detail sections and a direct Siyar A‘lam al-Nubala biography URL.
+- PASS: «الصحابة» Knowledge tab and render container exist exactly once; search/filter/Saved Later wiring is present.
+- PASS: app/sources.html documents Siyar + al-Isaba provenance and the rule against asserting unverified anecdotal reports.
+- PASS: app/app.js and app/data-safety.js pass node --check.
+- PASS: all JSON files parse; manifest remains 24.0.0.
+- PASS: R10 deterministic Data Safety harness still passes after R11 content/UI changes.
+- NOTE: R11 did not change persistent storage keys or schema. No data migration is required.
+- NOTE: no full visual-browser regression was completed in this container; perform a quick mobile/Chrome visual check after upload.
