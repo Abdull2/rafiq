@@ -462,7 +462,7 @@ async function loadHisnFull(){
 }
 /* ================= azkar ================= */
 async function loadAzkar(){ if(AZ.sets.length)return;
-  try{ AZ=await (await fetch('./azkar.json?v='+Date.now())).json() }catch{ AZ={sets:[]} } }
+  try{ AZ=await (await fetch('./azkar.json')).json() }catch{ AZ={sets:[]} } }
 async function renderAzkar(){
   await loadAzkar();
   const host=document.getElementById('az-wrap'); if(!host)return;
@@ -1009,7 +1009,7 @@ document.getElementById('btn-history').onclick=()=>switchTab(tab==='history'?'to
 /* ================= الدعاء ================= */
 let DUA={cats:[]}, duaCat='quran', duaFav=[], myDuas=[];
 async function loadDua(){ if(DUA.cats.length)return;
-  try{ DUA=await (await fetch('./adiya.json?v='+Date.now())).json() }catch{}
+  try{ DUA=await (await fetch('./adiya.json')).json() }catch{}
   duaFav=(await store.get('dua-fav'))||[]; myDuas=(await store.get('my-duas'))||[] }
 async function renderDua(){
   await loadDua();
@@ -1099,7 +1099,7 @@ function riyadExplain(text,book=''){
 async function loadRS(){ if(RS)return RS;
   try{ RS=await (await fetch('./riyad.json')).json() }catch{ RS={books:[]} }
   rsFav=(await store.get('rs-fav'))||[]; return RS }
-async function loadNawawi(){if(NAW)return NAW;try{NAW=await (await fetch('./nawawi40.json?v='+Date.now())).json()}catch{NAW={meta:{},items:[]}}return NAW}
+async function loadNawawi(){if(NAW)return NAW;try{NAW=await (await fetch('./nawawi40.json')).json()}catch{NAW={meta:{},items:[]}}return NAW}
 function getRiyadByKey(k){const [bi,n]=String(k).split(':');const b=RS?.books?.[+bi],h=b?.items?.find(x=>String(x.n)===String(n));return b&&h?{b,bi:+bi,h}:null}
 function sourceRefCard(label,url,note=''){
   return `<div class="hadith-ref-card strong"><div class="label">مرجع الشرح المعتمد</div><a href="${url}" target="_blank" rel="noopener">${laterEsc(label)}</a>${note?`<div class="note">${laterEsc(note)}</div>`:''}</div>`
@@ -1168,9 +1168,9 @@ async function renderNawawi(){
 
 /* ================= العلم: رياض الصالحين + الأربعون النووية + السيرة + الصحابة + الأساسيات + الفقه ================= */
 let LEARN=null, SEERAH=null, COMPANIONS=null, learnMode='nawawi', learnQuery='', learnGroup='all';
-async function loadLearn(){if(LEARN)return LEARN;try{LEARN=await (await fetch('./knowledge.json?v='+Date.now())).json()}catch{LEARN={meta:{},essentials:[],fiqh:[]}}return LEARN}
-async function loadSeerah(){if(SEERAH)return SEERAH;try{SEERAH=await (await fetch('./seerah.json?v='+Date.now())).json()}catch{SEERAH={meta:{},items:[]}}return SEERAH}
-async function loadCompanions(){if(COMPANIONS)return COMPANIONS;try{COMPANIONS=await (await fetch('./companions.json?v='+Date.now())).json()}catch{COMPANIONS={meta:{},items:[]}}return COMPANIONS}
+async function loadLearn(){if(LEARN)return LEARN;try{LEARN=await (await fetch('./knowledge.json')).json()}catch{LEARN={meta:{},essentials:[],fiqh:[]}}return LEARN}
+async function loadSeerah(){if(SEERAH)return SEERAH;try{SEERAH=await (await fetch('./seerah.json')).json()}catch{SEERAH={meta:{},items:[]}}return SEERAH}
+async function loadCompanions(){if(COMPANIONS)return COMPANIONS;try{COMPANIONS=await (await fetch('./companions.json')).json()}catch{COMPANIONS={meta:{},items:[]}}return COMPANIONS}
 function sourceStack(sources=[],fallbackLabel='',fallbackUrl=''){
   const ss=sources.length?sources:(fallbackLabel?[{label:fallbackLabel,url:fallbackUrl}]:[]);
   return ss.map((s,i)=>`<div class="learn-source source-ref"><span class="src-mark">↗</span><span><span class="src-label">${i?'مرجع إضافي':'المصدر'}</span> ${s.url?`<a href="${laterEsc(s.url)}" target="_blank" rel="noopener">${laterEsc(s.label)}</a>`:laterEsc(s.label)}</span></div>`).join('');
@@ -1204,7 +1204,7 @@ function hStreak(k,i){ let s=0;
 const hSteps=p=>p.cure||p.means||[];
 const hList=p=>p.causes||p.fruits||[];
 async function loadH(){ if(HD)return HD;
-  try{ HD=await (await fetch('./qalb.json?v='+Date.now())).json() }catch{ HD={problems:[],works:[],obstacles:[]} }
+  try{ HD=await (await fetch('./qalb.json')).json() }catch{ HD={problems:[],works:[],obstacles:[]} }
   hTrack=(await store.get('qalb-track'))||{}; hJournal=(await store.get('qalb-journal'))||{};
   hProg=(await store.get('qalb-prog'))||{}; hPaths=(await store.get('qalb-paths-v1'))||[]; return HD }
 function hPct(p){
@@ -1544,7 +1544,7 @@ function hNafs(){
 let ISH=null, issueGroup='all', issueQuery='';
 async function loadIsh(){
   if(ISH)return ISH;
-  try{ISH=await (await fetch('./ishkaliat.json?v='+Date.now())).json()}
+  try{ISH=await (await fetch('./ishkaliat.json')).json()}
   catch{ISH={meta:{},groups:[],items:[]}}
   return ISH;
 }
@@ -1606,7 +1606,7 @@ async function hIshkaliat(){
 
 /* ---------- أسماء الله الحسنى ---------- */
 let ASMA=null, asmaQuery='', asmaCur=null, asmaVerseLimit=30, dorarSeq=0;
-async function loadAsma(){ if(ASMA)return ASMA; try{ASMA=await (await fetch('./asma.json?v='+Date.now())).json()}catch{ASMA={names:[],sources:{},methodology:''}} return ASMA }
+async function loadAsma(){ if(ASMA)return ASMA; try{ASMA=await (await fetch('./asma.json')).json()}catch{ASMA={names:[],sources:{},methodology:''}} return ASMA }
 function asmaNorm(x){ return nafsNorm(x).replace(/ة/g,'ه').replace(/ٱ/g,'ا').replace(/[ۖۗۚۛۜ۞۩]/g,'') }
 function asmaQNorm(x){ return (x||'').replace(/[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06edـ]/g,'').replace(/ٱ/g,'ا').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/[٠-٩0-9]/g,'').replace(/[^ء-ي ]/g,' ').replace(/\s+/g,' ').trim() }
 function asmaStripPrefix(w){ let x=w; while(x.length>3 && /^[وفبكل]/.test(x)) x=x.slice(1); return x }
@@ -1786,7 +1786,7 @@ function khHtml(){
 /* ================= ارتقِ ================= */
 let IRT=null, irtAns={}, irtHist=[], irtPlan=[], irtDone={}, irtJourney=null, irtViewDay=null;
 async function loadIrt(){ if(IRT)return IRT;
-  try{ IRT=await (await fetch('./irtaqi.json?v='+Date.now())).json() }catch{ IRT={axes:[],ranks:[],framework:{}} }
+  try{ IRT=await (await fetch('./irtaqi.json')).json() }catch{ IRT={axes:[],ranks:[],framework:{}} }
   irtHist=(await store.get('irt-hist'))||[]; irtPlan=(await store.get('irt-plan'))||[];
   irtDone=(await store.get('irt-done'))||{}; irtJourney=(await store.get('irt-journey'))||null;
   // v3 rebuilds old score-only journeys into the new Sharia-priority framework.

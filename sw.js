@@ -1,5 +1,5 @@
 /* Tadaruq PWA service worker — generated for v24 R18. */
-const CACHE_NAME = 'tadaruq-v24-r18-pwa-20260819';
+const CACHE_NAME = 'tadaruq-v24-r20-pwa-20260819';
 const RUNTIME_CACHE = 'tadaruq-runtime-v24-r18-20260819';
 const PRECACHE_URLS = [
   "./",
@@ -14,7 +14,6 @@ const PRECACHE_URLS = [
   "./data-safety.js",
   "./extension-bridge.js",
   "./hafs.woff2",
-  "./icon-1024.png",
   "./icon-192.png",
   "./icon-512.png",
   "./icon-maskable-512.png",
@@ -30,13 +29,6 @@ const PRECACHE_URLS = [
   "./privacy.html",
   "./pwa-register.js",
   "./qalb.json",
-  "./quran.json",
-  "./riyad.json",
-  "./screenshot-1.png",
-  "./screenshot-2.png",
-  "./screenshot-3.png",
-  "./screenshot-4.png",
-  "./screenshot-5.png",
   "./seerah.json",
   "./sources.html",
   "./tasbih.html"
