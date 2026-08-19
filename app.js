@@ -873,21 +873,6 @@ async function fetchMushafSvg(page){
   mushafSvgCache.set(page,task);
   try{return await task}catch(e){mushafSvgCache.delete(page);throw e}
 }
-/* قص الهامش الأبيض حول صفحة المصحف بتضييق viewBox، فتكبر المساحة المقروءة
-   من غير قص أي نص ومن غير تمرير. النسبة محافظة ومحفوظة في MUSHAF_TRIM. */
-const MUSHAF_TRIM=0.035;
-function trimMushafMargins(svg){
-  try{
-    const vb=(svg.getAttribute('viewBox')||'').trim().split(/[\s,]+/).map(Number);
-    if(vb.length!==4||vb.some(n=>!isFinite(n)))return;
-    if(svg.dataset.trimmed==='1')return;
-    const [x,y,w,h]=vb;
-    if(!(w>0&&h>0))return;
-    const dx=w*MUSHAF_TRIM, dy=h*MUSHAF_TRIM;
-    svg.setAttribute('viewBox',`${x+dx} ${y+dy} ${w-dx*2} ${h-dy*2}`);
-    svg.dataset.trimmed='1';
-  }catch(_){}
-}
 function safeMushafSvg(text,page){
   const doc=new DOMParser().parseFromString(text,'image/svg+xml');
   if(doc.querySelector('parsererror'))throw new Error('SVG parse error');
@@ -904,7 +889,6 @@ function safeMushafSvg(text,page){
   svg.setAttribute('role','img');
   svg.setAttribute('aria-label',`صفحة ${page} من مصحف المدينة النبوية`);
   svg.classList.add('mushaf-page-svg');
-  trimMushafMargins(svg);
   return document.importNode(svg,true);
 }
 function applyMushafZoom(){
