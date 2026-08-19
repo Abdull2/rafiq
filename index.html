@@ -35,23 +35,30 @@
 .asma-head{margin:12px 0;padding:16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,var(--wash),var(--card))}.asma-head h2{font-family:Amiri,serif;font-size:25px;margin:0 0 5px;color:var(--deep)}.asma-head p{font-size:12.5px;line-height:1.8;color:var(--soft);margin:0}.asma-count{font-size:11px;color:var(--soft);margin:4px 2px 10px}.asma-card{border:1px solid var(--line);border-radius:15px;background:var(--card);margin:8px 0;overflow:hidden}.asma-card>button{width:100%;border:0;background:transparent;color:var(--ink);padding:13px 14px;display:flex;align-items:center;gap:10px;text-align:right;cursor:pointer}.asma-num{width:28px;height:28px;border-radius:50%;background:var(--wash);display:grid;place-items:center;font-size:11px;color:var(--deep);flex:none}.asma-name{font-family:Amiri,serif;font-size:21px;color:var(--deep);flex:1}.asma-qc{font-size:10.5px;color:var(--soft)}.asma-body{padding:0 14px 14px;border-top:1px solid var(--line)}.asma-block{margin-top:12px}.asma-lb{font-size:11px;color:var(--gold);font-weight:600;margin-bottom:4px}.asma-tx{font-size:13px;line-height:1.8}.asma-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.asma-pill{background:var(--wash);border-radius:11px;padding:9px;font-size:11px;line-height:1.55}.asma-srcs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.asma-srcs a{font-size:10.5px;text-decoration:none;color:var(--deep);border:1px solid var(--line);border-radius:999px;padding:5px 8px;background:var(--paper)}
 .nafs-hero{margin:12px 0;background:linear-gradient(145deg,var(--wash),var(--card));border:1px solid var(--line);border-radius:16px;padding:16px}.nafs-hero h2{font-family:Amiri,serif;color:var(--deep);margin:0 0 5px;font-size:24px}.nafs-hero p{margin:0;color:var(--soft);font-size:12.5px;line-height:1.8}.nafs-groups{display:flex;gap:7px;overflow-x:auto;margin:0 0 10px}.nafs-groups button{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:999px;padding:8px 11px;font-size:11px;cursor:pointer}.nafs-groups button.on{background:var(--deep);color:#fff;border-color:var(--deep)}.nafs-path{font-size:10px;color:var(--gold);margin-bottom:3px}.nafs-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.nafs-box{border-radius:12px;padding:11px;background:var(--wash);font-size:12.5px;line-height:1.75}.nafs-box b{display:block;color:var(--deep);margin-bottom:4px}.nafs-questions{margin:5px 0 0;padding-right:18px;font-size:12.5px;line-height:1.8}.nafs-empty{text-align:center;color:var(--soft);padding:28px 10px;font-size:13px}@media(max-width:430px){.nafs-pair,.asma-meta{grid-template-columns:1fr}}
 
-/* ===== v1.4 home discovery ===== */
-.home-welcome{margin-top:12px;border:1px solid var(--line);border-radius:22px;padding:18px 16px;background:linear-gradient(145deg,var(--wash),var(--card))}
-.home-welcome .eyebrow{font-size:11px;color:var(--gold);margin-bottom:4px}
-.home-welcome h2{font-family:Amiri,serif;color:var(--deep);font-size:28px;line-height:1.35;margin:0 0 5px}
-.home-welcome p{margin:0;color:var(--soft);font-size:12.5px;line-height:1.9}
-.home-journey{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}
-.home-go{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:13px;text-align:right;color:var(--ink);cursor:pointer;min-height:106px;display:flex;flex-direction:column;gap:4px}
-.home-go:active{transform:scale(.99)}
-.home-go .ico{font-size:20px;color:var(--gold);line-height:1}
-.home-go b{font-family:Amiri,serif;font-size:18px;color:var(--deep);line-height:1.45}
-.home-go span{font-size:11.5px;color:var(--soft);line-height:1.65}
-.home-go .go{margin-top:auto;font-size:10.5px;color:var(--deep)}
-.home-go.wide{grid-column:1/-1;min-height:auto;display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:10px}
-.home-go.wide .ico{grid-row:1/3}.home-go.wide b{font-size:17px}.home-go.wide span{grid-column:2}.home-go.wide .go{grid-column:3;grid-row:1/3;margin:0}
-.evening-gate{margin-top:12px;background:var(--deep);color:#fff;border-radius:18px;padding:14px 15px;display:flex;align-items:center;gap:11px;cursor:pointer;border:0;width:100%;text-align:right}
-.evening-gate .moon{font-size:22px}.evening-gate b{display:block;font-family:Amiri,serif;font-size:20px}.evening-gate span{display:block;font-size:11px;opacity:.82}.evening-gate i{margin-inline-start:auto;font-style:normal;font-size:18px}
+/* ===== v24 R16 — calmer home gateway + prayer setup ===== */
+.home-welcome{margin-top:12px;border:1px solid color-mix(in srgb,var(--line) 82%,transparent);border-radius:24px;padding:17px;background:linear-gradient(155deg,color-mix(in srgb,var(--wash) 92%,white 8%),var(--card));box-shadow:0 12px 34px rgba(37,52,40,.055)}
+.home-welcome-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.home-welcome .eyebrow{font-size:10.5px;color:var(--gold);margin-bottom:4px;font-weight:600;letter-spacing:.01em}
+.home-welcome h2{font-family:Amiri,serif;color:var(--deep);font-size:29px;line-height:1.32;margin:0 0 4px}
+.home-welcome p{margin:0;color:var(--soft);font-size:12px;line-height:1.85;max-width:620px}
+.home-prayer-focus{width:100%;margin-top:14px;border:1px solid color-mix(in srgb,var(--deep) 15%,var(--line));border-radius:18px;background:color-mix(in srgb,var(--deep) 5%,var(--card));padding:12px 13px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;text-align:right;color:var(--ink);cursor:pointer;transition:transform .14s ease,border-color .14s ease,background .14s ease}
+.home-prayer-focus:active{transform:scale(.992)}.home-prayer-focus.needs-setup{border-style:dashed;background:color-mix(in srgb,var(--gold) 7%,var(--card))}
+.prayer-orb{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:var(--deep);color:#fff;font-family:Amiri,serif;font-size:19px;box-shadow:0 5px 14px rgba(11,58,47,.13)}
+.prayer-copy{min-width:0;display:flex;flex-direction:column;gap:1px}.prayer-copy small{font-size:9.5px;color:var(--soft)}.prayer-copy b{font-family:Amiri,serif;font-size:18px;color:var(--deep);line-height:1.4}.prayer-copy span{font-size:10.5px;color:var(--soft);line-height:1.55;white-space:normal}.prayer-action{font-size:10px;color:var(--deep);white-space:nowrap;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 9px}
+.home-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:15px 2px 7px}.home-section-head b{font-family:Amiri,serif;color:var(--deep);font-size:18px}.home-section-head span{color:var(--soft);font-size:10px}
+.home-journey{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:0}
+.home-go{position:relative;overflow:hidden;border:1px solid var(--line);background:var(--card);border-radius:18px;padding:13px;text-align:right;color:var(--ink);cursor:pointer;min-height:102px;display:flex;flex-direction:column;gap:4px;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
+.home-go::after{content:'';position:absolute;inset-inline-end:-24px;bottom:-30px;width:78px;height:78px;border-radius:50%;background:color-mix(in srgb,var(--gold) 7%,transparent);pointer-events:none}
+.home-go:active{transform:scale(.99)}.home-go:hover{border-color:color-mix(in srgb,var(--gold) 38%,var(--line));box-shadow:0 8px 22px rgba(50,55,39,.04)}
+.home-go .ico{width:31px;height:31px;border-radius:11px;display:grid;place-items:center;font-size:17px;color:var(--gold);line-height:1;background:var(--wash);border:1px solid color-mix(in srgb,var(--line) 72%,transparent)}
+.home-go b{font-family:Amiri,serif;font-size:18px;color:var(--deep);line-height:1.42}.home-go span{font-size:10.8px;color:var(--soft);line-height:1.65}.home-go .go{margin-top:auto;font-size:10px;color:var(--deep)}
+.home-go.feature{min-height:126px;padding:15px}.home-go.feature b{font-size:20px}.home-go.feature .ico{width:36px;height:36px;font-size:19px;background:color-mix(in srgb,var(--gold) 10%,var(--wash))}
+.home-journey.secondary .home-go{min-height:94px}
+.evening-gate{margin-top:13px;background:var(--deep);color:#fff;border-radius:18px;padding:13px 14px;display:flex;align-items:center;gap:11px;cursor:pointer;border:0;width:100%;text-align:right;box-shadow:0 8px 22px rgba(11,58,47,.09)}
+.evening-gate .moon{font-size:21px}.evening-gate b{display:block;font-family:Amiri,serif;font-size:19px}.evening-gate span{display:block;font-size:10.5px;opacity:.82}.evening-gate i{margin-inline-start:auto;font-style:normal;font-size:18px}
 .home-evening{margin-top:10px}.home-evening.hide{display:none!important}
+@media(max-width:430px){.home-welcome{padding:15px}.home-welcome h2{font-size:26px}.home-prayer-focus{grid-template-columns:auto 1fr}.prayer-action{grid-column:2;justify-self:start;margin-top:2px}.home-journey{grid-template-columns:1fr 1fr}.home-journey.secondary{grid-template-columns:1fr 1fr}.home-go{padding:11px;min-height:112px}.home-go.feature{min-height:126px}.home-go b{font-size:17px}.home-go span{font-size:10.2px}.home-section-head span{display:none}}
+@media(max-width:350px){.home-journey,.home-journey.secondary{grid-template-columns:1fr}.home-go,.home-go.feature{min-height:auto}}
 
 /* ===== learning hub ===== */
 .learn-seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px}
@@ -90,7 +97,7 @@
 .onb-feature b{display:block;font-size:17px;margin-bottom:3px}
 .onb-dots{display:flex;justify-content:center;gap:6px;margin-top:15px}.onb-dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}.onb-dots i.on{background:var(--deep)}
 .onb-nav{display:flex;gap:8px;margin-top:14px}.onb-nav button{margin:0}.onb-nav .ghost{background:var(--wash);color:var(--deep);border:1px solid var(--line)}
-@media(max-width:430px){.home-journey{grid-template-columns:1fr}.home-go.wide{grid-column:auto}.learn-seg{grid-template-columns:1fr}.onb-feature-grid{grid-template-columns:1fr}}
+@media(max-width:430px){.learn-seg{grid-template-columns:1fr}.onb-feature-grid{grid-template-columns:1fr}}
 
 
 /* ===== v1.7 advanced Ishkaliat ===== */
@@ -748,7 +755,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .save-later{width:29px;height:29px;border:1px solid var(--line)!important;border-radius:9px!important;background:var(--wash)!important;color:var(--deep)!important;display:grid!important;place-items:center;padding:0!important;font-size:18px!important;line-height:1!important;cursor:pointer;flex:none}
 .learn-card summary>.save-later{margin-inline-start:auto}.learn-card summary::after{display:none}
 .h-tile,.h-ob,.asma-card,.hd-item,.dua-card,.zikr{position:relative}.h-tile>.save-later,.h-ob>.save-later,.asma-card>.save-later{position:absolute;left:9px;top:9px;z-index:3}
-.saved-head{position:relative}.saved-head #saved-count{position:absolute;top:-5px;left:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--gold);color:#fff;font-size:9px;display:grid;place-items:center}
+.saved-head{position:relative}.saved-head #saved-count{position:absolute;top:4px;left:4px;width:7px;height:7px;border-radius:50%;background:var(--gold);border:1.5px solid var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.12);display:none;pointer-events:none}.saved-head #saved-count.on{display:block}
 .saved-note,.profile-privacy{font-size:11.5px;color:var(--soft);line-height:1.8;padding:11px 14px;background:var(--wash)}
 .saved-box,.profile-box{max-height:min(82vh,760px);overflow:auto}.saved-row{padding:13px 14px;border-top:1px solid var(--line)}.saved-kind{font-size:10px;color:var(--gold)}.saved-title{font-family:Amiri,serif;font-size:19px;color:var(--deep);margin-top:2px}.saved-text{font-size:12.5px;color:var(--ink);line-height:1.8;margin-top:4px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.saved-source{font-size:10.5px;color:var(--soft);margin-top:5px}.saved-actions{display:flex;gap:7px;margin-top:9px}.saved-actions button{border:1px solid var(--line);background:var(--card);color:var(--deep);border-radius:9px;padding:7px 10px;font-size:11px;cursor:pointer}.saved-empty{padding:28px 16px;text-align:center;color:var(--soft);font-size:13px;line-height:1.8}.sheet-x{border:0;background:none;color:var(--deep);font-size:18px;cursor:pointer}.profile-form{margin-top:14px;text-align:right}.profile-form>label,.profile-box .field label{font-size:12px;color:var(--deep);display:block}.profile-form input[type=number],#profile-edit-age{width:100%;margin-top:6px;border:1px solid var(--line);background:var(--paper);border-radius:11px;padding:10px;font:inherit}.gender-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.gender-pick label{border:1px solid var(--line);background:var(--wash);border-radius:11px;padding:9px 11px;text-align:center;font-size:12px;cursor:pointer}.gender-pick input{accent-color:var(--deep)}
 @media(max-width:430px){.learn-seg{display:flex!important}.onb-feature-grid{grid-template-columns:repeat(3,1fr)}.h-grid{grid-template-columns:1fr 1fr}.header .icon{width:35px;height:35px}}
@@ -920,19 +927,33 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <!-- ============ TODAY ============ -->
 <div id="v-today">
 
-  <div class="home-welcome">
-    <div class="eyebrow" id="home-profile-line">رفيق يومك أثناء التصفح</div>
-    <h2>كل ما تحتاجه أقرب مما تتخيّل.</h2>
-    <p>اقرأ، اذكر، تعلّم، وراجع يومك بهدوء — وارجع لما تحتاجه في الوقت المناسب.</p>
+  <section class="home-welcome">
+    <div class="home-welcome-top">
+      <div>
+        <div class="eyebrow" id="home-profile-line">رفيق يومك أثناء التصفح</div>
+        <h2>ماذا تحتاج الآن؟</h2>
+        <p>ابدأ من باب واحد فقط؛ مصحفك، ذكرك، علم تحتاجه، أو خطوة عملية في يومك.</p>
+      </div>
+    </div>
+    <button class="home-prayer-focus needs-setup" id="home-prayer-card" data-home-go="prayer" type="button">
+      <span class="prayer-orb">◌</span>
+      <span class="prayer-copy"><small>الصلاة والوقت</small><b id="home-prayer-title">الصلاة القادمة</b><span id="home-prayer-sub">فعّل الموقع مرة واحدة ليحسب رفيق المواقيت والقبلة على جهازك.</span></span>
+      <span class="prayer-action" id="home-prayer-action">تفعيل المواقيت</span>
+    </button>
+  </section>
+
+  <div class="home-section-head"><b>ابدأ من هنا</b><span>أكثر ما تحتاجه خلال اليوم</span></div>
+  <div class="home-journey primary" id="home-journey">
+    <button class="home-go feature" data-home-go="quran"><span class="ico">﴿</span><b>هل قرأت وردك اليوم؟</b><span id="home-quran-copy">المصحف يفتح من آخر صفحة توقفت عندها.</span><span class="go">افتح المصحف ←</span></button>
+    <button class="home-go feature" data-home-go="azkar"><span class="ico">☾</span><b>قلت أذكارك؟</b><span>صباح، مساء، نوم، رقية ودعاء — مع الاستماع والحفظ.</span><span class="go">افتح الذكر ←</span></button>
   </div>
-  <div class="home-journey" id="home-journey">
-    <button class="home-go" data-home-go="quran"><span class="ico">﴿</span><b>هل قرأت وردك اليوم؟</b><span id="home-quran-copy">المصحف يفتح من آخر صفحة توقفت عندها.</span><span class="go">إلى المصحف ←</span></button>
-    <button class="home-go" data-home-go="azkar"><span class="ico">☾</span><b>قلت أذكارك؟</b><span>صباح، مساء، نوم، رقية ودعاء — ومع خيار الاستماع.</span><span class="go">إلى الذكر ←</span></button>
-    <button class="home-go" data-home-go="sunnah" data-learn-go="essentials"><span class="ico">◫</span><b>تعرف اللي لازم تعرفه؟</b><span>«ما لا يسع المسلم جهله» في بطاقات قصيرة بمصادرها.</span><span class="go">إلى التعلّم ←</span></button>
-    <button class="home-go" data-home-go="sunnah" data-learn-go="fiqh"><span class="ico">◇</span><b>مسألة فقهية في يومك؟</b><span>الفقه الميسر: طهارة، صلاة، صيام، زكاة وحج بطريقة عملية.</span><span class="go">إلى الفقه ←</span></button>
-    <button class="home-go" data-home-go="qalb"><span class="ico">♡</span><b>كيف حال قلبك؟</b><span>اقرأ عن أعمال القلوب والعقبات وخطوات العلاج التربوي.</span><span class="go">إلى التزكية ←</span></button>
-    <button class="home-go" data-home-go="irtaqi"><span class="ico">↗</span><b>خطوة صغيرة ترتقي بك</b><span>خطة عملية بدل محاولة إصلاح كل شيء مرة واحدة.</span><span class="go">إلى ارتقِ ←</span></button>
-    <button class="home-go wide" data-home-go="prayer"><span class="ico">◌</span><b id="home-prayer-title">الصلاة القادمة</b><span id="home-prayer-sub">حدّد موقعك من الإعدادات لعرض الموعد.</span><span class="go">المواقيت ←</span></button>
+
+  <div class="home-section-head"><b>لو محتاج بابًا آخر</b><span>تعلم، تزكية، أو خطوة عملية</span></div>
+  <div class="home-journey secondary">
+    <button class="home-go" data-home-go="sunnah" data-learn-go="essentials"><span class="ico">◫</span><b>تعرف اللي لازم تعرفه؟</b><span>أساسيات قصيرة بمصادرها.</span><span class="go">إلى التعلّم ←</span></button>
+    <button class="home-go" data-home-go="sunnah" data-learn-go="fiqh"><span class="ico">◇</span><b>مسألة فقهية في يومك؟</b><span>طهارة، صلاة، صيام وزكاة وحج.</span><span class="go">إلى الفقه ←</span></button>
+    <button class="home-go" data-home-go="qalb"><span class="ico">♡</span><b>كيف حال قلبك؟</b><span>تزكية، عقبات، أعمال القلوب ومساري.</span><span class="go">إلى التزكية ←</span></button>
+    <button class="home-go" data-home-go="irtaqi"><span class="ico">↗</span><b>خطوة صغيرة ترتقي بك</b><span>خطة عملية مرتبة بدل تشتيت الجهد.</span><span class="go">إلى ارتقِ ←</span></button>
   </div>
 
   <button class="evening-gate" id="evening-toggle" type="button"><span class="moon">☾</span><span><b id="evening-title">قبل أن تنام: خلاصة اليوم</b><span id="evening-copy">٥ أسئلة أساسية فقط + حالك اليوم، وأغلق يومك في أقل من دقيقة.</span></span><i id="evening-x">＋</i></button>
@@ -1262,10 +1283,14 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <div class="sec-head" style="border-radius:0"><span>الإعدادات</span>
       <button id="close-settings" style="border:0;background:none;color:var(--deep);font-size:19px;cursor:pointer">✕</button></div>
     <div class="field"><label>تخصيص رفيق</label><button id="btn-profile" style="width:100%;padding:10px;border-radius:11px;border:1px solid var(--line);background:var(--wash);color:var(--deep);cursor:pointer">تعديل العمر والنوع والمسارات</button><div class="muted" style="margin-top:6px;font-size:11px">تُستخدم هذه الاختيارات محليًا لتخصيص الصياغة وبعض الموضوعات والمسارات.</div></div>
-    <div class="field"><label>الموقع (لحساب المواقيت والقبلة)</label>
-      <div class="row"><button id="btn-geo" style="flex:1;padding:10px;border-radius:11px;
-        border:1px solid var(--line);background:var(--wash);color:var(--deep);cursor:pointer">تحديد موقعي تلقائيًا</button></div>
-      <div class="row" style="margin-top:9px">
+    <div class="field" id="prayer-location-field"><label>الصلاة والوقت والموقع</label>
+      <div class="prayer-settings-shell">
+        <div class="prayer-status-line"><span class="prayer-status-dot warn" id="geo-status-dot"></span><div class="prayer-status-copy"><b id="geo-status-title">الموقع غير مفعّل</b><span id="geo-status-copy">اضغط الزر ليطلب Android/المتصفح إذن الموقع، ثم تُحفظ الإحداثيات محليًا لحساب المواقيت والقبلة.</span></div></div>
+        <div class="prayer-status-line"><span class="prayer-status-dot ok"></span><div class="prayer-status-copy"><b>الوقت من جهازك تلقائيًا</b><span id="device-timezone">يستخدم رفيق توقيت الهاتف والمنطقة الزمنية الحالية بدون إذن إضافي.</span></div></div>
+        <button id="btn-geo" class="geo-primary" type="button">تفعيل موقعي للمواقيت والقبلة</button>
+        <div class="geo-help"><b>الخصوصية:</b> الموقع لا يُرسل إلى خادم رفيق؛ يُستخدم على الجهاز فقط في الحساب. يمكنك أيضًا كتابة الإحداثيات يدويًا.</div>
+      </div>
+      <div class="row">
         <input type="number" step="0.0001" id="lat" placeholder="خط العرض">
         <input type="number" step="0.0001" id="lng" placeholder="خط الطول"></div>
     </div>
@@ -1411,6 +1436,19 @@ body.mushaf-fullscreen .mus-source{max-width:680px;margin-inline:auto}.mushaf-co
 .mushaf-controls-hidden .mus-head,.mushaf-controls-hidden .mushaf-swipe-hint,.mushaf-controls-hidden .mushaf-render-note,.mushaf-controls-hidden .mus-source,.mushaf-controls-hidden .mus-foot,.mushaf-controls-hidden .tafsir-current,.mushaf-controls-hidden .rd-nav{display:none!important}
 body.mushaf-fullscreen.mushaf-controls-hidden .mushaf{min-height:100dvh}body.mushaf-fullscreen.mushaf-controls-hidden .mus-body.printed .mushaf-page-svg{max-height:100dvh}
 @media(max-width:560px){body.mushaf-fullscreen #v-read{padding-inline:0}.rd-fullscreen-btn{min-width:38px!important}.mushaf-fullscreen .rd-title{font-size:15px}}
+/* v24 R16 — true immersive Mushaf request + Android/PWA prayer setup clarity */
+:root{--mushaf-vh:100dvh}
+body.mushaf-fullscreen{overscroll-behavior:none;touch-action:pan-x pan-y;background:#fcfaf4}
+body.mushaf-fullscreen #v-read{height:var(--mushaf-vh);max-height:var(--mushaf-vh);overflow:hidden;padding:0!important}
+body.mushaf-fullscreen .rd-bar{position:fixed!important;z-index:230;top:0;right:0;left:0;margin:0!important;border-radius:0!important;padding:calc(7px + env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) 7px max(8px,env(safe-area-inset-left))!important;box-shadow:0 5px 20px rgba(35,32,24,.08)}
+body.mushaf-fullscreen .mushaf{width:100vw;max-width:100vw;height:var(--mushaf-vh);min-height:var(--mushaf-vh)!important;margin:0!important;padding:0!important;display:grid!important;place-items:center;overflow:hidden!important;background:#fcfaf4}
+body.mushaf-fullscreen .mus-body.printed{width:100vw!important;height:var(--mushaf-vh)!important;display:grid!important;place-items:center!important;overflow:hidden!important}
+body.mushaf-fullscreen .mus-body.printed .mushaf-page-svg{width:auto!important;height:auto!important;max-width:100vw!important;max-height:var(--mushaf-vh)!important;margin:auto!important;object-fit:contain!important}
+body.mushaf-fullscreen .mus-head,body.mushaf-fullscreen .mushaf-swipe-hint,body.mushaf-fullscreen .mushaf-render-note,body.mushaf-fullscreen .mus-source,body.mushaf-fullscreen .mus-foot,body.mushaf-fullscreen .tafsir-current,body.mushaf-fullscreen .rd-nav{display:none!important}
+body.mushaf-fullscreen:not(.mushaf-controls-hidden) .rd-bar{opacity:1;transform:none;pointer-events:auto}
+body.mushaf-fullscreen.mushaf-controls-hidden .rd-bar{opacity:0;transform:translateY(-105%);pointer-events:none}
+.prayer-settings-shell{border:1px solid var(--line);background:var(--wash);border-radius:15px;padding:11px 12px;margin-bottom:10px}.prayer-status-line{display:flex;gap:9px;align-items:flex-start}.prayer-status-line+.prayer-status-line{margin-top:9px;padding-top:9px;border-top:1px solid color-mix(in srgb,var(--line) 75%,transparent)}.prayer-status-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;background:var(--soft);box-shadow:0 0 0 4px color-mix(in srgb,var(--soft) 10%,transparent);flex:none}.prayer-status-dot.ok{background:#3f7c57;box-shadow:0 0 0 4px rgba(63,124,87,.10)}.prayer-status-dot.warn{background:var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 12%,transparent)}.prayer-status-copy{min-width:0}.prayer-status-copy b{display:block;color:var(--deep);font-size:12.5px;margin-bottom:1px}.prayer-status-copy span{display:block;color:var(--soft);font-size:10.5px;line-height:1.65}.geo-primary{width:100%;padding:11px 12px;border-radius:12px;border:0;background:var(--deep);color:#fff;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;margin-top:10px}.geo-primary:disabled{opacity:.6;cursor:wait}.geo-help{font-size:10px;color:var(--soft);line-height:1.7;margin-top:7px}.geo-help b{color:var(--deep)}
+
 
 /* تزكية: cleaner text-led navigation; functional +/✓ controls stay untouched */
 #v-qalb .h-tabs button{letter-spacing:0}#v-qalb .h-tile>.ic{display:none!important}#v-qalb .h-tile{padding-top:15px}#v-qalb .nafs-open{grid-template-columns:1fr auto!important}#v-qalb .nafs-open>.ni{display:none!important}

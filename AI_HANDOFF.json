@@ -1,16 +1,18 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-R15-2026-08-19",
+  "state_id": "RAFIQ-HANDOFF-v24-R16-2026-08-19",
   "project": "رفيق يومك",
   "version": "v24",
-  "platform": "Chrome MV3 side-panel extension",
+  "platform": "GitHub Pages PWA + Google Play TWA; Chrome MV3 source retained",
   "read_first": [
     "AI_HANDOFF.md",
     "CONTENT_PROVENANCE-ISHKALIAT.md",
     "DATA_SAFETY.md",
     "MUSHAF_PROVENANCE.md",
     "manifest.json",
-    "app/app.js",
-    "app/index.html"
+    "app.js",
+    "index.html",
+    "app/app.js (full extension-source layout)",
+    "app/index.html (full extension-source layout)"
   ],
   "product_thesis": "الدين ثابت والمشكلة تختلف؛ رفيق بوابة يومية تربط المستخدم بالقرآن والذكر والعلم وتساعده في مشكلاته الواقعية بمصدر ظاهر وخطوة عملية.",
   "non_negotiables": [
@@ -23,7 +25,10 @@
     "Keep + / Saved for later across content.",
     "Do not restore the previously rejected home-page tagline; preserve the current calmer copy.",
     "The Ishkaliat track is opt-in, does not classify religiosity, and every displayed idea links to the original Dr. Ahmed Abdelmonem video + timestamp; supplied summaries are not treated as verbatim transcripts.",
-    "Existing user data is production legacy data: no persistent key/shape/content-ID change without a backward-compatible migration and rollback path."
+    "Existing user data is production legacy data: no persistent key/shape/content-ID change without a backward-compatible migration and rollback path.",
+    "AI_HANDOFF.md is immutable project continuity: never delete/rename/truncate/exclude it; append every session chat/change ledger.",
+    "Google Play package identity for current listing is com.tadaruqnoor.rafiq; do not generate future Play bundles under a different package ID.",
+    "Never commit Android signing keystore/passwords or API/Play credentials."
   ],
   "storage_keys": {
     "profile": "profile-v1 {age, gender, advancedIssues}",
@@ -69,15 +74,15 @@
     "licensed human audio for adhkar when a verified source/licence exists",
     "continued large-tab UX/accessibility cleanup"
   ],
-  "manifest_version_string": "24.0.0",
+  "manifest_version_string": "24.1.0",
   "current_release_changes": [
-    "Mushaf reader adds immersive fullscreen/CSS fullscreen fallback with tap-to-hide controls while preserving fixed 604-page KFQC SVG geometry.",
-    "Mushaf page fetching now uses an in-memory session cache and direction-aware fade/slide entry; old page is not blanked before the next SVG is ready.",
-    "Permanent paging gesture remains finger left-to-right (dx>0) = NEXT page.",
-    "Visible القلب product label is now تزكية while internal qalb route/storage IDs remain unchanged for backward compatibility.",
-    "Decorative symbols/icons were removed from تزكية navigation/cards; functional save/path + and check states remain.",
-    "Hadith detail is now a full-viewport opaque reader using var(--paper), with explicit رجوع للأحاديث plus Escape and browser/system Back handling.",
-    "No user-data storage key/schema or existing stable saved-content ID changed; Data Safety schema v1 remains unchanged."
+    "R16 preserves the full AI_HANDOFF.md and adds an immutable owner rule: never delete/rename/truncate/exclude it; append every session chat/change ledger.",
+    "Mushaf fullscreen now requests native Fullscreen API on documentElement, tracks visualViewport height, and auto-hides controls while preserving fixed 604-page KFQC SVG geometry.",
+    "Prayer setup now explains Android/browser geolocation permission, device timezone behavior, local-only coordinate storage, manual fallback, and permission/error states.",
+    "Home gateway UI was restructured into welcome + prayer status + primary Quran/adhkar actions + smaller learning/fiqh/tazkiyah/Irtaqi gateways.",
+    "Saved header numeric bubble was replaced with a subtle 7px status dot; accessible title retains the exact saved count.",
+    "PWA service worker update flow was tightened (R16 cache, updateViaCache none, SKIP_WAITING/controllerchange reload) to reduce stale GitHub Pages updates.",
+    "No persistent storage key/shape/stable saved-content ID changed; Data Safety schema v1 remains unchanged."
   ],
   "data_architecture": {
     "cloud_backend": false,
@@ -87,5 +92,22 @@
     "decision_required_before_cloud": "owner must explicitly approve analytics vs account sync, data categories, privacy and retention",
     "local_data_schema_version": 1,
     "safety_layer": "app/data-safety.js; local snapshot + migration + validation + rollback + portable backup"
+  },
+  "google_play": {
+    "app_name": "تدارُك - Tadaruq",
+    "package_id": "com.tadaruqnoor.rafiq",
+    "internal_test_link": "https://play.google.com/apps/internaltest/4701628883133223204",
+    "closed_track": "Alpha",
+    "closed_release_name": "tadaruq first",
+    "production_gate": "At least 12 opted-in closed testers for at least 14 consecutive days, then apply for Production access (as shown in owner Play Console).",
+    "assetlinks_requirement": "Use com.tadaruqnoor.rafiq + Google Play App Signing SHA-256 in /.well-known/assetlinks.json.",
+    "secret_rule": "Never commit signing.keystore, signing passwords/info, API tokens, or Play credentials."
+  },
+  "immutable_handoff_policy": {
+    "file": "AI_HANDOFF.md",
+    "delete_or_rename": false,
+    "truncate_or_replace_with_summary": false,
+    "release_zip_must_include_for_full_source_handoff": true,
+    "session_rule": "Append chronological chat/change/test/error/decision ledger before returning artifacts; preserve prior history."
   }
 }

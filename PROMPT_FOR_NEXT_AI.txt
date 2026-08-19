@@ -1,4 +1,10 @@
-هذه هي النسخة القانونية الحالية للمشروع: **v24** (manifest = 24.0.0).
+OWNER IMMUTABLE HANDOFF RULE — READ BEFORE ANYTHING ELSE:
+- NEVER delete, rename, truncate, summarize-away, or exclude AI_HANDOFF.md. Preserve all old history and append the current session chat/change/error/test ledger before returning artifacts.
+- Current distribution is GitHub Pages PWA + Google Play TWA, package ID com.tadaruqnoor.rafiq, with Chrome MV3 source retained.
+- Never commit signing.keystore, signing passwords/info, API tokens, or Play credentials.
+- Latest code state is v24 R16 / Chrome manifest 24.1.0. Read AI_HANDOFF.md sections 25–26 before changing PWA/Play, Mushaf fullscreen, prayer/location, home UI, or Saved badge.
+
+هذه هي النسخة القانونية الحالية للمشروع: **v24 R16** (Chrome manifest = 24.1.0).
 
 اقرأ AI_HANDOFF.md and DATA_ARCHITECTURE.md وAI_HANDOFF.json وCONTENT_PROVENANCE-ISHKALIAT.md أولًا ثم افحص الكود الحالي. اعتبر ملفات الـhandoff سجل قرارات المشروع، ولا تطلب من المالك إعادة شرح الماضي إلا لو فيه تعارض حقيقي.
 
@@ -64,3 +70,11 @@ LATEST v24 R15 NOTE:
 - Mushaf has an immersive fullscreen mode with CSS fallback + optional browser Fullscreen API; tap empty page space toggles controls. Preserve fixed KFQC page geometry and left-to-right finger swipe = NEXT page.
 - Hadith explanations must open on a fully opaque full-viewport reader. Preserve `رجوع للأحاديث`, Escape, and browser/system Back support. Do not use undefined `--bg` for this surface.
 - R15 changes no storage schema/keys/IDs. Data Safety v1 remains mandatory.
+
+R16 continuity:
+- Fullscreen Mushaf must keep fixed 604-page KFQC SVG geometry; native fullscreen is requested on documentElement and CSS fallback must remain. Do not reflow Quran text.
+- Prayer/location setup is user-triggered, local-only; device timezone is automatic; keep manual coordinates and clear denied/GPS-off/timeout guidance.
+- Home remains a gateway/teaser with prominent prayer state and Quran/adhkar primary actions; do not turn it into a dense dashboard.
+- Saved header uses a subtle dot, not the old large count bubble; saved-later-v1 is unchanged.
+- PWA/TWA web changes deploy through GitHub Pages; Android-shell/package/native changes require a new AAB. Package ID is com.tadaruqnoor.rafiq.
+

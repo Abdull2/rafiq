@@ -1,11 +1,23 @@
 # NEXT AI — READ THIS FIRST
 
 **Project:** رفيق يومك (Rafiq Yomak)  
-**State ID:** `RAFIQ-HANDOFF-v24-2026-08-18`  
-**Current artifact type:** Chrome Manifest V3 side-panel extension  
-**Current release:** `v24` (Chrome manifest version `24.0.0`)
+**State ID:** `RAFIQ-HANDOFF-v24-R16-2026-08-19`  
+**Current artifact type:** GitHub Pages PWA + Google Play TWA distribution, with Chrome Manifest V3 side-panel source retained  
+**Current release:** `v24 R16` (Chrome manifest version `24.1.0`; Google Play package `com.tadaruqnoor.rafiq`)
 
-> This file is the continuity record for future AI sessions. Before changing code or content, inspect this file, `manifest.json`, `app/app.js`, `app/index.html`, and the relevant JSON data. Do not ask the owner to repeat decisions already documented here unless a conflict genuinely requires a decision.
+> This file is the continuity record for future AI sessions. Before changing code or content, inspect this file, `manifest.json`, the hosted root `app.js` + `index.html` (and `app/app.js` + `app/index.html` in the full extension-source layout), plus the relevant JSON data. Do not ask the owner to repeat decisions already documented here unless a conflict genuinely requires a decision.
+
+## 0) IMMUTABLE AI_HANDOFF POLICY — OWNER ORDER, DO NOT DELETE
+
+This section is an explicit owner instruction and overrides any cleanup/refactor impulse:
+
+1. **NEVER delete `AI_HANDOFF.md`.** Do not rename it, truncate it, replace it with a shorter summary, exclude it from a release ZIP, or move it out of the project root/source handoff. Its absence is a release-blocking regression.
+2. **Preserve all existing history.** Future work is append-only for prior decisions/history. Correct an old note by appending a dated correction; do not erase the earlier record unless the owner explicitly orders a redaction.
+3. **Every coding/chat session must be recorded here before returning artifacts.** Append the user request, important user/assistant exchanges, decisions, errors encountered, URLs/package IDs/version codes that matter, files changed, tests run, test results, unresolved items, and exact follow-up steps.
+4. The owner explicitly asked to keep **the chat and every change** in this file. When the exact transcript is available, append it or a chronological near-verbatim ledger. If a platform/tool prevents exact transcript export, write a faithful chronological record that preserves all substantive messages, commands, errors, decisions, and corrections. Never silently omit a major exchange.
+5. Update `AI_HANDOFF.json`, `PROMPT_FOR_NEXT_AI.txt`, release notes, QA report, and manifest version whenever code/content changes. `AI_HANDOFF.md` remains the primary human-readable source of truth.
+6. A future AI must read this file **before** proposing or making edits and must not ask the owner to repeat information already recorded here.
+7. **Do not commit Android signing secrets.** `signing.keystore`, passwords, signing-key-info files, API tokens, or Play credentials must never be placed in GitHub or this handoff.
 
 ## 1) Product vision
 
@@ -528,3 +540,134 @@ Al-Mukhtasar API architecture note:
 - Hadith detail was repaired as a truly opaque full-viewport reading surface. The old `var(--bg)`/bottom inset behavior could expose underlying UI; R15 covers the entire viewport using `var(--paper)` and locks body scrolling.
 - Hadith back navigation is now an explicit `رجوع للأحاديث` control with click handling, Escape support, and browser/system Back support via a temporary history state. Do not restore the old partial-height overlay.
 - R15 is UI/navigation only. **No persistent storage key, stored shape, Data Safety schema, or stable saved-content ID changed.**
+
+## 25) 2026-08-19 — PWA/PWABuilder + Google Play/TWA distribution continuity ledger
+
+This section records the publication conversation so the owner never has to explain it again.
+
+### A. PWABuilder diagnosis and PWA conversion
+
+Chronological conversation/decision record:
+
+- Owner supplied the existing v24/R15 source ZIP and a PWABuilder screenshot showing `Missing Name`, `Your manifest description is missing`, `Create a web app manifest`, and `Make your app faster and more reliable by adding a service worker`.
+- Diagnosis: the source already had Chrome Extension `manifest.json` with `manifest_version: 3`; that file is valid for the Chrome MV3 extension but **is not** the Web App Manifest that PWABuilder requires.
+- The hosted PWA needs a separate `manifest.webmanifest`, an HTML `<link rel="manifest">`, a registered `sw.js`, HTTPS hosting, icons, and a root web entry point.
+- A PWA/GitHub-Pages-ready package was generated. A later owner question exposed an error in the AI packaging decision: the first PWA-only ZIP omitted `AI_HANDOFF.md`. The owner explicitly objected. From this point forward, `AI_HANDOFF.md` is mandatory in every full source/release handoff and must never be deleted or silently excluded.
+- The owner asked why PWABuilder could report problems while the project was "working perfectly." Clarification: a normal website/Chrome extension can run correctly while still failing PWA installability/store checks; PWABuilder validates PWA metadata/service worker/installability, not just whether HTML/JS renders.
+- The correct URL for PWABuilder is the **published HTTPS app**, not the GitHub repository code page. Current public origin: `https://abdull2.github.io/rafiq/`.
+- The PWA manifest description was added/fixed. Current manifest must keep a non-empty `description` and remain linked from `index.html`.
+- Service worker registration is part of the hosted build. R16 additionally forces SW update checks with `updateViaCache: 'none'`, activates waiting updates via `SKIP_WAITING`, and reloads once on controller change so GitHub Pages changes reach installed PWA/TWA users more predictably.
+
+### B. Google Play package identity and first Android/TWA package
+
+- Owner created Google Play Console app **تدارُك - Tadaruq**.
+- Google Play application/package ID is permanently important: `com.tadaruqnoor.rafiq`.
+- The first PWABuilder Android package was inspected and had the wrong package ID: `io.github.abdull2.rafiq`. Its `assetlinks.json` also used that old ID. Owner regenerated the package.
+- The corrected package was inspected and confirmed to use `com.tadaruqnoor.rafiq` in the AAB/asset links package identity.
+- Do not change this package ID casually: a Play app's package/application ID cannot be swapped to a different app identity after publication. Future PWABuilder/TWA/native bundles for this Play listing must remain `com.tadaruqnoor.rafiq`.
+- PWABuilder package ZIP may include signing materials (`signing.keystore`, signing info/password text). These are secrets. **Never commit them to GitHub or include passwords in public documentation.**
+
+### C. Google Play testing workflow reached on 2026-08-19
+
+- Internal testing release name used: `Tadaruq 1.0.0 - Internal`.
+- Internal testing build reached status `Available to internal testers`; Play Console showed it as released and available on ~20k compatible devices.
+- Internal tester opt-in link used in this session: `https://play.google.com/apps/internaltest/4701628883133223204`.
+- Some testers saw `App not available` / `A testing version of this app hasn't been published yet or isn't available for this account.` Main checks documented: tester email list must be attached to track, tester must open with the exact invited Google account, tester must opt in through the test link, and a first test release may take time to propagate.
+- Google Play web page initially showed the package name plus `(unreviewed)`, generic Android icon, and `Unrated`. This is expected before full store listing/content rating/review is completed; it did not mean the AAB itself was broken.
+- Closed testing track created: `Closed testing - Alpha`.
+- Countries/regions were set broadly (Play Console screenshot later showed 177 countries/regions / rest of world change entries).
+- A closed release named `tadaruq first` was created.
+- An attempted re-upload of the same AAB produced exact Play error: `Version code 1 has already been used. Try another version code.` Correct resolution: do **not** upload the same file again; use `Add from library` or promote the already-uploaded internal bundle into Closed testing.
+- Earlier preview errors when no bundle was actually attached were: `This release does not add or remove any app bundles.` and `You can't rollout this release because it doesn't allow any existing users to upgrade to the newly added app bundles.` These were release-assembly errors, not app-code errors.
+- Closed track later showed `Active`, latest release `tadaruq first`, but release text said `Not yet sent for review`. Owner moved to Publishing overview.
+- Publishing overview then showed `Changes not yet submitted for review`, `Submit 4 changes for review`, pre-review quick checks, and Closed testing Alpha changes. The next action was to submit those changes for Google review.
+- Account/dashboard requirement shown by Google: closed test must have **at least 12 testers opted in for at least 14 consecutive days** before applying for Production access. Internal testing is optional; Closed testing is the gating path for this account.
+- For safety, recruit more than 12 (e.g. 15–20) so a dropout does not reset/jeopardize the threshold.
+- Testers should receive the shareable/opt-in link from the owner; merely adding an email to a list is not enough. A person on Internal testing may need to opt out before receiving a Closed track depending on Play's track precedence.
+
+### D. TWA / GitHub update rule — owner asked explicitly
+
+- The Android app is a PWABuilder/Trusted Web Activity wrapper around the hosted PWA. Most **web-content** changes (`index.html`, `app.js`, CSS, JSON content, web UI, sources, web service worker) can be deployed through GitHub Pages without building a new AAB; installed TWA users load the hosted site.
+- A new AAB/Play release is required for Android-shell/native changes such as package ID, AndroidManifest permissions/config, target SDK/native wrapper changes, signing/build identity, or changes that live only inside the Android bundle.
+- Store listing metadata/icon/screenshots in Google Play Console are managed in Play Console, not by GitHub PWA updates.
+- `assetlinks.json` must ultimately use package `com.tadaruqnoor.rafiq` plus the **Google Play App Signing SHA-256 certificate fingerprint**. After Play App Signing is available, copy its SHA-256 from Play Console and update `/.well-known/assetlinks.json`. If Digital Asset Links verification fails, TWA can fall back to browser UI instead of trusted fullscreen presentation.
+
+### E. Google Play setup items still to complete/verify
+
+Before public Production, continue completing the Play setup honestly based on actual app behavior:
+- Main store listing (name, short/full description, icon, screenshots, feature graphic).
+- Privacy policy URL.
+- App access.
+- Ads declaration.
+- Target audience.
+- Content rating.
+- Data Safety.
+- Contact/category details.
+- Closed test tester opt-ins and real test usage/feedback.
+- Apply for Production access after the closed-test requirement is satisfied, then create/promote Production release.
+
+Do not guess Data Safety answers if code changes later introduce analytics, backend, accounts, third-party SDKs, or data transmission. Current architecture has no owner backend/account/analytics and keeps profile/worship/path data local, but every external request/SDK must still be re-audited when changed.
+
+## 26) v24 R16 — owner-requested UI + Mushaf fullscreen + prayer activation clarity + save badge
+
+Owner request, preserved chronologically:
+
+> "طيب انا محتاج تعديل دلوقتي , اولا رجع الai handover md file كامل بكل اللي حلص + زائد اللي كان موجود فيه اصلا + اكتب فيه انك متمسحش الفايل ده مهما حصل وانك تكتب فيه كل الشات وكل تغيير حصل فهمت؟؟؟؟"
+>
+> "+المصحف محتاجه يبقي fullscreen فعلا لما احب ادخل fullscreen"
+>
+> "+اعدادات الصلاة والوقت والموقع ازاي هتتفعل من الابلكيشن عشان مش متخيل ؟؟"
+>
+> "+ui الصفحة الرئيسية مشش عاجبني اوي ممكن تعدله!!"
+>
+> "+علامة الsave فوقها نقطة كبيرة شكلها غريب اوي ممكن تظبطها؟؟"
+
+Implemented in R16:
+
+### AI continuity
+- `AI_HANDOFF.md` remains complete: all prior R1–R15 history is retained and new publication/session history is appended.
+- Added the immutable policy at the top: **never delete/rename/truncate/exclude this file**; future sessions append their chat/change ledger before handing back artifacts.
+- `AI_HANDOFF.json`, `PROMPT_FOR_NEXT_AI.txt`, `RELEASE-NOTES-v24.txt`, `QA-REPORT-v24.txt`, and manifest version are updated together.
+
+### Mushaf true fullscreen behavior
+- R14's fixed 604-page KFQC SVG geometry remains untouched; Quran text/lines/pages are not reflowed.
+- Fullscreen button now requests the browser Fullscreen API on `document.documentElement` (rather than only the reader node) with `navigationUI: 'hide'` when supported, improving the chance that Chrome/Android hides browser/system chrome.
+- CSS fullscreen remains as a fallback if native Fullscreen API is blocked/unavailable.
+- Reader viewport tracks `visualViewport.height` in CSS variable `--mushaf-vh`, including orientation/viewport changes.
+- On entering fullscreen, reading controls auto-hide after a short delay so the Mushaf page uses the whole viewport. Tap empty page space to reveal/hide controls; ayah tap still selects the ayah.
+- In fullscreen, non-page reader metadata (sura header/hint/source/footer/tafsir card/nav) is hidden so the printed page is the focus. Exit via revealing controls then fullscreen button, or system/browser fullscreen exit.
+- Product caveat: the web layer can request true browser fullscreen, but a specific Android OEM/browser/TWA build can still decide whether system bars may remain. CSS fallback still fills the available viewport.
+
+### Prayer / time / location activation in the installed app
+- No permission is requested automatically at startup. The home prayer card now shows an explicit **تفعيل المواقيت** state when no coordinates are stored.
+- Tapping the prayer card with no location opens Settings directly at **الصلاة والوقت والموقع**.
+- Settings now explains exactly what happens: Android/browser asks for geolocation permission after the button tap; successful latitude/longitude is saved locally; prayer times and qibla are calculated locally.
+- Time/timezone requires no separate permission: Rafiq reads the device timezone via `Intl.DateTimeFormat().resolvedOptions().timeZone` and the device clock.
+- Geolocation request uses high accuracy with timeout/cached-position limits and gives distinct messages for permission denied, location service unavailable/GPS off, timeout, or generic failure.
+- Permission status is inspected with the Permissions API when available. The UI shows whether a location is saved and displays the local coordinates.
+- Manual latitude/longitude entry remains available.
+- Prayer calculation method and Asr method remain user-selectable; no religious calculation-method choice was silently changed.
+- Location continues to be local-only under the existing privacy/data model; no new cloud backend was added.
+
+### Home UI refresh
+- Reworked the main home gateway into a calmer hierarchy rather than a flat block grid: compact welcome, prominent prayer/status card, two primary daily actions (Qur'an + adhkar), then smaller learning/fiqh/tazkiyah/Irtaqi gateways.
+- Preserved the owner requirement that home remains a **gateway/teaser** and keeps question-style direct prompts such as `هل قرأت وردك اليوم؟`.
+- No religious content/source claim was added by this visual redesign.
+
+### Saved badge cleanup
+- The large numeric bubble over the header Saved icon was removed.
+- When saved items exist, the header now shows a subtle 7px status dot only. The exact saved count remains available in the button's accessible label/title (`محفوظاتي — N عنصر محفوظ`).
+- Existing `saved-later-v1` storage and item IDs are unchanged.
+
+### Web-update delivery
+- Service worker cache name bumped to R16.
+- PWA registration now bypasses HTTP cache for SW update checks, activates waiting workers with `SKIP_WAITING`, and reloads once on `controllerchange`; this is specifically to reduce stale GitHub Pages UI after owner web changes.
+- PWA manifest keeps `display: standalone`; fullscreen remains a user action inside the Mushaf instead of forcing the whole app to launch fullscreen.
+
+### Data/schema compatibility
+- No persistent key was renamed or deleted.
+- No stored shape was changed.
+- No stable saved-content ID was changed.
+- `profile-v1`, `saved-later-v1`, `quran-pos`, `qalb-paths-v1`, and Data Safety schema v1 remain compatible.
+- Chrome MV3 manifest version bumped from `24.0.0` to `24.1.0` for this code release.
+

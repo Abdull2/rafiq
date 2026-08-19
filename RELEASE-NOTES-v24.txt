@@ -172,3 +172,15 @@ v24 R15 — قبل النشر: قارئ مصحف غامر + «تزكية» + إ�
 - إصلاح قارئ شرح الأحاديث ليغطي الشاشة كاملة بخلفية معتمة؛ لا تظهر أجزاء من الشاشة الخلفية.
 - زر رجوع أوضح: «رجوع للأحاديث»، مع دعم Escape وزر الرجوع في المتصفح/النظام.
 - لا تغيير في Data Safety أو بيانات المستخدم أو IDs المحفوظة.
+
+=== v24 R16 — 2026-08-19 ===
+- Restored/preserved the complete AI_HANDOFF continuity record and added an owner-enforced never-delete/append-every-session policy.
+- Upgraded Mushaf fullscreen: document-level native Fullscreen API request + full-viewport CSS fallback + visualViewport sizing + automatic control hiding. Fixed KFQC 604-page SVG geometry remains unchanged.
+- Clarified prayer/time/location activation inside the installed PWA/TWA: user-triggered geolocation permission, local coordinate storage, automatic device timezone, manual coordinates, and distinct permission/GPS/timeout guidance.
+- Redesigned home gateway with a clearer visual hierarchy: prayer status first, Quran/adhkar primary actions, then learning/fiqh/tazkiyah/Irtaqi gateways.
+- Replaced the oversized Saved count bubble with a small status dot; accessible label keeps the exact count.
+- Bumped PWA service-worker caches and improved immediate update activation for GitHub Pages/TWA users.
+- Google Play continuity documented: package com.tadaruqnoor.rafiq, Internal/Closed testing history, closed-test gate, and assetlinks/App Signing follow-up.
+- No persistent storage schema/key/stable content ID changed.
+- Chrome MV3 manifest version: 24.1.0.
+

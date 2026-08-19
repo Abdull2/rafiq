@@ -190,3 +190,28 @@ v24 R15 QA — immersive Mushaf + تزكية + Hadith reader
 - [PASS] Hadith reader now uses full viewport (`inset:0`, `100dvh`) and opaque `var(--paper)` background.
 - [PASS] Hadith back control has explicit click handler plus Escape/popstate handling.
 - [PENDING RUNTIME] Headless Chromium smoke attempt timed out in this container; no full visual-regression claim is made. Perform a quick real-phone check of Mushaf fullscreen and one Riyad/Nawawi hadith before production publish.
+
+=== QA addendum — v24 R16 — 2026-08-19 ===
+Planned/required regression checks for this build:
+1. JS syntax check: app.js, pwa-register.js, sw.js.
+2. JSON parse: manifest.json, manifest.webmanifest, AI_HANDOFF.json.
+3. Home smoke test at mobile viewport: new prayer card + primary/secondary gateway layout present and no overflow.
+4. Settings smoke test: prayer/location status UI present; timezone text renders; manual lat/lng fields retained.
+5. Geolocation success path (browser mock): coordinates save locally and prayer card switches from setup state to next-prayer state.
+6. Geolocation failure UX: denied/unavailable/timeout branches retain user-facing guidance.
+7. Saved badge: hidden at zero; small dot at >0; button aria/title includes saved count.
+8. Mushaf fullscreen: document-level request path present; CSS fallback fills viewport; controls auto-hide; tap-to-toggle code retained; left-to-right swipe remains NEXT.
+9. Storage regression: no key/schema/stable saved ID renamed; quran-pos and saved-later-v1 unchanged.
+10. PWA update regression: R16 cache names + updateViaCache none + SKIP_WAITING/controllerchange path.
+11. Full AI_HANDOFF.md retained and appended, not replaced.
+
+
+R16 execution results in handoff environment:
+- PASS: `node --check` for app.js, pwa-register.js, sw.js.
+- PASS: JSON parse for manifest.json, manifest.webmanifest, AI_HANDOFF.json.
+- PASS: HTML structural parse; no duplicate IDs; all new R16 control/status IDs are present.
+- PASS: PWA manifest description is non-empty and `display` remains `standalone`.
+- PASS: R16 invariants present: document-level fullscreen request, prayer setup functions, device timezone function, subtle saved badge path, left-to-right swipe = NEXT.
+- PASS: existing `qa/test_data_safety.js` -> `DATA_SAFETY_TEST_OK`, schema version 1, expected backup/record behavior preserved.
+- PASS: complete AI_HANDOFF grew rather than being replaced/truncated, and contains the owner never-delete rule plus Play/TWA continuity.
+- ENVIRONMENT LIMIT: attempted local Chromium/Playwright visual smoke test could not navigate to localhost/file URLs because this sandbox browser is blocked by administrator policy. This is not an app runtime error. Final mobile visual/permission/fullscreen behavior must be smoke-tested after GitHub Pages deployment on a real Android device/TWA.

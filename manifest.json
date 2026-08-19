@@ -3,7 +3,7 @@
   "name": "رفيق يومك",
   "short_name": "رفيق",
   "description": "رفيق يومك: قرآن وأذكار وعلم وفقه، مع مسارات شخصية للمشكلات الواقعية وفقه النفس ومصادر ظاهرة.",
-  "version": "24.0.0",
+  "version": "24.1.0",
   "minimum_chrome_version": "114",
   "permissions": [
     "sidePanel",

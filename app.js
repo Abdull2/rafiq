@@ -150,7 +150,11 @@ function laterRegister(id,item){
   return `<button class="save-later ${on?'on':''}" data-later="${laterEsc(id)}" type="button" title="${on?'محفوظ — اضغط للإزالة':'احفظها لوقت لاحق'}" aria-label="${on?'محفوظ في محفوظاتي':'احفظها لوقت لاحق'}" aria-pressed="${on?'true':'false'}">${on?'✓':'＋'}</button>`
 }
 async function loadLater(){laterItems=(await store.get('saved-later-v1'))||[];updateLaterBadge()}
-function updateLaterBadge(){const b=document.getElementById('saved-count');if(b)b.textContent=laterItems.length?AR(laterItems.length):''}
+function updateLaterBadge(){
+  const b=document.getElementById('saved-count'),head=document.getElementById('btn-saved'),n=laterItems.length;
+  if(b){b.textContent='';b.classList.toggle('on',n>0);b.dataset.count=String(n)}
+  if(head){const label=n?`محفوظاتي — ${AR(n)} عنصر محفوظ`:'محفوظاتي';head.setAttribute('aria-label',label);head.title=label}
+}
 function syncLaterButtons(id){
   const on=laterHas(id);
   document.querySelectorAll('.save-later[data-later]').forEach(b=>{
@@ -835,7 +839,12 @@ document.getElementById('mus-body').onclick=async e=>{
   const cur=(await store.get(QKEY))||{};
   await store.set(QKEY,Object.assign(cur,{page:qPage,s:sn,a:an}));
   toast('حُفظ موضعك · التفسير جاهز') };
+function syncMushafViewportHeight(){
+  const h=Math.round(window.visualViewport?.height||window.innerHeight||document.documentElement.clientHeight||0);
+  if(h)document.documentElement.style.setProperty('--mushaf-vh',h+'px');
+}
 function syncMushafFullscreenUI(){
+  syncMushafViewportHeight();
   document.body.classList.toggle('mushaf-fullscreen',mushafFullscreen);
   document.body.classList.toggle('mushaf-controls-hidden',mushafFullscreen&&mushafControlsHidden);
   const b=document.getElementById('rd-fullscreen');
@@ -843,15 +852,24 @@ function syncMushafFullscreenUI(){
 }
 async function enterMushafFullscreen(){
   mushafFullscreen=true;mushafControlsHidden=false;syncMushafFullscreenUI();
-  const target=document.getElementById('v-read');
-  try{if(target?.requestFullscreen&&!document.fullscreenElement)await target.requestFullscreen({navigationUI:'hide'})}catch{}
+  const target=document.documentElement;
+  let nativeOk=!!document.fullscreenElement;
+  try{
+    if(!nativeOk&&target.requestFullscreen){await target.requestFullscreen({navigationUI:'hide'});nativeOk=!!document.fullscreenElement}
+    else if(!nativeOk&&target.webkitRequestFullscreen){await target.webkitRequestFullscreen();nativeOk=true}
+  }catch{}
+  setTimeout(()=>{if(mushafFullscreen){mushafControlsHidden=true;syncMushafFullscreenUI()}},260);
+  if(!nativeOk&&!document.fullscreenElement)toast('وضع القراءة الكامل مفعّل · قد تبقى أشرطة النظام حسب الجهاز');
 }
 async function exitMushafFullscreen(){
   mushafFullscreen=false;mushafControlsHidden=false;syncMushafFullscreenUI();
-  try{if(document.fullscreenElement)await document.exitFullscreen()}catch{}
+  try{if(document.fullscreenElement&&document.exitFullscreen)await document.exitFullscreen();else if(document.webkitFullscreenElement&&document.webkitExitFullscreen)document.webkitExitFullscreen()}catch{}
 }
 async function toggleMushafFullscreen(){mushafFullscreen?await exitMushafFullscreen():await enterMushafFullscreen()}
-document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&mushafFullscreen){mushafFullscreen=false;mushafControlsHidden=false;syncMushafFullscreenUI()}});
+document.addEventListener('fullscreenchange',()=>{syncMushafViewportHeight();if(!document.fullscreenElement&&mushafFullscreen){mushafFullscreen=false;mushafControlsHidden=false;syncMushafFullscreenUI()}});
+document.addEventListener('webkitfullscreenchange',()=>{syncMushafViewportHeight();if(!document.webkitFullscreenElement&&!document.fullscreenElement&&mushafFullscreen){mushafFullscreen=false;mushafControlsHidden=false;syncMushafFullscreenUI()}});
+window.visualViewport?.addEventListener('resize',()=>{if(mushafFullscreen)syncMushafViewportHeight()});
+window.addEventListener('orientationchange',()=>setTimeout(()=>{if(mushafFullscreen)syncMushafViewportHeight()},120));
 document.getElementById('rd-fullscreen').onclick=toggleMushafFullscreen;
 document.getElementById('mushaf').addEventListener('click',e=>{if(!mushafFullscreen)return;if(e.target.closest('.ayahPolygon,.ay,a,button'))return;mushafControlsHidden=!mushafControlsHidden;syncMushafFullscreenUI()});
 document.getElementById('rd-back').onclick=openQuranTools;
@@ -1803,14 +1821,23 @@ async function irtClick(e){
 const eveningPanel=document.getElementById('evening-panel');
 function setEvening(open){eveningPanel?.classList.toggle('hide',!open);document.querySelectorAll('.evening-extra').forEach(el=>el.classList.toggle('hide',!open));const x=document.getElementById('evening-x');if(x)x.textContent=open?'－':'＋';if(open)setTimeout(()=>eveningPanel?.scrollIntoView({behavior:'smooth',block:'start'}),50)}
 document.getElementById('evening-toggle')?.addEventListener('click',()=>setEvening(eveningPanel?.classList.contains('hide')));
-document.getElementById('home-journey')?.addEventListener('click',e=>{
+document.getElementById('v-today')?.addEventListener('click',e=>{
   const b=e.target.closest('[data-home-go]');if(!b)return;
   const go=b.dataset.homeGo;
-  if(go==='prayer'){const body=document.querySelector('#acc-times .acc-body');body?.classList.remove('hide');const x=document.querySelector('#acc-times .acc-x');if(x)x.textContent='－';document.getElementById('acc-times')?.scrollIntoView({behavior:'smooth',block:'center'});renderTimes();return}
+  if(go==='prayer'){
+    if(!settings.lat||!settings.lng){openPrayerSetup();return}
+    const body=document.querySelector('#acc-times .acc-body');body?.classList.remove('hide');const x=document.querySelector('#acc-times .acc-x');if(x)x.textContent='－';document.getElementById('acc-times')?.scrollIntoView({behavior:'smooth',block:'center'});renderTimes();return
+  }
   if(b.dataset.learnGo)learnMode=b.dataset.learnGo;
   switchTab(go);
 });
-function paintHomePrayer(){const T=todayTimes(),title=document.getElementById('home-prayer-title'),sub=document.getElementById('home-prayer-sub');if(!title||!sub)return;if(!T){title.textContent='الصلاة القادمة';sub.textContent='حدّد موقعك من الإعدادات لعرض الموعد.';return}const now=new Date(),h=now.getHours()+now.getMinutes()/60;const rows=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];let n=rows.find(([k])=>T[k]>h);if(!n)n=rows[0];title.textContent=`الصلاة القادمة: ${n[1]}`;sub.textContent=`موعدها ${hhmm(T[n[0]])} · اضغط لعرض كل المواقيت`}
+function paintHomePrayer(){
+  const T=todayTimes(),title=document.getElementById('home-prayer-title'),sub=document.getElementById('home-prayer-sub'),card=document.getElementById('home-prayer-card'),action=document.getElementById('home-prayer-action');
+  if(!title||!sub)return;
+  const ready=!!T; card?.classList.toggle('needs-setup',!ready); if(action)action.textContent=ready?'كل المواقيت':'تفعيل المواقيت';
+  if(!ready){title.textContent='فعّل مواقيت الصلاة';sub.textContent='اضغط هنا، اسمح بالموقع مرة واحدة، وسيستخدم رفيق توقيت جهازك تلقائيًا.';return}
+  const now=new Date(),h=now.getHours()+now.getMinutes()/60;const rows=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];let n=rows.find(([k])=>T[k]>h);if(!n)n=rows[0];title.textContent=`الصلاة القادمة: ${n[1]}`;sub.textContent=`${hhmm(T[n[0]])} · ${deviceTimeZoneLabel()} · اضغط لعرض كل المواقيت`;
+}
 
 /* ================= tabs ================= */
 const TITLES={today:'اليوم',quran:'المصحف',read:'المصحف',azkar:'الأذكار',dua:'الدعاء',tasbih:'السبحة',asma:'أسماء الله الحسنى',sunnah:'العلم',qalb:'تزكية',irtaqi:'ارتقِ',history:'السجل'};
@@ -1888,7 +1915,27 @@ document.getElementById('feedback-share').onclick=async()=>{
 
 /* ================= settings ================= */
 const sheet=document.getElementById('settings');
-document.getElementById('btn-settings').onclick=async()=>{fillSettings();sheet.classList.remove('hide');await paintDataSafetyStatus()};
+const deviceTimeZoneLabel=()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'توقيت الجهاز'}catch{return 'توقيت الجهاز'}};
+const deviceClockLabel=()=>{try{return new Intl.DateTimeFormat('ar-EG',{hour:'numeric',minute:'2-digit'}).format(new Date())}catch{return ''}};
+async function geoPermissionState(){
+  if(!navigator.permissions?.query)return 'unknown';
+  try{return (await navigator.permissions.query({name:'geolocation'})).state||'unknown'}catch{return 'unknown'}
+}
+async function paintPrayerSettingsStatus(){
+  const dot=document.getElementById('geo-status-dot'),title=document.getElementById('geo-status-title'),copy=document.getElementById('geo-status-copy'),tz=document.getElementById('device-timezone'),btn=document.getElementById('btn-geo');
+  if(tz)tz.textContent=`${deviceTimeZoneLabel()} · الساعة الآن ${deviceClockLabel()} · يُقرأ التوقيت من الهاتف تلقائيًا.`;
+  if(!dot||!title||!copy)return;
+  const has=!!(settings.lat&&settings.lng),perm=await geoPermissionState();
+  dot.classList.toggle('ok',has);dot.classList.toggle('warn',!has);
+  if(has){title.textContent='الموقع محفوظ على هذا الجهاز';copy.textContent=`${settings.lat}, ${settings.lng} · الحساب محلي ولا يرسل رفيق موقعك إلى خادمه.`;if(btn)btn.textContent='تحديث موقعي الحالي'}
+  else if(perm==='denied'){title.textContent='إذن الموقع مرفوض';copy.textContent='افتح إعدادات التطبيق/المتصفح واسمح بالموقع، ثم ارجع واضغط تفعيل موقعي.';if(btn)btn.textContent='محاولة تفعيل الموقع'}
+  else{title.textContent='الموقع غير مفعّل';copy.textContent='اضغط تفعيل موقعي؛ سيظهر طلب إذن من Android/المتصفح مرة واحدة.';if(btn)btn.textContent='تفعيل موقعي للمواقيت والقبلة'}
+}
+async function openPrayerSetup(){
+  fillSettings();sheet.classList.remove('hide');await paintPrayerSettingsStatus();await paintDataSafetyStatus();
+  setTimeout(()=>document.getElementById('prayer-location-field')?.scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+document.getElementById('btn-settings').onclick=async()=>{fillSettings();sheet.classList.remove('hide');await paintPrayerSettingsStatus();await paintDataSafetyStatus()};
 document.getElementById('close-settings').onclick=()=>sheet.classList.add('hide');
 sheet.onclick=e=>{if(e.target===sheet)sheet.classList.add('hide')};
 function fillSettings(){
@@ -1897,19 +1944,30 @@ function fillSettings(){
   document.getElementById('method').value=settings.method||'EGYPT';
   document.getElementById('asr').value=settings.asr||'1';
   document.getElementById('khatma').value=settings.khatma||30;
+  paintPrayerSettingsStatus();
 }
 ['lat','lng','method','asr','khatma'].forEach(id=>
   document.getElementById(id).addEventListener('change',async e=>{
     settings[id]=e.target.value; await store.set('settings',settings);
-    renderNext(); renderTimes(); renderQuran(); paintPrayerLog(); toast('حُفظت الإعدادات') }));
+    renderNext(); renderTimes(); renderQuran(); paintPrayerLog(); paintPrayerSettingsStatus(); toast('حُفظت الإعدادات') }));
 
-document.getElementById('btn-geo').onclick=()=>{
-  if(!navigator.geolocation){toast('المتصفح لا يدعم تحديد الموقع');return}
+async function requestPrayerLocation(){
+  const btn=document.getElementById('btn-geo');
+  if(!navigator.geolocation){toast('هذا الجهاز لا يدعم تحديد الموقع');return}
+  if(btn){btn.disabled=true;btn.textContent='جارٍ تحديد الموقع…'}
   navigator.geolocation.getCurrentPosition(async p=>{
-    settings.lat=p.coords.latitude.toFixed(4); settings.lng=p.coords.longitude.toFixed(4);
-    await store.set('settings',settings); fillSettings(); renderNext(); paintPrayerLog();
-    toast('تم تحديد الموقع');
-  },()=>toast('تعذّر تحديد الموقع — أدخله يدويًا')) };
+    settings.lat=p.coords.latitude.toFixed(5);settings.lng=p.coords.longitude.toFixed(5);
+    await store.set('settings',settings);fillSettings();renderNext();renderTimes();paintPrayerLog();paintHomePrayer();await paintPrayerSettingsStatus();
+    if(btn)btn.disabled=false;toast('تم تفعيل المواقيت والقبلة ✓')
+  },async err=>{
+    if(btn)btn.disabled=false;await paintPrayerSettingsStatus();
+    if(err?.code===1)toast('اسمح بالموقع من إعدادات التطبيق ثم حاول مرة أخرى');
+    else if(err?.code===2)toast('فعّل خدمة الموقع GPS ثم حاول مرة أخرى');
+    else if(err?.code===3)toast('استغرق تحديد الموقع وقتًا طويلًا — حاول مجددًا');
+    else toast('تعذّر تحديد الموقع — يمكنك إدخال الإحداثيات يدويًا')
+  },{enableHighAccuracy:true,timeout:15000,maximumAge:10*60*1000});
+}
+document.getElementById('btn-geo').onclick=requestPrayerLocation;
 
 async function paintDataSafetyStatus(extra=''){
   const el=document.getElementById('data-safety-status');if(!el)return;
