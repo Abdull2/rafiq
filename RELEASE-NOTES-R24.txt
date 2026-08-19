@@ -1,0 +1,21 @@
+تدارُك - Tadaruq — v24 R24
+Date: 2026-08-20
+Chrome manifest: 24.4.0
+Local data schema: 2 (unchanged)
+
+R24 — رحلة تعمّق واسعة داخل تبويب «تزكية»
+- 69 موضوعًا/مسألة قراءة أصبحت لها 4 مراحل تعمّق محفوظة محليًا: 9 أعمال القلوب + 10 أمراض القلوب + 22 مسألة عقبات + 15 موضوع فقه النفس + 13 محاضرة إشكاليات.
+- أعمال القلوب التسعة لها المنهج الأعمق: تعريف وفهم → القرآن والسنة → هدي أهل العلم والصالحين → تطبيق عملي، مع مصادر ظاهرة لكل معلومة منشورة.
+- الأقسام الأخرى تستخدم طبقاتها الموثقة الموجودة أصلًا بدل اختراع كلام لملء المستويات.
+- «مساري» و«بنك الأعمال» يظلان أنظمة تطبيق ومتابعة؛ لم نضع لهما رتبًا دينية مصطنعة.
+- واجهة التقدم تقول بوضوح: تقدّم في الدراسة والفهم، لا رتبة إيمانية. لا نقاط تقوى، لا أقفال زمنية، ولا أعداد شرعية مخترعة.
+- بطاقات الاستكمال والمراجعة تعيد المستخدم إلى المكان الذي توقف عنده، والمستويات السابقة تبقى قابلة للمراجعة.
+- `qalb-levels-v1` محفوظ للتوافق؛ أعمال القلوب القديمة لا تفقد تقدم R23، والأقسام الجديدة تستخدم معرفات مركبة آمنة.
+- إصلاح Data Safety: `qalb-levels-v1` مسجل الآن في النسخ الاحتياطية وSafety snapshots والاستعادة؛ schema يبقى 2.
+- Service Worker cache = R24 لأن `qalb.json` و`ishkaliat.json` تغيرا.
+- سجل المصادر: CONTENT_PROVENANCE-TAZKIYAH.md.
+
+QA:
+- 69 depth topics / 374 staged sourced items: PASS.
+- JS syntax + JSON parse + stable IDs + Data Safety backup/restore: PASS.
+- Real browser/mobile visual QA: NOT EXECUTED in this sandbox because Chromium local navigation is blocked by administrator policy; preview on a deployed phone is required before Production.

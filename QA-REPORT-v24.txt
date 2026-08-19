@@ -240,3 +240,27 @@ R17 execution results:
 - PLAY POLICY NOTE: owner reported Health apps declaration changed to off/no-health-features and Google re-review is pending. This build does not claim Play approval.
 - PENDING REAL DEVICE: test start-of-day plan, exact historical-day open/edit, end-of-day task review, geolocation permission, TWA caching/update, and Mushaf fullscreen on an actual Android device after GitHub deployment.
 - ENVIRONMENT LIMIT: a prior local headless Chromium smoke attempt timed out; no complete visual-browser regression claim is made from this build environment.
+
+
+=== QA addendum — v24 R24 — 2026-08-20 ===
+- [PASS] `node --check app/app.js`.
+- [PASS] `node --check app/data-safety.js`.
+- [PASS] `node --check app/sw.js`, `app/pwa-register.js`, `app/extension-bridge.js`, `background.js`.
+- [PASS] JSON/webmanifest parse sweep across project data/manifests.
+- [PASS] `qa/test_tazkiyah_levels.js`: 9 stable أعمال القلوب IDs × exactly 4 published levels; every published level item has visible source data; no pending level is exposed.
+- [PASS] `qa/test_data_safety.js`: schema remains 2; `qalb-levels-v1` is registered and survives portable backup/replace restore; legacy backup safe-merge behavior remains.
+- [PASS] Chrome MV3 version = 24.4.0.
+- [PASS] Service Worker cache/runtime names = R24 20260820; required because qalb.json changed.
+- [PASS] Internal visible tab remains تزكية while route/storage compatibility continues to use qalb/qalb-* identifiers.
+- [PASS] UI strings explicitly frame progress as study depth, not spiritual rank; no points/sacred counts/time-lock mechanics introduced.
+- [PASS] Source provenance ledger exists at CONTENT_PROVENANCE-TAZKIYAH.md.
+- [ENVIRONMENT LIMIT] Headless Chromium localhost/file navigation is blocked by administrator policy in this sandbox. No real-browser/mobile visual claim is made. Verify responsive level chips, continue card, stage unlock/review, and old R23 progress restoration on a deployed phone before production.
+
+R24 expanded-scope addendum:
+- [PASS] `qa/test_tazkiyah_levels.js` -> 69 topics total: works=9, problems=10, nafs=15, obstacleItems=22, ishkaliat=13; 374 staged items validated.
+- [PASS] Every depth topic has exactly levels 1..4; no `pending` stage is exposed.
+- [PASS] Composite depth IDs are unique (`problem:`, `obstacle:`, `nafs:`, `ish:`) while existing R23 Works progress IDs remain unchanged.
+- [PASS] Stage items have visible source labels; source URLs are HTTPS where present.
+- [PASS] Nafs medical/safety flags remain outside the staged/locked content and therefore remain visible regardless of completion.
+- [PASS] Engine contains last-colon token parsing and section-aware rerouting for resume/review.
+- [PENDING REAL DEVICE] Verify obstacle/Ishkaliat accordion re-open after completing a stage, Nafs depth cards at narrow width, and resume cards in all sections after deployment.

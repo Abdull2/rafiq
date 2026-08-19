@@ -2,9 +2,9 @@ OWNER IMMUTABLE HANDOFF RULE — READ BEFORE ANYTHING ELSE:
 - NEVER delete, rename, truncate, summarize-away, or exclude AI_HANDOFF.md. Preserve all old history and append the current session chat/change/error/test ledger before returning artifacts.
 - Current distribution is GitHub Pages PWA + Google Play TWA, package ID com.tadaruqnoor.rafiq, with Chrome MV3 source retained.
 - Never commit signing.keystore, signing passwords/info, API tokens, or Play credentials.
-- Latest code state is v24 R17 / Chrome manifest 24.2.0 / local data schema 2. Read AI_HANDOFF.md sections 25–27 before changing PWA/Play, daily planning/history, Chrome browser workflow, Mushaf fullscreen, prayer/location, home UI, or Saved badge.
+- Latest code state is v24 R24 / Chrome manifest 24.4.0 / local data schema 2. Read the latest R24 section in AI_HANDOFF.md plus the relevant earlier continuity sections before changing PWA/Play, Tazkiyah, daily planning/history, Chrome browser workflow, Mushaf fullscreen, prayer/location, home UI, or Saved badge.
 
-هذه هي النسخة القانونية الحالية للمشروع: **v24 R17** (Chrome manifest = 24.2.0; local data schema = 2).
+هذه هي النسخة القانونية الحالية للمشروع: **v24 R24** (Chrome manifest = 24.4.0; local data schema = 2).
 
 اقرأ AI_HANDOFF.md and DATA_ARCHITECTURE.md وAI_HANDOFF.json وCONTENT_PROVENANCE-ISHKALIAT.md أولًا ثم افحص الكود الحالي. اعتبر ملفات الـhandoff سجل قرارات المشروع، ولا تطلب من المالك إعادة شرح الماضي إلا لو فيه تعارض حقيقي.
 
@@ -87,3 +87,13 @@ R17 continuity:
 - Chrome MV3 24.2.0: right-click selected text -> `أضف النص إلى مهام اليوم`; Alt+Shift+P opens daily plan. Extension users need a new extension package; GitHub-only updates do not update packaged Chrome extension code.
 - Google Play policy status: previous Closed-test submission was rejected under Play Console Requirements; owner turned Health apps declaration off/no-health-features and is waiting for re-review. Do not claim approval until Play Console confirms it.
 
+
+
+LATEST v24 R24 NOTE — TAZKIYAH DEPTH JOURNEY:
+- Source-backed depth now covers 69 Tazkiyah reading topics/scenarios: 9 أعمال القلوب + 10 أمراض القلوب + 22 العقبة scenarios + 15 فقه النفس + 13 إشكاليات lectures. Masari and Bank of Deeds remain action-progress sections instead of fake reading/spiritual ranks.
+- The 9 أعمال القلوب have the authored curriculum: التعريف والفهم → القرآن والسنة → هدي أهل العلم والصالحين → تطبيق عملي. Other sections use their own existing sourced content layers. Read CONTENT_PROVENANCE-TAZKIYAH.md before editing any of them.
+- UI must say study depth/progress, **never spiritual rank**. Do not add points, iman scores, sacred counts, artificial time locks, guilt mechanics or manipulative retention. Return value comes from deeper content, continue/resume, review and practical application.
+- `qalb-levels-v1` is persistent local user data. Preserve it. Existing R23 works IDs stay plain; new areas use composite depth IDs (`problem:`, `obstacle:`, `nafs:`, `ish:`). R24 records done/open/completedAt/lastAt/reviews additively. It is registered in app/data-safety.js; local schema remains 2.
+- Every published religious/educational stage item must render its visible source. Do not populate a level from model memory or unsourced aggregator pages. Safety/medical guidance must never be hidden behind completion locks.
+- `app/qalb.json` and `app/ishkaliat.json` are precached: any future edit requires a Service Worker cache-name bump. R24 cache is `tadaruq-v24-r24-pwa-20260820`.
+- The build environment could not complete visual browser QA because Chromium localhost/file navigation is blocked by administrator policy. Do not claim mobile layout/runtime verified until tested on a real deployed device.

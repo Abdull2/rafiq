@@ -1,11 +1,12 @@
 {
-  "state_id": "TADARUQ-HANDOFF-v24-R18-2026-08-19",
+  "state_id": "TADARUQ-HANDOFF-v24-R24-2026-08-20",
   "project": "تدارُك - Tadaruq",
-  "version": "v24 R18",
+  "version": "v24 R24",
   "platform": "GitHub Pages PWA + Google Play TWA; Chrome MV3 source retained",
   "read_first": [
     "AI_HANDOFF.md",
     "CONTENT_PROVENANCE-ISHKALIAT.md",
+    "CONTENT_PROVENANCE-TAZKIYAH.md",
     "DATA_SAFETY.md",
     "MUSHAF_PROVENANCE.md",
     "manifest.json",
@@ -28,7 +29,8 @@
     "Existing user data is production legacy data: no persistent key/shape/content-ID change without a backward-compatible migration and rollback path.",
     "AI_HANDOFF.md is immutable project continuity: never delete/rename/truncate/exclude it; append every session chat/change ledger.",
     "Google Play package identity for current listing is com.tadaruqnoor.rafiq; do not generate future Play bundles under a different package ID.",
-    "Never commit Android signing keystore/passwords or API/Play credentials."
+    "Never commit Android signing keystore/passwords or API/Play credentials.",
+    "Tazkiyah retention must come from useful study depth, resume/review and practical application; never label the user with spiritual ranks or use manipulative dark-pattern engagement."
   ],
   "storage_keys": {
     "profile": "profile-v1 {age, gender, advancedIssues}",
@@ -36,7 +38,8 @@
     "onboarding": "onboarding-seen-v3",
     "qalb_paths": "qalb-paths-v1 (selected heart/obstacle/Fiqh-al-Nafs paths, local progress, check-ins)",
     "data_schema": "rafiq:data-version = 2",
-    "safety_snapshot": "rafiq:safety-snapshot:v1"
+    "safety_snapshot": "rafiq:safety-snapshot:v1",
+    "qalb_levels": "qalb-levels-v1 (local-only Tazkiyah study-depth completion/open/review timestamps; educational progress, never spiritual ranking)"
   },
   "key_sources": {
     "essentials": "https://risala.prh.gov.sa/ar/contents/251",
@@ -62,11 +65,12 @@
     "mokhtasar_terms": "https://mokhtasr.com/ar/pages/terms-and-conditions",
     "mushaf_kfqc_official": "https://dm.qurancomplex.gov.sa/",
     "mushaf_quranpedia_svg": "https://github.com/quranpedia/quran-svg",
-    "mushaf_quranpedia_pinned_revision": "0198423eb867ba26051aba6ac902cd5d10aadd1b"
+    "mushaf_quranpedia_pinned_revision": "0198423eb867ba26051aba6ac902cd5d10aadd1b",
+    "tazkiyah_depth_registry": "CONTENT_PROVENANCE-TAZKIYAH.md (R24 verified source ledger for all 9 أعمال القلوب levels)"
   },
   "roadmap": [
     "source integrity and regression testing",
-    "real-device regression for R18 daily plan, historical archive, task review, prayer permission and Mushaf fullscreen",
+    "real-device regression for R24 Tazkiyah depth UI plus existing daily plan/history/prayer/Mushaf fullscreen flows",
     "deep-link saved items and personal paths to exact content",
     "refine personal-path prioritization without diagnosing users",
     "verify/refine Ishkaliat summaries against actual transcripts/official text when available",
@@ -75,16 +79,19 @@
     "licensed human audio for adhkar when a verified source/licence exists",
     "continued large-tab UX/accessibility cleanup"
   ],
-  "manifest_version_string": "24.3.0",
+  "manifest_version_string": "24.4.0",
   "current_release_changes": [
-    "R18 unifies the public brand as «تدارُك - Tadaruq» in the browser tab, PWA manifest and Chrome extension metadata; internal legacy IDs/keys that contain rafiq are intentionally preserved for compatibility.",
-    "R18 records the Google Play App Signing classical SHA-256 fingerprint 6D:02:CB:A8:9A:7D:B7:5F:84:C2:74:F6:16:29:35:8A:DE:49:11:28:12:D2:B4:42:EC:A7:4F:43:26:23:4D:4C for package com.tadaruqnoor.rafiq.",
-    "Critical Digital Asset Links correction: because the TWA opens https://abdull2.github.io/rafiq/, verification is origin-scoped and the file must be served at https://abdull2.github.io/.well-known/assetlinks.json. The path https://abdull2.github.io/rafiq/.well-known/assetlinks.json is NOT the required location for this origin.",
-    "For current GitHub Pages hosting, the owner must publish the assetlinks file from the account-level user site repository Abdull2/Abdull2.github.io (or move to a custom domain whose root can serve /.well-known/assetlinks.json). No new AAB is required solely to fix DAL while the launch origin/package stay unchanged.",
-    "The R18 assetlinks statement contains both the Google Play app-signing fingerprint and the original PWABuilder/local signing fingerprint so Play-distributed and directly installed local test builds can both validate.",
-    "Chrome MV3 version bumped to 24.3.0 for Web Store update packaging; the Enhanced Safe Browsing “Proceed with caution” warning is a Chrome trust/reputation signal and is not removed by the developer registration fee.",
-    "R17 planning/history/prayer/fullscreen UI behavior remains unchanged in R18.",
-    "Google Play policy status remains pending after the owner switched the Health apps declaration off/no-health-features; do not claim approval until Play Console confirms it."
+    "R24 expands source-backed study depth across 69 Tazkiyah reading topics/scenarios: 9 أعمال القلوب, 10 أمراض القلوب, 22 العقبة scenarios, 15 فقه النفس topics, and 13 إشكاليات lectures.",
+    "The 9 أعمال القلوب receive the strongest authored four-stage curriculum: التعريف والفهم → في القرآن والسنة → في هدي أهل العلم والصالحين → تطبيق عملي; new level-3 material was individually source-verified.",
+    "Other Tazkiyah sections use section-appropriate four-stage progression built from their already-source-backed fields rather than inventing filler claims: heart diseases = definition/causes/revelation/treatment; obstacles = situation/why/answer/steps; Fiqh al-Nafs = idea/psychological understanding/faith compass/questions+application; Ishkaliat = intro/early points/deeper points/full original lecture context.",
+    "Masari and Bank of Deeds intentionally keep action/progress semantics instead of receiving fake religious ranks. The whole Tazkiyah return loop is useful depth, resume/review and application—not points or piety scores.",
+    "Progress is explicitly framed as depth of study, never a spiritual rank. No sacred counts, artificial time locks, guilt prompts, or ad/revenue hooks were added.",
+    "qalb-levels-v1 remains the persistent local progress key. Works keep their original R23 plain IDs for backward compatibility; new section topics use composite depth IDs such as problem:..., obstacle:..., nafs:..., ish:....",
+    "R24 adds optional completedAt/lastAt/reviews fields backward-compatibly and fixes R23 Data Safety omission by registering qalb-levels-v1 as protected object data in backups/snapshots/restores. Local schema remains 2.",
+    "All published stage items are validated to have visible source data. CONTENT_PROVENANCE-TAZKIYAH.md documents the authored works sources and the source-field mapping used by the other sections.",
+    "Chrome MV3 manifest version is 24.4.0; service-worker cache/runtime names are R24 because both qalb.json and ishkaliat.json changed.",
+    "Deterministic QA covers 69 topics and 374 staged sourced items plus Data Safety. Real visual/mobile browser testing remains pending because the build sandbox blocks local Chromium navigation.",
+    "Google Play policy re-review remains pending after the owner switched Health apps declaration off/no-health-features; do not claim approval until Play Console confirms it."
   ],
   "data_architecture": {
     "cloud_backend": false,
@@ -115,5 +122,15 @@
     "truncate_or_replace_with_summary": false,
     "release_zip_must_include_for_full_source_handoff": true,
     "session_rule": "Append chronological chat/change/test/error/decision ledger before returning artifacts; preserve prior history."
-  }
+  },
+  "stateId": "TADARUQ-HANDOFF-v24-R24-2026-08-20",
+  "lastRevision": "R24",
+  "revisionSummary": "R19 Digital Asset Links fix; R20 caching/font fixes; R21 touch fixes; R22 Mushaf trim rollback; R23 depth pilot; R24 source-backed Tazkiyah depth architecture across 69 reading topics/scenarios (9 works, 10 heart diseases, 22 obstacles, 15 Fiqh al-Nafs, 13 Ishkaliat), while Masari/Deeds keep action-based progress.",
+  "openItems": [
+    "Owner must visually review the R24 69-topic Tazkiyah depth UI on a real phone/browser before production deployment; local headless Chromium is blocked by sandbox policy.",
+    "Bump CACHE_NAME on any future content JSON edit.",
+    "Fullscreen Mushaf enlargement unsolved; prefer reducing reserved chrome height, not SVG geometry.",
+    "Google Play policy re-review pending after Health declaration switched off.",
+    "Set up a staging branch / preview deployment before further production changes."
+  ]
 }

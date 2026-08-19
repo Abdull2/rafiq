@@ -1,6 +1,6 @@
-/* Tadaruq PWA service worker — generated for v24 R18. */
-const CACHE_NAME = 'tadaruq-v24-r21-pwa-20260819';
-const RUNTIME_CACHE = 'tadaruq-runtime-v24-r18-20260819';
+/* Tadaruq PWA service worker — generated for v24 R24. */
+const CACHE_NAME = 'tadaruq-v24-r24-pwa-20260820';
+const RUNTIME_CACHE = 'tadaruq-runtime-v24-r24-20260820';
 const PRECACHE_URLS = [
   "./",
   "./adiya.json",

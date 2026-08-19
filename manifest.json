@@ -3,7 +3,7 @@
   "name": "تدارُك - Tadaruq",
   "short_name": "تدارُك",
   "description": "تدارُك: قرآن وأذكار وعلم وفقه، مع خطة يومية وسجل متابعة ومواقيت صلاة وأدوات عملية أثناء التصفح.",
-  "version": "24.3.0",
+  "version": "24.4.0",
   "minimum_chrome_version": "114",
   "permissions": [
     "sidePanel",

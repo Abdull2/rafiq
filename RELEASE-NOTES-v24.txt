@@ -200,3 +200,27 @@ v24 R15 — قبل النشر: قارئ مصحف غامر + «تزكية» + إ�
 - Google Play policy continuity: previous Closed-test submission was rejected under Play Console Requirements; owner changed Health apps declaration to off/no-health-features and is waiting for re-review. This release does not claim Play approval.
 - No Android native wrapper/package/permission change; Play package remains `com.tadaruqnoor.rafiq`, so these web/TWA changes do not require a new AAB.
 - Chrome MV3 manifest version: 24.2.0.
+
+
+=== R24 — رحلة تعمّق كاملة في أعمال القلوب — 2026-08-20 ===
+
+R24 — رحلة تعمّق كاملة في أعمال القلوب
+- اكتملت 4 مراحل دراسة موثقة لكل واحد من أعمال القلوب التسعة: التعريف والفهم، القرآن والسنة، هدي أهل العلم والصالحين، تطبيق عملي.
+- كل معلومة دينية منشورة في المراحل تعرض مصدرها داخل التطبيق. سجل التحقق التفصيلي: CONTENT_PROVENANCE-TAZKIYAH.md.
+- واجهة التقدم تصرّح أن هذا «تقدّم في الدراسة، لا رتبة إيمانية». لا نقاط دينية، لا رتب تقوى، لا أعداد شرعية مخترعة، ولا أقفال زمنية مصطنعة.
+- رحلة التزكية تقترح: ابدأ معنى، أكمل من حيث توقفت، أو راجع معنى أنهيته؛ والمستويات السابقة تبقى قابلة للمراجعة.
+- `qalb-levels-v1` محفوظ للتوافق، مع حقول اختيارية جديدة للتوقيت/المراجعة.
+- إصلاح حماية البيانات: `qalb-levels-v1` أصبح مسجلًا في Data Safety، فيدخل النسخ الاحتياطية وSafety snapshots والاستعادة. schema يبقى 2.
+- Service Worker cache بُدّل إلى R24 لأن `qalb.json` تغير.
+
+QA:
+- Static/syntax/data tests: PASS.
+- 9 works × 4 levels + visible source validation: PASS.
+- Data Safety backup/restore including qalb-levels-v1: PASS.
+- Real browser/mobile visual QA: NOT EXECUTED in the build sandbox because Chromium local navigation is blocked by administrator policy; real-device preview is still required before production.
+
+
+R24 scope addendum:
+- Depth coverage expanded to 69 reading topics/scenarios: 9 works, 10 heart diseases, 22 obstacles, 15 Fiqh al-Nafs topics and 13 Ishkaliat lectures.
+- Masari/Bank of Deeds stay action-progress features rather than fake spiritual/read ranks.
+- QA validator covers 374 staged items with visible source data.

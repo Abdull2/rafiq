@@ -3,7 +3,7 @@
 **Project:** تدارُك - Tadaruq (legacy/internal identifiers may still use Rafiq)  
 **State ID:** `TADARUQ-HANDOFF-v24-R18-2026-08-19`  
 **Current artifact type:** GitHub Pages PWA + Google Play TWA distribution, with Chrome Manifest V3 side-panel source retained  
-**Current release:** `v24 R18` (Chrome manifest version `24.3.0`; local data schema `rafiq:data-version = 2`; Google Play package `com.tadaruqnoor.rafiq`)
+**Current release:** `v24 R24` (Chrome manifest version `24.4.0`; local data schema `rafiq:data-version = 2`; Google Play package `com.tadaruqnoor.rafiq`)
 
 > This file is the continuity record for future AI sessions. Before changing code or content, inspect this file, `manifest.json`, the hosted root `app.js` + `index.html` (and `app/app.js` + `app/index.html` in the full extension-source layout), plus the relevant JSON data. Do not ask the owner to repeat decisions already documented here unless a conflict genuinely requires a decision.
 
@@ -945,3 +945,408 @@ Legacy internal identifiers such as `RafiqPlan`, `rafiq:*`, existing storage key
 - `AI_HANDOFF.md` remains mandatory and append-only; do not delete, rename, truncate, or omit it.
 - Do not commit signing keystores, signing passwords, API credentials, or Play credentials. Certificate SHA-256 fingerprints are public verification metadata and may be stored in `assetlinks.json`.
 - R17 daily planning/history/prayer/fullscreen behavior and all existing storage schemas/keys remain unchanged.
+
+## R19 — Previous app signing key fingerprint added to Digital Asset Links — 2026-08-19
+
+### Owner request
+
+Owner reported that after the R18 deployment the Play-distributed test app on a Samsung device still displayed the Chrome Custom Tab bar showing `abdull2.github.io` instead of launching fullscreen as a Trusted Web Activity.
+
+### Session ledger (chronological)
+
+1. Owner uploaded `AI_HANDOFF.md` + `tadaruq-v24-r18-full-source.zip` and asked for help; assistant read the handoff and source package before proposing anything, per policy section 0.6.
+2. Owner selected the TWA/address-bar problem as the active issue and supplied a device screenshot showing the Custom Tab (X + share icons).
+3. Assistant regenerated the host-root package (`.nojekyll` + `.well-known/assetlinks.json`) and gave the `Abdull2/Abdull2.github.io` deployment steps, including the note that dot-prefixed folders often fail via GitHub drag-and-drop and should be created with `Add file -> Create new file`.
+4. Owner deployed the files and supplied a GitHub screenshot confirming `main` branch, `.well-known/assetlinks.json`, root `.nojekyll`, and Pages configured.
+5. Assistant fetched `https://abdull2.github.io/.well-known/assetlinks.json` and **verified it returns HTTP 200 with `application/json; charset=utf-8`** and correct R18 content. The web side was therefore confirmed correct and is no longer a suspect.
+6. Owner asked whether the fix was to rewrite the project in Flutter. Assistant advised against it: the failure was a signing/verification configuration issue, and a rewrite would discard the PWA and Chrome extension, require a new AAB, and repeat Play review without addressing the cause.
+7. Owner correctly objected that clearing Chrome cache and changing the default browser are not user-facing solutions. Assistant clarified those were local diagnostic steps only, not a distribution fix.
+8. Owner reported the failure occurred on a Samsung device, which weakened the "browser does not support TWA" hypothesis (Samsung Internet supports TWA).
+9. Owner supplied a Play Console **App signing** screenshot. Assistant identified the actual root cause from two details: the in-use App signing key showed **Install base 0.0%**, and a **Previous app signing keys** entry existed with first use `19 Aug 2026, 09:30`.
+
+### Root cause (confirmed)
+
+The Play app signing key was changed. Installed test builds are signed with the **previous** app signing key, while the published `assetlinks.json` listed only the **current** key fingerprint plus the local PWABuilder fingerprint. Chrome compares the installed package signature against the published statement, finds no match, and falls back to a Custom Tab. This explains why uninstall/reinstall did not help.
+
+Note: the Play Console account has **Quantum-ready (beta)** enabled, so each key exposes both a **Classical key** and a **Post-quantum cryptography key** fingerprint. Digital Asset Links uses the **Classical key** SHA-256 only.
+
+### R19 change
+
+Added the previous app signing key SHA-256 as a third fingerprint. Multiple fingerprints in one Android target are valid and intentional.
+
+Current fingerprint set for `com.tadaruqnoor.rafiq`:
+
+- `6D:02:CB:A8:9A:7D:B7:5F:84:C2:74:F6:16:29:35:8A:DE:49:11:28:12:D2:B4:42:EC:A7:4F:43:26:23:4D:4C` — current Play App Signing key (Classical)
+- `0F:DA:C2:0A:06:FA:E5:77:CD:AD:1C:37:5D:0F:A2:00:DB:62:73:73:C9:BC:31:22:90:51:9F:D3:EE:72:63:D4` — previous Play App Signing key (Classical), first used 19 Aug 2026 09:30
+- `74:67:B8:77:C3:B6:06:4B:CC:BB:95:7C:EA:87:8A:78:25:8A:59:45:29:34:7F:00:84:FA:27:41:36:51:5C:08` — PWABuilder / local APK signing key
+
+### R19 changed files
+
+- `.well-known/assetlinks.json` on the host-root site `Abdull2/Abdull2.github.io`
+- reference copies `assetlinks.json` and `app/assetlinks.json` in the source package
+- `AI_HANDOFF.md`
+
+No application code, storage key, schema, package ID, or launch origin changed. No new AAB is required.
+
+### Tests run
+
+- JSON validity check on the R19 statement: passed; 3 fingerprints, each 32 bytes.
+- Live fetch of the R18 statement URL before the change: HTTP 200, `application/json`, content correct.
+- Device-level re-verification after R19 deployment: **not yet performed — owner follow-up required.**
+
+### Unresolved items / follow-up
+
+1. Deploy the R19 `.well-known/assetlinks.json` to `Abdull2/Abdull2.github.io` and confirm the live URL shows all three fingerprints.
+2. On the Samsung test device: uninstall, clear Chrome cache, reinstall from Play, confirm the address bar is gone.
+3. If the bar persists after step 2, capture the signature of the actually-installed package and compare against the published set before assuming any further cause.
+4. Google Play policy re-review after the Health apps declaration was switched off remains **pending**; do not claim approval until Play Console reports it.
+5. Consider migrating to an owner-controlled custom domain long term, which would remove the dependency on the shared `abdull2.github.io` host root.
+6. Optional robustness item for a future AAB: configure the TWA fallback to WebView so users without a TWA-capable browser do not see a Custom Tab. Requires a new AAB and Play review; not needed for this fix.
+
+## R20 — PWA performance pass (caching + font declaration) — 2026-08-19
+
+### Owner request
+
+After the R19 Digital Asset Links fix was confirmed working on device ("اتشال الحمدلله"), the owner asked which fonts the app uses, then asked for performance improvements to make the app feel smoother.
+
+### Correction to an earlier statement in this same session
+
+An earlier assistant statement in this session claimed that **IBM Plex Sans Arabic was effectively unused** and could be deleted. **That was wrong and is corrected here.** The initial grep pattern excluded quoted font names and therefore missed the `body` rule:
+
+`font-family:"IBM Plex Sans Arabic",system-ui,"Segoe UI",sans-serif`
+
+IBM Plex Sans Arabic is the **primary body/UI sans font** for the whole app. The three `plex-*.woff2` files are required and must NOT be removed. An initial edit that deleted them was reverted before any package was produced.
+
+### Fonts actually in use (verified)
+
+- **Amiri** (400/700) — Arabic display/serif face, 55 CSS usages, headings and religious text.
+- **IBM Plex Sans Arabic** (400/500/600) — base body and UI text via the `body` rule.
+- **Hafs** — Mushaf rendering only, 12 usages as `Hafs,Amiri,serif`.
+
+All three are self-hosted `woff2`; no external font requests.
+
+### Root performance findings
+
+1. **Cache-busting defeated the Service Worker.** 10 JSON fetches in `app.js` used `'./file.json?v='+Date.now()`. `handleSameOrigin` matches with `ignoreSearch:false`, so the changing query string never matched the precached entry. Approximately **529 KB re-downloaded from the network on every session**, including `qalb.json` (193 KB) and `asma.json` (100 KB), despite all of them being in `PRECACHE_URLS`.
+2. **Oversized install-time precache.** `PRECACHE_URLS` totalled **4.79 MB**, including 1.1 MB of Play-listing screenshots never rendered in-app, plus `quran.json` (1.3 MB) and `riyad.json` (986 KB). All were downloaded before the Service Worker finished installing.
+3. **Broken font-family name.** One rule read `font-family:IBM,system-ui,sans-serif`. `IBM` matches no `@font-face` family, so that element silently fell back to the system font.
+
+### R20 changes
+
+- `app.js`: removed the `?v='+Date.now()` cache-buster from all 10 JSON fetches. Non-fetch uses of `Date.now()` (IDs, timestamps, daily seeds) were left untouched.
+- `index.html`: corrected `font-family:IBM,...` to `font-family:"IBM Plex Sans Arabic",...`.
+- `sw.js`: removed the 5 screenshots, `icon-1024.png`, `quran.json`, and `riyad.json` from `PRECACHE_URLS`; bumped `CACHE_NAME` to `tadaruq-v24-r20-pwa-20260819`. The two large JSON files are already lazily fetched and are cached by `handleSameOrigin` into `RUNTIME_CACHE` on first real use.
+
+### Measured result
+
+- Install-time precache: **4.79 MB → 1.41 MB** (−71%).
+- Repeat-session network fetches for content JSON: **~529 KB → 0** (served from cache).
+- Diff size: `app.js` 20 lines, `index.html` 2 lines, `sw.js` 10 lines.
+
+### Tests run
+
+- `new Function(...)` syntax parse of `app.js` and `sw.js`: both passed.
+- Verified all 12 JSON fetch URLs now resolve to plain `./name.json`.
+- Verified 6 `woff2` files remain present.
+- **Not yet tested:** runtime behaviour on a real device, offline first-load of Qur'an/Riyad, and cache changeover from the old Service Worker.
+
+### Follow-up required
+
+1. Deploy and confirm the new Service Worker activates (`CACHE_NAME` bump forces old-cache cleanup on activate).
+2. Because content JSON is now genuinely cached, **any future content edit requires bumping `CACHE_NAME`** or users will keep the old data. This is a behavioural change from the previous always-fresh fetching and must be respected by future sessions.
+3. Verify Qur'an and Riyad still work offline after being opened once.
+4. Google Play policy re-review after the Health apps declaration was switched off remains pending.
+
+## R21 — Mushaf interaction fixes (swipe, long-press selection, fullscreen fill) — 2026-08-19
+
+### Owner request
+
+Owner reported three Mushaf problems: page swipe was hard to trigger; ayah highlight appeared on plain touch (sticky hover) instead of a deliberate gesture, with the owner explicitly proposing long-press; and fullscreen did not fill the screen the way the "آية" app does.
+
+### Findings
+
+1. **Swipe too strict.** Threshold required `|dx|>55` **and** `|dx| > |dy|*1.6`. Additionally `body.mushaf-fullscreen` set `touch-action:pan-x pan-y`, letting the browser claim horizontal gestures before the JS handler could act.
+2. **Sticky `:hover` on touch.** `.ayahPolygon:hover{fill-opacity:.12}` was unconditional. On touch devices `:hover` latches after a tap and does not clear, so ayat appeared highlighted from incidental touches. Tap also selected an ayah through `#mus-body onclick`, so drags could select by accident.
+3. **Fullscreen letterboxing.** Mushaf page aspect is roughly 0.65 while phone viewports are roughly 0.46, so `object-fit:contain` height-constrains the page and leaves side gutters. This is geometry, not a bug.
+
+### Owner decision on fullscreen
+
+Owner chose **"الصفحة كاملة مع تكبير الهوامش فقط"** — keep the whole page visible, no cropping of text and no vertical scrolling; gain area by trimming the blank border instead. Cropping and scroll-to-fill options were declined.
+
+### R21 changes
+
+- `app.js`
+  - Swipe threshold `55px → 38px`; vertical tolerance ratio `1.6 → 1.15`.
+  - Added long-press ayah selection: `touchstart` on `.ayahPolygon` starts a **420 ms** timer, fires `ayah-longpress`, triggers a 12 ms vibration where supported, and cancels if the finger moves more than 10 px or the touch ends early. This prevents accidental selection during a swipe.
+  - `#mus-body` click handler now ignores plain taps on touch devices (`matchMedia('(hover:none)')`) unless the long-press fired. Mouse/pointer devices keep normal click behaviour.
+  - Added `trimMushafMargins(svg)` and constant `MUSHAF_TRIM = 0.035`. It insets the SVG `viewBox` by 3.5% per side, guarded by `data-trimmed` so it never applies twice, with numeric validation and a try/catch fallback that leaves the page untouched on any parse problem. Net readable-area gain approximately **7.5%** with no text cropped.
+- `index.html`
+  - `.ayahPolygon:hover` wrapped in `@media (hover:hover) and (pointer:fine)`.
+  - `touch-action:pan-x pan-y → pan-y` on `body.mushaf-fullscreen`.
+  - Unified page max-height when controls are hidden.
+- `sw.js` — `CACHE_NAME` bumped to `tadaruq-v24-r21-pwa-20260819`.
+
+### Tests run
+
+- `new Function(...)` syntax parse of `app.js` after each edit: passed.
+- viewBox trim verified arithmetically on a sample `0 0 1000 1600` viewBox.
+- Diff size: `app.js` 63 lines, `index.html` 7 lines, `sw.js` 10 lines.
+- **Not tested:** real touch behaviour on a device. Long-press timing, swipe threshold, and the 3.5% trim all need on-device confirmation.
+
+### Tuning notes for a future session
+
+- If swipe still feels stiff, lower the `38` threshold further before touching the `1.15` ratio.
+- If long-press feels slow or too eager, adjust the `420` ms timer; 300–500 ms is the usual comfortable band.
+- If any page shows text touching an edge, reduce `MUSHAF_TRIM` from `0.035`. It is a single named constant specifically so this stays a one-value change.
+
+### Carried-forward items
+
+- Content JSON is now genuinely cached (R20), so **any future content edit requires bumping `CACHE_NAME`**.
+- Google Play policy re-review after the Health apps declaration was switched off remains pending.
+- R19 Digital Asset Links fix was confirmed working on device by the owner.
+
+## R22 — REVERT of the R21 Mushaf margin trim (regression) — 2026-08-19
+
+### Regression report
+
+Owner reported: **"انت بوظت المصحف وقطعت اطرافه"** — the R21 `viewBox` trim cropped the edges of the Mushaf page. The R21 change was wrong and is reverted here.
+
+### Cause of the mistake
+
+`MUSHAF_TRIM = 0.035` was chosen without measuring the actual blank border in the Madinah Mushaf SVG files. The assistant could not fetch or inspect a real page SVG (remote asset), assumed a conservative-looking 3.5%, and shipped it. The real blank margin is smaller than 3.5%, so the inset cut into rendered text. **Assumed asset geometry must be measured, not guessed** — if a real sample cannot be inspected, the change should not ship.
+
+### R22 changes
+
+- Removed `trimMushafMargins()` entirely, removed the `MUSHAF_TRIM` constant, and removed the call site in `safeMushafSvg`. The function was deleted rather than set to `0`, so no future session re-enables it without redoing the measurement.
+- Removed the extra rule `body.mushaf-fullscreen.mushaf-controls-hidden .mus-body.printed .mushaf-page-svg{max-height:var(--mushaf-vh)!important}` added in R21. The original `max-height:100dvh` behaviour is restored.
+- Mushaf rendering geometry is now **byte-identical to pre-R21**: `preserveAspectRatio="xMidYMid meet"` and `object-fit:contain` untouched, no `viewBox` modification anywhere.
+- `sw.js` `CACHE_NAME` remains `tadaruq-v24-r21-pwa-20260819`; bump again on next deploy if the r21 package was already published.
+
+### What is retained from R21 (unaffected by the regression, still wanted)
+
+- Swipe threshold `55px → 38px` and vertical tolerance `1.6 → 1.15`.
+- `touch-action:pan-x pan-y → pan-y` on `body.mushaf-fullscreen`.
+- `:hover` on `.ayahPolygon` gated behind `@media (hover:hover) and (pointer:fine)`.
+- Long-press (420 ms) ayah selection with move-cancel, replacing tap-to-select on touch devices.
+- R20 caching and font-name fixes.
+
+### Outstanding: the original fullscreen request is NOT solved
+
+The owner still wants the Mushaf to fill the screen more like the "آية" app, and chose "الصفحة كاملة مع تكبير الهوامش فقط". That remains **unimplemented**. Correct approach for a future session:
+
+1. Fetch one real page SVG from `MUSHAF_SVG_BASE`, read its `viewBox`, and measure the actual bounding box of rendered content versus the canvas to derive the true blank margin per side.
+2. Only then inset by strictly less than the measured margin, and verify visually on several pages including dense ones and pages with surah headers.
+3. Alternatively leave geometry alone and pursue the gain elsewhere: reduce the reserved chrome height so `--mushaf-vh` is larger, which enlarges the page without touching the SVG at all. This is the lower-risk path and should be tried first.
+
+### Current diff versus original v24 R18 source
+
+- `app.js`: 47 lines — caching fixes plus long-press and swipe tuning.
+- `index.html`: 6 lines — font name, hover gating, touch-action.
+- `sw.js`: 10 lines — precache trim and cache name.
+
+## R23 — Tazkiyah depth levels engine + Ikhlas pilot — 2026-08-19
+
+### Owner request
+
+Owner asked for a progression system in the تزكية area: a user who has read a meaning once or twice has no reason to return. He wants each meaning to deepen — the simple definition of e.g. الإخلاص should be one stage, followed by a wider treatment covering how the meaning appears in the Qur'an, the Sunnah, and among the righteous. Owner stated his role is to keep users returning to a purely educational app with no ads and no revenue, and asked not to be repeatedly told to add a source to every item.
+
+### Framing decision (raised with the owner, and applied)
+
+The word "مراتب" risks implying ranks of faith, which conflicts with the standing owner decision in section 2.9 (no guilt-heavy or pseudo-spiritual metrics; tracking is not a judgement on faith or a declaration of spiritual rank). The feature is therefore framed as **مستويات العمق — depth of study, not station of the person**. UI label is "مستويات العمق". Progress wording is "أنهيت هذا المستوى", never anything implying higher iman.
+
+Owner chose **4 levels** (التعريف → في القرآن والسنة → في هدي الصالحين → تطبيق عملي) and **أعمال القلوب (9 topics)** as the starting section.
+
+### Schema added to `qalb.json`
+
+A work item may carry an optional `levels` array:
+
+```
+levels: [ { n, title, tx, s:{t,u}, items:[{t, s:{t,u}}], pending? } ]
+```
+
+- `pending: true` marks a level whose sources are **not yet verified**. `hLevelsOf()` filters these out, so a pending level is never rendered to a user.
+- Items without `levels`, and all other sections, render exactly as before. The feature is additive and non-breaking.
+
+### Engine added to `app.js`
+
+- `hLevels` state, `hLevelsLoad()`, `hLevelDone()`, `hLevelMark()`, `hLevelsHtml()`.
+- New storage key **`qalb-levels-v1`** holding `{ topicId: { done:[n], open:n } }`. No existing key was touched or migrated.
+- Level chips render locked until the previous level is completed; the "فهمت هذا المستوى" button marks completion and opens the next.
+- Click handlers `[data-lv]` (switch level) and `[data-lvdone]` (complete level) added to the Qalb tab handler.
+- Rendered directly beneath the existing `def` block; hidden entirely when a topic has fewer than 2 publishable levels.
+
+### `index.html`
+
+Added `.lv-*` styles (chips row, list, complete button) using existing CSS variables only.
+
+### Ikhlas pilot — verification status
+
+| Level | Status |
+|---|---|
+| 1 التعريف | Published — reuses existing `def` + `defSource` |
+| 2 في القرآن والسنة | Published — البينة 5، الزمر 3، الكهف 110 (quran.com links), plus حديث النيات (البخاري 1، مسلم 1907) with the existing verified Dorar link |
+| 3 في هدي الصالحين | **`pending: true`, empty, not shown to users** |
+| 4 تطبيق عملي | Published — derived from the existing sourced `means`, framed as organisational steps |
+
+### Why level 3 is empty — do not fill it from memory
+
+Searches for salaf sayings on الإخلاص returned only forums and aggregator sites reproducing athar without verifiable isnad. The best-known saying (سفيان الثوري: ما عالجت شيئًا أشد عليَّ من نيتي) was found attributed to ((حلية الأولياء)) 7/5 **only via a secondary aggregator**, which is not sufficient to publish in a da'wah app. Misattributing a saying is a harm, not merely a bug, and violates section 2.1.
+
+**Rule for future sessions: never populate level 3 (or any religious level) from model memory or from aggregator sites.** Acceptable sources are the owner's own verified references, or Dorar's موسوعة الأخلاق / الموسوعة الحديثية pages where the book, volume and page are shown. Verify each athar individually.
+
+### Deliverables
+
+- Full updated source tree.
+- `levels-template.json` — empty 4-level structure for the remaining 8 works.
+- `assetlinks.json` (root and `app/`) synced to the R19 three-fingerprint version.
+- `sw.js` `CACHE_NAME` → `tadaruq-v24-r23-pwa-20260819`.
+
+### Tests run
+
+- `new Function(...)` parse of `app.js` and `sw.js`: passed.
+- `qalb.json` JSON validity and level counts verified.
+- Confirmed 6 `woff2` files intact and all three assetlinks fingerprints present.
+- **Not tested:** the levels UI has never been rendered in a browser. Chip locking, progress persistence, and layout are unverified.
+
+### Process note — owner objection, accepted
+
+The owner objected that changes were being sent without adequate review while he deploys straight to production. The objection is correct. The R21 Mushaf trim shipped on a guessed constant and caused a visible regression. Standing rule from this point: state explicitly what was actually executed versus what is untested, and never present an unverified visual change as ready to deploy. The R23 package was deliberately labelled **PREVIEW**.
+
+**Recommended and still not set up:** a `staging` branch or separate preview Pages deployment so no change reaches users before the owner has seen it. This remains the highest-value outstanding infrastructure item.
+
+### Carried-forward items
+
+1. Owner must visually review the levels UI before publishing.
+2. Level 3 content for الإخلاص requires verified sources.
+3. Remaining 8 works in أعمال القلوب need levels authored.
+4. Any future content JSON edit requires bumping `CACHE_NAME` (R20 consequence).
+5. Fullscreen Mushaf enlargement remains unsolved; prefer the low-risk route of reducing reserved chrome height rather than touching SVG geometry (see R22).
+6. Google Play policy re-review after the Health apps declaration was switched off remains pending.
+
+
+## R24 — Full sourced Tazkiyah depth journey across all 9 أعمال القلوب — 2026-08-20
+
+### Owner request / chat ledger
+
+Owner request in this session:
+
+> "محتاج منك انك في تاب التزكية تعمل مراتب يعني الشخص في كل حاجة هوا قرأها مرة مرتين خلاص كده مش هيدخل تاني , انا محتاج لما يفهم المعني خلاص من كل المعاني في ابواب التزكية في كل قسم في التزكية انه يرتقي يعني خلاص خلص التعريف المبسط للاخلاص لازم يكون في مرتبة او مرحلة تانية فاهمني يعني شرح اقوي واوسع من ورود المعني ده في القران والسنة وفي الصالحين فاهمني عارف ان ده حاجات كتيرة بس مهم اوي عشان الشخص يرجع تاني للتطبيق , وطبعا مش كل شوية هقول انك تكتب مصدر كل معلومة هتكتبها+ انا دوري اعلق المستخدم بالتطبيق وهوا مفيهوش اعلانات ولا ربح هوا توعوي فقط"
+
+Interpretation applied: retention is a legitimate educational goal, but the product must not claim a user's spiritual station or use manipulative addiction mechanics. The R23 "depth of study, not rank of person" decision is therefore retained and expanded.
+
+### Product decision
+
+- User-facing concept: **مراحل التعمّق / رحلة التزكية**, not spiritual "مراتب" of the person.
+- Each positive heart meaning now has four learning layers:
+  1. **التعريف والفهم**
+  2. **في القرآن والسنة**
+  3. **في هدي أهل العلم والصالحين**
+  4. **تطبيق عملي**
+- Completion means "I studied/understood this layer enough to move on", not "my iman rose to a higher rank".
+- Previous layers remain open for review. After all four are complete, an optional review action records a local review timestamp/count.
+- No points, badges of piety, sacred counts, artificial daily locks, guilt prompts, or ad/revenue hooks were added. The return loop is useful content: resume where you stopped, open the next layer, and revisit completed meanings.
+
+### Coverage completed
+
+All 9 existing stable `works` IDs are preserved and now carry exactly 4 publishable levels:
+
+1. `ikhlas` — الإخلاص
+2. `mahabba` — المحبة
+3. `tawakkul` — التوكل
+4. `khawf` — الخوف والرجاء
+5. `sabr` — الصبر
+6. `shukr` — الشكر
+7. `tawba` — التوبة
+8. `muraqaba` — الإحسان والمراقبة
+9. `yaqeen` — اليقين
+
+No ID was renamed. Existing `qalb-*` compatibility rules remain in force.
+
+### Source/content work
+
+- `app/qalb.json` was expanded so every published level item has a visible source object rendered directly below the item.
+- Existing Qur'an/Hadith references were reused where already verified.
+- Level 3 material was individually verified against reliable source pages rather than filled from model memory. The source ledger and exact book/page references are in **`CONTENT_PROVENANCE-TAZKIYAH.md`**.
+- Representative verified material includes Imam al-Shafi‘i on wanting truth to appear even on the opponent's tongue for Ikhlas, Ibn al-Qayyim on stronger tawakkul with deeper knowledge of Allah, the Ka‘b ibn Malik repentance report in Bukhari/Muslim, and recognized source-backed explanations for muraqabah/yaqeen.
+- Practical level text is explicitly labelled as organisational application based on the cited texts, not invented worship, divine promise, or sacred count.
+
+### UI/engine changes — `app/app.js` + `app/index.html`
+
+- Added `hLevelState`, `hDepthMeta`, persistent `hLevelOpen`, enhanced `hLevelMark`, `hLevelReview`, redesigned `hLevelsHtml`, and `hDepthContinueHtml`.
+- Works list/home now surfaces a **رحلة التزكية** continue card:
+  - untouched topic -> start a meaning;
+  - in-progress topic -> continue where you stopped;
+  - completed topics -> revisit/review.
+- Each work tile can show study depth `X/4` and optional review count.
+- Stage chips are sequential: later stages unlock after the previous stage is completed. Earlier completed stages remain reviewable.
+- `hOpen()` avoids duplicating the old definition/fruits blocks when a full 4-level work is active; the existing sourced daily means remain as optional `تطبيق اليوم` underneath.
+- UI copy explicitly states: **"تقدّم في الدراسة، لا رتبة إيمانية"**.
+- Added R24 `.depth-*` / `.lv-*` responsive styles.
+
+### Persistence / Data Safety
+
+Persistent key remains **`qalb-levels-v1`**, introduced in R23. R24 does not rename it or replace old values. Existing `{done, open}` records remain valid; optional additive fields now include `completedAt`, `lastAt`, and `reviews`.
+
+R23 accidentally omitted this new key from the Data Safety registry. R24 fixes that omission:
+
+- `app/data-safety.js` exact registry now includes `qalb-levels-v1`.
+- Expected type is `object`.
+- Portable backups, safety snapshots, replace restores and audits now cover this progress state.
+- Local data schema remains **2**: this is registration/protection of an already-existing additive key, not a destructive schema rewrite.
+- Backup metadata app version is updated to `24.4.0`.
+
+### Version/cache
+
+- Chrome MV3 manifest: **24.4.0**.
+- PWA service-worker cache: `tadaruq-v24-r24-pwa-20260820`.
+- Runtime cache: `tadaruq-runtime-v24-r24-20260820`.
+- The cache bump is mandatory because `app/qalb.json` changed and R20 made content JSON genuinely cached.
+
+### QA actually executed
+
+- PASS: `node --check app/app.js`.
+- PASS: `node --check app/data-safety.js`.
+- PASS: R24 Tazkiyah deterministic content test: all 9 works × 4 levels; no pending published level; every published item/source object validated.
+- PASS: Data Safety deterministic harness including backup/restore of `qalb-levels-v1`; schema remains 2.
+- PASS: JSON parse and stable works-ID/order checks.
+- PASS: manifest version/cache-name/static-control checks.
+- ENVIRONMENT LIMIT: local headless Chromium could not navigate to localhost or file URLs because the sandbox browser is blocked by administrator policy. Therefore **no claim is made that the R24 levels UI has been visually verified in a real browser or on Android**. Owner should preview the deployed build on a real phone before production rollout.
+
+### Standing rules after R24
+
+1. Every religious statement remains source-first; the owner does not need to repeat this requirement.
+2. Future Tazkiyah depth content must be researched/verified before publication; never fill a scholar/salaf attribution from memory or an unsourced aggregator.
+3. Retention comes from useful depth, resume/review and practical value — never spiritual scoring or manipulative dark patterns.
+4. Preserve `qalb-levels-v1`, all existing work IDs, and all other `qalb-*` user data.
+5. Any future `qalb.json` content edit must bump the Service Worker cache name.
+6. If the same depth concept is extended to `أمراض القلوب` or `العقبات`, design section-appropriate study stages rather than implying that a user's illness/faith has a ranked spiritual level.
+7. `AI_HANDOFF.md` remains immutable project continuity: never delete, rename, truncate, replace with a summary, or exclude it from a full source handoff. Append the public owner request, decisions, changes, errors, and tests of every future session. Never write secrets/private signing credentials into the handoff.
+
+
+### R24 scope expansion — all reading-oriented Tazkiyah sections
+
+After implementing the authored 9-work curriculum, the owner wording "في كل قسم في التزكية" was applied as a section-wide product requirement without forcing every section into the same religious-rank metaphor. R24 now gives a source-backed depth journey to **69 reading topics/scenarios**:
+
+- **9 أعمال القلوب** — authored 4-level curriculum with new verified scholarly/salaf material in level 3.
+- **10 أمراض القلوب** — definition/foundations → causes/roots → Qur'an/Sunnah anchor → sourced practical treatment.
+- **22 obstacle scenarios** inside 8 life categories — identify situation → why it may happen → sourced answer/compass → sourced steps.
+- **15 فقه النفس topics** — summary → what happens psychologically → faith compass → questions/application. Medical/safety flags remain visible outside all stage locks.
+- **13 إشكاليات lectures** — intro → early points → deeper points → return to the full original lecture; every point uses its stored video timestamp.
+
+`مساري` and `بنك الأعمال` intentionally do **not** receive reading/spiritual levels: they are already action-progress mechanisms (path stations/check-ins and daily deeds). This preserves semantic honesty while making the whole Tazkiyah tab returnable.
+
+#### Identity/persistence details
+
+- Existing R23 Works progress continues under the original plain keys (`ikhlas`, `mahabba`, etc.) inside `qalb-levels-v1`; this was not migrated or reset.
+- New depth topics use composite keys to avoid collisions: `problem:<id>`, `obstacle:<category>:<item>`, `nafs:<id>`, `ish:<id>`.
+- The click parser now splits level tokens at the **last colon**, so composite IDs remain stable.
+- `hDepthFind()` / `hDepthRender()` route a resume/review action back to the correct screen (work/problem detail, obstacle accordion, Nafs detail, or Ishkaliat lecture).
+- Section lists show depth meters and a continue/resume card where appropriate.
+
+#### Source integrity
+
+No new religious/psychological claims were invented merely to fill the other section stages. Their R24 levels are composed from source-backed fields that were already in the project (`defSource`, per-cause sources, `proofSource`, per-step sources, Makany/WHO/Qur'an source fields, or Ishkaliat video timestamps). The new authored source research remains concentrated in the 9 `works` level-3 expansions and is listed in `CONTENT_PROVENANCE-TAZKIYAH.md`.
+
+#### Expanded QA
+
+`qa/test_tazkiyah_levels.js` now validates **69 depth topics** and **374 staged source-backed items**, unique depth IDs, exactly 4 levels per topic, no leaked `pending` stage, HTTPS source URLs where present, and required app engine markers. It passes in the build environment.

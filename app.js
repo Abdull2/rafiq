@@ -1228,8 +1228,112 @@ function hStreak(k,i){ let s=0;
     if(hDone(k,i,iso(d))) s++; else break } return s }
 const hSteps=p=>p.cure||p.means||[];
 const hList=p=>p.causes||p.fruits||[];
+
+/* ===== مستويات العمق (تزكية) — تدرّج في الدراسة لا حكم على مقام الشخص ===== */
+let hLevels={};
+async function hLevelsLoad(){ try{hLevels=await store.get('qalb-levels-v1')||{}}catch{hLevels={}} }
+const hLevelsOf=p=>(p?.levels||[]).filter(l=>!l.pending);
+const hDepthKey=p=>p?.depthId||p?.id||'';
+const hDepthTitle=p=>p?.name||p?.q||p?.title||p?.sub||'الموضوع';
+const hLevelState=id=>{const x=hLevels[id]||{};return {...x,done:Array.isArray(x.done)?x.done:[],reviews:Array.isArray(x.reviews)?x.reviews:[]}};
+const hLevelDone=(id,n)=>hLevelState(id).done.includes(n);
+function hDepthFind(id){
+  if(!id)return null;
+  const pools=[...(HD?.problems||[]),...(HD?.works||[]),...(HD?.nafs||[])];
+  for(const p of pools)if(hDepthKey(p)===id||p.id===id)return p;
+  for(const cat of (HD?.obstacles||[]))for(const it of (cat.items||[]))if(hDepthKey(it)===id)return it;
+  if(typeof ISH!=='undefined'&&ISH)for(const it of (ISH.items||[]))if(hDepthKey(it)===id)return it;
+  return null;
+}
+function hDepthMeta(p){
+  const id=hDepthKey(p), L=hLevelsOf(p), st=hLevelState(id), done=L.filter(l=>st.done.includes(l.n)).length;
+  const firstOpen=L.find(l=>!st.done.includes(l.n))||L[L.length-1]||null;
+  return {id,L,st,done,total:L.length,next:firstOpen,reviews:st.reviews.length,lastAt:+st.lastAt||0};
+}
+async function hLevelOpen(id,n){
+  const st=hLevelState(id); st.open=+n; st.lastAt=Date.now(); hLevels[id]=st;
+  try{await store.set('qalb-levels-v1',hLevels)}catch{}
+}
+async function hLevelMark(id,n){
+  const p=hDepthFind(id), L=hLevelsOf(p||{}), st=hLevelState(id);
+  if(!st.done.includes(n))st.done.push(n);
+  st.completedAt={...(st.completedAt||{}),[n]:Date.now()}; st.lastAt=Date.now();
+  const i=L.findIndex(x=>x.n===+n); if(L[i+1])st.open=L[i+1].n; else st.open=+n;
+  hLevels[id]=st; try{await store.set('qalb-levels-v1',hLevels)}catch{}
+  return L[i+1]||null;
+}
+async function hLevelReview(id){
+  const st=hLevelState(id); st.reviews.push(Date.now()); st.lastAt=Date.now(); hLevels[id]=st;
+  try{await store.set('qalb-levels-v1',hLevels)}catch{}
+}
+function hDepthOpenCard(id){
+  requestAnimationFrame(()=>{
+    const card=[...document.querySelectorAll('[data-depth-card]')].find(x=>x.dataset.depthCard===id);
+    if(!card)return;
+    const body=card.querySelector('.h-obb'); if(body)body.classList.remove('hide');
+    const x=card.querySelector('.h-obh .x'); if(x)x.textContent='⌃';
+    card.scrollIntoView?.({block:'start',behavior:'smooth'});
+  });
+}
+async function hDepthRender(id){
+  const p=hDepthFind(id); if(!p)return;
+  if(p.depthType==='nafs'){hNafsDetail(p.id);return}
+  if(p.depthType==='obstacle'){hOpen(p.depthParent);hDepthOpenCard(id);return}
+  if(p.depthType==='ish'){await hIshkaliat();hDepthOpenCard(id);return}
+  hOpen(p.id);
+}
+function hDepthParseToken(raw=''){
+  const cut=raw.lastIndexOf(':');
+  if(cut<0)return [raw,0];
+  return [raw.slice(0,cut),+(raw.slice(cut+1)||0)];
+}
+function hLevelsHtml(p){
+  const M=hDepthMeta(p), L=M.L, id=M.id; if(L.length<2)return '';
+  const done=M.st.done;
+  let openN=+M.st.open||M.next?.n||L[0].n;
+  let cur=L.find(l=>l.n===openN)||L[0];
+  const curI=L.findIndex(x=>x.n===cur.n), unlocked=curI===0||done.includes(L[curI-1]?.n);
+  if(!unlocked){cur=L.find((l,i)=>i===0||done.includes(L[i-1]?.n))||L[0];openN=cur.n}
+  const chips=L.map((l,i)=>{
+    const canOpen=i===0||done.includes(L[i-1]?.n);
+    return `<button class="lv-chip${l.n===cur.n?' on':''}${canOpen?'':' lock'}" data-lv="${laterEsc(id)}:${l.n}"${canOpen?'':' disabled'}><span>${done.includes(l.n)?'✓':AR(i+1)}</span>${l.title}</button>`;
+  }).join('');
+  const items=(cur.items||[]).map(x=>`<li><div class="lv-item-tx">${x.t}</div>${x.s?hSourceHtml(x.s):''}</li>`).join('');
+  const nxt=L[curI+1];
+  const finished=M.done===M.total;
+  const subject=p.depthType==='nafs'?'هذا الموضوع':p.depthType==='obstacle'?'هذه المسألة':p.depthType==='ish'?'هذه المحاضرة':'هذا المعنى';
+  return `<div class="h-sec lv-wrap">
+    <div class="lv-head"><div><b>مراحل التعمّق</b><small>تقدّم في الدراسة والفهم، لا رتبة إيمانية</small></div><span class="lv-cnt">${AR(M.done)}/${AR(M.total)}</span></div>
+    <div class="lv-progress" aria-label="تقدم دراسة الموضوع"><i style="width:${M.total?Math.round(M.done/M.total*100):0}%"></i></div>
+    <div class="lv-chips">${chips}</div>
+    <div class="lv-stage"><div class="lv-stage-no">المستوى ${AR(curI+1)} من ${AR(L.length)}</div><h3>${cur.title}</h3></div>
+    <div class="h-bd lv-body">${cur.tx?`<p>${cur.tx}</p>`:''}${cur.s?hSourceHtml(cur.s):''}${items?`<ul class="lv-list">${items}</ul>`:''}</div>
+    ${done.includes(cur.n)?`<div class="lv-ok">✓ أنهيت دراسة هذا المستوى — يمكنك الرجوع إليه متى شئت.</div>`:`<button class="lv-next" data-lvdone="${laterEsc(id)}:${cur.n}">فهمت هذا المستوى${nxt?` — انتقل إلى «${nxt.title}»`:' — أتم المسار'}</button>`}
+    ${finished?`<div class="lv-review"><div><b>أتممت مسار دراسة ${subject}</b><span>المراجعة للتثبيت فقط، وليست درجة في الإيمان أو التزكية.</span></div><button data-lvreview="${laterEsc(id)}">راجعت ${subject} مرة أخرى${M.reviews?` · ${AR(M.reviews)}`:''}</button></div>`:''}
+  </div>`;
+}
+function hDepthTileHtml(p){
+  const dm=hDepthMeta(p); if(!dm.total)return '';
+  return `<div class="depth-tile"><span>عمق الدراسة</span><b>${AR(dm.done)}/${AR(dm.total)}</b><i><em style="width:${Math.round(dm.done/dm.total*100)}%"></em></i>${dm.reviews?`<small>مراجعات ${AR(dm.reviews)}</small>`:''}</div>`;
+}
+function hDepthContinueHtml(items,section='works'){
+  const metas=(items||[]).map(p=>({p,m:hDepthMeta(p)})).filter(x=>x.m.total);
+  const started=metas.filter(x=>x.m.done>0&&x.m.done<x.m.total).sort((a,b)=>b.m.lastAt-a.m.lastAt)[0];
+  const untouched=metas.find(x=>x.m.done===0);
+  const complete=metas.filter(x=>x.m.done===x.m.total).sort((a,b)=>a.m.lastAt-b.m.lastAt)[0];
+  const pick=started||untouched||complete;if(!pick)return '';
+  const {p,m}=pick, finished=m.done===m.total, next=finished?'مراجعة':(m.next?.title||'المستوى التالي');
+  const label=section==='works'?'رحلة أعمال القلوب':section==='problems'?'فهم وعلاج أمراض القلوب':section==='nafs'?'رحلة فقه النفس':section==='obstacles'?'فهم العقبات':section==='ish'?'التعمّق في إشكاليات':'رحلة التزكية';
+  const map=m.L.map(x=>x.title).join(' ← ');
+  const noun=section==='works'?'معنى':section==='problems'?'باب':section==='nafs'?'موضوع':section==='obstacles'?'مسألة':section==='ish'?'محاضرة':'موضوع';
+  return `<section class="depth-home"><div class="depth-home-copy"><small>${label}</small><b>${started?'أكمل من حيث توقفت':finished?'راجع ما سبق أن أتممته':`ابدأ ${noun}ًا جديدًا`}: ${hDepthTitle(p)}</b><span>${finished?`أتممت ${AR(m.total)} مستويات · مراجعاتك ${AR(m.reviews)}`:`أنهيت ${AR(m.done)} من ${AR(m.total)} · التالي: ${next}`}</span></div><button data-depth-open="${laterEsc(m.id)}">${finished?'راجع الآن':'أكمل الآن'} ←</button></section>
+  <div class="depth-map"><div><b>${AR(m.total)} مراحل لهذا النوع من المحتوى</b><span>${map}</span></div><small>العودة مبنية على فهم أعمق ومراجعة نافعة، لا على نقاط أو «رتب» دينية.</small></div>`;
+}
+
+
 async function loadH(){ if(HD)return HD;
   try{ HD=await (await fetch('./qalb.json')).json() }catch{ HD={problems:[],works:[],obstacles:[]} }
+  await hLevelsLoad();
   hTrack=(await store.get('qalb-track'))||{}; hJournal=(await store.get('qalb-journal'))||{};
   hProg=(await store.get('qalb-prog'))||{}; hPaths=(await store.get('qalb-paths-v1'))||[]; return HD }
 function hPct(p){
@@ -1341,8 +1445,14 @@ function hRenderList(){
   const items=(HD[hKind]||[]).filter(audienceOk), q=searchNorm(hQuery), F=items.filter(p=>!q||searchNorm(deepSearchText(p)).includes(q));
   const cnt=document.getElementById('heart-result-count'), host=document.getElementById('heart-list'); if(!cnt||!host)return;
   cnt.textContent=`${AR(F.length)} من ${AR(items.length)} بابًا`;
-  host.innerHTML=F.length?`<div class="h-grid">${F.map(p=>{ const pct=hPct(p),j=(hJournal[p.id]||[]).length,pathBtn=hKind==='problems'?hPathQuickButton('problem',p.id):''; return `<div class="h-tile" data-id="${p.id}">${laterRegister(`heart:${hKind}:${p.id}`,{kind:'القلب',title:p.name,text:p.sub||'',source:p.defSource?.t||'',tab:'qalb'})}<div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div>${pathBtn?`<div class="path-quick-wrap">${pathBtn}</div>`:''}<div class="pr"><i style="width:${pct}%"></i></div><div class="st">${pct?'اليوم '+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة في هذا القسم.</div>';
+  const lead=!q&&['works','problems'].includes(hKind)?hDepthContinueHtml(items,hKind):'';
+  host.innerHTML=F.length?lead+`<div class="h-grid">${F.map(p=>{
+    const pct=hPct(p),j=(hJournal[p.id]||[]).length,pathBtn=hKind==='problems'?hPathQuickButton('problem',p.id):'';
+    const depth=hDepthTileHtml(p);
+    return `<div class="h-tile" data-id="${p.id}">${laterRegister(`heart:${hKind}:${p.id}`,{kind:'القلب',title:p.name,text:p.sub||'',source:p.defSource?.t||'',tab:'qalb'})}<div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div>${depth}${pathBtn?`<div class="path-quick-wrap">${pathBtn}</div>`:''}<div class="pr"><i style="width:${pct}%"></i></div><div class="st">${pct?'اليوم '+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div></div>`
+  }).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة في هذا القسم.</div>';
 }
+
 function hProgHtml(id,label){
   const p=hProg[id];
   if(!p) return `<div class="h-p40"><div class="hh">برنامج الأربعين</div>
@@ -1387,6 +1497,7 @@ function hStepsHtml(key,steps){
 function hOpen(id){
   const p=hFind(id); if(!p)return; hCur=id;
   const isOb=!!p.items;
+  const isWork=(HD.works||[]).some(w=>w.id===p.id), isProblem=(HD.problems||[]).some(x=>x.id===p.id), hasDepth=!isOb&&hLevelsOf(p).length>=2;
   const links=[];
   if(p.link) links.push(`<a href="${p.link}" target="_blank" rel="noopener">اقرأ المزيد ↗</a>`);
   if(p.video) links.push(`<a href="${p.video}" target="_blank" rel="noopener">شاهد الشرح ▶</a>`);
@@ -1399,29 +1510,27 @@ function hOpen(id){
       const src=(it.sources||[]).filter(x=>x&&x.u).map(x=>
         `<a href="${x.u}" target="_blank" rel="noopener" class="h-lnk">${x.t||'المصدر'} ↗</a>`).join('');
       const qq=isFemale()?(it.qFemale||it.q):(it.qMale||it.q);
-      return `<div class="h-ob">${laterRegister(`obstacle:${p.id}:${it.id}`,{kind:'عقبة',title:p.name,text:qq,source:it.answerSource?.t||'',tab:'qalb'})}<button class="h-obh" data-ob="${k}">
-          <span class="q">${qq}</span><span class="x">⌄</span></button><div class="path-ob-quick">${hPathQuickButton('obstacle',p.id,it.id)}</div>
+      const depthId=hDepthKey(it), itemDepth=hLevelsOf(it).length>=2;
+      return `<div class="h-ob" data-depth-card="${laterEsc(depthId)}">${laterRegister(`obstacle:${p.id}:${it.id}`,{kind:'عقبة',title:p.name,text:qq,source:it.answerSource?.t||'',tab:'qalb'})}<button class="h-obh" data-ob="${k}">
+          <span class="q">${qq}</span><span class="x">⌄</span></button><div class="path-ob-quick">${hPathQuickButton('obstacle',p.id,it.id)}${itemDepth?`<span class="ob-depth-mini">${AR(hDepthMeta(it).done)}/${AR(hDepthMeta(it).total)} تعمّق</span>`:''}</div>
         <div class="h-obb hide">
-          <div class="h-obs"><div class="lb">لماذا قد تحدث؟</div><ul>${hListHtml(it.why||[])}</ul></div>
-          <div class="h-obs"><div class="lb">الجواب باختصار</div><div class="tx">${it.answer}</div>${hSourceHtml(it.answerSource)}</div>
+          ${itemDepth?hLevelsHtml(it):`<div class="h-obs"><div class="lb">لماذا قد تحدث؟</div><ul>${hListHtml(it.why||[])}</ul></div><div class="h-obs"><div class="lb">الجواب باختصار</div><div class="tx">${it.answer}</div>${hSourceHtml(it.answerSource)}</div>`}
           <div class="path-inline"><span>هذه هي مشكلتك الآن؟ اجمعها في «مساري» وتابع خطواتها بدل أن تضيع بين الأقسام.</span>${hPathButton('obstacle',p.id,it.id)}</div>
-          <div class="h-obs" style="padding-bottom:0"><div class="lb">خطوات التجاوز</div></div>
+          ${itemDepth?`<div class="h-obs" style="padding-bottom:0"><div class="lb">تطبيق اليوم</div><div class="depth-practice-intro">المتابعة هنا لما نفذته فقط، وليست تقييمًا لشخصك أو لإيمانك.</div></div>`:`<div class="h-obs" style="padding-bottom:0"><div class="lb">خطوات التجاوز</div></div>`}
           ${hStepsHtml(key,it.steps||[])}
           ${src?`<div class="h-obs"><div class="lb">المصادر والتوسع</div>${src}</div>`:''}
         </div></div>`}).join('');
   } else {
-    body=`<div class="h-sec"><div class="h-sh">${p.listHead||(HD.works||[]).some(w=>w.id===p.id)?(p.listHead||'ثمراته'):'أسبابها'}</div>
-        <div class="h-bd"><ul>${hListHtml(hList(p))}</ul></div></div>
-      <div class="h-sec"><div class="h-sh">${p.cureHead||((HD.works||[]).some(w=>w.id===p.id)?'وسائل تحصيله':'العلاج')}</div>
-        ${hStepsHtml(p.id,hSteps(p))}</div>
-      ${p.proof?`<div class="h-sec"><div class="h-ay">${p.proof}</div>${hSourceHtml(p.proofSource)}</div>`:''}
-      ${p.note?`<div class="h-sec"><div class="h-warn">${p.note}</div>${hSourceHtml(p.noteSource)}</div>`:''}`;
+    body=hasDepth
+      ? `<div class="h-sec depth-practice"><div class="h-sh">تطبيق اليوم</div><div class="h-bd depth-practice-intro">بعد دراسة المستويات، استخدم هذه الخطوات كمتابعة يومية اختيارية. التتبع هنا لما سجّلته من عمل فقط، وليس حكمًا على إيمانك أو شخصك.</div>${hStepsHtml(p.id,hSteps(p))}</div>${p.note?`<div class="h-sec"><div class="h-warn">${p.note}</div>${hSourceHtml(p.noteSource)}</div>`:''}`
+      : `<div class="h-sec"><div class="h-sh">${p.listHead||'أسبابها'}</div><div class="h-bd"><ul>${hListHtml(hList(p))}</ul></div></div><div class="h-sec"><div class="h-sh">${p.cureHead||'العلاج'}</div>${hStepsHtml(p.id,hSteps(p))}</div>${p.proof?`<div class="h-sec"><div class="h-ay">${p.proof}</div>${hSourceHtml(p.proofSource)}</div>`:''}${p.note?`<div class="h-sec"><div class="h-warn">${p.note}</div>${hSourceHtml(p.noteSource)}</div>`:''}`;
   }
   const jr=(hJournal[p.id]||[]).slice().reverse();
   document.getElementById('v-qalb').innerHTML=
     `<button class="back" id="h-back">رجوع</button>
      <div class="h-cathero"><h2>${p.name}</h2><p>${p.sub||''}</p>${(!isOb&&(HD.problems||[]).some(x=>x.id===p.id))?`<div class="nafs-actions">${hPathButton('problem',p.id)}</div>`:''}</div>
-     ${p.def?`<div class="h-sec"><div class="h-bd">${p.def}${hSourceHtml(p.defSource)}</div></div>`:''}
+     ${p.def&&!hasDepth?`<div class="h-sec"><div class="h-bd">${p.def}${hSourceHtml(p.defSource)}</div></div>`:''}
+     ${hLevelsHtml(p)}
      ${body}
      ${links.length?`<div class="h-sec"><div class="h-sh">مراجع إضافية</div><div class="h-links">${links.join('')}</div></div>`:''}
      <div class="h-sec"><div class="h-sh">دفتري</div>
@@ -1439,6 +1548,15 @@ function hOpen(id){
 async function hClick(e){
   if(e.target.closest('.save-later'))return;
   const kt=e.target.closest('.h-tabs button');
+  const dopen=e.target.closest?.('[data-depth-open]');
+  if(dopen){await hDepthRender(dopen.dataset.depthOpen);return}
+  const lvc=e.target.closest?.('[data-lv]');
+  if(lvc){ const [id,n]=hDepthParseToken(lvc.dataset.lv); await hLevelOpen(id,n); await hDepthRender(id); return }
+  const lvd=e.target.closest?.('[data-lvdone]');
+  if(lvd){ const [id,n]=hDepthParseToken(lvd.dataset.lvdone); const nxt=await hLevelMark(id,n);
+    await hDepthRender(id); toast(nxt?'فُتح المستوى التالي ✓':'أنهيت مسار دراسة هذا الموضوع ✓'); return }
+  const lvr=e.target.closest?.('[data-lvreview]');
+  if(lvr){const id=lvr.dataset.lvreview;await hLevelReview(id);await hDepthRender(id);toast('سُجلت المراجعة ✓');return}
   if(kt){ const k=kt.dataset.k; dCat=null; if(k==='path'){hPathsRender();return} if(k==='ishkaliat'){hIshkaliat();return} if(k==='nafs'){hNafs();return} if(k==='deeds'){hDeeds();return} if(k==='obstacles'){hKind='obstacles';hObstacles();return} if(['problems','works'].includes(k)){hKind=k;hRender();return} }
   const pgo=e.target.closest('button[data-path-go]'); if(pgo){const k=pgo.dataset.pathGo;if(k==='obstacles'){hKind='obstacles';hQuery='';hObstacles()}else if(k==='nafs'){nafsQuery='';hNafs()}else{hKind='problems';hQuery='';hRender()}return}
   const ppreset=e.target.closest('button[data-path-preset]'); if(ppreset){const k=ppreset.dataset.pathPreset;if(k==='worry'){nafsQuery='قلق';nafsGroup='all';hNafs()}else if(k==='futuur'){hQuery='فتور';hObstacles()}else if(k==='sin'){hQuery='ذنب';hObstacles()}else if(k==='family'){hQuery='أسرة';hObstacles()}else if(k==='relation'){hQuery='علاقة';hObstacles()}else{hKind='problems';hQuery='';hRender()}return}
@@ -1519,28 +1637,38 @@ async function hClick(e){
 /* ---------- العقبات اليومية ---------- */
 async function hObstacles(){
   await loadH(); hKind='obstacles'; hCur=null;
-  const cats=(HD.obstacles||[]).filter(audienceOk), q=searchNorm(hQuery);
+  const cats=(HD.obstacles||[]).filter(audienceOk);
   document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}<button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles" aria-current="true">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button>${issueTabButton(false)}</div><div class="nafs-hero"><h2>${g('مشكلتك مختلفة… والدين ثابت.','مشكلتك مختلفة… والدين ثابت.')}</h2><p>العقبات هنا للحياة الواقعية: أسرة، دراسة، عمل، علاقات، هاتف، فتور، قلق وأسئلة. ${g('اختر ما يشبه موقفك','اختاري ما يشبه موقفكِ')}؛ وكل جواب وخطوة تحته مصدره.</p></div><input id="heart-search" class="q-search" type="search" value="${laterEsc(hQuery)}" placeholder="ابحث: أسرة، علاقة، دراسة، قلق، هاتف…"><div class="search-count" id="heart-result-count"></div><div id="heart-list"></div>`;
-  const render=()=>{const qq=searchNorm(hQuery), F=cats.filter(x=>!qq||searchNorm(deepSearchText(x)).includes(qq));document.getElementById('heart-result-count').textContent=`${AR(F.length)} من ${AR(cats.length)} أبواب`;document.getElementById('heart-list').innerHTML=F.length?`<div class="h-grid">${F.map(p=>`<div class="h-tile" data-id="${p.id}">${laterRegister(`obstaclecat:${p.id}`,{kind:'العقبات',title:p.name,text:p.sub||'',source:'مصادر داخل كل مسألة',tab:'qalb'})}<div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div><div class="st">${AR((p.items||[]).filter(audienceOk).length)} مسائل</div></div>`).join('')}</div>`:'<div class="nafs-empty">لا توجد نتيجة مطابقة.</div>'};
+  const render=()=>{
+    const qq=searchNorm(hQuery), F=cats.filter(x=>!qq||searchNorm(deepSearchText(x)).includes(qq));
+    document.getElementById('heart-result-count').textContent=`${AR(F.length)} من ${AR(cats.length)} أبواب`;
+    const allItems=cats.flatMap(c=>(c.items||[]).filter(audienceOk));
+    const lead=!qq?hDepthContinueHtml(allItems,'obstacles'):'';
+    document.getElementById('heart-list').innerHTML=F.length?lead+`<div class="h-grid">${F.map(p=>{
+      const items=(p.items||[]).filter(audienceOk), metas=items.map(hDepthMeta), done=metas.reduce((a,m)=>a+m.done,0), total=metas.reduce((a,m)=>a+m.total,0);
+      return `<div class="h-tile" data-id="${p.id}">${laterRegister(`obstaclecat:${p.id}`,{kind:'العقبات',title:p.name,text:p.sub||'',source:'مصادر داخل كل مسألة',tab:'qalb'})}<div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div>${total?`<div class="depth-tile"><span>عمق الدراسة</span><b>${AR(done)}/${AR(total)}</b><i><em style="width:${Math.round(done/total*100)}%"></em></i></div>`:''}<div class="st">${AR(items.length)} مسائل</div></div>`
+    }).join('')}</div>`:'<div class="nafs-empty">لا توجد نتيجة مطابقة.</div>';
+  };
   document.getElementById('v-qalb').onclick=hClick;document.getElementById('heart-search').oninput=e=>{hQuery=e.target.value;render()};render();
 }
+
 
 /* ---------- فقه النفس ---------- */
 let nafsGroup='all', nafsQuery='';
 function nafsNorm(x){ return searchNorm(x) }
 function hNafsList(){
-  const N=HD.nafs||[], q=nafsNorm(nafsQuery), GM=Object.fromEntries((HD.nafsGroups||[]).map(g=>[g.id,g]));
-  const F=N.filter(audienceOk).filter(it=>(nafsGroup==='all'||it.group===nafsGroup) && (!q||nafsNorm([it.q,it.summary,it.psych,it.iman,...(it.questions||[])].join(' ')).includes(q)));
-  const host=document.getElementById('nafs-list'); if(!host)return; const cnt=document.getElementById('nafs-result-count'); if(cnt)cnt.textContent=`${AR(F.length)} من ${AR(N.filter(audienceOk).length)} موضوعًا`;
-  host.innerHTML=F.length?`<div class="nafs-topic-list">${F.map(it=>{const gr=GM[it.group]||{};return `<div class="nafs-topic">${laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الظاهرة',tab:'qalb'})}<button class="nafs-open" data-nafs-id="${it.id}"><span><span class="ng">${gr.name||'فقه النفس'}</span><span class="nq">${it.q}</span><span class="ns">${it.summary||''}</span></span><span class="go">←</span></button><div class="nafs-path-quick">${hPathQuickButton('nafs',it.id)}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة. جرّب كلمة أخرى أو اختر كل المسارات.</div>';
+  const N=(HD.nafs||[]).filter(audienceOk), q=nafsNorm(nafsQuery), GM=Object.fromEntries((HD.nafsGroups||[]).map(g=>[g.id,g]));
+  const F=N.filter(it=>(nafsGroup==='all'||it.group===nafsGroup) && (!q||nafsNorm([it.q,it.summary,it.psych,it.iman,...(it.questions||[])].join(' ')).includes(q)));
+  const host=document.getElementById('nafs-list'); if(!host)return; const cnt=document.getElementById('nafs-result-count'); if(cnt)cnt.textContent=`${AR(F.length)} من ${AR(N.length)} موضوعًا`;
+  const lead=!q&&nafsGroup==='all'?hDepthContinueHtml(N,'nafs'):'';
+  host.innerHTML=F.length?lead+`<div class="nafs-topic-list">${F.map(it=>{const gr=GM[it.group]||{};return `<div class="nafs-topic">${laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الظاهرة',tab:'qalb'})}<button class="nafs-open" data-nafs-id="${it.id}"><span><span class="ng">${gr.name||'فقه النفس'}</span><span class="nq">${it.q}</span><span class="ns">${it.summary||''}</span></span><span class="go">←</span></button>${hDepthTileHtml(it)}<div class="nafs-path-quick">${hPathQuickButton('nafs',it.id)}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة. جرّب كلمة أخرى أو اختر كل المسارات.</div>';
 }
 function hNafsDetail(id){
   const it=(HD.nafs||[]).find(x=>x.id===id);if(!it){hNafs();return}nafsCur=id;const gr=(HD.nafsGroups||[]).find(g=>g.id===it.group)||{};
-  const plus=laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الظاهرة',tab:'qalb'});
+  const plus=laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الظاهرة',tab:'qalb'}), hasDepth=hLevelsOf(it).length>=2;
   document.getElementById('v-qalb').innerHTML=`<button class="back" id="nafs-back">فقه النفس</button><div class="nafs-detail-hero"><div class="crumb">${gr.name||'فقه النفس'}</div><h2>${it.q}</h2><p>${it.summary}</p>${hSourceHtml(it.summarySource)}<div class="nafs-actions">${hPathButton('nafs',it.id)}${plus}</div></div>
-    <div class="nafs-detail-grid"><div class="nafs-detail-card"><h3>ما الذي يحدث في النفس؟</h3><div class="tx">${it.psych}</div>${hSourceHtml(it.psychSource)}</div><div class="nafs-detail-card"><h3>البوصلة الإيمانية</h3><div class="tx">${it.iman}</div>${hSourceHtml(it.imanSource)}</div></div>
-    <div class="h-sec" style="margin-top:10px"><div class="h-sh">أسئلة تساعدك على فهم نفسك</div><div class="h-bd"><div class="nafs-qcards">${(it.questions||[]).map((x,i)=>`<div class="nafs-qcard"><i>${AR(i+1)}</i><span>${x}</span></div>`).join('')}</div>${hSourceHtml(it.questionsSource)}</div></div>
-    <div class="h-sec"><div class="h-sh">خطوات عملية</div>${hStepsHtml('nafs/'+it.id,it.steps||[])}</div>
+    ${hLevelsHtml(it)}
+    ${hasDepth?`<div class="h-sec depth-practice"><div class="h-sh">تطبيق اليوم</div><div class="h-bd depth-practice-intro">هذه الخطوات تنظيم ذاتي من المحتوى الموثق نفسه. تسجيلها لا يعني تشخيصًا ولا يقيس قيمة الشخص أو إيمانه.</div>${hStepsHtml('nafs/'+it.id,it.steps||[])}</div>`:`<div class="nafs-detail-grid"><div class="nafs-detail-card"><h3>ما الذي يحدث في النفس؟</h3><div class="tx">${it.psych}</div>${hSourceHtml(it.psychSource)}</div><div class="nafs-detail-card"><h3>البوصلة الإيمانية</h3><div class="tx">${it.iman}</div>${hSourceHtml(it.imanSource)}</div></div><div class="h-sec" style="margin-top:10px"><div class="h-sh">أسئلة تساعدك على فهم نفسك</div><div class="h-bd"><div class="nafs-qcards">${(it.questions||[]).map((x,i)=>`<div class="nafs-qcard"><i>${AR(i+1)}</i><span>${x}</span></div>`).join('')}</div>${hSourceHtml(it.questionsSource)}</div></div><div class="h-sec"><div class="h-sh">خطوات عملية</div>${hStepsHtml('nafs/'+it.id,it.steps||[])}</div>`}
     ${(it.flags||[]).length?`<div class="h-sec"><div class="h-sh">متى يكون المختص مهمًا؟</div><div class="h-bd"><div class="flags"><ul>${it.flags.map(f=>`<li>${f}</li>`).join('')}</ul>${hSourceHtml(it.flagsSource)}</div></div></div>`:''}
     ${(it.sources||[]).length?`<div class="h-sec"><div class="h-sh">المصادر والتوسع</div><div class="h-links">${it.sources.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${x.t}</a>`).join('')}</div></div>`:''}`;
   document.getElementById('v-qalb').onclick=hClick;scrollTo({top:0,behavior:'smooth'});
@@ -1586,22 +1714,21 @@ function issueSearchText(it){
 }
 function hIshkaliatList(){
   const host=document.getElementById('ish-list'),cnt=document.getElementById('ish-result-count'); if(!host||!cnt)return;
-  const q=searchNorm(issueQuery), items=(ISH.items||[]).filter(it=>(issueGroup==='all'||it.group===issueGroup)&&(!q||searchNorm(issueSearchText(it)).includes(q)));
-  cnt.textContent=`${AR(items.length)} من ${AR((ISH.items||[]).length)} محاضرة`;
+  const q=searchNorm(issueQuery), all=(ISH.items||[]), items=all.filter(it=>(issueGroup==='all'||it.group===issueGroup)&&(!q||searchNorm(issueSearchText(it)).includes(q)));
+  cnt.textContent=`${AR(items.length)} من ${AR(all.length)} محاضرة`;
   const groupNames=Object.fromEntries((ISH.groups||[]).map(g=>[g.id,g.name]));
-  host.innerHTML=items.length?items.map((it,k)=>{
-    const plus=laterRegister(`ish:${it.id}`,{kind:'إشكاليات',title:it.title,text:it.subtitle,source:`${ISH.meta?.speaker||'د. أحمد عبد المنعم'} — ${it.video}`,tab:'qalb'});
-    return `<div class="h-ob ish-card">${plus}<button class="h-obh" data-ob="${k}">
+  const lead=!q&&issueGroup==='all'?hDepthContinueHtml(all,'ish'):'';
+  host.innerHTML=items.length?lead+items.map((it,k)=>{
+    const plus=laterRegister(`ish:${it.id}`,{kind:'إشكاليات',title:it.title,text:it.subtitle,source:`${ISH.meta?.speaker||'د. أحمد عبد المنعم'} — ${it.video}`,tab:'qalb'}), depthId=hDepthKey(it);
+    return `<div class="h-ob ish-card" data-depth-card="${laterEsc(depthId)}">${plus}<button class="h-obh" data-ob="${k}">
       <span><span class="ish-path">${groupNames[it.group]||''}</span><span class="q">${it.title}</span><span class="ish-sub">${it.subtitle||''}</span></span><span class="x">＋</span></button>
       <div class="h-obb hide">
-        <div class="h-obs ish-intro"><div class="lb">الفكرة العامة</div><div class="tx">${it.intro||''}</div>${issueSource(it,it.introAt||'00:00',it.introSec||0)}</div>
-        <div class="h-obs"><div class="lb">أهم الإشكالات والمحاور</div>
-          <div class="ish-points">${(it.points||[]).map(p=>`<div class="ish-point"><b>${p.title}</b><p>${p.text}</p>${issueSource(it,p.at,p.sec,'المصدر')}</div>`).join('')}</div>
-        </div>
+        ${hLevelsHtml(it)}
         <div class="h-obs ish-full"><a class="h-lnk" href="${it.video}" target="_blank" rel="noopener">شاهد المحاضرة كاملة على YouTube ↗</a></div>
       </div></div>`;
   }).join(''):'<div class="nafs-empty">لا توجد نتيجة مطابقة. جرّب كلمة أخرى أو اختر كل المحاور.</div>';
 }
+
 async function hIshkaliat(){
   await loadIsh();
   if(!issuesEnabled()){

@@ -1,10 +1,10 @@
-# Rafiq — Local Data Safety Layer (v24 R17; introduced in R10)
+# Tadaruq — Local Data Safety Layer (current through v24 R24; introduced in R10)
 
 ## Why this exists
 Rafiq now has real users. Their local data must be treated as legacy user data that survives ordinary UI/content releases. R10 adds a guard layer without adding a cloud backend or central database.
 
 ## Data version
-- Current Chrome extension code version is `24.2.0`; Google Play/TWA identity remains separate from the local data schema.
+- Current Chrome extension code version is `24.4.0`; Google Play/TWA identity remains separate from the local data schema.
 - Local schema version is separate: `rafiq:data-version`.
 - Current local schema: **2**.
 - Future changes to storage keys or data shapes MUST add a migration. Never silently rename/delete a user key.
@@ -19,7 +19,7 @@ On the first R10 launch for a device with pre-R10 data:
 6. On failure, it restores the safety snapshot and leaves the old data version in place.
 
 ## Registered app data
-Exact keys include settings/profile, Saved Later, todos, Qur'an position, dua/Riyad favorites, Heart tracking/journal/progress/personal paths, Irtaqi state, Khabia and related state.
+Exact keys include settings/profile, Saved Later, todos, Qur'an position, dua/Riyad favorites, Heart tracking/journal/progress/personal paths, **Tazkiyah depth-study progress (`qalb-levels-v1`)**, Irtaqi state, Khabia and related state.
 
 Dynamic prefixes:
 - `day:*` — daily logs, including Qur'an pages, adhkar/prayer/review records, plus R17 daily goal/target and goal review.
@@ -73,3 +73,9 @@ Before every import, Rafiq creates an automatic safety snapshot. If validation/m
 
 ## R13 note — static Hisn cache is not user data
 R13 may cache the public Hisn al-Muslim digital dataset in localStorage under `hisn-static-cache-v1-20260819` after the user opens the full book. This is replaceable static reference content, not a user record, so it is intentionally excluded from portable backups, safety snapshots and migrations. If a future release adds user-specific Hisn progress, bookmarks outside the existing `saved-later-v1`, notes, or reading state, that new persistent user key MUST be registered and migrated under the normal Data Safety rules.
+
+
+## R24 note — Tazkiyah depth-study progress is protected user data
+R23 introduced `qalb-levels-v1` for Tazkiyah study-level state. R24 keeps the same key and expands its additive shape to support `done`, `open`, `completedAt`, `lastAt`, and `reviews`. This state is educational progress only; it is **not** a spiritual score or faith rank.
+
+R24 also fixes an R23 omission: `qalb-levels-v1` is now explicitly registered in `app/data-safety.js` and validated as an object, so portable backups/safety snapshots/replace restores include it. Local schema remains **2** because this is registration of an already-existing additive key, not a destructive key rename or incompatible record rewrite. Existing R23 values such as `{done:[...], open:n}` remain valid; missing R24 fields are read with safe defaults.

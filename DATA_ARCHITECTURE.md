@@ -1,4 +1,4 @@
-# Rafiq — Data Architecture (current through v24 R17)
+# Tadaruq — Data Architecture (current through v24 R24)
 
 ## Current state
 
@@ -40,7 +40,11 @@ R10 adds `app/data-safety.js`. This is **not** a backend. It is a local compatib
 - First R10 launch snapshots legacy local data before registering the schema version.
 - Future schema/storage changes must run explicit migrations and roll back on validation failure.
 - Settings now exports a fuller portable backup, audits local structures, verifies new backups with a SHA-256 checksum where supported, and imports old partial `muhasabah-backup` files non-destructively.
-- `day:*`, `tas:*`, Qur'an position/font, Saved Later, personal paths, heart journal/progress, dua/Riyad favorites, Irtaqi, todos, Khabia and profile/settings are covered by the local registry.
+- `day:*`, `tas:*`, Qur'an position/font, Saved Later, personal paths, heart journal/progress, **Tazkiyah depth-study progress (`qalb-levels-v1`)**, dua/Riyad favorites, Irtaqi, todos, Khabia and profile/settings are covered by the local registry.
 - In the Chrome extension, portable backup can also include the Rafiq notebook/preferences/prayer-extension state from `chrome.storage.local`.
 
 See `DATA_SAFETY.md` before changing any persistent storage key or structure.
+
+
+## R24 — Tazkiyah study-depth state
+R24 keeps `rafiq:data-version = 2`. The persistent key `qalb-levels-v1` already existed in R23 and is retained for backward compatibility; R24 only registers it in the Data Safety registry and extends records additively with optional completion/review timestamps. Backups and safety snapshots now include it. The values mean **study progress/review history only**, never a religious or spiritual rank.
