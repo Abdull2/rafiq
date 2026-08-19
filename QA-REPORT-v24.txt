@@ -215,3 +215,28 @@ R16 execution results in handoff environment:
 - PASS: existing `qa/test_data_safety.js` -> `DATA_SAFETY_TEST_OK`, schema version 1, expected backup/record behavior preserved.
 - PASS: complete AI_HANDOFF grew rather than being replaced/truncated, and contains the owner never-delete rule plus Play/TWA continuity.
 - ENVIRONMENT LIMIT: attempted local Chromium/Playwright visual smoke test could not navigate to localhost/file URLs because this sandbox browser is blocked by administrator policy. This is not an app runtime error. Final mobile visual/permission/fullscreen behavior must be smoke-tested after GitHub Pages deployment on a real Android device/TWA.
+
+=== QA addendum — v24 R17 — 2026-08-19 ===
+R17 execution results:
+- PASS: node --check for app/app.js, app/extension-bridge.js, app/data-safety.js, app/sw.js, app/pwa-register.js, and background.js.
+- PASS: deterministic Data Safety harness -> DATA_SAFETY_TEST_OK {"version":2,"records":5,"saved":2,"days":2}.
+- PASS: all 15 JSON/webmanifest files in the full source parse successfully.
+- PASS: app/index.html structural parse found 189 unique IDs and zero duplicate IDs.
+- PASS: daily-plan IDs are present exactly once: day-plan, day-goal, day-target, todo-new, todo-list.
+- PASS: evening task-review IDs are present exactly once: acc-todo-review and todo-review; the old hidden acc-todo block is absent.
+- PASS: professional-history IDs are present exactly once: history-date, history-filter, history-day-detail, history-archive.
+- PASS: history archive implementation contains exact-date discovery/open/edit flow and keeps the existing weekly/28-day sections.
+- PASS: requested home learning copy is present and the old question copy is absent.
+- PASS: Mushaf primary fixed-page path is untouched by R17; left-to-right swipe remains NEXT via qPage+(dx>0?1:-1).
+- PASS: document-level Mushaf Fullscreen API request remains present.
+- PASS: Saved header indicator remains the R16 subtle 7px dot; saved-later-v1 is unchanged.
+- PASS: persistent compatibility invariants remain: todo-items, quran-pos, qalb-paths-v1 and other qalb-* keys are retained.
+- PASS: Data Safety schema is 2 and the v1->v2 migration is additive/no-rewrite.
+- PASS: Chrome MV3 manifest is 24.2.0; open-rafiq-plan command exists; rafiq-todo selection context-menu path and RAFIQ_ADD_TODO bridge exist.
+- PASS: R17 service-worker cache name is rafiq-v24-r17-pwa-20260819.
+- PASS: all 37 service-worker precache paths resolve to files in the app directory.
+- PASS: every local script/link referenced by app/index.html resolves: data-safety.js, app.js, extension-bridge.js, pwa-register.js, manifest.webmanifest and local icons.
+- PASS: AI_HANDOFF.md is retained in full and R17 continuity was appended rather than replacing prior history.
+- PLAY POLICY NOTE: owner reported Health apps declaration changed to off/no-health-features and Google re-review is pending. This build does not claim Play approval.
+- PENDING REAL DEVICE: test start-of-day plan, exact historical-day open/edit, end-of-day task review, geolocation permission, TWA caching/update, and Mushaf fullscreen on an actual Android device after GitHub deployment.
+- ENVIRONMENT LIMIT: a prior local headless Chromium smoke attempt timed out; no complete visual-browser regression claim is made from this build environment.

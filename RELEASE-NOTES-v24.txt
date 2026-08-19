@@ -184,3 +184,19 @@ v24 R15 — قبل النشر: قارئ مصحف غامر + «تزكية» + إ�
 - No persistent storage schema/key/stable content ID changed.
 - Chrome MV3 manifest version: 24.1.0.
 
+
+=== v24 R17 — 2026-08-19 ===
+- Upgraded `السجل` into an all-history archive: exact-date jump, filters, daily drill-down, and the ability to reopen a historical day for editing. Day detail now includes the five self-review items, prayer states, mood, Qur'an pages, daily goal/target, tasks, final task reviews and tomorrow note when available.
+- Moved Todo into a first-class start-of-day workflow. Home now has `خطة اليوم` with `هدف اليوم`, a measurable `التارجت`, task creation, priority marking and live task progress.
+- Added end-of-day `تقييم هدف ومهام اليوم`: goal + each task can be marked `لم يتم / جزئي / تم`. Completion percentages are explicitly organizational, not religious/spiritual scores.
+- Kept the existing five-question nightly religious self-review lightweight and separate from productivity/task review.
+- Home learning prompt changed from `تعرف اللي لازم تعرفه؟` to `اتعرّف على دينك أكثر`.
+- Added additive local data schema v2: `day:*` may include goal/target/goalReview and todo items may include final review metadata. v1 -> v2 migration does not rewrite old records.
+- Hardened per-day save debounce so fast switching between historical days does not reuse one global pending save timer.
+- Updated privacy/data-safety documentation for locally stored daily goal/target/task-review data; no backend, account, analytics or cloud sync was added.
+- PWA manifest now exposes shortcuts for `خطة اليوم`, `السجل`, and existing `السبحة`; `#plan` opens/scolls to the daily plan.
+- Chrome MV3 browser workflow updated: right-click selected page text -> `أضف النص إلى مهام اليوم`; `Alt+Shift+P` opens the daily plan. Existing smart search, notebook and prayer badge remain.
+- PWA service-worker caches bumped to R17 while keeping immediate update activation behavior.
+- Google Play policy continuity: previous Closed-test submission was rejected under Play Console Requirements; owner changed Health apps declaration to off/no-health-features and is waiting for re-review. This release does not claim Play approval.
+- No Android native wrapper/package/permission change; Play package remains `com.tadaruqnoor.rafiq`, so these web/TWA changes do not require a new AAB.
+- Chrome MV3 manifest version: 24.2.0.

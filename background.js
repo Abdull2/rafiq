@@ -16,6 +16,7 @@ function installMenus(){
     chrome.contextMenus.create({id:'rafiq-asma',parentId:'rafiq-parent',title:'أسماء الله الحسنى',contexts:['selection']});
     chrome.contextMenus.create({id:'rafiq-sep',type:'separator',contexts:['selection']});
     chrome.contextMenus.create({id:'rafiq-save',title:'احفظ النص في دفتر رفيق',contexts:['selection']});
+    chrome.contextMenus.create({id:'rafiq-todo',title:'أضف النص إلى مهام اليوم',contexts:['selection']});
   });
 }
 
@@ -69,6 +70,13 @@ chrome.contextMenus.onClicked.addListener(async(info,tab)=>{
     await openNotebook(tab&&tab.id);
     return;
   }
+  if(info.menuItemId==='rafiq-todo' && text){
+    const payload={text:text.slice(0,180),ts:Date.now()};
+    await chrome.storage.session.set({pendingTodo:payload});
+    try{if(tab&&tab.id!==undefined)await chrome.sidePanel.open({tabId:tab.id});}catch(e){}
+    try{await chrome.runtime.sendMessage({type:'RAFIQ_ADD_TODO',payload});}catch(e){}
+    return;
+  }
   const target={
     'rafiq-smart':'smart',
     'rafiq-quran':'quran',
@@ -100,6 +108,13 @@ chrome.commands.onCommand.addListener(async command=>{
   if(command==='open-rafiq-notebook'){
     const tab=await activeTab();
     await openNotebook(tab&&tab.id);
+  }
+  if(command==='open-rafiq-plan'){
+    const tab=await activeTab();
+    if(!tab||tab.id===undefined)return;
+    await chrome.storage.session.set({openDailyPlan:true});
+    try{await chrome.sidePanel.open({tabId:tab.id});}catch(e){}
+    try{await chrome.runtime.sendMessage({type:'RAFIQ_OPEN_PLAN'});}catch(e){}
   }
 });
 

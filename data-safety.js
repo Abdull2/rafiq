@@ -1,8 +1,8 @@
-/* Rafiq Data Safety Layer v1 — local-first backup, validation and migration guard. */
+/* Rafiq Data Safety Layer v2 — local-first backup, validation and migration guard. */
 (function(){
   'use strict';
 
-  const CURRENT_DATA_VERSION=1;
+  const CURRENT_DATA_VERSION=2;
   const BACKUP_FORMAT='rafiq-backup';
   const BACKUP_VERSION=1;
   const DATA_VERSION_KEY='rafiq:data-version';
@@ -168,6 +168,11 @@
     1:async()=>{
       // v0 -> v1 deliberately does not rewrite legacy user data. It only registers the schema version.
       return true;
+    },
+    2:async()=>{
+      // v1 -> v2 is additive only: day records may now include goal/target/goalReview,
+      // and todo items may include final review metadata. Existing records remain valid as-is.
+      return true;
     }
   };
 
@@ -228,7 +233,7 @@
     if(!validation.ok)throw new Error('تعذّر التصدير لأن بعض البيانات غير قابلة للقراءة. استخدم فحص البيانات أولًا.');
     const extension=await collectExtensionData();
     const core={
-      format:BACKUP_FORMAT,backupVersion:BACKUP_VERSION,appVersion:'24.0.0',
+      format:BACKUP_FORMAT,backupVersion:BACKUP_VERSION,appVersion:'24.2.0',
       dataVersion:+(await adapter.get(DATA_VERSION_KEY)||CURRENT_DATA_VERSION),createdAt:new Date().toISOString(),
       origin:location.origin,records:app.records,rawLocal:app.rawLocal,extension,
       summary:{recordCount:Object.keys(app.records).length,dayCount:Object.keys(app.records).filter(k=>k.startsWith('day:')).length}

@@ -1,4 +1,4 @@
-/* Rafiq Chrome extension bridge v1.1: smart search, notebook, omnibox/commands and prayer badge. */
+/* Rafiq Chrome extension bridge v1.2: smart search, notebook, daily-plan capture, omnibox/commands and prayer badge. */
 (function(){
   if(!globalThis.chrome || !chrome.runtime || !chrome.runtime.id) return;
 
@@ -119,6 +119,31 @@
     input.oninput=run;run();setTimeout(()=>input.focus(),80);
   }
 
+
+  async function openDailyPlan(){
+    try{
+      if(globalThis.RafiqPlan?.open){globalThis.RafiqPlan.open();return}
+      if(typeof switchTab==='function')switchTab('today');
+      setTimeout(()=>document.getElementById('day-plan')?.scrollIntoView({behavior:'smooth',block:'start'}),100);
+    }catch(e){}
+  }
+
+  async function addBrowserTodo(text){
+    const clean=String(text||'').trim().slice(0,180);if(!clean)return;
+    try{
+      if(globalThis.RafiqPlan?.addTask){
+        await globalThis.RafiqPlan.addTask(clean,{source:'chrome-selection'});
+      }else if(typeof store!=='undefined'){
+        const list=(await store.get('todo-items'))||[],d=new Date(),due=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        list.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:clean,due,important:false,done:false,created:Date.now(),source:'chrome-selection'});
+        await store.set('todo-items',list);
+        if(typeof loadTodo==='function')await loadTodo();
+      }
+      await openDailyPlan();
+      if(typeof toast==='function')toast('أُضيف النص إلى مهام اليوم');
+    }catch(e){}
+  }
+
   async function applySearch(payload){
     if(!payload||!payload.query)return;
     if(payload.target==='smart'){await showSmartSearch(payload.query);return}
@@ -137,12 +162,16 @@
     if(msg&&msg.type==='RAFIQ_SEARCH')applySearch(msg.payload);
     if(msg&&msg.type==='RAFIQ_OPEN_NOTEBOOK')showNotebook();
     if(msg&&msg.type==='RAFIQ_FOCUS_SEARCH')showSmartSearch('');
+    if(msg&&msg.type==='RAFIQ_OPEN_PLAN')openDailyPlan();
+    if(msg&&msg.type==='RAFIQ_ADD_TODO')addBrowserTodo(msg.payload?.text||msg.payload||'');
   });
 
-  Promise.all([chrome.storage.session.get('pendingSearch'),chrome.storage.session.get('openNotebook'),chrome.storage.session.get('focusRafiqSearch')]).then(async([a,b,c])=>{
+  Promise.all([chrome.storage.session.get('pendingSearch'),chrome.storage.session.get('openNotebook'),chrome.storage.session.get('focusRafiqSearch'),chrome.storage.session.get('pendingTodo'),chrome.storage.session.get('openDailyPlan')]).then(async([a,b,c,d,e])=>{
     if(a.pendingSearch){await applySearch(a.pendingSearch);await chrome.storage.session.remove('pendingSearch')}
     if(b.openNotebook){await showNotebook();await chrome.storage.session.remove('openNotebook')}
     if(c.focusRafiqSearch){await showSmartSearch('');await chrome.storage.session.remove('focusRafiqSearch')}
+    if(d.pendingTodo){setTimeout(()=>addBrowserTodo(d.pendingTodo.text||d.pendingTodo),700);await chrome.storage.session.remove('pendingTodo')}
+    if(e.openDailyPlan){setTimeout(openDailyPlan,500);await chrome.storage.session.remove('openDailyPlan')}
   }).catch(()=>{});
 
   ensureStyles();ensureNotebookButton();

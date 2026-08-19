@@ -1,28 +1,30 @@
-# Rafiq — Local Data Safety Layer (v24 R10)
+# Rafiq — Local Data Safety Layer (v24 R17; introduced in R10)
 
 ## Why this exists
 Rafiq now has real users. Their local data must be treated as legacy user data that survives ordinary UI/content releases. R10 adds a guard layer without adding a cloud backend or central database.
 
 ## Data version
-- Public app/extension version remains `24.0.0`.
+- Current Chrome extension code version is `24.2.0`; Google Play/TWA identity remains separate from the local data schema.
 - Local schema version is separate: `rafiq:data-version`.
-- Current local schema: **1**.
+- Current local schema: **2**.
 - Future changes to storage keys or data shapes MUST add a migration. Never silently rename/delete a user key.
 
 ## Automatic first-run protection
 On the first R10 launch for a device with pre-R10 data:
 1. Rafiq inventories registered local data.
 2. It creates `rafiq:safety-snapshot:v1` before changing the schema version.
-3. It runs the v0 -> v1 migration. This first migration deliberately rewrites no legacy user records; it only registers the schema version.
-4. It validates the resulting structures.
-5. On failure, it restores the safety snapshot and leaves the old data version in place.
+3. It runs versioned migrations in order. v0 -> v1 deliberately rewrites no legacy user records; it only registers the schema version.
+4. R17 adds v1 -> v2 as an **additive compatibility migration** only: existing daily records remain valid, while new records may carry `goal`, `target`, `goalReview`; todo items may carry final task-review metadata. No old record is rewritten just to add empty fields.
+5. It validates the resulting structures.
+6. On failure, it restores the safety snapshot and leaves the old data version in place.
 
 ## Registered app data
 Exact keys include settings/profile, Saved Later, todos, Qur'an position, dua/Riyad favorites, Heart tracking/journal/progress/personal paths, Irtaqi state, Khabia and related state.
 
 Dynamic prefixes:
-- `day:*` — daily logs, including Qur'an pages and adhkar/prayer/review records.
+- `day:*` — daily logs, including Qur'an pages, adhkar/prayer/review records, plus R17 daily goal/target and goal review.
 - `tas:*` — full tasbih configuration/custom items/daily counts.
+- `todo-items` remains the same registered exact key; R17 adds optional per-task final review fields (`review`, `reviewedAt`) without renaming the key or existing item IDs.
 
 Raw local preference:
 - `qFont`.

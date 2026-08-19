@@ -1,4 +1,4 @@
-/* Rafiq PWA service worker registration — v24 R16. */
+/* Rafiq PWA service worker registration — v24 R17. */
 (() => {
   const isLocalhost = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
   const canRegister = location.protocol === 'https:' || (location.protocol === 'http:' && isLocalhost);

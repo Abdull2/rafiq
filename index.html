@@ -942,6 +942,24 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     </button>
   </section>
 
+  <section class="day-plan-card" id="day-plan" aria-labelledby="day-plan-title">
+    <div class="day-plan-head">
+      <div><small id="plan-day-label">خطة اليوم</small><h3 id="day-plan-title">ابدأ يومك بخطة واضحة</h3><p>اكتب هدف اليوم، حدّد نتيجة قابلة للقياس، ثم اختر مهام قليلة تنقلك إليها.</p></div>
+      <div class="day-plan-meter" aria-label="تقدم مهام اليوم"><i id="plan-progress" style="width:0%"></i></div>
+    </div>
+    <div class="day-plan-fields">
+      <label><span>هدف اليوم</span><input id="day-goal" type="text" maxlength="180" placeholder="مثال: أخرج من اليوم وقد أنهيت أهم ملف"></label>
+      <label><span>الهدف القابل للقياس <em>التارجت</em></span><input id="day-target" type="text" maxlength="180" placeholder="مثال: إنهاء ٣ أجزاء من المهمة قبل ٦ مساءً"></label>
+    </div>
+    <div class="day-plan-tasks">
+      <div class="day-plan-task-head"><div><b>مهام اليوم</b><span id="plan-progress-copy">ابدأ بهدف واضح ثم أضف مهامك الأساسية</span></div><span class="val" id="todo-val"></span></div>
+      <div class="todo-add"><input id="todo-new" type="text" maxlength="180" placeholder="أضف مهمة واضحة…">
+        <button id="todo-prio" type="button">☆ مهم</button><button id="todo-add" class="primary" type="button">إضافة</button></div>
+      <div class="mini-bar plan-mini"><i id="todo-bar" style="width:0%"></i></div>
+      <div id="todo-list"></div>
+    </div>
+  </section>
+
   <div class="home-section-head"><b>ابدأ من هنا</b><span>أكثر ما تحتاجه خلال اليوم</span></div>
   <div class="home-journey primary" id="home-journey">
     <button class="home-go feature" data-home-go="quran"><span class="ico">﴿</span><b>هل قرأت وردك اليوم؟</b><span id="home-quran-copy">المصحف يفتح من آخر صفحة توقفت عندها.</span><span class="go">افتح المصحف ←</span></button>
@@ -950,13 +968,13 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
   <div class="home-section-head"><b>لو محتاج بابًا آخر</b><span>تعلم، تزكية، أو خطوة عملية</span></div>
   <div class="home-journey secondary">
-    <button class="home-go" data-home-go="sunnah" data-learn-go="essentials"><span class="ico">◫</span><b>تعرف اللي لازم تعرفه؟</b><span>أساسيات قصيرة بمصادرها.</span><span class="go">إلى التعلّم ←</span></button>
+    <button class="home-go" data-home-go="sunnah" data-learn-go="essentials"><span class="ico">◫</span><b>اتعرّف على دينك أكثر</b><span>أساسيات مهمة ومختصرة بمصادرها.</span><span class="go">إلى التعلّم ←</span></button>
     <button class="home-go" data-home-go="sunnah" data-learn-go="fiqh"><span class="ico">◇</span><b>مسألة فقهية في يومك؟</b><span>طهارة، صلاة، صيام وزكاة وحج.</span><span class="go">إلى الفقه ←</span></button>
     <button class="home-go" data-home-go="qalb"><span class="ico">♡</span><b>كيف حال قلبك؟</b><span>تزكية، عقبات، أعمال القلوب ومساري.</span><span class="go">إلى التزكية ←</span></button>
     <button class="home-go" data-home-go="irtaqi"><span class="ico">↗</span><b>خطوة صغيرة ترتقي بك</b><span>خطة عملية مرتبة بدل تشتيت الجهد.</span><span class="go">إلى ارتقِ ←</span></button>
   </div>
 
-  <button class="evening-gate" id="evening-toggle" type="button"><span class="moon">☾</span><span><b id="evening-title">قبل أن تنام: خلاصة اليوم</b><span id="evening-copy">٥ أسئلة أساسية فقط + حالك اليوم، وأغلق يومك في أقل من دقيقة.</span></span><i id="evening-x">＋</i></button>
+  <button class="evening-gate" id="evening-toggle" type="button"><span class="moon">☾</span><span><b id="evening-title">قبل أن تنام: خلاصة اليوم</b><span id="evening-copy">راجع هدفك ومهامك ثم أجب عن ٥ أسئلة أساسية وأغلق يومك بهدوء.</span></span><i id="evening-x">＋</i></button>
   <div class="home-evening hide" id="evening-panel">
   <div class="hero">
     <div class="hero-top">
@@ -1004,14 +1022,10 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div class="mood-strip" id="mood"></div>
   </div>
 
-  <div class="acc evening-extra hide" id="acc-todo">
-    <button class="acc-head" data-acc="todo"><span class="ttl">مهامي اليوم</span>
-      <span class="mini-bar"><i id="todo-bar" style="width:0%"></i></span><span class="val" id="todo-val"></span><span class="acc-x">＋</span></button>
-    <div class="acc-body hide" id="todo-body">
-      <div class="todo-add"><input id="todo-new" type="text" maxlength="180" placeholder="أضف مهمة واضحة…">
-        <button id="todo-prio" type="button">☆ مهم</button><button id="todo-add" class="primary" type="button">إضافة</button></div>
-      <div id="todo-list"></div>
-    </div>
+  <div class="acc evening-extra hide" id="acc-todo-review">
+    <button class="acc-head" data-acc="todo-review"><span class="ttl">تقييم هدف ومهام اليوم</span>
+      <span class="mini-bar"></span><span class="acc-x">＋</span></button>
+    <div class="acc-body hide" id="todo-review"></div>
   </div>
 
   <div id="sections" class="evening-extra hide"></div>
@@ -1185,6 +1199,17 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 <!-- ============ HISTORY ============ -->
 <div id="v-history" class="hide">
+  <section class="history-archive-section">
+    <div class="history-pro-head"><div><span>سجل المتابعة</span><h2>ارجع لأي يوم سجّلته</h2><p>التقييم الشخصي، الصلوات، خطة اليوم والمهام في مكان واحد. السجل يعرض ما أدخلته أنت فقط، ولا يحكم على تدينك أو قيمة يومك.</p></div></div>
+    <div class="history-tools">
+      <label><span>اذهب إلى تاريخ</span><input id="history-date" type="date"></label>
+      <button id="history-open-date" type="button">عرض اليوم</button>
+      <select id="history-filter" aria-label="تصفية السجل"><option value="all">كل الأيام المسجلة</option><option value="review">فيها تقييم ذاتي</option><option value="prayer">فيها صلاة مسجلة</option><option value="plan">فيها خطة أو مهام</option></select>
+    </div>
+    <div id="history-day-detail"></div>
+    <div class="history-archive-head"><b>أحدث الأيام</b><span id="history-archive-count"></span></div>
+    <div id="history-archive"></div>
+  </section>
   <section>
     <div class="sec-head">أسبوعك ببساطة</div>
     <div id="history-summary"></div>
@@ -1236,8 +1261,8 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
       <p class="tiny">هذا اختيار محتوى فقط، وليس تقييمًا لتدينك أو حكمًا عليك، ويُحفظ محليًا على جهازك.</p>
     </div>
     <div class="onb-step" data-onb="3">
-      <h2>وفي آخر اليوم… دقيقة واحدة.</h2>
-      <p>خلاصة اليوم ٥ أسئلة أساسية فقط؛ لإغلاق اليوم بوعي من غير تحويل آخره إلى اختبار.</p>
+      <h2>ابدأ بخطة… وأنهِ اليوم بمراجعة واضحة.</h2>
+      <p>في أول اليوم اكتب هدفًا وتارجت ومهامًا قليلة. وفي آخره قيّم نتيجة الهدف والمهام ثم أجب عن ٥ أسئلة أساسية فقط.</p>
       <p class="tiny">و«فقه النفس» للتثقيف والتزكية، وليس تشخيصًا طبيًا ولا بديلًا عن علاج قائم. عند أعراض مستمرة أو معطلة للحياة، رفيق يذكّر بطلب تقييم من مختص.</p>
     </div>
     <div class="onb-dots"><i class="on"></i><i></i><i></i><i></i></div>
@@ -1461,6 +1486,18 @@ body.hadith-open{overflow:hidden}.hadith-detail{z-index:320!important;inset:0!im
 #hadith-detail-content{max-width:780px;margin:12px auto 0;padding-bottom:24px}
 @media(max-width:430px){.hadith-detail{padding-inline:12px!important}.hadith-detail-bar{margin-inline:-12px;padding-inline:12px}.hadith-detail-bar>span{max-width:42%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 
+
+/* v24 R17 — professional daily planning + archive */
+.day-plan-card{margin-top:12px;border:1px solid color-mix(in srgb,var(--deep) 18%,var(--line));border-radius:20px;background:var(--card);overflow:hidden;box-shadow:0 10px 28px rgba(37,52,40,.045)}
+.day-plan-head{padding:14px 15px 12px;background:linear-gradient(145deg,color-mix(in srgb,var(--wash) 88%,white 12%),var(--card));position:relative}.day-plan-head small{display:block;color:var(--gold);font-size:10px;font-weight:700;margin-bottom:2px}.day-plan-head h3{font-family:Amiri,serif;color:var(--deep);font-size:22px;margin:0 0 2px;line-height:1.45}.day-plan-head p{font-size:10.5px;color:var(--soft);line-height:1.7;margin:0;max-width:620px}.day-plan-meter{height:5px;background:color-mix(in srgb,var(--line) 70%,transparent);border-radius:999px;overflow:hidden;margin-top:10px}.day-plan-meter i{display:block;height:100%;background:var(--deep);border-radius:999px;transition:width .2s ease}
+.day-plan-fields{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:12px 13px;border-top:1px solid var(--line)}.day-plan-fields label{display:grid;gap:5px}.day-plan-fields label>span{font-size:10px;color:var(--soft);font-weight:600}.day-plan-fields em{font-style:normal;color:var(--gold);font-weight:500}.day-plan-fields input{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:11px;padding:10px 11px;font:inherit;font-size:12px;outline:0}.day-plan-fields input:focus{border-color:var(--sage);box-shadow:0 0 0 3px color-mix(in srgb,var(--sage) 13%,transparent)}
+.day-plan-tasks{border-top:1px solid var(--line)}.day-plan-task-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 13px 3px}.day-plan-task-head>div{display:grid;gap:1px}.day-plan-task-head b{font-size:13px;color:var(--deep)}.day-plan-task-head span{font-size:9.8px;color:var(--soft)}.plan-mini{margin:0 13px 4px;height:4px;border-radius:999px;background:var(--wash);overflow:hidden}.plan-mini i{display:block;height:100%;background:var(--sage);border-radius:999px;transition:width .2s ease}.todo-badge.reviewed{color:var(--deep);background:color-mix(in srgb,var(--deep) 8%,transparent)}
+.todo-review-summary{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 13px;background:var(--wash);border-bottom:1px solid var(--line)}.todo-review-summary>div{display:grid;gap:2px}.todo-review-summary b{font-size:13px;color:var(--deep)}.todo-review-summary span{font-size:10px;color:var(--soft);line-height:1.6}.todo-review-summary strong{font-family:Amiri,serif;font-size:23px;color:var(--deep)}.goal-review-card{padding:12px 13px;border-bottom:1px solid var(--line);display:grid;gap:3px}.goal-review-card small{font-size:9.5px;color:var(--gold);font-weight:700}.goal-review-card>b{font-size:13px;color:var(--ink)}.goal-review-card>span{font-size:10.5px;color:var(--soft)}.todo-review-row{padding:11px 13px;border-bottom:1px solid var(--line);display:grid;gap:8px}.todo-review-row>div:first-child{display:grid;gap:2px}.todo-review-row b{font-size:12.5px;line-height:1.6}.todo-review-row span{font-size:9.8px;color:var(--soft)}.todo-review-scale{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.todo-review-scale button{border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:9px;padding:7px 5px;font:inherit;font-size:10.5px;cursor:pointer}.todo-review-scale button[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}.todo-review-scale.goal{margin-top:7px}.todo-review-empty{padding:14px 13px;color:var(--soft);font-size:11px;line-height:1.75}
+.history-archive-section{overflow:hidden}.history-pro-head{padding:16px 15px 12px;background:linear-gradient(145deg,color-mix(in srgb,var(--wash) 85%,var(--card)),var(--card));border-bottom:1px solid var(--line)}.history-pro-head>div{max-width:720px}.history-pro-head span{font-size:9.5px;color:var(--gold);font-weight:700}.history-pro-head h2{font-family:Amiri,serif;font-size:24px;color:var(--deep);margin:2px 0 2px}.history-pro-head p{margin:0;font-size:10.5px;line-height:1.75;color:var(--soft)}
+.history-tools{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(140px,.8fr);gap:7px;padding:11px 13px;border-bottom:1px solid var(--line);align-items:end}.history-tools label{display:grid;gap:4px}.history-tools label span{font-size:9.5px;color:var(--soft)}.history-tools input,.history-tools select,.history-tools button{min-height:38px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font:inherit;font-size:11px;padding:7px 9px}.history-tools button{background:var(--deep);border-color:var(--deep);color:#fff;cursor:pointer}.history-archive-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px 7px}.history-archive-head b{font-size:12px;color:var(--deep)}.history-archive-head span{font-size:9.5px;color:var(--soft)}
+.history-archive-list{display:grid;border-top:1px solid var(--line)}.history-day-row{width:100%;border:0;border-bottom:1px solid var(--line);background:var(--card);color:var(--ink);text-align:right;padding:11px 13px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) auto;gap:10px;align-items:center;cursor:pointer}.history-day-row:hover{background:color-mix(in srgb,var(--wash) 48%,var(--card))}.history-day-main{display:grid;gap:2px;min-width:0}.history-day-main b{font-size:12.5px;color:var(--deep)}.history-day-main span{font-size:9.8px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.history-day-metrics{display:flex;flex-wrap:wrap;gap:5px}.history-chip{font-size:9.2px;color:var(--soft);border:1px solid var(--line);background:var(--paper);padding:3px 6px;border-radius:999px;white-space:nowrap}.history-day-row>i{font-style:normal;color:var(--gold);font-size:17px}.history-archive-empty{padding:20px 14px;text-align:center;color:var(--soft);font-size:11px;line-height:1.8}
+.history-day-detail{margin:12px 13px;border:1px solid color-mix(in srgb,var(--deep) 18%,var(--line));border-radius:15px;background:var(--paper);overflow:hidden}.history-day-detail-head{padding:12px 13px;background:var(--wash);display:flex;align-items:center;justify-content:space-between;gap:10px}.history-day-detail-head>div{display:grid;gap:1px}.history-day-detail-head small{font-size:9.5px;color:var(--gold)}.history-day-detail-head b{font-family:Amiri,serif;font-size:19px;color:var(--deep)}.history-day-detail-head button{border:1px solid var(--line);background:var(--card);color:var(--deep);border-radius:9px;padding:7px 9px;font:inherit;font-size:10px;cursor:pointer}.history-day-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}.history-detail-card{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px;min-width:0}.history-detail-card.wide{grid-column:1/-1}.history-detail-card>small{display:block;font-size:9px;color:var(--gold);font-weight:700;margin-bottom:4px}.history-detail-card>b{display:block;font-size:12.5px;color:var(--deep);line-height:1.55}.history-detail-card>span{display:block;font-size:10px;color:var(--soft);line-height:1.65;margin-top:2px}.history-detail-list{display:grid;gap:6px;margin-top:5px}.history-detail-line{display:flex;justify-content:space-between;gap:8px;font-size:10.5px;border-top:1px dashed var(--line);padding-top:5px}.history-detail-line:first-child{border-top:0;padding-top:0}.history-detail-line span{color:var(--soft)}.history-detail-line b{font-size:10.5px;color:var(--ink);font-weight:600}.history-prayer-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.history-prayer-pills span{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:4px 7px;font-size:9.5px;color:var(--soft)}.history-prayer-pills span.on{color:var(--deep);border-color:color-mix(in srgb,var(--deep) 30%,var(--line));background:color-mix(in srgb,var(--deep) 6%,var(--paper))}
+@media(max-width:520px){.day-plan-fields{grid-template-columns:1fr}.history-tools{grid-template-columns:1fr auto}.history-tools select{grid-column:1/-1}.history-day-row{grid-template-columns:1fr auto}.history-day-metrics{grid-column:1/-1}.history-day-detail-grid{grid-template-columns:1fr}.history-detail-card.wide{grid-column:auto}.day-plan-head h3{font-size:20px}}
 </style>
 
 <script src="./data-safety.js"></script>

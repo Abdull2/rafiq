@@ -1,6 +1,6 @@
-/* Rafiq PWA service worker — generated for v24 R16. */
-const CACHE_NAME = 'rafiq-v24-r16-pwa-20260819';
-const RUNTIME_CACHE = 'rafiq-runtime-v24-r16-20260819';
+/* Rafiq PWA service worker — generated for v24 R17. */
+const CACHE_NAME = 'rafiq-v24-r17-pwa-20260819';
+const RUNTIME_CACHE = 'rafiq-runtime-v24-r17-20260819';
 const PRECACHE_URLS = [
   "./",
   "./adiya.json",

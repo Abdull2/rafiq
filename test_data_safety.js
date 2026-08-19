@@ -16,7 +16,7 @@ require('../app/data-safety.js');
   localStorage.setItem('day:2026-08-19',JSON.stringify({pages:3}));
   localStorage.setItem('qFont','25');
   let r=await RafiqDataSafety.init(); if(!r.ok)throw new Error('init failed '+JSON.stringify(r));
-  if(JSON.parse(localStorage.getItem('rafiq:data-version'))!==1)throw new Error('version not set');
+  if(JSON.parse(localStorage.getItem('rafiq:data-version'))!==2)throw new Error('version not set');
   const b=await RafiqDataSafety.createPortableBackup();
   if(!b.integrity?.checksum)throw new Error('checksum missing');
   localStorage.setItem('saved-later-v1',JSON.stringify([{id:'changed'}]));

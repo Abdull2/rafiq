@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "رفيق يومك",
   "short_name": "رفيق",
-  "description": "رفيق يومك: قرآن وأذكار وعلم وفقه، مع مسارات شخصية للمشكلات الواقعية وفقه النفس ومصادر ظاهرة.",
-  "version": "24.1.0",
+  "description": "رفيق يومك: قرآن وأذكار وعلم وفقه، مع خطة يومية وسجل متابعة ومواقيت صلاة وأدوات عملية أثناء التصفح.",
+  "version": "24.2.0",
   "minimum_chrome_version": "114",
   "permissions": [
     "sidePanel",
@@ -47,6 +47,13 @@
         "mac": "Alt+Shift+N"
       },
       "description": "فتح دفتر رفيق"
+    },
+    "open-rafiq-plan": {
+      "suggested_key": {
+        "default": "Alt+Shift+P",
+        "mac": "Alt+Shift+P"
+      },
+      "description": "فتح خطة اليوم في رفيق"
     }
   },
   "icons": {

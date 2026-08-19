@@ -2,9 +2,9 @@ OWNER IMMUTABLE HANDOFF RULE — READ BEFORE ANYTHING ELSE:
 - NEVER delete, rename, truncate, summarize-away, or exclude AI_HANDOFF.md. Preserve all old history and append the current session chat/change/error/test ledger before returning artifacts.
 - Current distribution is GitHub Pages PWA + Google Play TWA, package ID com.tadaruqnoor.rafiq, with Chrome MV3 source retained.
 - Never commit signing.keystore, signing passwords/info, API tokens, or Play credentials.
-- Latest code state is v24 R16 / Chrome manifest 24.1.0. Read AI_HANDOFF.md sections 25–26 before changing PWA/Play, Mushaf fullscreen, prayer/location, home UI, or Saved badge.
+- Latest code state is v24 R17 / Chrome manifest 24.2.0 / local data schema 2. Read AI_HANDOFF.md sections 25–27 before changing PWA/Play, daily planning/history, Chrome browser workflow, Mushaf fullscreen, prayer/location, home UI, or Saved badge.
 
-هذه هي النسخة القانونية الحالية للمشروع: **v24 R16** (Chrome manifest = 24.1.0).
+هذه هي النسخة القانونية الحالية للمشروع: **v24 R17** (Chrome manifest = 24.2.0; local data schema = 2).
 
 اقرأ AI_HANDOFF.md and DATA_ARCHITECTURE.md وAI_HANDOFF.json وCONTENT_PROVENANCE-ISHKALIAT.md أولًا ثم افحص الكود الحالي. اعتبر ملفات الـhandoff سجل قرارات المشروع، ولا تطلب من المالك إعادة شرح الماضي إلا لو فيه تعارض حقيقي.
 
@@ -40,7 +40,7 @@ LATEST v24 R9 NOTE — SEERAH:
 - Rafiq summaries are paraphrases, not verbatim source text. Read section 19 of AI_HANDOFF.md before changing seerah.
 
 LATEST v24 R10 DATA-SAFETY NOTE:
-Rafiq now has real users. Read DATA_SAFETY.md and section 20 of AI_HANDOFF.md before touching any persistent storage. `rafiq:data-version` is schema v1. Do not rename/delete a storage key, change a stored shape, or change a stable saved-content ID without a backward-compatible migration and rollback path. Every new persistent key/prefix must be registered in app/data-safety.js. Old partial muhasabah backups must remain importable non-destructively. No cloud backend/analytics was added.
+Rafiq now has real users. Read DATA_SAFETY.md and section 20 of AI_HANDOFF.md before touching any persistent storage. `rafiq:data-version` is schema v2. Do not rename/delete a storage key, change a stored shape, or change a stable saved-content ID without a backward-compatible migration and rollback path. Every new persistent key/prefix must be registered in app/data-safety.js. Old partial muhasabah backups must remain importable non-destructively. No cloud backend/analytics was added.
 
 
 LATEST v24 R11 NOTE:
@@ -69,7 +69,7 @@ LATEST v24 R15 NOTE:
 - تزكية navigation is intentionally text-led: do not restore decorative ♡ ◇ ↗ ◌ ⌁ icons. Functional + / ✓ state controls remain.
 - Mushaf has an immersive fullscreen mode with CSS fallback + optional browser Fullscreen API; tap empty page space toggles controls. Preserve fixed KFQC page geometry and left-to-right finger swipe = NEXT page.
 - Hadith explanations must open on a fully opaque full-viewport reader. Preserve `رجوع للأحاديث`, Escape, and browser/system Back support. Do not use undefined `--bg` for this surface.
-- R15 changes no storage schema/keys/IDs. Data Safety v1 remains mandatory.
+- R15 itself changed no storage schema/keys/IDs. Current Data Safety layer is v2 after the additive R17 migration and remains mandatory.
 
 R16 continuity:
 - Fullscreen Mushaf must keep fixed 604-page KFQC SVG geometry; native fullscreen is requested on documentElement and CSS fallback must remain. Do not reflow Quran text.
@@ -77,4 +77,13 @@ R16 continuity:
 - Home remains a gateway/teaser with prominent prayer state and Quran/adhkar primary actions; do not turn it into a dense dashboard.
 - Saved header uses a subtle dot, not the old large count bubble; saved-later-v1 is unchanged.
 - PWA/TWA web changes deploy through GitHub Pages; Android-shell/package/native changes require a new AAB. Package ID is com.tadaruqnoor.rafiq.
+
+R17 continuity:
+- Professional `السجل` now scans all meaningful `day:*` records + task dates, supports exact-date jump/filtering, and opens day detail with self-review, prayers, goal/target, tasks/final task review, Quran pages and tomorrow note. Preserve this all-history access.
+- `خطة اليوم` is visible near the top of Home: goal + measurable target + tasks during the day. Evening has a separate organizational goal/task review. Do not hide Todo back inside the evening-only section.
+- The five-question religious nightly review remains lightweight; do not merge productivity percentages into religiosity/iman scoring.
+- New additive fields: day goal/target/goalReview and todo review/reviewedAt/source. Schema 1 -> 2 migration is additive/no-rewrite; do not remove it.
+- Home learning copy is `اتعرّف على دينك أكثر`.
+- Chrome MV3 24.2.0: right-click selected text -> `أضف النص إلى مهام اليوم`; Alt+Shift+P opens daily plan. Extension users need a new extension package; GitHub-only updates do not update packaged Chrome extension code.
+- Google Play policy status: previous Closed-test submission was rejected under Play Console Requirements; owner turned Health apps declaration off/no-health-features and is waiting for re-review. Do not claim approval until Play Console confirms it.
 

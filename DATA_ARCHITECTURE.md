@@ -1,4 +1,4 @@
-# Rafiq — Data Architecture (v24 R5)
+# Rafiq — Data Architecture (current through v24 R17)
 
 ## Current state
 
@@ -36,7 +36,7 @@ Do **not** send by default: journal text, notebook text, dua text entered by use
 ## R10 — local data-safety layer
 R10 adds `app/data-safety.js`. This is **not** a backend. It is a local compatibility/backup layer around the existing per-device data model.
 
-- Local schema version: `rafiq:data-version = 1`.
+- Local schema version: `rafiq:data-version = 2`. R17 adds only additive daily-plan/task-review fields; existing records remain valid.
 - First R10 launch snapshots legacy local data before registering the schema version.
 - Future schema/storage changes must run explicit migrations and roll back on validation failure.
 - Settings now exports a fuller portable backup, audits local structures, verifies new backups with a SHA-256 checksum where supported, and imports old partial `muhasabah-backup` files non-destructively.

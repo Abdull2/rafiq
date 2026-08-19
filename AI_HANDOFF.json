@@ -1,7 +1,7 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-R16-2026-08-19",
+  "state_id": "RAFIQ-HANDOFF-v24-R17-2026-08-19",
   "project": "رفيق يومك",
-  "version": "v24",
+  "version": "v24 R17",
   "platform": "GitHub Pages PWA + Google Play TWA; Chrome MV3 source retained",
   "read_first": [
     "AI_HANDOFF.md",
@@ -35,7 +35,7 @@
     "saved_later": "saved-later-v1",
     "onboarding": "onboarding-seen-v3",
     "qalb_paths": "qalb-paths-v1 (selected heart/obstacle/Fiqh-al-Nafs paths, local progress, check-ins)",
-    "data_schema": "rafiq:data-version = 1",
+    "data_schema": "rafiq:data-version = 2",
     "safety_snapshot": "rafiq:safety-snapshot:v1"
   },
   "key_sources": {
@@ -66,6 +66,7 @@
   },
   "roadmap": [
     "source integrity and regression testing",
+    "real-device regression for R17 daily plan, historical archive, task review, prayer permission and Mushaf fullscreen",
     "deep-link saved items and personal paths to exact content",
     "refine personal-path prioritization without diagnosing users",
     "verify/refine Ishkaliat summaries against actual transcripts/official text when available",
@@ -74,15 +75,15 @@
     "licensed human audio for adhkar when a verified source/licence exists",
     "continued large-tab UX/accessibility cleanup"
   ],
-  "manifest_version_string": "24.1.0",
+  "manifest_version_string": "24.2.0",
   "current_release_changes": [
-    "R16 preserves the full AI_HANDOFF.md and adds an immutable owner rule: never delete/rename/truncate/exclude it; append every session chat/change ledger.",
-    "Mushaf fullscreen now requests native Fullscreen API on documentElement, tracks visualViewport height, and auto-hides controls while preserving fixed 604-page KFQC SVG geometry.",
-    "Prayer setup now explains Android/browser geolocation permission, device timezone behavior, local-only coordinate storage, manual fallback, and permission/error states.",
-    "Home gateway UI was restructured into welcome + prayer status + primary Quran/adhkar actions + smaller learning/fiqh/tazkiyah/Irtaqi gateways.",
-    "Saved header numeric bubble was replaced with a subtle 7px status dot; accessible title retains the exact saved count.",
-    "PWA service worker update flow was tightened (R16 cache, updateViaCache none, SKIP_WAITING/controllerchange reload) to reduce stale GitHub Pages updates.",
-    "No persistent storage key/shape/stable saved-content ID changed; Data Safety schema v1 remains unchanged."
+    "R17 adds a professional all-history archive: every meaningful day can be opened by exact date, filtered by self-review/prayer/plan, and drilled into for ratings, prayer states, Quran pages, daily goal/target, tasks and final task reviews.",
+    "R17 moves daily planning to the start of the home flow: goal + measurable target + tasks are visible during the day; the evening flow adds explicit goal/task review while keeping the existing five-question religious self-review lightweight.",
+    "R17 changes the home learning prompt from «تعرف اللي لازم تعرفه؟» to «اتعرّف على دينك أكثر».",
+    "R17 keeps existing todo-items and day:* storage keys but adds optional goal/target/goalReview and task review metadata; Data Safety schema is bumped additively from 1 to 2 with a no-rewrite compatibility migration.",
+    "R17 Chrome MV3 build is browser-oriented: selected page text can be added to today’s tasks from the context menu, and Alt+Shift+P opens the daily plan; existing smart search, notebook and prayer badge remain.",
+    "PWA service-worker cache is bumped to R17; web/TWA changes remain deployable through GitHub Pages without a new Android AAB because no native Android wrapper setting changed.",
+    "Google Play policy status at handoff: previous Closed-test submission was rejected under Play Console Requirements; owner changed the Health apps declaration to off/no health features and is waiting for Google re-review."
   ],
   "data_architecture": {
     "cloud_backend": false,
@@ -90,8 +91,8 @@
     "chrome_app_state": "localStorage via app store wrapper; extension notebook/prefs use chrome.storage.local",
     "android_existing_wrapper": "PWABuilder/TWA -> https://abdull2.github.io/rafiq/",
     "decision_required_before_cloud": "owner must explicitly approve analytics vs account sync, data categories, privacy and retention",
-    "local_data_schema_version": 1,
-    "safety_layer": "app/data-safety.js; local snapshot + migration + validation + rollback + portable backup"
+    "local_data_schema_version": 2,
+    "safety_layer": "app/data-safety.js v2; local snapshot + migration + validation + rollback + portable backup"
   },
   "google_play": {
     "app_name": "تدارُك - Tadaruq",
@@ -101,7 +102,8 @@
     "closed_release_name": "tadaruq first",
     "production_gate": "At least 12 opted-in closed testers for at least 14 consecutive days, then apply for Production access (as shown in owner Play Console).",
     "assetlinks_requirement": "Use com.tadaruqnoor.rafiq + Google Play App Signing SHA-256 in /.well-known/assetlinks.json.",
-    "secret_rule": "Never commit signing.keystore, signing passwords/info, API tokens, or Play credentials."
+    "secret_rule": "Never commit signing.keystore, signing passwords/info, API tokens, or Play credentials.",
+    "policy_status": "Previous submission rejected under Play Console Requirements. Owner turned Health apps declaration off/no health features on 2026-08-19 and is awaiting re-review; do not claim approval until Play Console confirms it."
   },
   "immutable_handoff_policy": {
     "file": "AI_HANDOFF.md",

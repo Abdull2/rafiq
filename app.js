@@ -88,7 +88,7 @@ function qiblaBearing(lat,lng){ const kLat=dtr(21.4225), kLng=dtr(39.8262);
 /* ================= state ================= */
 const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const fromIso=k=>new Date(k+'T12:00:00');
-const blank=()=>({ratings:{},mood:'',tomorrow:'',best:'',worst:'',prayers:{},azkar:{},tasbih:{},pages:0});
+const blank=()=>({ratings:{},mood:'',tomorrow:'',best:'',worst:'',prayers:{},azkar:{},tasbih:{},pages:0,goal:'',target:'',goalReview:null});
 let current=iso(new Date()), data=blank(), settings={}, qada={}, tab='today';
 let dIdx=0, tCount=0, AZ={sets:[]}, azkarMode = new Date().getHours()<15 ? 'morning' : 'evening', azkarQuery='';
 let HISN=null, hisnChapter=null, hisnLoadError='';
@@ -138,7 +138,7 @@ function paintProfileUI(){
   }
   const et=document.getElementById('evening-title'), ec=document.getElementById('evening-copy');
   if(et&&profile.gender)et.textContent=g('قبل أن تنام: خلاصة اليوم','قبل أن تنامي: خلاصة اليوم');
-  if(ec&&profile.gender)ec.textContent=g('٥ أسئلة أساسية فقط + حالك اليوم، وأغلق يومك في أقل من دقيقة.','٥ أسئلة أساسية فقط + حالك اليوم، وأغلقي يومك في أقل من دقيقة.');
+  if(ec&&profile.gender)ec.textContent=g('راجع هدفك ومهامك ثم أجب عن ٥ أسئلة أساسية وأغلق يومك بهدوء.','راجعي هدفك ومهامك ثم أجيبي عن ٥ أسئلة أساسية وأغلقي يومك بهدوء.');
 }
 
 /* ================= احفظها لوقت لاحق ================= */
@@ -182,22 +182,41 @@ function arabicDate(k){ const d=fromIso(k);
   return h? g+' — '+h : g }
 
 /* ================= save ================= */
-let saveT;
-function save(msg){ clearTimeout(saveT); saveT=setTimeout(async()=>{
+const saveTimers=new Map();
+function save(msg){
   ['tomorrow','best','worst'].forEach(f=>{const el=document.getElementById(f); if(el) data[f]=el.value});
-  await store.set('day:'+current,data); toast(msg); paintStrip();
-},350) }
+  const dayKey=current,snapshot=JSON.parse(JSON.stringify(data));
+  if(saveTimers.has(dayKey))clearTimeout(saveTimers.get(dayKey));
+  saveTimers.set(dayKey,setTimeout(async()=>{
+    await store.set('day:'+dayKey,snapshot);saveTimers.delete(dayKey);
+    if(dayKey===current){if(msg!==false)toast(msg);paintStrip()}
+  },350));
+}
 
-/* ================= todo ================= */
+/* ================= daily plan + todo ================= */
 let todoItems=[], todoImportant=false;
-async function loadTodo(){ todoItems=(await store.get('todo-items'))||[]; renderTodo() }
+const TODO_REVIEW_SCALE=[['لم يتم',0],['جزئي',1],['تم',2]];
+async function loadTodo(){ todoItems=(await store.get('todo-items'))||[]; renderTodo(); renderTodoReview() }
 const todoEsc=x=>(x||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function todoDatePlus(k,n){const d=fromIso(k);d.setDate(d.getDate()+n);return iso(d)}
-async function saveTodo(){await store.set('todo-items',todoItems);renderTodo()}
+function todoForDay(day=current){return todoItems.filter(x=>x.due===day)}
+function todoAchievement(tasks){
+  if(!tasks.length)return {pct:0,reviewed:0,total:0};
+  const reviewed=tasks.filter(x=>Number.isInteger(x.review)&&x.review>=0&&x.review<=2);
+  const sum=reviewed.reduce((n,x)=>n+x.review,0);
+  return {pct:reviewed.length?Math.round(sum/(reviewed.length*2)*100):0,reviewed:reviewed.length,total:tasks.length};
+}
+async function saveTodo(){await store.set('todo-items',todoItems);renderTodo();renderTodoReview()}
+function paintPlanProgress(){
+  const due=todoForDay(),done=due.filter(x=>x.done),pct=due.length?Math.round(done.length/due.length*100):0;
+  const p=document.getElementById('plan-progress');if(p)p.style.width=pct+'%';
+  const m=document.getElementById('plan-progress-copy');if(m)m.textContent=due.length?`${AR(done.length)} من ${AR(due.length)} مهمة منجزة`:'ابدأ بهدف واضح ثم أضف مهامك الأساسية';
+  const d=document.getElementById('plan-day-label');if(d)d.textContent=new Intl.DateTimeFormat('ar-EG',{weekday:'long',day:'numeric',month:'long'}).format(fromIso(current));
+}
 function renderTodo(){
   const host=document.getElementById('todo-list'); if(!host)return;
   const todayKey=iso(new Date());
-  const due=todoItems.filter(x=>x.due===current);
+  const due=todoForDay();
   const overdue=current===todayKey?todoItems.filter(x=>!x.done&&x.due<todayKey).sort((a,b)=>(b.important?1:0)-(a.important?1:0)||String(a.due).localeCompare(String(b.due))):[];
   const open=due.filter(x=>!x.done).sort((a,b)=>(b.important?1:0)-(a.important?1:0)||(a.created||0)-(b.created||0)), done=due.filter(x=>x.done).sort((a,b)=>(b.doneAt||0)-(a.doneAt||0));
   const pct=due.length?Math.round(done.length/due.length*100):0;
@@ -205,34 +224,55 @@ function renderTodo(){
   const bar=document.getElementById('todo-bar'); if(bar)bar.style.width=pct+'%';
   const row=(x,late=false)=>`<div class="todo-row ${x.done?'done':''}" data-todo="${x.id}">
     <button class="todo-check ${x.done?'on':''}" data-todo-check="${x.id}" aria-label="${x.done?'إلغاء الإنجاز':'تم'}">${x.done?'✓':''}</button>
-    <div class="todo-text">${todoEsc(x.text)}${x.important?'<span class="todo-badge">مهم</span>':''}${late?'<span class="todo-badge">متأخرة</span>':''}</div>
+    <div class="todo-text">${todoEsc(x.text)}${x.important?'<span class="todo-badge">مهم</span>':''}${late?'<span class="todo-badge">متأخرة</span>':''}${Number.isInteger(x.review)?`<span class="todo-badge reviewed">${TODO_REVIEW_SCALE.find(v=>v[1]===x.review)?.[0]||'مراجع'}</span>`:''}</div>
     <div class="todo-actions">${late?`<button data-todo-today="${x.id}" title="رحّل لليوم">لليوم</button>`:`<button data-todo-next="${x.id}" title="رحّل للغد">غدًا</button>`}<button data-todo-del="${x.id}" title="حذف">حذف</button></div></div>`;
   let html=`<div class="todo-summary"><span>${due.length?`أنجزت ${AR(done.length)} من ${AR(due.length)}`:'لا مهام لهذا اليوم'}</span><span>${pct?AR(pct)+'%':''}</span></div>`;
   if(overdue.length)html+=`<div class="todo-group-title">تحتاج قرارًا · ${AR(overdue.length)} متأخرة</div>${overdue.map(x=>row(x,true)).join('')}`;
   if(open.length)html+=`<div class="todo-group-title">قيد التنفيذ</div>${open.map(x=>row(x)).join('')}`;
   if(done.length)html+=`<div class="todo-group-title">تم اليوم ✓</div>${done.map(x=>row(x)).join('')}`;
-  if(!overdue.length&&!due.length)html+=`<div class="todo-empty">اكتب أهم ما تريد إنجازه اليوم. اجعل القائمة قصيرة وواضحة.</div>`;
-  host.innerHTML=html;
+  if(!overdue.length&&!due.length)html+=`<div class="todo-empty">اكتب أهم ما تريد إنجازه اليوم. القائمة الأقصر أوضح وأسهل في المراجعة آخر اليوم.</div>`;
+  host.innerHTML=html;paintPlanProgress();
+}
+function renderTodoReview(){
+  const host=document.getElementById('todo-review');if(!host)return;
+  const due=todoForDay(),a=todoAchievement(due),goal=String(data.goal||'').trim(),target=String(data.target||'').trim();
+  const goalButtons=TODO_REVIEW_SCALE.map(([label,val])=>`<button data-goal-review="${val}" aria-pressed="${data.goalReview===val?'true':'false'}">${label}</button>`).join('');
+  const tasks=due.length?due.map(x=>`<div class="todo-review-row"><div><b>${todoEsc(x.text)}</b><span>${x.done?'معلّمة منجزة أثناء اليوم':'لم تُعلّم منجزة أثناء اليوم'}</span></div><div class="todo-review-scale">${TODO_REVIEW_SCALE.map(([label,val])=>`<button data-task-review="${x.id}" data-review="${val}" aria-pressed="${x.review===val?'true':'false'}">${label}</button>`).join('')}</div></div>`).join(''):'<div class="todo-review-empty">لا توجد مهام لهذا اليوم. يمكنك إضافة مهام من «خطة اليوم» ثم تقييمها هنا في نهاية اليوم.</div>';
+  host.innerHTML=`<div class="todo-review-summary"><div><b>مراجعة خطة اليوم</b><span>${a.reviewed?`قيّمت ${AR(a.reviewed)} من ${AR(a.total)} مهمة · إنجاز تنظيمي ${AR(a.pct)}%`:'قيّم النتيجة النهائية للهدف والمهام بدون جلد للذات.'}</span></div>${a.reviewed?`<strong>${AR(a.pct)}%</strong>`:''}</div>
+    ${(goal||target)?`<div class="goal-review-card"><small>هدف اليوم</small><b>${todoEsc(goal||'—')}</b>${target?`<span>التارجت: ${todoEsc(target)}</span>`:''}<div class="todo-review-scale goal">${goalButtons}</div></div>`:'<div class="todo-review-empty">لم تكتب هدفًا أو تارجت لهذا اليوم.</div>'}${tasks}`;
+}
+async function addTodoText(text,{due=current,important=false,source='app'}={}){
+  const clean=String(text||'').trim().slice(0,180);if(!clean)return null;
+  const item={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:clean,due,important:!!important,done:false,created:Date.now(),source};
+  todoItems.push(item);await saveTodo();return item;
 }
 async function addTodo(){
   const inp=document.getElementById('todo-new'), text=inp.value.trim(); if(!text){inp.focus();return}
-  todoItems.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text,due:current,important:todoImportant,done:false,created:Date.now()});
+  await addTodoText(text,{due:current,important:todoImportant});
   inp.value=''; todoImportant=false; const p=document.getElementById('todo-prio');p.classList.remove('on');p.textContent='☆ مهم';
-  await saveTodo(); toast('أُضيفت المهمة');
+  toast('أُضيفت المهمة');
 }
+globalThis.RafiqPlan={addTask:async(text,opts={})=>addTodoText(text,{due:opts.due||iso(new Date()),important:!!opts.important,source:opts.source||'external'}),open:()=>{switchTab('today');setTimeout(()=>document.getElementById('day-plan')?.scrollIntoView({behavior:'smooth',block:'start'}),80)}};
 document.getElementById('todo-add').onclick=addTodo;
 document.getElementById('todo-new').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addTodo()}});
 document.getElementById('todo-prio').onclick=e=>{todoImportant=!todoImportant;e.currentTarget.classList.toggle('on',todoImportant);e.currentTarget.textContent=todoImportant?'★ مهمة':'☆ مهم'};
 document.getElementById('todo-list').onclick=async e=>{
   const id=e.target.dataset.todoCheck||e.target.dataset.todoDel||e.target.dataset.todoNext||e.target.dataset.todoToday; if(!id)return;
   const x=todoItems.find(t=>t.id===id); if(!x)return;
-  if(e.target.dataset.todoCheck){x.done=!x.done;x.doneAt=x.done?Date.now():null}
+  if(e.target.dataset.todoCheck){x.done=!x.done;x.doneAt=x.done?Date.now():null;x.review=null;x.reviewedAt=null}
   else if(e.target.dataset.todoDel){todoItems=todoItems.filter(t=>t.id!==id)}
-  else if(e.target.dataset.todoNext){x.due=todoDatePlus(current,1);x.done=false;x.doneAt=null}
-  else if(e.target.dataset.todoToday){x.due=iso(new Date());x.done=false;x.doneAt=null}
+  else if(e.target.dataset.todoNext){x.due=todoDatePlus(current,1);x.done=false;x.doneAt=null;x.review=null;x.reviewedAt=null}
+  else if(e.target.dataset.todoToday){x.due=iso(new Date());x.done=false;x.doneAt=null;x.review=null;x.reviewedAt=null}
   await saveTodo();
 };
-document.getElementById('acc-todo').querySelector('.acc-head').onclick=e=>{const h=e.currentTarget,b=h.nextElementSibling;const closed=b.classList.toggle('hide');h.querySelector('.acc-x').textContent=closed?'＋':'－'};
+document.getElementById('todo-review')?.addEventListener('click',async e=>{
+  const gbtn=e.target.closest('[data-goal-review]');if(gbtn){data.goalReview=+gbtn.dataset.goalReview;save('تم تسجيل مراجعة الهدف');renderTodoReview();return}
+  const b=e.target.closest('[data-task-review]');if(!b)return;const x=todoItems.find(t=>t.id===b.dataset.taskReview);if(!x)return;
+  x.review=+b.dataset.review;x.reviewedAt=Date.now();if(x.review===2){x.done=true;x.doneAt=x.doneAt||Date.now()}else{x.done=false;x.doneAt=null}
+  await saveTodo();toast('تم تسجيل تقييم المهمة');
+});
+['day-goal','day-target'].forEach(id=>document.getElementById(id)?.addEventListener('input',e=>{const key=id==='day-goal'?'goal':'target';data[key]=e.currentTarget.value;save(false)}));
+document.getElementById('acc-todo-review')?.querySelector('.acc-head')?.addEventListener('click',e=>{const h=e.currentTarget,b=h.nextElementSibling;const closed=b.classList.toggle('hide');h.querySelector('.acc-x').textContent=closed?'＋':'－';if(!closed)renderTodoReview()});
 
 /* ================= today ================= */
 function buildSections(){
@@ -349,11 +389,12 @@ async function load(day){
   current=day;
   data=(await store.get('day:'+day))||blank();
   ['ratings','prayers','azkar','tasbih'].forEach(k=>data[k]=data[k]||{});
-  data.pages=data.pages||0;
+  data.pages=data.pages||0;data.goal=data.goal||'';data.target=data.target||'';if(!Number.isInteger(data.goalReview))data.goalReview=null;
+  const goalEl=document.getElementById('day-goal'),targetEl=document.getElementById('day-target');if(goalEl)goalEl.value=data.goal;if(targetEl)targetEl.value=data.target;
   document.getElementById('dateline').textContent=arabicDate(day);
   document.getElementById('datepick').value=day;
   ['tomorrow','best','worst'].forEach(f=>{const el=document.getElementById(f);if(el)el.value=data[f]||''});
-  paintRatings(); paintMood(); paintPrayerLog(); buildStrip(); renderAzkar(); renderQuran(); renderTodo(); paintRing();
+  paintRatings(); paintMood(); paintPrayerLog(); buildStrip(); renderAzkar(); renderQuran(); renderTodo(); renderTodoReview(); paintRing();
 }
 
 /* ================= salah tab ================= */
@@ -580,6 +621,71 @@ function renderHistoryPlain(days,qalbOn){
   const gap=document.getElementById('history-gaps');
   if(gap)gap.innerHTML=`<div class="hist-gap-head"><b>أين يظهر النقص في تسجيلك؟</b><span>نقارن بما سجلته أنت، لا بدرجات إيمان أو صلاح.</span></div>${low.map(x=>`<div class="hist-gap"><div><b>${x.label}</b><span>${x.detail}</span></div><button data-history-open="${x.tab}">افتح القسم</button></div>`).join('')}${high?`<div class="hist-win"><span>أكثر شيء حافظت على تسجيله:</span><b>${high.label}</b></div>`:''}`;
 }
+let historyArchiveRows=[],historyArchiveFilter='all',historyArchiveSelected='';
+const historyRatingLabel=v=>{const hit=SCALE.find(([,n])=>Math.abs(+n-(+v||0))<.01);return hit?hit[0]:'—'};
+const historyGoalReviewLabel=v=>Number.isInteger(v)?(TODO_REVIEW_SCALE.find(([,n])=>n===v)?.[0]||'—'):'غير مراجع';
+function historyPrayerLabel(v){
+  if(v==='jamaah')return isFemale()?'في وقتها':'جماعة';
+  return ({time:'في وقتها',late:'متأخرة',missed:'فائتة'})[v]||'غير مسجلة';
+}
+function historyDayHas(day,tasks,kind='all'){
+  const ratings=dailyRatingValues(day).length,prayers=Object.keys(day?.prayers||{}).length,plan=!!String(day?.goal||'').trim()||!!String(day?.target||'').trim()||tasks.length>0;
+  if(kind==='review')return ratings>0;
+  if(kind==='prayer')return prayers>0;
+  if(kind==='plan')return plan;
+  return ratings>0||prayers>0||plan||!!day?.mood||(+day?.pages||0)>0||Object.keys(day?.azkar||{}).length>0||Object.keys(day?.tasbih||{}).length>0||!!String(day?.tomorrow||'').trim();
+}
+async function collectHistoryArchive(){
+  const keys=await store.keys('day:'),set=new Set(keys.filter(k=>/^day:\d{4}-\d{2}-\d{2}$/.test(k)).map(k=>k.slice(4)));
+  todoItems.forEach(x=>{if(/^\d{4}-\d{2}-\d{2}$/.test(String(x.due||'')))set.add(x.due)});
+  const rows=[];
+  for(const key of [...set].sort().reverse()){
+    const day=key===current?data:((await store.get('day:'+key))||null),tasks=todoForDay(key);
+    if(historyDayHas(day,tasks,'all'))rows.push({key,day,tasks});
+  }
+  historyArchiveRows=rows;return rows;
+}
+function historyDaySummary(row){
+  const {day,tasks}=row,ratings=dailyRatingValues(day),pr=Object.values(day?.prayers||{}),pOn=pr.filter(v=>v==='jamaah'||v==='time').length,a=todoAchievement(tasks),done=tasks.filter(x=>x.done).length;
+  const chips=[];
+  if(ratings.length)chips.push(`<span class="history-chip">التقييم ${AR(score(day))}%</span>`);
+  if(pr.length)chips.push(`<span class="history-chip">الصلاة ${AR(pOn)}/${AR(pr.length)}</span>`);
+  if(tasks.length)chips.push(`<span class="history-chip">المهام ${AR(done)}/${AR(tasks.length)}${a.reviewed?` · مراجع ${AR(a.reviewed)}`:''}</span>`);
+  if((day?.pages||0)>0)chips.push(`<span class="history-chip">القرآن ${AR(day.pages)} ص</span>`);
+  return chips.join('');
+}
+function renderHistoryArchiveList(){
+  const host=document.getElementById('history-archive'),count=document.getElementById('history-archive-count');if(!host)return;
+  const rows=historyArchiveRows.filter(r=>historyDayHas(r.day,r.tasks,historyArchiveFilter));
+  if(count)count.textContent=`${AR(rows.length)} يوم مسجل`;
+  const shown=rows.slice(0,120);
+  host.innerHTML=shown.length?`<div class="history-archive-list">${shown.map(r=>{
+    const dt=new Intl.DateTimeFormat('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(fromIso(r.key));
+    const note=String(r.day?.goal||r.day?.target||r.day?.mood||'').trim();
+    return `<button class="history-day-row" data-history-day="${r.key}" type="button"><div class="history-day-main"><b>${dt}</b><span>${note?todoEsc(note):'تسجيل يومي محفوظ'}</span></div><div class="history-day-metrics">${historyDaySummary(r)}</div><i>‹</i></button>`}).join('')}</div>${rows.length>shown.length?`<div class="history-archive-empty">يعرض السجل أحدث ${AR(shown.length)} يوم هنا. استخدم خانة التاريخ بالأعلى للوصول لأي يوم أقدم.</div>`:''}`:'<div class="history-archive-empty">لا توجد أيام مطابقة لهذا الفلتر بعد.</div>';
+}
+async function showHistoryDay(key){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(String(key||'')))return;
+  historyArchiveSelected=key;const row=historyArchiveRows.find(x=>x.key===key),day=row?.day||((await store.get('day:'+key))||null),tasks=row?.tasks||todoForDay(key),host=document.getElementById('history-day-detail');if(!host)return;
+  const ratings=dailyRatingValues(day),pr=day?.prayers||{},goal=String(day?.goal||'').trim(),target=String(day?.target||'').trim(),a=todoAchievement(tasks);
+  const selfLines=ALL_ITEMS.map(([id,name])=>`<div class="history-detail-line"><span>${name}</span><b>${day?.ratings?.[id]!==undefined?historyRatingLabel(day.ratings[id]):'—'}</b></div>`).join('');
+  const prayerPills=PRAYERS.map(([id,name])=>{const v=pr[id];return `<span class="${v?'on':''}">${name}: ${historyPrayerLabel(v)}</span>`}).join('');
+  const taskLines=tasks.length?tasks.map(x=>`<div class="history-detail-line"><span>${todoEsc(x.text)}</span><b>${Number.isInteger(x.review)?historyGoalReviewLabel(x.review):(x.done?'منجزة · غير مقيّمة':'غير مقيّمة')}</b></div>`).join(''):'<span>لا مهام محفوظة لهذا اليوم.</span>';
+  host.innerHTML=`<div class="history-day-detail"><div class="history-day-detail-head"><div><small>تفاصيل يوم محفوظ</small><b>${new Intl.DateTimeFormat('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(fromIso(key))}</b></div><button data-history-edit-day="${key}" type="button">فتح اليوم وتعديله</button></div><div class="history-day-detail-grid">
+    <div class="history-detail-card"><small>خلاصة اليوم</small><b>${ratings.length?`${AR(score(day))}%`:'لم تُسجّل'}</b><span>${day?.mood?`الحالة: ${todoEsc(day.mood)}`:'لا توجد حالة مزاجية مسجلة'}</span><div class="history-detail-list">${selfLines}</div></div>
+    <div class="history-detail-card"><small>الصلوات</small><b>${Object.keys(pr).length?`${AR(Object.keys(pr).length)} صلوات مسجلة`:'لم تُسجّل'}</b><div class="history-prayer-pills">${prayerPills}</div></div>
+    <div class="history-detail-card wide"><small>خطة اليوم</small><b>${goal?todoEsc(goal):'لا يوجد هدف مكتوب'}</b><span>${target?`التارجت: ${todoEsc(target)} · نتيجة الهدف: ${historyGoalReviewLabel(day?.goalReview)}`:`نتيجة الهدف: ${historyGoalReviewLabel(day?.goalReview)}`}</span>${tasks.length?`<span>تقييم المهام: ${a.reviewed?`${AR(a.pct)}% من ${AR(a.reviewed)} مهمة مقيّمة`:'لم تُقيّم المهام نهائيًا'}</span>`:''}<div class="history-detail-list">${taskLines}</div></div>
+    <div class="history-detail-card"><small>القرآن</small><b>${AR(day?.pages||0)} صفحة</b><span>العدد الذي سجلته في هذا اليوم.</span></div>
+    <div class="history-detail-card"><small>ملاحظة للغد</small><b>${day?.tomorrow?todoEsc(day.tomorrow):'—'}</b><span>${day?.tomorrow?'محفوظة من مراجعة هذا اليوم':'لا توجد ملاحظة'}</span></div>
+  </div></div>`;
+  const date=document.getElementById('history-date');if(date)date.value=key;
+}
+async function renderHistoryArchive(){
+  const rows=await collectHistoryArchive();const filter=document.getElementById('history-filter');if(filter)filter.value=historyArchiveFilter;
+  renderHistoryArchiveList();
+  const preferred=historyArchiveSelected||(rows.find(r=>r.key===current)?.key)||rows[0]?.key||current;await showHistoryDay(preferred);
+}
+
 async function renderHistory(){
   await loadAzkar();
   const tr=await renderTracker(), days=tr.days;
@@ -597,7 +703,15 @@ async function renderHistory(){
   const weak=Object.values(tot2).filter(x=>x.c).sort((a,b)=>a.sum/a.c-b.sum/b.c).slice(0,4);
   document.getElementById('weak').innerHTML=weak.length?weak.map(x=>`<div class="item"><div class="row"><span>${x.n}</span><span class="muted">${Math.round(x.sum/x.c/4*100)}%</span></div></div>`).join(''):'<div class="item"><div class="muted">سجّل خلاصة يومك ليظهر هذا التفصيل.</div></div>';
   renderFasting();
-  document.getElementById('v-history').onclick=e=>{const b=e.target.closest('[data-history-open]');if(b)switchTab(b.dataset.historyOpen)};
+  await renderHistoryArchive();
+  const hv=document.getElementById('v-history');
+  hv.onclick=async e=>{
+    const b=e.target.closest('[data-history-open]');if(b){switchTab(b.dataset.historyOpen);return}
+    const row=e.target.closest('[data-history-day]');if(row){await showHistoryDay(row.dataset.historyDay);document.getElementById('history-day-detail')?.scrollIntoView({behavior:'smooth',block:'start'});return}
+    const edit=e.target.closest('[data-history-edit-day]');if(edit){await load(edit.dataset.historyEditDay);switchTab('today');setEvening(true);setTimeout(()=>document.getElementById('evening-panel')?.scrollIntoView({behavior:'smooth',block:'start'}),90);return}
+    if(e.target.closest('#history-open-date')){const key=document.getElementById('history-date')?.value;if(key)await showHistoryDay(key)}
+  };
+  const hf=document.getElementById('history-filter');if(hf)hf.onchange=()=>{historyArchiveFilter=hf.value;renderHistoryArchiveList()};
 }
 function renderFasting(){
   const out=[]; const d=new Date();
@@ -2041,5 +2155,6 @@ document.getElementById('onboarding-next')?.addEventListener('click',async()=>{i
   const onboardingSeen=await store.get('onboarding-seen-v3');
   if(!onboardingSeen){paintOnboarding();document.getElementById('onboarding')?.classList.remove('hide')}
   const h=(location.hash||'').replace('#','');
-  if(['today','quran','azkar','dua','tasbih','asma','sunnah','qalb','irtaqi','history'].includes(h)) switchTab(h);
+  if(h==='plan'){switchTab('today');setTimeout(()=>document.getElementById('day-plan')?.scrollIntoView({behavior:'smooth',block:'start'}),120)}
+  else if(['today','quran','azkar','dua','tasbih','asma','sunnah','qalb','irtaqi','history'].includes(h)) switchTab(h);
 })();

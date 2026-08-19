@@ -1,9 +1,9 @@
 # NEXT AI — READ THIS FIRST
 
 **Project:** رفيق يومك (Rafiq Yomak)  
-**State ID:** `RAFIQ-HANDOFF-v24-R16-2026-08-19`  
+**State ID:** `RAFIQ-HANDOFF-v24-R17-2026-08-19`  
 **Current artifact type:** GitHub Pages PWA + Google Play TWA distribution, with Chrome Manifest V3 side-panel source retained  
-**Current release:** `v24 R16` (Chrome manifest version `24.1.0`; Google Play package `com.tadaruqnoor.rafiq`)
+**Current release:** `v24 R17` (Chrome manifest version `24.2.0`; local data schema `rafiq:data-version = 2`; Google Play package `com.tadaruqnoor.rafiq`)
 
 > This file is the continuity record for future AI sessions. Before changing code or content, inspect this file, `manifest.json`, the hosted root `app.js` + `index.html` (and `app/app.js` + `app/index.html` in the full extension-source layout), plus the relevant JSON data. Do not ask the owner to repeat decisions already documented here unless a conflict genuinely requires a decision.
 
@@ -671,3 +671,171 @@ Implemented in R16:
 - `profile-v1`, `saved-later-v1`, `quran-pos`, `qalb-paths-v1`, and Data Safety schema v1 remain compatible.
 - Chrome MV3 manifest version bumped from `24.0.0` to `24.1.0` for this code release.
 
+## 27) v24 R17 — professional history + start-of-day plan + task review + browser extension workflow
+
+### Session / owner request — 2026-08-19
+
+Play Console continuity immediately before this code change:
+- Google Play rejected the earlier Closed-testing submission with **`Play Console Requirements: Violation of Play Console Requirements`** and marked the app unavailable on Google Play.
+- The issue text said the selected app category or declared features required submission using an organization account.
+- The working suspicion discussed in chat was the Health apps declaration. The owner then reported: **`عملت للhealth off ومستني الموافقة`**. Treat that as the current Play status only: the Health declaration was switched off / no-health-features was selected, and Google re-review is pending. **Do not claim the policy issue is approved until Play Console actually says so.**
+
+The owner then requested, verbatim/substantively:
+> `+السجل محتاج يكون احترافي اكثر يعني ممكن ارجع اي يوم انا عملت فيه تقييم لنفسي وصلواتي ؟؟ محتاج يكون professional اكثر`
+>
+> `+ال todolist فين ملهاش اي دور ان امحتاج من اليوزر اول اليوم يعمل هدف ومهام وتارجت وآخر اليوم يقيم نفسه ويقيم المهام كمان`
+>
+> `+في الصفحة الرئيسية "تعرف اللي لازم تعرفه" ممكن نغيرها لمثلا اتعرف علي دينك اكثر`
+>
+> `+google extention ممكن ابديت ليها مع كل اللي عملناه ده وحاجة تكون مناسبه للمتصفح يعني`
+
+### A. Professional historical log / archive
+
+Implemented:
+- `السجل` now has a **full day archive** instead of being limited to weekly/28-day aggregates.
+- It discovers all meaningful `day:YYYY-MM-DD` records and also dates that have todo items even if no other daily record exists.
+- User can jump to an **exact date** with a date input and open that day's details.
+- Archive filters:
+  - all recorded days,
+  - days with self-review,
+  - days with prayer records,
+  - days with plan/tasks.
+- Each archive row summarizes available self-review score, prayer logging, task completion/review and Qur'an pages.
+- Opening a day shows a professional detail card with:
+  - the five self-review items and recorded answer for each,
+  - mood when present,
+  - every prayer and its recorded state,
+  - daily goal and measurable target,
+  - goal result,
+  - all tasks due that day and each task's final review state,
+  - Qur'an pages,
+  - optional note for tomorrow.
+- `فتح اليوم وتعديله` loads that exact historical day back into the existing Today/evening UI so the owner/user can inspect or correct an old record.
+- Existing weekly and 4-week summaries remain below the professional archive. They are not removed.
+- The archive explicitly states that the figures summarize what the user entered and are **not a judgement on religiosity or the worth of a day**.
+
+### B. Start-of-day plan / Todo is now a first-class daily workflow
+
+Problem fixed:
+- Before R17, `مهامي اليوم` existed inside the hidden evening area, so it had little role during the actual day.
+
+R17 behavior:
+- A visible **`خطة اليوم`** card now appears near the top of the home page, directly after the welcome/prayer area.
+- At the start of the day the user can enter:
+  - `هدف اليوم` — a qualitative daily objective,
+  - `الهدف القابل للقياس (التارجت)` — a concrete/measurable desired result,
+  - a short list of tasks, with optional `مهم` marking.
+- Task completion progress is visible during the day.
+- Existing `todo-items` key and task IDs are preserved; no destructive rename or reset was done.
+- Moving a task to tomorrow/today resets its final-review metadata, because the review belongs to the day being evaluated.
+
+End-of-day flow:
+- The evening section now contains **`تقييم هدف ومهام اليوم`**.
+- Goal result uses three simple organizational outcomes: `لم يتم / جزئي / تم`.
+- Every task can be reviewed with the same three outcomes.
+- The resulting percentage is explicitly an **organizational completion reading**, not a spiritual score.
+- The existing religious self-review remains the same lightweight **five-question** model. The task/goal review is a separate planning layer and must not grow into a long nightly religious questionnaire.
+
+### C. Data compatibility / schema v2
+
+R17 adds optional data fields while preserving all old keys:
+- `day:*` may now include:
+  - `goal`
+  - `target`
+  - `goalReview`
+- `todo-items` task objects may now include:
+  - `review` (`0=لم يتم`, `1=جزئي`, `2=تم`)
+  - `reviewedAt`
+  - optional `source` (for example `chrome-selection`)
+
+Data Safety action:
+- `rafiq:data-version` bumped **1 -> 2**.
+- v1 -> v2 migration is deliberately **additive/no-rewrite**: old day/task records remain valid without filling empty fields into every old record.
+- `app/data-safety.js` portable backup app version is now `24.2.0`.
+- Existing full backup/rollback system remains in place.
+- `privacy.html` now explicitly mentions daily goal/target and task final-review data, still local-only.
+- Daily save debounce was hardened to keep separate per-day timers/snapshots, reducing the risk that a quick historical-day switch saves a pending edit under the wrong date.
+
+### D. Home wording
+
+Owner-requested copy change:
+- Replaced **`تعرف اللي لازم تعرفه؟`** with **`اتعرّف على دينك أكثر`**.
+- Supporting line is now `أساسيات مهمة ومختصرة بمصادرها.`
+- No religious claim/source was changed by this wording edit.
+
+### E. Chrome / Google browser extension update
+
+Chrome MV3 version: **`24.2.0`**.
+
+The extension still contains the full R17 app UI (plan, archive, prayer UX, fullscreen Mushaf changes, Saved cleanup, etc.) because its side panel uses `app/index.html`.
+
+Browser-specific additions:
+- Existing features remain: side panel, smart selection search, section search, Omnibox keyword, Rafiq notebook, prayer countdown badge and optional prayer notification.
+- New right-click selection action: **`أضف النص إلى مهام اليوم`**.
+  - The selected page text is clipped to a safe task length and added to today's `todo-items`.
+  - The side panel opens directly to the daily plan.
+- New keyboard command: **`Alt+Shift+P`** -> open `خطة اليوم` in the side panel.
+- Existing notebook shortcut/search shortcuts remain unchanged.
+- This is intentionally browser-oriented: useful text discovered while browsing can become an actionable task without copying/pasting manually.
+
+Important distribution distinction:
+- GitHub/PWA/TWA web updates can reach the installed Google Play TWA after GitHub Pages publishes; no new AAB is required for these R17 web-only changes.
+- **Chrome extension users do not load the GitHub source automatically.** To ship R17 to extension users, package/upload the new MV3 extension ZIP (or load the unpacked updated source during testing) through the Chrome extension/Web Store workflow.
+
+### F. PWA convenience + update delivery
+
+- PWA manifest description now includes daily plan + professional history.
+- Added PWA shortcuts for:
+  - `خطة اليوم` -> `#plan`
+  - `السجل` -> `#history`
+  - existing `السبحة` shortcut remains.
+- `#plan` is handled at boot and scrolls to the daily-plan card.
+- Service-worker cache names bumped to **R17**; R16's `updateViaCache: 'none'`, `SKIP_WAITING`, and controller-change reload behavior is preserved.
+
+### G. R17 changed files
+
+Core/web:
+- `app/index.html`
+- `app/app.js`
+- `app/data-safety.js`
+- `app/manifest.webmanifest`
+- `app/privacy.html`
+- `app/sw.js`
+- `app/pwa-register.js`
+
+Chrome extension:
+- `manifest.json`
+- `background.js`
+- `app/extension-bridge.js`
+- plus the shared R17 app files above.
+
+Continuity/docs/QA:
+- `AI_HANDOFF.md`
+- `AI_HANDOFF.json`
+- `PROMPT_FOR_NEXT_AI.txt`
+- `DATA_SAFETY.md`
+- `DATA_ARCHITECTURE.md`
+- `RELEASE-NOTES-v24.txt`
+- `QA-REPORT-v24.txt`
+- `qa/test_data_safety.js`
+- `README-UPLOAD-R17-AR.txt`
+
+### H. Non-negotiables carried forward
+
+- **Never delete/rename/truncate/exclude `AI_HANDOFF.md`.** Append every future chat/change/error/test ledger before returning artifacts.
+- Do not turn daily productivity percentages into iman/religiosity scores.
+- Keep the religious nightly review at five essentials; planning/task review is an operational layer.
+- Preserve old `day:*`, `todo-items`, `quran-pos`, `saved-later-v1`, `qalb-*` and stable content IDs unless a backward-compatible migration is written first.
+- No new analytics, account backend or cloud sync was added in R17.
+- No Android native shell/package/permission change was made in R17; Google Play package remains `com.tadaruqnoor.rafiq`.
+
+
+### I. R17 QA execution completed before artifact handoff
+
+- JavaScript syntax checks passed for the shared app, extension bridge, Data Safety layer, PWA service worker/register code, and Chrome background worker.
+- Data Safety regression harness passed at schema v2 with deterministic backup/restore expectations.
+- All JSON/webmanifest files parse; index.html has no duplicate IDs.
+- Daily plan, end-of-day task review, exact-date history archive, R17 Chrome context-menu/shortcut bridge, fixed Mushaf swipe rule, document fullscreen path, subtle Saved dot, and legacy storage-key invariants were statically verified.
+- Every R17 service-worker precache entry points to an existing local app file.
+- No full visual-browser regression is claimed: the build environment's headless Chromium smoke attempt timed out. A real Android/TWA and desktop-Chrome extension smoke test remains required after deployment.
+- Play policy remains pending at this handoff: the owner switched the Health apps declaration off/no-health-features and is waiting for Google re-review.
