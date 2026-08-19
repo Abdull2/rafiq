@@ -873,6 +873,21 @@ async function fetchMushafSvg(page){
   mushafSvgCache.set(page,task);
   try{return await task}catch(e){mushafSvgCache.delete(page);throw e}
 }
+/* قص الهامش الأبيض حول صفحة المصحف بتضييق viewBox، فتكبر المساحة المقروءة
+   من غير قص أي نص ومن غير تمرير. النسبة محافظة ومحفوظة في MUSHAF_TRIM. */
+const MUSHAF_TRIM=0.035;
+function trimMushafMargins(svg){
+  try{
+    const vb=(svg.getAttribute('viewBox')||'').trim().split(/[\s,]+/).map(Number);
+    if(vb.length!==4||vb.some(n=>!isFinite(n)))return;
+    if(svg.dataset.trimmed==='1')return;
+    const [x,y,w,h]=vb;
+    if(!(w>0&&h>0))return;
+    const dx=w*MUSHAF_TRIM, dy=h*MUSHAF_TRIM;
+    svg.setAttribute('viewBox',`${x+dx} ${y+dy} ${w-dx*2} ${h-dy*2}`);
+    svg.dataset.trimmed='1';
+  }catch(_){}
+}
 function safeMushafSvg(text,page){
   const doc=new DOMParser().parseFromString(text,'image/svg+xml');
   if(doc.querySelector('parsererror'))throw new Error('SVG parse error');
@@ -889,6 +904,7 @@ function safeMushafSvg(text,page){
   svg.setAttribute('role','img');
   svg.setAttribute('aria-label',`صفحة ${page} من مصحف المدينة النبوية`);
   svg.classList.add('mushaf-page-svg');
+  trimMushafMargins(svg);
   return document.importNode(svg,true);
 }
 function applyMushafZoom(){
@@ -940,7 +956,32 @@ async function openPage(p){
   // Warm the browser cache for the adjacent pages without touching user data.
   [qPage+1,qPage-1].filter(x=>x>=1&&x<=604).forEach(x=>fetchMushafSvg(x).catch(()=>{}));
 }
+let _lpTimer=null,_lpFired=false,_lpX=0,_lpY=0;
+(function(){ const mb=document.getElementById('mus-body');
+  mb.addEventListener('touchstart',e=>{
+    const poly=e.target.closest?.('.ayahPolygon'); if(!poly)return;
+    _lpFired=false; _lpX=e.touches[0].clientX; _lpY=e.touches[0].clientY;
+    clearTimeout(_lpTimer);
+    _lpTimer=setTimeout(()=>{ _lpFired=true;
+      if(navigator.vibrate)try{navigator.vibrate(12)}catch(_){}
+      mb.dispatchEvent(new CustomEvent('ayah-longpress',{detail:{poly}}));
+    },420);
+  },{passive:true});
+  const cancel=()=>{clearTimeout(_lpTimer);_lpTimer=null};
+  mb.addEventListener('touchmove',e=>{
+    if(!_lpTimer)return; const t=e.touches[0];
+    if(Math.abs(t.clientX-_lpX)>10||Math.abs(t.clientY-_lpY)>10)cancel();
+  },{passive:true});
+  mb.addEventListener('touchend',cancel,{passive:true});
+  mb.addEventListener('touchcancel',cancel,{passive:true});
+})();
+document.getElementById('mus-body').addEventListener('ayah-longpress',e=>{
+  document.getElementById('mus-body').onclick({target:e.detail.poly,_forced:true});
+});
 document.getElementById('mus-body').onclick=async e=>{
+  // على اللمس: التحديد يتم بالضغط المطوّل فقط، حتى لا يُحدَّد بالخطأ أثناء السحب
+  if(!e._forced&&window.matchMedia('(hover:none)').matches&&!_lpFired)return;
+  _lpFired=false;
   const poly=e.target.closest?.('.ayahPolygon');
   const fallback=e.target.closest?.('.ay');
   if(!poly&&!fallback)return;
@@ -1001,7 +1042,7 @@ document.getElementById('rd-minus').onclick=()=>document.getElementById('mus-bod
   el.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
   el.addEventListener('touchend',e=>{ if(x0==null)return;
     const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
-    if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.6) openPage(qPage+(dx>0?1:-1));
+    if(Math.abs(dx)>38&&Math.abs(dx)>Math.abs(dy)*1.15) openPage(qPage+(dx>0?1:-1));
     x0=null },{passive:true}); })();
 
 document.getElementById('btn-history').onclick=()=>switchTab(tab==='history'?'today':'history');

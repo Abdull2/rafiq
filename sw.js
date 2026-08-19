@@ -1,5 +1,5 @@
 /* Tadaruq PWA service worker — generated for v24 R18. */
-const CACHE_NAME = 'tadaruq-v24-r20-pwa-20260819';
+const CACHE_NAME = 'tadaruq-v24-r21-pwa-20260819';
 const RUNTIME_CACHE = 'tadaruq-runtime-v24-r18-20260819';
 const PRECACHE_URLS = [
   "./",
