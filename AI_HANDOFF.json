@@ -132,5 +132,11 @@
     "Fullscreen Mushaf enlargement unsolved; prefer reducing reserved chrome height, not SVG geometry.",
     "Google Play policy re-review pending after Health declaration switched off.",
     "Set up a staging branch / preview deployment before further production changes."
-  ]
+  ],
+  "current_release": "v24 R25",
+  "chrome_extension_version": "24.5.0",
+  "sources": {
+    "mokhtasar_tafsir_center_source": "https://tafsir.net/publications/13394"
+  },
+  "mokhtasar_inline_proxy": "optional; secret-holding serverless proxy only; public build defaults off"
 }

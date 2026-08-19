@@ -1350,3 +1350,35 @@ No new religious/psychological claims were invented merely to fill the other sec
 #### Expanded QA
 
 `qa/test_tazkiyah_levels.js` now validates **69 depth topics** and **374 staged source-backed items**, unique depth IDs, exactly 4 levels per topic, no leaked `pending` stage, HTTPS source URLs where present, and required app engine markers. It passes in the build environment.
+
+
+## 26) v24 R25 — Al-Mukhtasar tafsir promoted to a first-class Qur'an flow
+
+### Owner request
+> "+محتاج المختصر ف يالتفسير ضروري"
+
+### Decision
+The project already had an official deep-link bridge from R13. R25 makes it a first-class reading flow without violating the standing source/copyright rule. The owner does **not** need to repeat the requirement that religious content must have visible sources.
+
+### User experience
+- Mushaf `التفسير` no longer immediately throws the user out to a browser page. It opens an in-app tafsir sheet tied to the currently selected ayah (or the first ayah on the current page if none is selected).
+- The sheet shows the selected Qur'an text/reference and always provides `فتح التفسير الرسمي` to the exact surah/ayah on `mokhtasr.com`.
+- The existing Qur'an tools card remains and now describes the API-safe path correctly.
+- The current official publication/about reference is `https://tafsir.net/publications/13394`.
+
+### Inline official text architecture (optional, not secretly enabled)
+- `app/tafsir-config.js` defaults to `proxyBase: ''`; therefore no hidden API call is made in the public build.
+- If the owner obtains an authorized official API Bearer token, deploy `integrations/mokhtasar-worker/worker.js` and store the token only as the serverless secret `MOKHTASAR_TOKEN`.
+- Then set only the public Worker URL in `app/tafsir-config.js`. Front end sends only `sura` + `aya`; Worker adds Bearer and calls official `book-contents` with `books=200`.
+- **Never place the Bearer token in GitHub, Chrome extension source, PWA JS, AI_HANDOFF, logs, screenshots, or release notes.**
+- **Never scrape or bundle the full Al-Mukhtasar corpus to bypass the API/terms.** Official terms permit clear linking but restrict reproduction/republication; API docs require Authorization for book contents.
+
+### Files / privacy / version
+- New: `app/tafsir-config.js`.
+- New: `integrations/mokhtasar-worker/{worker.js,wrangler.toml.example,README-AR.md}`.
+- Updated: `app/app.js`, `app/index.html`, `app/privacy.html`, `app/sw.js`, `app/data-safety.js`, `manifest.json`.
+- MV3 version: `24.5.0`. Data Safety schema remains 2; no user storage keys changed.
+- PWA cache bumped to R25 because app code/config changed.
+
+### Standing rule
+Al-Mukhtasar is now a required Qur'an feature. Keep the exact-ayah official link working even if an optional proxy is unavailable. Inline official text must fail safely back to the official link.

@@ -1,0 +1,10 @@
+name = "tadaruq-mokhtasar"
+main = "worker.js"
+compatibility_date = "2026-08-20"
+
+[vars]
+ALLOWED_ORIGIN = "https://abdull2.github.io"
+
+# After deployment:
+#   npx wrangler secret put MOKHTASAR_TOKEN
+# Never write the token here or in GitHub.

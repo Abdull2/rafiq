@@ -781,15 +781,60 @@ async function openQuranReaderDefault(){
   await openPage(saved.page||1);
 }
 function openQuranTools(){ if(mushafFullscreen)exitMushafFullscreen(); quranToolsRequested=true; switchTab('quran') }
-const MOKHTASAR_BOOK_URL='https://mokhtasr.com/ar/books/200';
+const TAFSIR_CFG=window.TADARUQ_TAFSIR||{};
+const MOKHTASAR_BOOK_URL=TAFSIR_CFG.officialBookUrl||'https://mokhtasr.com/ar/books/200';
+const MOKHTASAR_ABOUT_URL=TAFSIR_CFG.officialAboutUrl||'https://tafsir.net/publications/13394';
 const mokhtasarAyahUrl=(s,a)=>`${MOKHTASAR_BOOK_URL}?aya=${encodeURIComponent(a||1)}&sura=${encodeURIComponent(s||1)}`;
 function firstAyahOnPage(){const run=(Q?.pages?.[qPage-1]||[])[0];return run?{s:+run[0],a:+run[1]}:{s:1,a:1}}
+function tafsirTarget(){return qSelectedAyah||firstAyahOnPage()}
+function tafsirVerseText(t){const su=Q&&suraOf(t.s);return su?.a?.[Math.max(0,(+t.a||1)-1)]||''}
+function tafsirProxyUrl(t){
+  const base=(TAFSIR_CFG.proxyBase||'').trim().replace(/\/$/,'');
+  return /^https:\/\//i.test(base)?`${base}/tafsir?sura=${encodeURIComponent(t.s)}&aya=${encodeURIComponent(t.a)}`:'';
+}
+let tafsirFetchAbort=null;
+function setTafsirStatus(html,kind=''){
+  const el=document.getElementById('tafsir-sheet-content'); if(!el)return;
+  el.className=`tafsir-sheet-content ${kind||''}`.trim(); el.innerHTML=html;
+}
+function closeTafsirSheet(){
+  if(tafsirFetchAbort){try{tafsirFetchAbort.abort()}catch{} tafsirFetchAbort=null}
+  const sh=document.getElementById('tafsir-sheet'); if(sh){sh.classList.add('hide');sh.setAttribute('aria-hidden','true')}
+}
+async function openTafsirSheet(t=tafsirTarget()){
+  const sh=document.getElementById('tafsir-sheet'); if(!sh)return window.open(mokhtasarAyahUrl(t.s,t.a),'_blank','noopener');
+  const su=Q&&suraOf(t.s), verse=tafsirVerseText(t);
+  document.getElementById('tafsir-sheet-ref').textContent=`${su?su.name:'السورة'} — الآية ${AR(t.a)}`;
+  document.getElementById('tafsir-sheet-ayah').textContent=verse;
+  const official=document.getElementById('tafsir-sheet-official'); official.href=mokhtasarAyahUrl(t.s,t.a);
+  sh.classList.remove('hide');sh.setAttribute('aria-hidden','false');
+  const proxy=tafsirProxyUrl(t);
+  if(!proxy){
+    setTafsirStatus(`<div class="tafsir-inline-note"><b>المختصر الرسمي متاح لهذه الآية</b><p>اضغط «فتح التفسير الرسمي» لقراءته من دار المختصر. العرض النصي داخل تدارُك يحتاج ربط API الرسمي عبر خادم وسيط يحفظ مفتاح الوصول بعيدًا عن ملفات GitHub العامة.</p></div>`,'fallback');
+    return;
+  }
+  if(tafsirFetchAbort){try{tafsirFetchAbort.abort()}catch{}}
+  tafsirFetchAbort=new AbortController();
+  setTafsirStatus('<div class="tafsir-loading">جارٍ تحميل التفسير من المصدر الرسمي…</div>','loading');
+  try{
+    const r=await fetch(proxy,{signal:tafsirFetchAbort.signal,headers:{'Accept':'application/json'}});
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    const d=await r.json();
+    const text=(d&&typeof d.text==='string')?d.text.trim():'';
+    if(!text)throw new Error('empty tafsir');
+    setTafsirStatus(`<article class="tafsir-official-text"><div class="tafsir-official-badge">نص من المختصر في التفسير — المصدر الرسمي</div><p>${laterEsc(text)}</p></article>`,'ready');
+  }catch(e){
+    if(e?.name==='AbortError')return;
+    setTafsirStatus(`<div class="tafsir-inline-note"><b>تعذر تحميل النص داخل التطبيق الآن</b><p>يمكنك فتح نفس الآية مباشرة من النسخة الرسمية للمختصر.</p></div>`,'error');
+  }finally{tafsirFetchAbort=null}
+}
 function updateTafsirPanel(){
   const el=document.getElementById('tafsir-current'); if(!el)return;
-  const t=qSelectedAyah||firstAyahOnPage(), su=Q&&suraOf(t.s);
-  el.innerHTML=`<div class="tafsir-current-copy"><span>المختصر في التفسير</span><b>${su?su.name:'السورة'} — الآية ${AR(t.a)}</b><small>يفتح التفسير من النسخة الرسمية لدار المختصر.</small></div><a href="${mokhtasarAyahUrl(t.s,t.a)}" target="_blank" rel="noopener">تفسير الآية ↗</a>`;
+  const t=tafsirTarget(), su=Q&&suraOf(t.s);
+  el.innerHTML=`<div class="tafsir-current-copy"><span>المختصر في التفسير</span><b>${su?su.name:'السورة'} — الآية ${AR(t.a)}</b><small>اضغط لقراءة تفسير الآية من المصدر الرسمي.</small></div><button type="button" class="tafsir-open-btn" data-tafsir-open>تفسير الآية</button>`;
+  el.querySelector('[data-tafsir-open]')?.addEventListener('click',()=>openTafsirSheet(t));
 }
-function openCurrentTafsir(){const t=qSelectedAyah||firstAyahOnPage();window.open(mokhtasarAyahUrl(t.s,t.a),'_blank','noopener')}
+function openCurrentTafsir(){return openTafsirSheet(tafsirTarget())}
 
 function renderSurahList(){
   const raw=(document.getElementById('q-search').value||'').trim(), q=searchNorm(raw);
@@ -1013,6 +1058,9 @@ document.getElementById('rd-fullscreen').onclick=toggleMushafFullscreen;
 document.getElementById('mushaf').addEventListener('click',e=>{if(!mushafFullscreen)return;if(e.target.closest('.ayahPolygon,.ay,a,button'))return;mushafControlsHidden=!mushafControlsHidden;syncMushafFullscreenUI()});
 document.getElementById('rd-back').onclick=openQuranTools;
 document.getElementById('rd-tafsir').onclick=openCurrentTafsir;
+document.getElementById('tafsir-sheet-close')?.addEventListener('click',closeTafsirSheet);
+document.getElementById('tafsir-sheet')?.addEventListener('click',e=>{if(e.target?.id==='tafsir-sheet')closeTafsirSheet()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('tafsir-sheet')?.classList.contains('hide'))closeTafsirSheet()});
 document.getElementById('rd-prev').onclick=()=>openPage(qPage-1);
 document.getElementById('rd-next').onclick=()=>openPage(qPage+1);
 const setF=v=>{ qFont=Math.min(38,Math.max(15,v)); localStorage.setItem('qFont',qFont);
