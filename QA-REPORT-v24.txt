@@ -132,3 +132,16 @@ v24 R11 — medium seerah + companions batch 1 QA
 - PASS: R10 deterministic Data Safety harness still passes after R11 content/UI changes.
 - NOTE: R11 did not change persistent storage keys or schema. No data migration is required.
 - NOTE: no full visual-browser regression was completed in this container; perform a quick mobile/Chrome visual check after upload.
+
+
+v24 R12 — Mushaf/Adhkar/Knowledge QA
+- PASS: app.js and data-safety.js parse with node --check.
+- PASS: all app JSON files parse; azkar sets contain a section-level source and official Hisn al-Muslim URL.
+- PASS: Quran default route calls the reader and preserves the existing `quran-pos` key; page 1 is used only when no saved page exists.
+- PASS: swipe handler remains left -> qPage+1 and right -> qPage-1.
+- PASS: explicit `الفهرس` control opens the existing Quran tools screen instead of changing storage semantics.
+- PASS: Knowledge tab labels contain no decorative span icons/counts; Nawawi is first/default, Riyad second.
+- PASS: Riyad intro contains both book-text source and separate commentary reference.
+- PASS: deterministic R10 Data Safety harness still passes.
+- PASS: manifest remains 24.0.0.
+- NOTE: headless Chromium DOM smoke attempt timed out in this container; no full browser visual-regression claim is made. Do a quick mobile visual check after upload.

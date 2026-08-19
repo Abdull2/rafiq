@@ -431,3 +431,26 @@ Non-negotiable storage rule going forward:
 - Companion UI has search + filters + quick intro + medium detail + direct Siyar biography source. `الإصابة في تمييز الصحابة` is a general cross-check reference.
 - Companion content rule: classical biography books can contain reports of differing strength. Rafiq should state only stable/basic facts by default; any special virtue, quotation, miracle-like story, or disputed anecdote that needs hadith grading must be separately verified before asserting it.
 - R11 changed **content and UI only**. No storage key, storage shape, or data schema change. R10 Data Safety remains in force.
+
+
+## 21) v24 R12 — familiar Mushaf entry + sourced Adhkar + cleaned Knowledge navigation
+- Quran bottom tab now opens the **Mushaf reader directly**, not the tracker/search landing page. On a first reading state it opens page 1 (Al-Fatihah); when a saved reading position exists it resumes that page.
+- Existing `quran-pos` storage is preserved. No Quran/user-data storage key or shape changed.
+- Mushaf retains horizontal swipe paging: **swipe left -> next page**, swipe right -> previous page. A short hint is shown on page 1 only.
+- The reader's `الفهرس` control opens the existing Quran tools screen containing resume, Qur'an wird, Ayah of the day, search, and surah index. The bottom Quran tab remains visually selected while reading.
+- Quran reader source line links to the King Fahd Glorious Qur'an Printing Complex as the review/reference authority.
+- Adhkar now has a visible section-level source banner above every major set. Current canonical book-level source is **حصن المسلم من أذكار الكتاب والسنة — سعيد بن علي بن وهف القحطاني**, linked to the official `رسالة الحرمين` resource (`risala.prh.gov.sa/ar/content/51`). Item-level sources remain visible.
+- Added a visible `حصن المسلم` entry in the Adhkar tabs. It is a book/source overview and route to the full official resource; Rafiq does not silently copy the entire copyrighted compilation.
+- Removed the debated hard-coded precise time phrases for morning/evening from the UI and replaced them with neutral `ورد الصباح` / `ورد المساء`.
+- Knowledge navigation is now text-only: removed decorative icons/counts from tab labels. **الأربعون النووية comes before رياض الصالحين** and is the default Knowledge section.
+- Added a Riyad al-Salihin introduction parallel to the Nawawi 40 intro: author, scope, source of the book text (Shamela entry for the Shu'ayb al-Arna'ut / Mu'assasat al-Risalah edition), and the official Ibn Uthaymeen Foundation commentary reference.
+- Riyad hadith details now distinguish **source of the book/text** from **commentary reference**; the quick per-hadith locator is secondary.
+- R12 is content/navigation/UI only. No persistent user key, saved-content ID, or data schema changed; R10 Data Safety schema v1 remains unchanged.
+- Public version remains **v24 / manifest 24.0.0**.
+
+Regression rules:
+1. Quran tab should never dump a new user into a dashboard before showing the Mushaf; first reading state starts at Al-Fatihah.
+2. Preserve `quran-pos` semantics and the left-swipe -> next-page direction.
+3. Every Adhkar major section keeps a visible trusted source banner *above* its contents, and every item keeps its own source below.
+4. Do not put icon glyphs/counts back into Knowledge tab labels unless the owner explicitly requests them.
+5. Keep Nawawi 40 before Riyad al-Salihin in Knowledge navigation.

@@ -40,6 +40,14 @@ Rafiq now has real users. Read DATA_SAFETY.md and section 20 of AI_HANDOFF.md be
 LATEST v24 R11 NOTE:
 - Start from R11, not older builds.
 - Seerah has 19 stations with quick summary + medium detail. Preserve ALL existing seerah IDs because Saved Later uses `seerah:<id>`.
-- `app/companions.json` batch 1 contains 20 famous companions with stable `companion:<id>` Saved Later IDs. Do not rename IDs without a Data Safety migration.
+- `app/companions.json` batch 1 contains 24 famous companions with stable `companion:<id>` Saved Later IDs. Do not rename IDs without a Data Safety migration.
 - Companion/sirah historical reports must remain source-backed; independently verify any special virtue or disputed anecdote before presenting it as fact.
 - R10 Data Safety layer remains mandatory and unchanged.
+
+
+LATEST v24 R12 NOTE:
+- Quran bottom tab now opens the Mushaf reader directly. First state = Al-Fatihah/page 1; saved `quran-pos` resumes. `الفهرس` opens the tools/wird/search screen. Preserve left-swipe -> next page.
+- Adhkar major sections must show their trusted source above the section. Current book-level backbone is Hisn al-Muslim linked to the official Risala al-Haramain resource; item-level sources stay visible.
+- Knowledge tab labels are intentionally text-only. Order starts: الأربعون النووية ثم رياض الصالحين. Do not restore `42` or decorative glyphs in the tabs.
+- Riyad has separate book-text source and commentary source; do not conflate the two.
+- R12 changes no persistent user schema. R10 Data Safety remains mandatory.

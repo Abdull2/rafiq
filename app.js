@@ -386,8 +386,8 @@ async function renderAzkar(){
   const host=document.getElementById('az-wrap'); if(!host)return;
   host.innerHTML=`<input id="az-search" class="q-search" type="search" value="${azkarQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في كل الأذكار: نوم، استغفار، حفظ…" aria-label="بحث في الأذكار">
     <div class="search-count" id="az-result-count"></div>
-    <div class="az-tabs">${AZ.sets.map(x=>`<button data-az="${x.id}" aria-current="${x.id===azkarMode}">${x.name}</button>`).join('')}</div>
-    <div class="audio-note">🔊 زر «استمع» يستخدم صوت القراءة العربي المتاح في جهازك/متصفحك. إن لم يوجد صوت عربي مناسب يمكنك الاكتفاء بالقراءة.</div>
+    <div class="az-tabs"><button data-az="hisn" aria-current="${azkarMode==='hisn'}">حصن المسلم</button>${AZ.sets.map(x=>`<button data-az="${x.id}" aria-current="${x.id===azkarMode}">${x.name}</button>`).join('')}</div>
+    <div class="audio-note">زر «استمع» يستخدم صوت القراءة العربي المتاح في جهازك/متصفحك. إن لم يوجد صوت عربي مناسب يمكنك الاكتفاء بالقراءة.</div>
     <div id="az-results"></div>`;
   host.onclick=e=>{
     const sp=e.target.closest('button[data-speak]'); if(sp){const [sid,i]=sp.dataset.speak.split(':');speakAzkar(sid,+i);return}
@@ -417,12 +417,19 @@ function renderAzkarList(){
     box.innerHTML=hits.length?`<section>${hits.map(({set,z,i})=>{const c=data.azkar[set.id+i]||0;return `<div class="zikr ${c>=z.n?'done':''} ${['morning','evening'].includes(set.id)?'tap-count':''}" ${['morning','evening'].includes(set.id)?`data-z="${i}" data-set="${set.id}" role="button" tabindex="0"`:''}><div class="search-source">${set.name}</div><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}${sourceHtml(z)}${actions(set,z,i,c)}</div>`}).join('')}</section>`:'<div class="nafs-empty">لا توجد أذكار مطابقة لبحثك.</div>';
     return;
   }
+  if(azkarMode==='hisn'){
+    cnt.textContent='المرجع الجامع للأذكار';
+    box.innerHTML=`<section class="hisn-book"><div class="hisn-title">حصن المسلم من أذكار الكتاب والسنة</div><div class="hisn-author">الشيخ سعيد بن علي بن وهف القحطاني</div><p>مرجع مشهور يجمع أذكارًا وأدعية من الكتاب والسنة لأحوال المسلم اليومية. رفيق يعرض أبوابًا مختارة منه مع إبقاء مصدر كل ذكر ظاهرًا، ولا ينسب نصًا أو عددًا تعبديًا بلا مرجع.</p><a class="hisn-open" href="https://risala.prh.gov.sa/ar/content/51" target="_blank" rel="noopener">فتح النسخة المنشورة في رسالة الحرمين ↗</a><div class="hisn-sections">${AZ.sets.map(x=>`<button data-az="${x.id}">${x.name}</button>`).join('')}</div><div class="hisn-note">للتوسع في أبواب الاستيقاظ والوضوء والصلاة والسفر وغيرها افتح المرجع الكامل. ما يظهر داخل رفيق هو المحتوى الذي تمت إضافته ومراجعته داخل التطبيق.</div></section>`;
+    return;
+  }
   const set=AZ.sets.find(x=>x.id===azkarMode)||AZ.sets[0]; if(!set)return;
   const L=set.items; let done=0;
   const rows=L.map((z,i)=>{ const c=data.azkar[set.id+i]||0; if(c>=z.n)done++;
     return `<div class="zikr ${c>=z.n?'done':''} ${['morning','evening'].includes(set.id)?'tap-count':''}" ${['morning','evening'].includes(set.id)?`data-z="${i}" data-set="${set.id}" role="button" tabindex="0"`:''}><div class="txt">${z.t.replace(/\n/g,'<br>')}</div>${z.note?`<div class="zk-note">${z.note}</div>`:''}${sourceHtml(z)}${actions(set,z,i,c)}</div>`}).join('');
   cnt.textContent=`${AR(L.length)} ذكرًا · أنجزت ${AR(done)}`;
-  box.innerHTML=`<section><div class="sec-head"><span>${set.name}</span><span class="pct">${AR(done)} / ${AR(L.length)}</span></div><div class="az-time">${set.time||''}</div>${rows}</section>`;
+  const ss=set.source||{};
+  const sectionSource=ss.label?`<div class="az-section-source"><span class="az-src-kicker">مصدر هذا القسم</span><a href="${ss.url||'#'}" target="_blank" rel="noopener">${ss.label}</a>${ss.note?`<span>${ss.note}</span>`:''}</div>`:'';
+  box.innerHTML=`<section><div class="sec-head"><span>${set.name}</span><span class="pct">${AR(done)} / ${AR(L.length)}</span></div><div class="az-time">${set.time||''}</div>${sectionSource}${rows}</section>`;
 }
 
 
@@ -584,6 +591,14 @@ const suraOf=n=>Q.suras[n-1];
 const juzOf=p=>{ let j=1; Q.juz.forEach((sp,i)=>{ if(p>=sp) j=i+1 }); return j };
 
 async function openQuran(){ await loadQuran(); renderAyaDay(); renderResume(); renderSurahList() }
+let quranToolsRequested=false;
+async function openQuranReaderDefault(){
+  await loadQuran();
+  const saved=(await store.get(QKEY))||{};
+  await openPage(saved.page||1);
+}
+function openQuranTools(){ quranToolsRequested=true; switchTab('quran') }
+
 
 function renderSurahList(){
   const raw=(document.getElementById('q-search').value||'').trim(), q=searchNorm(raw);
@@ -655,6 +670,7 @@ async function openPage(p){
   document.getElementById('mus-juz').textContent='الجزء '+JUZ_AR[juzOf(qPage)-1];
   document.getElementById('mus-sura').textContent=last?last.name:'';
   document.getElementById('mus-page').textContent='صفحة '+AR(qPage)+' من ٦٠٤';
+  const swipeHint=document.getElementById('mushaf-swipe-hint'); if(swipeHint)swipeHint.classList.toggle('hide',qPage!==1);
   document.getElementById('rd-title').textContent=last?last.name:'المصحف';
   await store.set(QKEY,{page:qPage,sura:last?last.name:'',s:mark.s,a:mark.a});
   if(tab!=='read') switchTab('read');
@@ -667,7 +683,7 @@ document.getElementById('mus-body').onclick=async e=>{
   const cur=(await store.get(QKEY))||{};
   await store.set(QKEY,Object.assign(cur,{page:qPage,s:+a.dataset.s,a:+a.dataset.a}));
   toast('حُفظ موضعك') };
-document.getElementById('rd-back').onclick=()=>switchTab('quran');
+document.getElementById('rd-back').onclick=openQuranTools;
 document.getElementById('rd-prev').onclick=()=>openPage(qPage-1);
 document.getElementById('rd-next').onclick=()=>openPage(qPage+1);
 const setF=v=>{ qFont=Math.min(38,Math.max(15,v)); localStorage.setItem('qFont',qFont);
@@ -732,6 +748,7 @@ document.getElementById('dua-search').oninput=()=>renderDua();
 
 
 /* ================= السنة — رياض الصالحين + قارئ الشرح ================= */
+const RIYAD_TEXT_URL='https://old.shamela.ws/index.php/book/12014';
 const RIYAD_SHARH_URL='https://foundation.binothaimeen.net/ar/books/show/76e12fcc-d35a-417d-a68b-954c0bf06bc6';
 const NAWAWI_SHARH_URL='https://foundation.binothaimeen.net/ar/books/show/7c9cb3e2-3b02-4ad9-97dc-5db895d9a98c';
 let RS=null, rsBook=-1, rsFav=[], NAW=null, nawawiQuery='';
@@ -788,7 +805,7 @@ function openHadithDetail(kind,data){
   if(kind==='riyad'){
     const {b,h}=data,p=riyadParts(h.t),meaning=riyadExplain(p.body,b.name);
     kick.textContent=`رياض الصالحين · ${AR(h.n)}`;
-    host.innerHTML=`<div class="hadith-reader-hero"><div class="eyebrow">${laterEsc(b.name)} · الحديث ${AR(h.n)}</div><h2 id="hadith-detail-title">رياض الصالحين</h2><div class="hadith-matn">${laterEsc(p.body)}</div></div>${sourceRefCard('شرح رياض الصالحين — الشيخ محمد بن صالح العثيمين رحمه الله',RIYAD_SHARH_URL,'مؤسسة الشيخ محمد بن صالح العثيمين الخيرية — ٦ مجلدات.')}<div class="hadith-sharh"><div class="head"><b>الشرح المبسط</b><span class="badge">للفهم الأولي</span></div><p>${laterEsc(meaning)}</p><div class="disclaimer">صياغة تعليمية مختصرة في رفيق، وليست نقلًا حرفيًا من الشيخ. المرجع السابق هو المعتمد للتوسع والتحرير.</div></div>${p.refs.length?`<div class="hadith-takhrij"><h3>التخريج والإحالات الواردة في نص رياض الصالحين</h3>${p.refs.map(x=>`<div class="refline">${laterEsc(x)}</div>`).join('')}</div>`:''}<div class="hadith-ref-card"><div class="label">مصدر نص الحديث</div><a href="https://sunnah.com/riyadussalihin:${h.n}" target="_blank" rel="noopener">رياض الصالحين — الحديث ${AR(h.n)}</a><div class="note">${laterEsc(b.name)}. أزلنا الأقواس المزدوجة من العرض، ونقلنا التخريج إلى بطاقة مستقلة بدل ظهوره داخل المتن؛ لم نغيّر معنى الحديث.</div></div>`;
+    host.innerHTML=`<div class="hadith-reader-hero"><div class="eyebrow">${laterEsc(b.name)} · الحديث ${AR(h.n)}</div><h2 id="hadith-detail-title">رياض الصالحين</h2><div class="hadith-matn">${laterEsc(p.body)}</div></div>${sourceRefCard('شرح رياض الصالحين — الشيخ محمد بن صالح العثيمين رحمه الله',RIYAD_SHARH_URL,'مؤسسة الشيخ محمد بن صالح العثيمين الخيرية — ٦ مجلدات.')}<div class="hadith-sharh"><div class="head"><b>الشرح المبسط</b><span class="badge">للفهم الأولي</span></div><p>${laterEsc(meaning)}</p><div class="disclaimer">صياغة تعليمية مختصرة في رفيق، وليست نقلًا حرفيًا من الشيخ. المرجع السابق هو المعتمد للتوسع والتحرير.</div></div>${p.refs.length?`<div class="hadith-takhrij"><h3>التخريج والإحالات الواردة في نص رياض الصالحين</h3>${p.refs.map(x=>`<div class="refline">${laterEsc(x)}</div>`).join('')}</div>`:''}<div class="hadith-ref-card"><div class="label">مصدر الكتاب والنص</div><a href="${RIYAD_TEXT_URL}" target="_blank" rel="noopener">رياض الصالحين — الإمام النووي — تحقيق شعيب الأرنؤوط</a><div class="note">${laterEsc(b.name)} · الحديث ${AR(h.n)}. <a href="https://sunnah.com/riyadussalihin:${h.n}" target="_blank" rel="noopener">فتح موضع الحديث بالترقيم ↗</a></div></div>`;
   }else{
     const h=data,meta=NAW.meta||{};
     kick.textContent=`الأربعون النووية · ${AR(h.n)}`;
@@ -801,6 +818,8 @@ document.getElementById('hadith-detail-back').onclick=closeHadithDetail;
 
 async function renderSunnah(){
   await loadRS();
+  const intro=document.getElementById('riyad-intro');
+  if(intro)intro.innerHTML=`<b>رياض الصالحين</b><p>كتاب للإمام يحيى بن شرف النووي رحمه الله، رتبه في أبواب تجمع الآيات والأحاديث في العبادة والآداب والأخلاق وفضائل الأعمال. اضغط على أي حديث لقراءة المتن ثم الشرح المبسط والمراجع.</p><div class="learn-ref-row"><a href="${RIYAD_TEXT_URL}" target="_blank" rel="noopener">مصدر الكتاب — رياض الصالحين، تحقيق شعيب الأرنؤوط</a><a href="${RIYAD_SHARH_URL}" target="_blank" rel="noopener">مرجع الشرح — شرح رياض الصالحين لابن عثيمين</a></div><span class="learn-note">الشرح داخل رفيق صياغة تعليمية مختصرة، وليس نقلًا حرفيًا عن الشيخ.</span>`;
   const raw=(document.getElementById('rs-search').value||'').trim(),q=searchNorm(raw),cnt=document.getElementById('rs-result-count');
   const seed=Math.floor(Date.now()/86400000),biDay=RS.books.length?seed%RS.books.length:-1,all=biDay>=0?RS.books[biDay]:null;
   if(all){const h=all.items[seed%all.items.length],p=riyadParts(h.t),k=biDay+':'+h.n;document.getElementById('hadith-day').dataset.dayHadith=k;document.getElementById('hadith-day').innerHTML=`<div class="lbl">حديث اليوم · اضغط للشرح</div><div class="t">${laterEsc(p.body)}</div><div class="learn-source">رياض الصالحين — ${laterEsc(all.name)} — الحديث ${AR(h.n)}</div>`}
@@ -833,7 +852,7 @@ async function renderNawawi(){
 }
 
 /* ================= العلم: رياض الصالحين + الأربعون النووية + السيرة + الصحابة + الأساسيات + الفقه ================= */
-let LEARN=null, SEERAH=null, COMPANIONS=null, learnMode='riyad', learnQuery='', learnGroup='all';
+let LEARN=null, SEERAH=null, COMPANIONS=null, learnMode='nawawi', learnQuery='', learnGroup='all';
 async function loadLearn(){if(LEARN)return LEARN;try{LEARN=await (await fetch('./knowledge.json?v='+Date.now())).json()}catch{LEARN={meta:{},essentials:[],fiqh:[]}}return LEARN}
 async function loadSeerah(){if(SEERAH)return SEERAH;try{SEERAH=await (await fetch('./seerah.json?v='+Date.now())).json()}catch{SEERAH={meta:{},items:[]}}return SEERAH}
 async function loadCompanions(){if(COMPANIONS)return COMPANIONS;try{COMPANIONS=await (await fetch('./companions.json?v='+Date.now())).json()}catch{COMPANIONS={meta:{},items:[]}}return COMPANIONS}
@@ -1614,6 +1633,8 @@ function paintHomePrayer(){const T=todayTimes(),title=document.getElementById('h
 const TITLES={today:'اليوم',quran:'المصحف',read:'المصحف',azkar:'الأذكار',dua:'الدعاء',tasbih:'السبحة',asma:'أسماء الله الحسنى',sunnah:'العلم',qalb:'القلب',irtaqi:'ارتقِ',history:'السجل'};
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 function switchTab(t){
+  if(t==='quran'&&!quranToolsRequested){ openQuranReaderDefault(); return }
+  const showQuranTools=t==='quran'&&quranToolsRequested; if(showQuranTools)quranToolsRequested=false;
   tab=t;
   const views=['today','quran','read','azkar','dua','tasbih','asma','sunnah','qalb','irtaqi','history'];
   views.forEach(v=>{ const el=document.getElementById('v-'+v); if(el) el.classList.toggle('hide',v!==t) });
