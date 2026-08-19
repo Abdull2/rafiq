@@ -1676,7 +1676,7 @@ document.getElementById('feedback-share').onclick=async()=>{
 
 /* ================= settings ================= */
 const sheet=document.getElementById('settings');
-document.getElementById('btn-settings').onclick=()=>{fillSettings();sheet.classList.remove('hide')};
+document.getElementById('btn-settings').onclick=async()=>{fillSettings();sheet.classList.remove('hide');await paintDataSafetyStatus()};
 document.getElementById('close-settings').onclick=()=>sheet.classList.add('hide');
 sheet.onclick=e=>{if(e.target===sheet)sheet.classList.add('hide')};
 function fillSettings(){
@@ -1699,28 +1699,39 @@ document.getElementById('btn-geo').onclick=()=>{
     toast('تم تحديد الموقع');
   },()=>toast('تعذّر تحديد الموقع — أدخله يدويًا')) };
 
+async function paintDataSafetyStatus(extra=''){
+  const el=document.getElementById('data-safety-status');if(!el)return;
+  if(!window.RafiqDataSafety){el.className='data-safety-card warn';el.innerHTML='<b>حماية البيانات غير متاحة</b><span>تعذر تحميل طبقة حماية البيانات في هذه الجلسة.</span>';return}
+  try{
+    const st=await RafiqDataSafety.status(),a=await RafiqDataSafety.audit(false);
+    const ok=a.ok&&st.deviceDataVersion===st.currentDataVersion;
+    el.className='data-safety-card '+(ok?'ok':'warn');
+    const when=st.lastExport?new Date(st.lastExport).toLocaleDateString('ar-EG'):'لم تُنزّل نسخة بعد';
+    el.innerHTML=`<b>${ok?'بياناتك جاهزة للتحديث الآمن ✓':'بياناتك تحتاج مراجعة'}</b><span>إصدار البيانات ${AR(st.deviceDataVersion)} · ${AR(a.recordCount)} سجل محلي · آخر نسخة: ${when}${extra?`<br>${extra}`:''}</span>`;
+  }catch(e){el.className='data-safety-card warn';el.innerHTML='<b>تعذر فحص البيانات</b><span>بياناتك لم تُحذف. جرّب الفحص مرة أخرى قبل الاستيراد.</span>'}
+}
+
 document.getElementById('btn-export').onclick=async()=>{
-  const keys=await store.keys('day:'); const out={settings,qada,profile,savedLater:laterItems,qalbPaths:await store.get('qalb-paths-v1'),days:{},todo:await store.get('todo-items'),irtHist:await store.get('irt-hist'),irtJourney:await store.get('irt-journey'),irtDone:await store.get('irt-done')};
-  for(const k of keys) out.days[k]=await store.get(k);
-  const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download='muhasabah-backup-'+iso(new Date())+'.json'; a.click(); toast('تم التصدير') };
+  if(!window.RafiqDataSafety){toast('طبقة حماية البيانات غير متاحة');return}
+  try{await RafiqDataSafety.downloadBackup();await paintDataSafetyStatus('تم تنزيل نسخة كاملة الآن');toast('تم تنزيل نسخة احتياطية كاملة ✓')}
+  catch(e){toast(e?.message||'تعذر إنشاء النسخة الاحتياطية')}
+};
 document.getElementById('btn-import').onclick=()=>document.getElementById('file-in').click();
+document.getElementById('btn-data-check')?.addEventListener('click',async()=>{
+  if(!window.RafiqDataSafety){toast('طبقة حماية البيانات غير متاحة');return}
+  try{const a=await RafiqDataSafety.audit(true);await paintDataSafetyStatus(a.ok?'اكتمل الفحص ولم نجد خللًا بنيويًا':'وجد الفحص بيانات تحتاج مراجعة');toast(a.ok?'فحص البيانات سليم ✓':'وجدنا بيانات تحتاج مراجعة')}
+  catch{toast('تعذر فحص البيانات')}
+});
 document.getElementById('file-in').onchange=async e=>{
-  const f=e.target.files[0]; if(!f)return;
-  try{ const j=JSON.parse(await f.text());
-    if(j.settings){settings=j.settings; await store.set('settings',settings)}
-    if(j.qada){qada=j.qada; await store.set('qada',qada)}
-    if(j.profile){profile={age:null,gender:null,advancedIssues:false,...j.profile};await store.set('profile-v1',profile);paintProfileUI()}
-    if(Array.isArray(j.savedLater)){laterItems=j.savedLater;await store.set('saved-later-v1',laterItems);updateLaterBadge()}
-    if(Array.isArray(j.qalbPaths)){hPaths=j.qalbPaths;await store.set('qalb-paths-v1',hPaths)}
-    if(j.todo){todoItems=j.todo;await store.set('todo-items',todoItems)}
-    if(j.irtHist)await store.set('irt-hist',j.irtHist);
-    if(j.irtJourney)await store.set('irt-journey',j.irtJourney);
-    if(j.irtDone)await store.set('irt-done',j.irtDone);
-    for(const [k,v] of Object.entries(j.days||{})) await store.set(k,v);
-    await load(current); fillSettings(); renderTodo(); toast('تم الاستيراد');
-  }catch{ toast('الملف غير صالح') } };
+  const f=e.target.files[0];if(!f)return;
+  try{
+    if(!window.RafiqDataSafety)throw new Error('طبقة حماية البيانات غير متاحة');
+    const j=JSON.parse(await f.text()),mode=document.getElementById('import-mode')?.value||'replace';
+    const r=await RafiqDataSafety.restorePortableBackup(j,mode);
+    toast(r.legacy?'تمت استعادة النسخة القديمة وترقيتها بأمان ✓':'تمت استعادة البيانات بأمان ✓');
+    e.target.value='';setTimeout(()=>location.reload(),650);
+  }catch(err){e.target.value='';toast(err?.message||'الملف غير صالح أو تعذر استعادته')}
+};
 
 /* theme */
 document.getElementById('btn-profile')?.addEventListener('click',()=>{document.getElementById('profile-panel')?.classList.remove('hide');const a=document.getElementById('profile-edit-age');if(a)a.value=profile.age||'';const gEl=document.querySelector(`input[name="profile-edit-gender"][value="${profile.gender||'male'}"]`);if(gEl)gEl.checked=true;const adv=document.getElementById('profile-edit-issues');if(adv)adv.checked=issuesEnabled()});
@@ -1744,6 +1755,8 @@ document.getElementById('onboarding-next')?.addEventListener('click',async()=>{i
 
 /* ================= boot ================= */
 (async function(){
+  let safetyBoot=null;
+  if(window.RafiqDataSafety){try{safetyBoot=await RafiqDataSafety.init()}catch(e){safetyBoot={ok:false,message:'تعذر بدء حماية البيانات'}}}
   settings=(await store.get('settings'))||{method:'EGYPT',asr:'1',khatma:30};
   qada=(await store.get('qada'))||{};
   profile={age:null,gender:null,advancedIssues:false,...((await store.get('profile-v1'))||{})};
@@ -1754,6 +1767,7 @@ document.getElementById('onboarding-next')?.addEventListener('click',async()=>{i
   await loadTodo();
   await load(current);
   renderNext(); setInterval(renderNext,1000);
+  if(safetyBoot&&safetyBoot.ok===false)setTimeout(()=>toast('تنبيه: أوقف رفيق ترحيل البيانات حفاظًا على نسختك القديمة'),900);
   const onboardingSeen=await store.get('onboarding-seen-v3');
   if(!onboardingSeen){paintOnboarding();document.getElementById('onboarding')?.classList.remove('hide')}
   const h=(location.hash||'').replace('#','');

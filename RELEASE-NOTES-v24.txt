@@ -103,3 +103,15 @@ R7 — Qur'an wird IA correction
 - إضافة البحث والتصفية بحسب مراحل السيرة + الحفظ في «محفوظاتي» بعلامة ＋/✓.
 - تحديث صفحة المصادر وملفات AI handoff.
 - النسخة تظل v24 / manifest 24.0.0.
+
+R10 — Data Safety / Existing User Protection
+- Added app/data-safety.js with local schema versioning (`rafiq:data-version = 1`).
+- First R10 launch protects pre-R10 local data with a safety snapshot before registering the schema version.
+- Added migration/validation/rollback framework for future storage changes; v0 -> v1 intentionally does not rewrite legacy records.
+- Replaced partial backup with a broader portable backup covering daily logs, Saved Later, Qur'an position/font, Heart/مساري, Irtaqi, dua/Riyad favorites, todos, Khabia and tasbih state.
+- Chrome extension backup can also include Rafiq notebook/preferences/prayer extension data.
+- New backup files include version metadata and SHA-256 integrity checksum where supported.
+- Old muhasabah backup JSON remains supported and is imported in safe merge mode so omitted legacy fields cannot wipe newer data.
+- Settings now has `بياناتي والحماية`, including backup, restore, merge mode and data audit/status.
+- No backend, cloud database, account system or analytics introduced.
+- Public manifest remains 24.0.0.

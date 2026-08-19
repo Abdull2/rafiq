@@ -104,3 +104,13 @@ v24 R9 — concise seerah checks
 - [PASS] Rafiq UI explicitly says the seerah text is an educational paraphrase, not a verbatim quotation.
 - [PASS] JavaScript syntax and all JSON files parse.
 - [PASS] manifest remains 24.0.0.
+
+v24 R10 — Data Safety QA
+- PASS: app/data-safety.js parses with node --check.
+- PASS: app/app.js parses with node --check.
+- PASS: deterministic Node storage harness: legacy data -> schema v1, portable backup checksum, destructive mutation -> full restore, dynamic day key cleanup on full restore, raw qFont restore, old partial backup forced to non-destructive merge, post-restore audit.
+- PASS: all JSON files parse successfully.
+- PASS: manifest remains 24.0.0.
+- PASS: index.html loads data-safety.js before app.js and contains `بياناتي والحماية` controls.
+- PASS: migration v0 -> v1 does not rewrite existing user records.
+- NOTE: headless Chromium DOM smoke attempt timed out in the container environment and produced no useful DOM; do not claim a full browser visual regression was completed for R10.

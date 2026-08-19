@@ -1,11 +1,12 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-R9-2026-08-19",
+  "state_id": "RAFIQ-HANDOFF-v24-R10-2026-08-19",
   "project": "رفيق يومك",
   "version": "v24",
   "platform": "Chrome MV3 side-panel extension",
   "read_first": [
     "AI_HANDOFF.md",
     "CONTENT_PROVENANCE-ISHKALIAT.md",
+    "DATA_SAFETY.md",
     "manifest.json",
     "app/app.js",
     "app/index.html"
@@ -20,13 +21,16 @@
     "Do not invent sacred counts, durations, promises, or spiritual ranks.",
     "Keep + / Saved for later across content.",
     "Do not restore the previously rejected home-page tagline; preserve the current calmer copy.",
-    "The Ishkaliat track is opt-in, does not classify religiosity, and every displayed idea links to the original Dr. Ahmed Abdelmonem video + timestamp; supplied summaries are not treated as verbatim transcripts."
+    "The Ishkaliat track is opt-in, does not classify religiosity, and every displayed idea links to the original Dr. Ahmed Abdelmonem video + timestamp; supplied summaries are not treated as verbatim transcripts.",
+    "Existing user data is production legacy data: no persistent key/shape/content-ID change without a backward-compatible migration and rollback path."
   ],
   "storage_keys": {
     "profile": "profile-v1 {age, gender, advancedIssues}",
     "saved_later": "saved-later-v1",
     "onboarding": "onboarding-seen-v3",
-    "qalb_paths": "qalb-paths-v1 (selected heart/obstacle/Fiqh-al-Nafs paths, local progress, check-ins)"
+    "qalb_paths": "qalb-paths-v1 (selected heart/obstacle/Fiqh-al-Nafs paths, local progress, check-ins)",
+    "data_schema": "rafiq:data-version = 1",
+    "safety_snapshot": "rafiq:safety-snapshot:v1"
   },
   "key_sources": {
     "essentials": "https://risala.prh.gov.sa/ar/contents/251",
@@ -96,13 +100,22 @@
     "R8: Asma list is responsive and falls back to one column on narrow widths; religious data/sources unchanged.",
     "R9: Added السيرة المختصرة as a new Knowledge section with 11 concise sourced stations.",
     "R9: Primary source is رسول الإسلام محمد ﷺ by the Scientific Committee of the Presidency of Religious Affairs at the Two Holy Mosques; each station links the source visibly.",
-    "R9: Added official Ibn Uthaymeen Foundation commentary on Nur al-Yaqin as an expansion reference; summaries are educational paraphrases, not quotations."
+    "R9: Added official Ibn Uthaymeen Foundation commentary on Nur al-Yaqin as an expansion reference; summaries are educational paraphrases, not quotations.",
+    "R10: added app/data-safety.js local-first data versioning/migration/validation/rollback layer",
+    "R10: current local schema version is rafiq:data-version = 1; public manifest remains 24.0.0",
+    "R10: first launch with legacy data creates a safety snapshot; v0->v1 registers version without rewriting user records",
+    "R10: fuller portable backup covers day:*, tas:*, quran position/font, Saved Later, Heart/مساري, Irtaqi, favorites, todos, Khabia, profile/settings and extension notebook/prefs when available",
+    "R10: new backups use SHA-256 integrity when available; old partial muhasabah backups remain supported via non-destructive merge",
+    "R10: Settings now has بياناتي والحماية with backup/restore/merge/data-audit status",
+    "R10: no cloud backend/database/account/analytics added"
   ],
   "data_architecture": {
     "cloud_backend": false,
     "central_user_database": false,
     "chrome_app_state": "localStorage via app store wrapper; extension notebook/prefs use chrome.storage.local",
     "android_existing_wrapper": "PWABuilder/TWA -> https://abdull2.github.io/rafiq/",
-    "decision_required_before_cloud": "owner must explicitly approve analytics vs account sync, data categories, privacy and retention"
+    "decision_required_before_cloud": "owner must explicitly approve analytics vs account sync, data categories, privacy and retention",
+    "local_data_schema_version": 1,
+    "safety_layer": "app/data-safety.js; local snapshot + migration + validation + rollback + portable backup"
   }
 }

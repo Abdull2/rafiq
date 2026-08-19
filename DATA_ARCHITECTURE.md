@@ -32,3 +32,15 @@ Do not add either silently. Before implementation the owner must choose what is 
 Potential safe events: app_open, screen_view, content_open, saved_later_used, path_feature_opened, quiz_completed (without answers), export_used.
 
 Do **not** send by default: journal text, notebook text, dua text entered by user, exact selected mental-health/relationship problem, geolocation coordinates, prayer/faith scores tied to an identity, or personal path check-in text/state.
+
+## R10 — local data-safety layer
+R10 adds `app/data-safety.js`. This is **not** a backend. It is a local compatibility/backup layer around the existing per-device data model.
+
+- Local schema version: `rafiq:data-version = 1`.
+- First R10 launch snapshots legacy local data before registering the schema version.
+- Future schema/storage changes must run explicit migrations and roll back on validation failure.
+- Settings now exports a fuller portable backup, audits local structures, verifies new backups with a SHA-256 checksum where supported, and imports old partial `muhasabah-backup` files non-destructively.
+- `day:*`, `tas:*`, Qur'an position/font, Saved Later, personal paths, heart journal/progress, dua/Riyad favorites, Irtaqi, todos, Khabia and profile/settings are covered by the local registry.
+- In the Chrome extension, portable backup can also include the Rafiq notebook/preferences/prayer-extension state from `chrome.storage.local`.
+
+See `DATA_SAFETY.md` before changing any persistent storage key or structure.

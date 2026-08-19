@@ -32,3 +32,6 @@ LATEST v24 R9 NOTE — SEERAH:
 - Primary source: `رسول الإسلام محمد ﷺ` — Scientific Committee, Presidency of Religious Affairs at the Grand Mosque and Prophet's Mosque (risala.prh.gov.sa/ar/contents/321).
 - Every seerah station must keep a visible source. Do not add famous but unverified stories/dates/details.
 - Rafiq summaries are paraphrases, not verbatim source text. Read section 19 of AI_HANDOFF.md before changing seerah.
+
+LATEST v24 R10 DATA-SAFETY NOTE:
+Rafiq now has real users. Read DATA_SAFETY.md and section 20 of AI_HANDOFF.md before touching any persistent storage. `rafiq:data-version` is schema v1. Do not rename/delete a storage key, change a stored shape, or change a stable saved-content ID without a backward-compatible migration and rollback path. Every new persistent key/prefix must be registered in app/data-safety.js. Old partial muhasabah backups must remain importable non-destructively. No cloud backend/analytics was added.

@@ -126,6 +126,12 @@
 .history-details{margin-top:12px;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}.history-details>summary{cursor:pointer;padding:13px 15px;color:var(--deep);font-weight:600;font-size:13px;list-style:none}.history-details>summary::-webkit-details-marker{display:none}.history-details>summary::before{content:'＋';margin-inline-end:7px}.history-details[open]>summary::before{content:'−'}.history-details .inner-section{border-top:1px solid var(--line)}
 @media(max-width:520px){.hist-cards{grid-template-columns:1fr}}
 
+
+    .data-safety-card{border:1px solid var(--line);background:var(--wash);border-radius:13px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;color:var(--deep)}
+    .data-safety-card b{font-size:12.5px}.data-safety-card span{font-size:11px;line-height:1.75;color:var(--soft)}
+    .data-safety-card.ok{border-color:color-mix(in srgb,var(--deep) 30%,var(--line));background:color-mix(in srgb,var(--wash) 84%,var(--deep) 16%)}
+    .data-safety-card.warn{border-color:#b9853c;background:color-mix(in srgb,var(--card) 88%,#b9853c 12%)}
+    .data-btn{flex:1;padding:10px;border-radius:11px;border:1px solid var(--line);background:var(--card);color:var(--deep);cursor:pointer;font-family:inherit}
 </style>
 <style>
 :root{
@@ -1222,15 +1228,23 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
         <option value="2">الحنفي (مثلا الظل)</option></select></div>
     <div class="field"><label for="khatma">هدف ختم القرآن (عدد الأيام)</label>
       <input type="number" id="khatma" min="1" placeholder="30"></div>
-    <div class="field"><label>نسخة احتياطية</label>
-      <div class="row">
-        <button id="btn-export" style="flex:1;padding:10px;border-radius:11px;border:1px solid var(--line);
-          background:var(--card);color:var(--deep);cursor:pointer">تصدير</button>
-        <button id="btn-import" style="flex:1;padding:10px;border-radius:11px;border:1px solid var(--line);
-          background:var(--card);color:var(--deep);cursor:pointer">استيراد</button>
+    <div class="field"><label>بياناتي والحماية</label>
+      <div id="data-safety-status" class="data-safety-card">
+        <b>حماية البيانات المحلية</b><span>جارٍ فحص حالة البيانات…</span>
+      </div>
+      <div class="row" style="margin-top:9px">
+        <button id="btn-export" class="data-btn">تنزيل نسخة كاملة</button>
+        <button id="btn-import" class="data-btn">استعادة نسخة</button>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <select id="import-mode" aria-label="طريقة الاستيراد" style="flex:1">
+          <option value="replace">استعادة كاملة — مع نسخة أمان أولًا</option>
+          <option value="merge">دمج آمن — لا يمسح الموجود</option>
+        </select>
+        <button id="btn-data-check" class="data-btn" style="flex:0 0 auto">فحص البيانات</button>
       </div>
       <input type="file" id="file-in" accept="application/json" class="hide">
-      <div class="muted" style="margin-top:8px">بياناتك محفوظة على جهازك فقط، ولا تُرسل لأي خادم.</div>
+      <div class="muted" style="margin-top:8px;line-height:1.8">قبل أي ترحيل أو استعادة ينشئ رفيق نسخة أمان محلية. النسخة التي تنزّلها تشمل بيانات رفيق المسجلة على هذا الجهاز، ولا تُرسل لأي خادم.</div>
     </div>
     <div class="field">
       <label>عن التطبيق</label>
@@ -1270,5 +1284,6 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   </div>
 </div>
 
+<script src="./data-safety.js"></script>
 <script src="./app.js"></script>
 <script src="./extension-bridge.js"></script>

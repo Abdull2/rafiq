@@ -395,3 +395,27 @@ Seerah source-integrity rule for future AI:
 1. Do not add popular stories, miracle narratives, battle details, dates, or quotations merely because they are famous. Add only when a reliable source is available and visible in the UI.
 2. Keep Rafiq summaries clearly distinguished from verbatim words of a scholar/book.
 3. The official Presidency book is the current primary backbone for the concise section; deeper chronology may be expanded later only with vetted seerah references.
+
+## 20) v24 R10 — local data-safety release before more features
+
+Owner confirmed that Rafiq is already being used by friends. From this release onward, existing user data is treated as production legacy data and must survive ordinary UI/content updates.
+
+Implemented:
+- Added `app/data-safety.js` as a local-first compatibility layer. This does **not** add a backend, account system, analytics, Firebase, Supabase, or central database.
+- Added a separate local schema version key: `rafiq:data-version`. Current schema is **1** while the public app/manifest remains **24.0.0**.
+- On the first R10 launch with legacy data, Rafiq inventories registered data and creates `rafiq:safety-snapshot:v1` before registering schema v1. The v0 -> v1 migration intentionally rewrites no legacy user records.
+- Migration framework is fail-safe: validation runs after migration and a failed migration restores the pre-migration safety snapshot rather than continuing with partially converted data.
+- Replaced the old partial exporter with a fuller portable backup covering settings/profile, daily logs, Saved Later, todos, Qur'an position/font, dua/Riyad favorites, Heart journal/progress/tracking/personal paths, Irtaqi state, Khabia and `tas:*` data.
+- Chrome-extension portable backups additionally include Rafiq notebook/preferences/prayer extension state when `chrome.storage.local` is available.
+- New backups use `format: rafiq-backup`, include backup/data versions, and include a SHA-256 integrity checksum when Web Crypto is available.
+- Old `muhasabah-backup` JSON remains importable. Because that legacy format omitted several later features, legacy imports are forced into non-destructive merge mode so an old backup cannot erase newer local data that it never contained.
+- Before every import, Rafiq creates a local safety snapshot; failed restore/validation rolls app-local data back. Chrome extension state is also snapshotted for import rollback when available.
+- Settings now contains `بياناتي والحماية`: full backup download, restore, safe-merge option, local structural audit, and data-version/status summary.
+- Added `DATA_SAFETY.md`; future AI/developers MUST read it before changing storage.
+
+Non-negotiable storage rule going forward:
+1. Never rename/delete/restructure a persistent user key without a versioned migration.
+2. Add every new persistent key/prefix to the registry in `app/data-safety.js`.
+3. Preserve stable content IDs; if an ID must change, add an explicit old -> new mapping migration.
+4. A successful syntax build is not enough: run the Data Safety harness and validate JSON before packaging.
+5. Local safety is not cloud backup. Clearing app/site/extension data can still remove user records; downloaded backups remain important until/if the owner explicitly chooses cloud sync.
