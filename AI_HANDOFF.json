@@ -1,7 +1,7 @@
 {
-  "state_id": "RAFIQ-HANDOFF-v24-R17-2026-08-19",
-  "project": "رفيق يومك",
-  "version": "v24 R17",
+  "state_id": "TADARUQ-HANDOFF-v24-R18-2026-08-19",
+  "project": "تدارُك - Tadaruq",
+  "version": "v24 R18",
   "platform": "GitHub Pages PWA + Google Play TWA; Chrome MV3 source retained",
   "read_first": [
     "AI_HANDOFF.md",
@@ -14,7 +14,7 @@
     "app/app.js (full extension-source layout)",
     "app/index.html (full extension-source layout)"
   ],
-  "product_thesis": "الدين ثابت والمشكلة تختلف؛ رفيق بوابة يومية تربط المستخدم بالقرآن والذكر والعلم وتساعده في مشكلاته الواقعية بمصدر ظاهر وخطوة عملية.",
+  "product_thesis": "الدين ثابت والمشكلة تختلف؛ تدارُك بوابة يومية تربط المستخدم بالقرآن والذكر والعلم وتساعده في مشكلاته الواقعية بمصدر ظاهر وخطوة عملية.",
   "non_negotiables": [
     "Every religious claim displayed in the app must have a visible source; unsourced religious claims are removed or rewritten.",
     "Fiqh al-Nafs content is educational synthesis inspired by Makany methodology unless a specific quote is verified.",
@@ -66,7 +66,7 @@
   },
   "roadmap": [
     "source integrity and regression testing",
-    "real-device regression for R17 daily plan, historical archive, task review, prayer permission and Mushaf fullscreen",
+    "real-device regression for R18 daily plan, historical archive, task review, prayer permission and Mushaf fullscreen",
     "deep-link saved items and personal paths to exact content",
     "refine personal-path prioritization without diagnosing users",
     "verify/refine Ishkaliat summaries against actual transcripts/official text when available",
@@ -75,15 +75,16 @@
     "licensed human audio for adhkar when a verified source/licence exists",
     "continued large-tab UX/accessibility cleanup"
   ],
-  "manifest_version_string": "24.2.0",
+  "manifest_version_string": "24.3.0",
   "current_release_changes": [
-    "R17 adds a professional all-history archive: every meaningful day can be opened by exact date, filtered by self-review/prayer/plan, and drilled into for ratings, prayer states, Quran pages, daily goal/target, tasks and final task reviews.",
-    "R17 moves daily planning to the start of the home flow: goal + measurable target + tasks are visible during the day; the evening flow adds explicit goal/task review while keeping the existing five-question religious self-review lightweight.",
-    "R17 changes the home learning prompt from «تعرف اللي لازم تعرفه؟» to «اتعرّف على دينك أكثر».",
-    "R17 keeps existing todo-items and day:* storage keys but adds optional goal/target/goalReview and task review metadata; Data Safety schema is bumped additively from 1 to 2 with a no-rewrite compatibility migration.",
-    "R17 Chrome MV3 build is browser-oriented: selected page text can be added to today’s tasks from the context menu, and Alt+Shift+P opens the daily plan; existing smart search, notebook and prayer badge remain.",
-    "PWA service-worker cache is bumped to R17; web/TWA changes remain deployable through GitHub Pages without a new Android AAB because no native Android wrapper setting changed.",
-    "Google Play policy status at handoff: previous Closed-test submission was rejected under Play Console Requirements; owner changed the Health apps declaration to off/no health features and is waiting for Google re-review."
+    "R18 unifies the public brand as «تدارُك - Tadaruq» in the browser tab, PWA manifest and Chrome extension metadata; internal legacy IDs/keys that contain rafiq are intentionally preserved for compatibility.",
+    "R18 records the Google Play App Signing classical SHA-256 fingerprint 6D:02:CB:A8:9A:7D:B7:5F:84:C2:74:F6:16:29:35:8A:DE:49:11:28:12:D2:B4:42:EC:A7:4F:43:26:23:4D:4C for package com.tadaruqnoor.rafiq.",
+    "Critical Digital Asset Links correction: because the TWA opens https://abdull2.github.io/rafiq/, verification is origin-scoped and the file must be served at https://abdull2.github.io/.well-known/assetlinks.json. The path https://abdull2.github.io/rafiq/.well-known/assetlinks.json is NOT the required location for this origin.",
+    "For current GitHub Pages hosting, the owner must publish the assetlinks file from the account-level user site repository Abdull2/Abdull2.github.io (or move to a custom domain whose root can serve /.well-known/assetlinks.json). No new AAB is required solely to fix DAL while the launch origin/package stay unchanged.",
+    "The R18 assetlinks statement contains both the Google Play app-signing fingerprint and the original PWABuilder/local signing fingerprint so Play-distributed and directly installed local test builds can both validate.",
+    "Chrome MV3 version bumped to 24.3.0 for Web Store update packaging; the Enhanced Safe Browsing “Proceed with caution” warning is a Chrome trust/reputation signal and is not removed by the developer registration fee.",
+    "R17 planning/history/prayer/fullscreen UI behavior remains unchanged in R18.",
+    "Google Play policy status remains pending after the owner switched the Health apps declaration off/no-health-features; do not claim approval until Play Console confirms it."
   ],
   "data_architecture": {
     "cloud_backend": false,
@@ -101,9 +102,12 @@
     "closed_track": "Alpha",
     "closed_release_name": "tadaruq first",
     "production_gate": "At least 12 opted-in closed testers for at least 14 consecutive days, then apply for Production access (as shown in owner Play Console).",
-    "assetlinks_requirement": "Use com.tadaruqnoor.rafiq + Google Play App Signing SHA-256 in /.well-known/assetlinks.json.",
+    "assetlinks_requirement": "For the current launch origin https://abdull2.github.io/rafiq/, publish the statement at the ORIGIN ROOT: https://abdull2.github.io/.well-known/assetlinks.json (not under /rafiq/.well-known/). Use package com.tadaruqnoor.rafiq and the Play App Signing SHA-256.",
     "secret_rule": "Never commit signing.keystore, signing passwords/info, API tokens, or Play credentials.",
-    "policy_status": "Previous submission rejected under Play Console Requirements. Owner turned Health apps declaration off/no health features on 2026-08-19 and is awaiting re-review; do not claim approval until Play Console confirms it."
+    "policy_status": "Previous submission rejected under Play Console Requirements. Owner turned Health apps declaration off/no health features on 2026-08-19 and is awaiting re-review; do not claim approval until Play Console confirms it.",
+    "app_signing_sha256_classical": "6D:02:CB:A8:9A:7D:B7:5F:84:C2:74:F6:16:29:35:8A:DE:49:11:28:12:D2:B4:42:EC:A7:4F:43:26:23:4D:4C",
+    "pwabuilder_local_sha256": "74:67:B8:77:C3:B6:06:4B:CC:BB:95:7C:EA:87:8A:78:25:8A:59:45:29:34:7F:00:84:FA:27:41:36:51:5C:08",
+    "twa_observed_issue": "Tester screenshot showed Chrome Custom Tab UI with abdull2.github.io visible, consistent with failed Digital Asset Links verification."
   },
   "immutable_handoff_policy": {
     "file": "AI_HANDOFF.md",

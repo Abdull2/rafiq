@@ -53,7 +53,7 @@
   function ensureNotebookButton(){
     if(document.getElementById('btn-rafiq-notebook'))return;
     const feedback=document.getElementById('btn-feedback');if(!feedback)return;
-    const b=document.createElement('button');b.className='icon';b.id='btn-rafiq-notebook';b.title='دفتر رفيق';b.setAttribute('aria-label','دفتر رفيق');
+    const b=document.createElement('button');b.className='icon';b.id='btn-rafiq-notebook';b.title='دفتر تدارُك';b.setAttribute('aria-label','دفتر تدارُك');
     b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H20v18H7.5A2.5 2.5 0 0 0 5 22z"/><path d="M5 4.5V22M9 6h7M9 10h7"/></svg>';
     feedback.parentElement.insertBefore(b,feedback);b.onclick=showNotebook;
   }
@@ -65,14 +65,14 @@
   }
 
   async function showNotebook(){
-    ensureStyles();const sh=makeSheet('rafiq-notebook-sheet','دفتر رفيق');sh.classList.remove('hide');
+    ensureStyles();const sh=makeSheet('rafiq-notebook-sheet','دفتر تدارُك');sh.classList.remove('hide');
     const body=sh.querySelector('.rx-body');
     const data=await chrome.storage.local.get([NOTEBOOK_KEY,PREF_KEY]);let list=Array.isArray(data[NOTEBOOK_KEY])?data[NOTEBOOK_KEY]:[];const prefs=data[PREF_KEY]||{badge:true,notifications:false};
     body.innerHTML=`
-      <div class="rx-row"><div><label>الصلاة القادمة على أيقونة رفيق</label><small>يظهر الوقت المتبقي كبادج صغير على أيقونة الإضافة.</small></div><input id="rx-badge" type="checkbox" ${prefs.badge!==false?'checked':''}></div>
+      <div class="rx-row"><div><label>الصلاة القادمة على أيقونة تدارُك</label><small>يظهر الوقت المتبقي كبادج صغير على أيقونة الإضافة.</small></div><input id="rx-badge" type="checkbox" ${prefs.badge!==false?'checked':''}></div>
       <div class="rx-row"><div><label>تنبيه هادئ عند دخول وقت الصلاة</label><small>اختياري، ولا يعمل إلا بعد موافقتك على إذن الإشعارات.</small></div><input id="rx-notify" type="checkbox" ${prefs.notifications?'checked':''}></div>
-      <textarea class="rx-ta" id="rx-manual" maxlength="1200" placeholder="أضف ملاحظة شخصية إلى دفتر رفيق…"></textarea><div class="rx-actions"><button class="rx-btn primary" id="rx-add-note">حفظ الملاحظة</button></div>
-      <input class="rx-search" id="rx-note-search" type="search" placeholder="ابحث في دفتر رفيق…"><div class="rx-count" id="rx-note-count"></div><div id="rx-note-list"></div>`;
+      <textarea class="rx-ta" id="rx-manual" maxlength="1200" placeholder="أضف ملاحظة شخصية إلى دفتر تدارُك…"></textarea><div class="rx-actions"><button class="rx-btn primary" id="rx-add-note">حفظ الملاحظة</button></div>
+      <input class="rx-search" id="rx-note-search" type="search" placeholder="ابحث في دفتر تدارُك…"><div class="rx-count" id="rx-note-count"></div><div id="rx-note-list"></div>`;
 
     const savePrefs=async()=>{
       let notifications=body.querySelector('#rx-notify').checked;
@@ -87,10 +87,10 @@
     const render=()=>{
       const q=norm(body.querySelector('#rx-note-search').value),shown=q?list.filter(x=>norm(`${x.text} ${x.note||''} ${x.title||''}`).includes(q)):list;
       body.querySelector('#rx-note-count').textContent=`${shown.length.toLocaleString('ar-EG')} عنصر محفوظ`;
-      body.querySelector('#rx-note-list').innerHTML=shown.length?shown.map(x=>`<div class="rx-note" data-id="${esc(x.id)}"><div class="meta">${new Intl.DateTimeFormat('ar-EG',{dateStyle:'medium',timeStyle:'short'}).format(new Date(x.createdAt||Date.now()))}</div><div class="text">${esc(x.text)}</div>${x.url?`<div class="source"><a href="${esc(x.url)}" target="_blank" rel="noreferrer">${esc(x.title||x.url)}</a></div>`:''}<div class="rx-actions"><button class="rx-btn" data-copy="${esc(x.id)}">نسخ</button><button class="rx-btn" data-search="${esc(x.id)}">ابحث عنه</button><button class="rx-btn" data-del="${esc(x.id)}">حذف</button></div></div>`).join(''):'<div class="rx-empty">دفترك فارغ. ظلّل أي نص في أي صفحة ثم كليك يمين ← «احفظ النص في دفتر رفيق».</div>';
+      body.querySelector('#rx-note-list').innerHTML=shown.length?shown.map(x=>`<div class="rx-note" data-id="${esc(x.id)}"><div class="meta">${new Intl.DateTimeFormat('ar-EG',{dateStyle:'medium',timeStyle:'short'}).format(new Date(x.createdAt||Date.now()))}</div><div class="text">${esc(x.text)}</div>${x.url?`<div class="source"><a href="${esc(x.url)}" target="_blank" rel="noreferrer">${esc(x.title||x.url)}</a></div>`:''}<div class="rx-actions"><button class="rx-btn" data-copy="${esc(x.id)}">نسخ</button><button class="rx-btn" data-search="${esc(x.id)}">ابحث عنه</button><button class="rx-btn" data-del="${esc(x.id)}">حذف</button></div></div>`).join(''):'<div class="rx-empty">دفترك فارغ. ظلّل أي نص في أي صفحة ثم كليك يمين ← «احفظ النص في دفتر تدارُك».</div>';
     };
     body.querySelector('#rx-note-search').oninput=render;
-    body.querySelector('#rx-add-note').onclick=async()=>{const ta=body.querySelector('#rx-manual'),text=ta.value.trim();if(!text)return;list.unshift({id:String(Date.now()),text,title:'ملاحظة شخصية',url:'',note:'',createdAt:Date.now()});await chrome.storage.local.set({[NOTEBOOK_KEY]:list});ta.value='';render();if(typeof toast==='function')toast('حُفظت في دفتر رفيق')};
+    body.querySelector('#rx-add-note').onclick=async()=>{const ta=body.querySelector('#rx-manual'),text=ta.value.trim();if(!text)return;list.unshift({id:String(Date.now()),text,title:'ملاحظة شخصية',url:'',note:'',createdAt:Date.now()});await chrome.storage.local.set({[NOTEBOOK_KEY]:list});ta.value='';render();if(typeof toast==='function')toast('حُفظت في دفتر تدارُك')};
     body.querySelector('#rx-note-list').onclick=async e=>{
       const del=e.target.closest('[data-del]'),cp=e.target.closest('[data-copy]'),sr=e.target.closest('[data-search]');
       if(del){list=list.filter(x=>x.id!==del.dataset.del);await chrome.storage.local.set({[NOTEBOOK_KEY]:list});render();return}
@@ -102,7 +102,7 @@
   }
 
   async function showSmartSearch(query=''){
-    ensureStyles();const sh=makeSheet('rafiq-smart-sheet','بحث رفيق');sh.classList.remove('hide');const body=sh.querySelector('.rx-body');
+    ensureStyles();const sh=makeSheet('rafiq-smart-sheet','بحث تدارُك');sh.classList.remove('hide');const body=sh.querySelector('.rx-body');
     body.innerHTML=`<input class="rx-search" id="rx-smart-input" type="search" placeholder="ابحث في القرآن والحديث والأسماء…" value="${esc(query)}"><div class="rx-count" id="rx-smart-count">اكتب كلمة أو عبارة</div><div id="rx-smart-results"></div>`;
     const input=body.querySelector('#rx-smart-input'),out=body.querySelector('#rx-smart-results'),count=body.querySelector('#rx-smart-count');
     const data=await loadSmartData();
@@ -111,7 +111,7 @@
       const qr=[];let qCount=0;for(const s of data.q.suras||[]){for(let i=0;i<s.a.length;i++){if(norm(s.a[i]).includes(q)){qCount++;if(qr.length<5)qr.push({source:`${s.name} — آية ${i+1}`,text:s.a[i]})}}}
       const hr=[];let hCount=0;for(const b of data.r.books||[]){for(const h of b.items||[]){if(norm(`${b.name} ${h.n} ${h.t}`).includes(q)){hCount++;if(hr.length<5)hr.push({source:`${b.name} — حديث ${h.n}`,text:h.t})}}}
       const ar=[];let aCount=0;for(const n of data.a.names||[]){if(norm(`${n.name} ${n.meaning} ${n.impact}`).includes(q)){aCount++;if(ar.length<8)ar.push(n)}}
-      count.textContent=`${(qCount+hCount+aCount).toLocaleString('ar-EG')} نتيجة في رفيق`;
+      count.textContent=`${(qCount+hCount+aCount).toLocaleString('ar-EG')} نتيجة في تدارُك`;
       const group=(title,n,target,items,renderer)=>`<div class="rx-group"><div class="rx-gtitle"><span>${title}</span><span>${n.toLocaleString('ar-EG')}</span></div>${items.length?items.map(renderer).join(''):'<div class="rx-empty">لا توجد نتائج هنا.</div>'}${n?`<button class="rx-btn" data-open-target="${target}">عرض كل النتائج</button>`:''}</div>`;
       out.innerHTML=group('القرآن',qCount,'quran',qr,x=>`<button class="rx-item" data-open-target="quran"><div class="rx-src">${esc(x.source)}</div><div class="rx-txt">${esc(x.text)}</div></button>`)+group('رياض الصالحين',hCount,'sunnah',hr,x=>`<button class="rx-item" data-open-target="sunnah"><div class="rx-src">${esc(x.source)}</div><div class="rx-txt">${esc(x.text)}</div></button>`)+group('أسماء الله الحسنى',aCount,'asma',ar,x=>`<button class="rx-item" data-asma-id="${x.n}"><div class="rx-src">الاسم ${x.n}</div><div class="rx-txt"><b>${esc(x.name)}</b> — ${esc(x.meaning)}</div></button>`);
       out.onclick=e=>{const as=e.target.closest('[data-asma-id]'),op=e.target.closest('[data-open-target]');sh.classList.add('hide');if(as&&typeof hAsmaDetail==='function'){if(typeof switchTab==='function')switchTab('asma');hAsmaDetail(+as.dataset.asmaId);return}if(op)applySectionSearch(op.dataset.openTarget,raw)};

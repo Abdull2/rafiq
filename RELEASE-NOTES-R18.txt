@@ -1,0 +1,9 @@
+تدارُك - Tadaruq — v24 R18
+
+- توحيد الاسم العام إلى «تدارُك - Tadaruq» في تبويب المتصفح وPWA وإضافة Chrome.
+- تحديث إضافة Chrome إلى 24.3.0.
+- إضافة بصمة Google Play App Signing الصحيحة لـ com.tadaruqnoor.rafiq.
+- تصحيح مهم: ملف Digital Asset Links يجب أن يكون على جذر المضيف:
+  https://abdull2.github.io/.well-known/assetlinks.json
+  وليس داخل /rafiq/.well-known/.
+- لا تغيير على مفاتيح بيانات المستخدم أو package ID أو منطق R17 اليومي.

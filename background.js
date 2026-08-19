@@ -9,13 +9,13 @@ async function configurePanel(){
 
 function installMenus(){
   chrome.contextMenus.removeAll(()=>{
-    chrome.contextMenus.create({id:'rafiq-smart',title:'ابحث بذكاء في رفيق عن: “%s”',contexts:['selection']});
+    chrome.contextMenus.create({id:'rafiq-smart',title:'ابحث بذكاء في تدارُك عن: “%s”',contexts:['selection']});
     chrome.contextMenus.create({id:'rafiq-parent',title:'ابحث في قسم محدد',contexts:['selection']});
     chrome.contextMenus.create({id:'rafiq-quran',parentId:'rafiq-parent',title:'القرآن',contexts:['selection']});
     chrome.contextMenus.create({id:'rafiq-sunnah',parentId:'rafiq-parent',title:'رياض الصالحين',contexts:['selection']});
     chrome.contextMenus.create({id:'rafiq-asma',parentId:'rafiq-parent',title:'أسماء الله الحسنى',contexts:['selection']});
     chrome.contextMenus.create({id:'rafiq-sep',type:'separator',contexts:['selection']});
-    chrome.contextMenus.create({id:'rafiq-save',title:'احفظ النص في دفتر رفيق',contexts:['selection']});
+    chrome.contextMenus.create({id:'rafiq-save',title:'احفظ النص في دفتر تدارُك',contexts:['selection']});
     chrome.contextMenus.create({id:'rafiq-todo',title:'أضف النص إلى مهام اليوم',contexts:['selection']});
   });
 }
@@ -90,7 +90,7 @@ chrome.contextMenus.onClicked.addListener(async(info,tab)=>{
   try{await chrome.runtime.sendMessage({type:'RAFIQ_SEARCH',payload});}catch(e){}
 });
 
-chrome.omnibox.setDefaultSuggestion({description:'ابحث في رفيق: <match>%s</match>'});
+chrome.omnibox.setDefaultSuggestion({description:'ابحث في تدارُك: <match>%s</match>'});
 chrome.omnibox.onInputEntered.addListener(async text=>{
   const query=(text||'').trim();
   if(!query) return;
@@ -171,10 +171,10 @@ async function updatePrayerBadge(allowNotify=false){
   if(prefs.badge){
     await chrome.action.setBadgeText({text:badge});
     await chrome.action.setBadgeBackgroundColor({color:'#3F5C34'});
-    await chrome.action.setTitle({title:`رفيق يومك — ${next.name} بعد ${mins<60?mins+' دقيقة':Math.floor(mins/60)+' س '+mins%60+' د'} · ${fmtTime(next.at)}`});
+    await chrome.action.setTitle({title:`تدارُك — ${next.name} بعد ${mins<60?mins+' دقيقة':Math.floor(mins/60)+' س '+mins%60+' د'} · ${fmtTime(next.at)}`});
   }else{
     await chrome.action.setBadgeText({text:''});
-    await chrome.action.setTitle({title:'فتح رفيق يومك'});
+    await chrome.action.setTitle({title:'فتح تدارُك'});
   }
 
   if(allowNotify && prefs.notifications){
@@ -186,7 +186,7 @@ async function updatePrayerBadge(allowNotify=false){
         if(has){
           chrome.notifications.create(`prayer-${stamp}`,{
             type:'basic',iconUrl:'icons/icon-128.png',title:`حان وقت صلاة ${current.name}`,
-            message:'حيّ على الصلاة — افتح رفيق لمواقيت اليوم ومحاسبة الصلاة.',priority:1
+            message:'حيّ على الصلاة — افتح تدارُك لمواقيت اليوم ومحاسبة الصلاة.',priority:1
           });
           await chrome.storage.local.set({[LAST_NOTIFY_KEY]:stamp});
         }

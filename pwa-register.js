@@ -1,4 +1,4 @@
-/* Rafiq PWA service worker registration — v24 R17. */
+/* Tadaruq PWA service worker registration — v24 R18. */
 (() => {
   const isLocalhost = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
   const canRegister = location.protocol === 'https:' || (location.protocol === 'http:' && isLocalhost);
@@ -23,7 +23,7 @@
       });
       registration.update().catch(() => {});
     } catch (error) {
-      console.warn('Rafiq service worker registration failed:', error);
+      console.warn('Tadaruq service worker registration failed:', error);
     }
   });
 })();

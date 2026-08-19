@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "رفيق يومك",
-  "short_name": "رفيق",
-  "description": "رفيق يومك: قرآن وأذكار وعلم وفقه، مع خطة يومية وسجل متابعة ومواقيت صلاة وأدوات عملية أثناء التصفح.",
-  "version": "24.2.0",
+  "name": "تدارُك - Tadaruq",
+  "short_name": "تدارُك",
+  "description": "تدارُك: قرآن وأذكار وعلم وفقه، مع خطة يومية وسجل متابعة ومواقيت صلاة وأدوات عملية أثناء التصفح.",
+  "version": "24.3.0",
   "minimum_chrome_version": "114",
   "permissions": [
     "sidePanel",
@@ -28,7 +28,7 @@
     "default_path": "app/index.html"
   },
   "action": {
-    "default_title": "فتح رفيق يومك"
+    "default_title": "فتح تدارُك"
   },
   "omnibox": {
     "keyword": "rafiq"
@@ -39,21 +39,21 @@
         "default": "Alt+Shift+R",
         "mac": "Alt+Shift+R"
       },
-      "description": "فتح البحث الذكي في رفيق"
+      "description": "فتح البحث الذكي في تدارُك"
     },
     "open-rafiq-notebook": {
       "suggested_key": {
         "default": "Alt+Shift+N",
         "mac": "Alt+Shift+N"
       },
-      "description": "فتح دفتر رفيق"
+      "description": "فتح دفتر تدارُك"
     },
     "open-rafiq-plan": {
       "suggested_key": {
         "default": "Alt+Shift+P",
         "mac": "Alt+Shift+P"
       },
-      "description": "فتح خطة اليوم في رفيق"
+      "description": "فتح خطة اليوم في تدارُك"
     }
   },
   "icons": {

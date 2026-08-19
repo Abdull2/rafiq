@@ -1,9 +1,9 @@
 # NEXT AI — READ THIS FIRST
 
-**Project:** رفيق يومك (Rafiq Yomak)  
-**State ID:** `RAFIQ-HANDOFF-v24-R17-2026-08-19`  
+**Project:** تدارُك - Tadaruq (legacy/internal identifiers may still use Rafiq)  
+**State ID:** `TADARUQ-HANDOFF-v24-R18-2026-08-19`  
 **Current artifact type:** GitHub Pages PWA + Google Play TWA distribution, with Chrome Manifest V3 side-panel source retained  
-**Current release:** `v24 R17` (Chrome manifest version `24.2.0`; local data schema `rafiq:data-version = 2`; Google Play package `com.tadaruqnoor.rafiq`)
+**Current release:** `v24 R18` (Chrome manifest version `24.3.0`; local data schema `rafiq:data-version = 2`; Google Play package `com.tadaruqnoor.rafiq`)
 
 > This file is the continuity record for future AI sessions. Before changing code or content, inspect this file, `manifest.json`, the hosted root `app.js` + `index.html` (and `app/app.js` + `app/index.html` in the full extension-source layout), plus the relevant JSON data. Do not ask the owner to repeat decisions already documented here unless a conflict genuinely requires a decision.
 
@@ -839,3 +839,109 @@ Continuity/docs/QA:
 - Every R17 service-worker precache entry points to an existing local app file.
 - No full visual-browser regression is claimed: the build environment's headless Chromium smoke attempt timed out. A real Android/TWA and desktop-Chrome extension smoke test remains required after deployment.
 - Play policy remains pending at this handoff: the owner switched the Health apps declaration off/no-health-features and is waiting for Google re-review.
+
+
+## R18 — Brand unification + Google Play/TWA Digital Asset Links correction — 2026-08-19
+
+### Owner request / observed symptoms
+
+- Owner supplied the Google Play **App signing key → Classical key → SHA-256 certificate fingerprint** after a Play-distributed tester saw a Chrome top bar with `abdull2.github.io` instead of a fullscreen Trusted Web Activity.
+- Owner also reported that the browser tab and Chrome extension still displayed the old public brand `رفيق يومك`.
+- The supplied Play App Signing SHA-256 is:
+  - `6D:02:CB:A8:9A:7D:B7:5F:84:C2:74:F6:16:29:35:8A:DE:49:11:28:12:D2:B4:42:EC:A7:4F:43:26:23:4D:4C`
+- Existing PWABuilder/local signing fingerprint from the generated Android package remains:
+  - `74:67:B8:77:C3:B6:06:4B:CC:BB:95:7C:EA:87:8A:78:25:8A:59:45:29:34:7F:00:84:FA:27:41:36:51:5C:08`
+
+### Critical correction to earlier assetlinks guidance
+
+Earlier guidance in the project conversation incorrectly implied that placing the file at `https://abdull2.github.io/rafiq/.well-known/assetlinks.json` would validate the current TWA. **That is incorrect and is superseded by this R18 record.**
+
+Digital Asset Links website statements are **origin/host scoped**, not path scoped. The current Android wrapper launches:
+
+- `https://abdull2.github.io/rafiq/`
+
+Therefore the required public statement URL is:
+
+- **`https://abdull2.github.io/.well-known/assetlinks.json`**
+
+NOT:
+
+- `https://abdull2.github.io/rafiq/.well-known/assetlinks.json`
+
+Because `rafiq` is a GitHub Pages **project site** under the shared host `abdull2.github.io`, the `rafiq` repository by itself cannot place a file at the host root. To keep the current Android AAB/origin unchanged, publish the root statement from the account-level GitHub Pages repository **`Abdull2/Abdull2.github.io`** (or an equivalent host-root deployment). Alternative future architecture: use a custom domain controlled by the owner and rebuild the Android wrapper for that origin.
+
+For GitHub Pages static publication, include an empty `.nojekyll` at the publishing root so `.well-known/assetlinks.json` is deployed as a normal static file.
+
+### R18 Digital Asset Links statement
+
+The generated statement uses:
+
+- package: `com.tadaruqnoor.rafiq`
+- Play App Signing SHA-256: `6D:02:CB:A8:9A:7D:B7:5F:84:C2:74:F6:16:29:35:8A:DE:49:11:28:12:D2:B4:42:EC:A7:4F:43:26:23:4D:4C`
+- PWABuilder/local APK SHA-256: `74:67:B8:77:C3:B6:06:4B:CC:BB:95:7C:EA:87:8A:78:25:8A:59:45:29:34:7F:00:84:FA:27:41:36:51:5C:08`
+
+Both fingerprints are included intentionally; multiple certificate fingerprints are valid in one Android target and allow verification of both Play-signed installs and direct local APK tests.
+
+### R18 public brand update
+
+Public-facing app identity is now unified to:
+
+- full name: **`تدارُك - Tadaruq`**
+- short name: **`تدارُك`**
+
+Updated areas:
+
+- browser `<title>`
+- `apple-mobile-web-app-title`
+- PWA `manifest.webmanifest` name/short_name/description
+- Chrome MV3 `manifest.json` name/short_name/description/action title
+- browser-extension context menu / omnibox / notification-facing brand copy
+- privacy/source page titles and selected product-facing brand strings
+
+Legacy internal identifiers such as `RafiqPlan`, `rafiq:*`, existing storage keys, command IDs, and stable data/content IDs are **not renamed**, to protect compatibility and user data.
+
+### Chrome extension distribution note
+
+- Chrome MV3 version is bumped `24.2.0 → 24.3.0` because Chrome Web Store updates require a higher manifest version.
+- The Chrome `Proceed with caution / not trusted by Enhanced Safe Browsing` installation warning is a trust/reputation signal for the extension/publisher. The paid developer registration fee does not itself remove this warning. Do not weaken browser security settings as a workaround.
+
+### Google Play policy status at R18 handoff
+
+- Previous Closed Testing submission was rejected under Play Console Requirements because a declaration/category implied a feature type that can require an organization account.
+- Owner changed **Health apps** declaration to off / no health features and is waiting for re-review.
+- Do not claim that policy approval has occurred until Play Console explicitly reports approval.
+
+### R18 changed files
+
+- `manifest.json`
+- `background.js`
+- `app/index.html`
+- `app/manifest.webmanifest`
+- `app/privacy.html`
+- `app/sources.html`
+- `app/tasbih.html`
+- `app/app.js`
+- `app/companions.json`
+- `app/ishkaliat.json`
+- `app/sw.js`
+- `app/pwa-register.js`
+- `app/data-safety.js`
+- generated `assetlinks.json` reference copies
+- `AI_HANDOFF.md`
+- `AI_HANDOFF.json`
+
+### Required deployment sequence
+
+1. Deploy the R18 web update to the existing `Abdull2/rafiq` GitHub Pages project.
+2. Create/use the account-level GitHub Pages repository `Abdull2/Abdull2.github.io`.
+3. Publish `.nojekyll` and `.well-known/assetlinks.json` from the dedicated R18 root-site package.
+4. Verify in a browser that **exactly** `https://abdull2.github.io/.well-known/assetlinks.json` returns HTTP 200 JSON with `com.tadaruqnoor.rafiq` and the Play SHA-256. A `/rafiq/.well-known/...` URL does not satisfy the current TWA origin.
+5. On an Android tester device, fully close Chrome and the app; reopen the Play-installed test app. If Chrome cached a previous failed verification, allow time for refresh and, if necessary for testing, uninstall/reinstall the Play test build.
+6. Expected success criterion: the tester no longer sees the `abdull2.github.io` Custom Tab bar while inside the validated origin.
+7. No new Android AAB is required solely for this fix because package ID and launch origin remain unchanged. A new AAB is required only if the native wrapper/origin/package/config changes.
+
+### R18 QA / safety rules
+
+- `AI_HANDOFF.md` remains mandatory and append-only; do not delete, rename, truncate, or omit it.
+- Do not commit signing keystores, signing passwords, API credentials, or Play credentials. Certificate SHA-256 fingerprints are public verification metadata and may be stored in `assetlinks.json`.
+- R17 daily planning/history/prayer/fullscreen behavior and all existing storage schemas/keys remain unchanged.

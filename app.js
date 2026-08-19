@@ -34,9 +34,9 @@ const DHIKR=[
  {t:'سُبْحَانَ اللهِ وَبِحَمْدِهِ',n:100,source:{t:'حديث أبي هريرة — صحيح؛ من قالها مائة مرة في يومه — الدرر السنية',u:'https://dorar.net/hadith/sharh/10620'}},
  {t:'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',n:100,source:{t:'حديث أبي هريرة — فضل قولها مائة مرة في اليوم — الدرر السنية',u:'https://dorar.net/h/PgrcNHyQ'}},
  {t:'أَسْتَغْفِرُ اللهَ وَأَتُوبُ إِلَيْهِ',n:100,source:{t:'ثبوت استغفار النبي ﷺ وتوبته في اليوم مائة مرة — الدرر السنية',u:'https://dorar.net/hadith/sharh/37239'}},
- {t:'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ',n:null,source:{t:'من صلى على النبي ﷺ صلاة صلى الله عليه بها عشرًا؛ لا يحدد رفيق عددًا يوميًا مخصوصًا — صحيح مسلم؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/40098'}},
- {t:'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',n:null,source:{t:'كنز من كنوز الجنة؛ لا يحدد رفيق عددًا مخصوصًا — حديث صحيح؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/138399'}},
- {t:'سُبْحَانَ اللهِ، وَالحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللهُ، وَاللهُ أَكْبَرُ',n:null,source:{t:'الكلمات الأربع من أحب الكلام إلى الله؛ لا يحدد رفيق عددًا مخصوصًا — صحيح مسلم؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/21255'}},
+ {t:'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ',n:null,source:{t:'من صلى على النبي ﷺ صلاة صلى الله عليه بها عشرًا؛ لا يحدد تدارُك عددًا يوميًا مخصوصًا — صحيح مسلم؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/40098'}},
+ {t:'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',n:null,source:{t:'كنز من كنوز الجنة؛ لا يحدد تدارُك عددًا مخصوصًا — حديث صحيح؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/138399'}},
+ {t:'سُبْحَانَ اللهِ، وَالحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللهُ، وَاللهُ أَكْبَرُ',n:null,source:{t:'الكلمات الأربع من أحب الكلام إلى الله؛ لا يحدد تدارُك عددًا مخصوصًا — صحيح مسلم؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/21255'}},
  {t:'سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ العَظِيمِ',n:null,source:{t:'كلمتان حبيبتان إلى الرحمن، خفيفتان على اللسان، ثقيلتان في الميزان — صحيح البخاري؛ الدرر السنية',u:'https://dorar.net/hadith/sharh/3023'}}
 ];
 
@@ -133,7 +133,7 @@ function profileStage(){
 function paintProfileUI(){
   const line=document.getElementById('home-profile-line');
   if(line&&profile.gender){
-    const who=g('أهلًا بك — رفيق يراعي عمرك وما يناسبك.','أهلًا بكِ — رفيق يراعي عمرك وما يناسبكِ.');
+    const who=g('أهلًا بك — تدارُك يراعي عمرك وما يناسبك.','أهلًا بكِ — تدارُك يراعي عمرك وما يناسبكِ.');
     line.textContent=profileStage()?`${who} · ${profileStage()}`:who;
   }
   const et=document.getElementById('evening-title'), ec=document.getElementById('evening-copy');
@@ -172,7 +172,7 @@ async function toggleLater(id){
 function savedSourceHtml(x){return x?.source?`<div class="saved-source">${laterEsc(x.source)}</div>`:''}
 function renderSavedPanel(){
   const host=document.getElementById('saved-list'); if(!host)return;
-  host.innerHTML=laterItems.length?laterItems.map(x=>`<div class="saved-row"><div class="saved-kind">${laterEsc(x.kind||'محفوظ')}</div><div class="saved-title">${laterEsc(x.title||'')}</div>${x.text?`<div class="saved-text">${laterEsc(x.text)}</div>`:''}${savedSourceHtml(x)}<div class="saved-actions"><button data-saved-open="${laterEsc(x.tab||'')}">افتح القسم</button><button data-saved-del="${laterEsc(x.id)}">حذف</button></div></div>`).join(''):'<div class="saved-empty">لم تحفظ شيئًا بعد. ستجد علامة ＋ بجوار المواد داخل رفيق.</div>';
+  host.innerHTML=laterItems.length?laterItems.map(x=>`<div class="saved-row"><div class="saved-kind">${laterEsc(x.kind||'محفوظ')}</div><div class="saved-title">${laterEsc(x.title||'')}</div>${x.text?`<div class="saved-text">${laterEsc(x.text)}</div>`:''}${savedSourceHtml(x)}<div class="saved-actions"><button data-saved-open="${laterEsc(x.tab||'')}">افتح القسم</button><button data-saved-del="${laterEsc(x.id)}">حذف</button></div></div>`).join(''):'<div class="saved-empty">لم تحفظ شيئًا بعد. ستجد علامة ＋ بجوار المواد داخل تدارُك.</div>';
 }
 function openSavedPanel(){renderSavedPanel();document.getElementById('saved-panel')?.classList.remove('hide')}
 
@@ -524,7 +524,7 @@ async function renderAzkarList(){
       return;
     }
     const total=full.reduce((n,ch)=>n+ch.items.length,0); cnt.textContent=`${AR(full.length)} بابًا · ${AR(total)} ذكرًا ودعاءً`;
-    box.innerHTML=`<section class="hisn-book"><div class="hisn-title">حصن المسلم كاملًا</div><div class="hisn-author">الشيخ سعيد بن علي بن وهف القحطاني</div><p>فهرس كامل لأبواب الكتاب مع متن الذكر، عدد التكرار المذكور في الكتاب، والتخريج الظاهر تحت كل نص.</p><div class="hisn-canonical-source"><span>المرجع الشرعي المعتمد</span><a href="https://risala.prh.gov.sa/ar/content/51" target="_blank" rel="noopener">النسخة المنشورة في رسالة الحرمين — رئاسة الشؤون الدينية بالحرمين ↗</a></div><div class="hisn-digital-note">النسخة الرقمية المستخدمة للفهرسة داخل رفيق مأخوذة من مشروع HisnElMuslim المفتوح بترخيص MIT؛ يذكر صاحبه أنه نقل النص من الكتاب وقارنه بنسخة رقمية لتصحيح الأخطاء. عند التعارض يُقدَّم المرجع الرسمي أعلاه.</div><div class="hisn-index">${full.map(ch=>`<button type="button" data-hisn-chapter="${ch.chapterIndex}"><span>${AR(ch.chapterIndex+1)}</span><b>${escHtml(ch.title)}</b><small>${AR(ch.items.length)} ذكرًا</small></button>`).join('')}</div></section>`;
+    box.innerHTML=`<section class="hisn-book"><div class="hisn-title">حصن المسلم كاملًا</div><div class="hisn-author">الشيخ سعيد بن علي بن وهف القحطاني</div><p>فهرس كامل لأبواب الكتاب مع متن الذكر، عدد التكرار المذكور في الكتاب، والتخريج الظاهر تحت كل نص.</p><div class="hisn-canonical-source"><span>المرجع الشرعي المعتمد</span><a href="https://risala.prh.gov.sa/ar/content/51" target="_blank" rel="noopener">النسخة المنشورة في رسالة الحرمين — رئاسة الشؤون الدينية بالحرمين ↗</a></div><div class="hisn-digital-note">النسخة الرقمية المستخدمة للفهرسة داخل تدارُك مأخوذة من مشروع HisnElMuslim المفتوح بترخيص MIT؛ يذكر صاحبه أنه نقل النص من الكتاب وقارنه بنسخة رقمية لتصحيح الأخطاء. عند التعارض يُقدَّم المرجع الرسمي أعلاه.</div><div class="hisn-index">${full.map(ch=>`<button type="button" data-hisn-chapter="${ch.chapterIndex}"><span>${AR(ch.chapterIndex+1)}</span><b>${escHtml(ch.title)}</b><small>${AR(ch.items.length)} ذكرًا</small></button>`).join('')}</div></section>`;
     return;
   }
   const set=AZ.sets.find(x=>x.id===azkarMode)||AZ.sets[0]; if(!set)return;
@@ -608,7 +608,7 @@ function renderHistoryPlain(days,qalbOn){
   let pRecorded=0,pOn=0;
   days.forEach(x=>Object.values(x.day?.prayers||{}).forEach(v=>{pRecorded++;if(v==='time'||v==='jamaah')pOn++}));
   const host=document.getElementById('history-summary');
-  if(host)host.innerHTML=`<div class="hist-intro"><b>ماذا سجّلت هذا الأسبوع؟</b><span>الأرقام هنا تلخص ما سجلته داخل رفيق فقط، وليست حكمًا على يومك أو عبادتك.</span></div><div class="hist-cards">${histMetricCard('خلاصة اليوم',`${AR(doneReview)} / ٧`,'أيام سجّلت فيها الخلاصة')}${histMetricCard('الصلاة',pRecorded?`${AR(pOn)} / ${AR(pRecorded)}`:'—',pRecorded?'من الصلوات التي سجّلتها كانت في وقتها':'لم تسجّل صلوات بعد')}${histMetricCard('القرآن',`${AR(qDays)} أيام`,`${AR(qPages)} صفحة مسجّلة`)}${histMetricCard('أذكار الصباح',`${AR(am)} / ٧`,'أيام أتممت فيها الورد')}${histMetricCard('أذكار المساء',`${AR(pm)} / ٧`,'أيام أتممت فيها الورد')}${histMetricCard('القلب',heart?`${AR(heart)} أيام`:'—',heart?'تابعت خطوة من علاج القلب':'لا متابعة مسجلة هذا الأسبوع')}</div>`;
+  if(host)host.innerHTML=`<div class="hist-intro"><b>ماذا سجّلت هذا الأسبوع؟</b><span>الأرقام هنا تلخص ما سجلته داخل تدارُك فقط، وليست حكمًا على يومك أو عبادتك.</span></div><div class="hist-cards">${histMetricCard('خلاصة اليوم',`${AR(doneReview)} / ٧`,'أيام سجّلت فيها الخلاصة')}${histMetricCard('الصلاة',pRecorded?`${AR(pOn)} / ${AR(pRecorded)}`:'—',pRecorded?'من الصلوات التي سجّلتها كانت في وقتها':'لم تسجّل صلوات بعد')}${histMetricCard('القرآن',`${AR(qDays)} أيام`,`${AR(qPages)} صفحة مسجّلة`)}${histMetricCard('أذكار الصباح',`${AR(am)} / ٧`,'أيام أتممت فيها الورد')}${histMetricCard('أذكار المساء',`${AR(pm)} / ٧`,'أيام أتممت فيها الورد')}${histMetricCard('القلب',heart?`${AR(heart)} أيام`:'—',heart?'تابعت خطوة من علاج القلب':'لا متابعة مسجلة هذا الأسبوع')}</div>`;
   const metrics=[
     {id:'review',label:'خلاصة اليوم',score:doneReview/7,detail:`سجّلتها ${AR(doneReview)} من ٧ أيام`,tab:'today'},
     {id:'quran',label:'ورد القرآن',score:qDays/7,detail:`قرأت في ${AR(qDays)} من ٧ أيام`,tab:'quran'},
@@ -1110,7 +1110,7 @@ function openHadithDetail(kind,data){
   if(kind==='riyad'){
     const {b,h}=data,p=riyadParts(h.t),meaning=riyadExplain(p.body,b.name);
     kick.textContent=`رياض الصالحين · ${AR(h.n)}`;
-    host.innerHTML=`<div class="hadith-reader-hero"><div class="eyebrow">${laterEsc(b.name)} · الحديث ${AR(h.n)}</div><h2 id="hadith-detail-title">رياض الصالحين</h2><div class="hadith-matn">${laterEsc(p.body)}</div></div>${sourceRefCard('شرح رياض الصالحين — الشيخ محمد بن صالح العثيمين رحمه الله',RIYAD_SHARH_URL,'مؤسسة الشيخ محمد بن صالح العثيمين الخيرية — ٦ مجلدات.')}<div class="hadith-sharh"><div class="head"><b>الشرح المبسط</b><span class="badge">للفهم الأولي</span></div><p>${laterEsc(meaning)}</p><div class="disclaimer">صياغة تعليمية مختصرة في رفيق، وليست نقلًا حرفيًا من الشيخ. المرجع السابق هو المعتمد للتوسع والتحرير.</div></div>${p.refs.length?`<div class="hadith-takhrij"><h3>التخريج والإحالات الواردة في نص رياض الصالحين</h3>${p.refs.map(x=>`<div class="refline">${laterEsc(x)}</div>`).join('')}</div>`:''}<div class="hadith-ref-card"><div class="label">مصدر الكتاب والنص</div><a href="${RIYAD_TEXT_URL}" target="_blank" rel="noopener">رياض الصالحين — الإمام النووي — تحقيق شعيب الأرنؤوط</a><div class="note">${laterEsc(b.name)} · الحديث ${AR(h.n)}. <a href="https://sunnah.com/riyadussalihin:${h.n}" target="_blank" rel="noopener">فتح موضع الحديث بالترقيم ↗</a></div></div>`;
+    host.innerHTML=`<div class="hadith-reader-hero"><div class="eyebrow">${laterEsc(b.name)} · الحديث ${AR(h.n)}</div><h2 id="hadith-detail-title">رياض الصالحين</h2><div class="hadith-matn">${laterEsc(p.body)}</div></div>${sourceRefCard('شرح رياض الصالحين — الشيخ محمد بن صالح العثيمين رحمه الله',RIYAD_SHARH_URL,'مؤسسة الشيخ محمد بن صالح العثيمين الخيرية — ٦ مجلدات.')}<div class="hadith-sharh"><div class="head"><b>الشرح المبسط</b><span class="badge">للفهم الأولي</span></div><p>${laterEsc(meaning)}</p><div class="disclaimer">صياغة تعليمية مختصرة في تدارُك، وليست نقلًا حرفيًا من الشيخ. المرجع السابق هو المعتمد للتوسع والتحرير.</div></div>${p.refs.length?`<div class="hadith-takhrij"><h3>التخريج والإحالات الواردة في نص رياض الصالحين</h3>${p.refs.map(x=>`<div class="refline">${laterEsc(x)}</div>`).join('')}</div>`:''}<div class="hadith-ref-card"><div class="label">مصدر الكتاب والنص</div><a href="${RIYAD_TEXT_URL}" target="_blank" rel="noopener">رياض الصالحين — الإمام النووي — تحقيق شعيب الأرنؤوط</a><div class="note">${laterEsc(b.name)} · الحديث ${AR(h.n)}. <a href="https://sunnah.com/riyadussalihin:${h.n}" target="_blank" rel="noopener">فتح موضع الحديث بالترقيم ↗</a></div></div>`;
   }else{
     const h=data,meta=NAW.meta||{};
     kick.textContent=`الأربعون النووية · ${AR(h.n)}`;
@@ -1134,7 +1134,7 @@ window.addEventListener('popstate',()=>{if(!document.getElementById('hadith-deta
 async function renderSunnah(){
   await loadRS();
   const intro=document.getElementById('riyad-intro');
-  if(intro)intro.innerHTML=`<b>رياض الصالحين</b><p>كتاب للإمام يحيى بن شرف النووي رحمه الله، رتبه في أبواب تجمع الآيات والأحاديث في العبادة والآداب والأخلاق وفضائل الأعمال. اضغط على أي حديث لقراءة المتن ثم الشرح المبسط والمراجع.</p><div class="learn-ref-row"><a href="${RIYAD_TEXT_URL}" target="_blank" rel="noopener">مصدر الكتاب — رياض الصالحين، تحقيق شعيب الأرنؤوط</a><a href="${RIYAD_SHARH_URL}" target="_blank" rel="noopener">مرجع الشرح — شرح رياض الصالحين لابن عثيمين</a></div><span class="learn-note">الشرح داخل رفيق صياغة تعليمية مختصرة، وليس نقلًا حرفيًا عن الشيخ.</span>`;
+  if(intro)intro.innerHTML=`<b>رياض الصالحين</b><p>كتاب للإمام يحيى بن شرف النووي رحمه الله، رتبه في أبواب تجمع الآيات والأحاديث في العبادة والآداب والأخلاق وفضائل الأعمال. اضغط على أي حديث لقراءة المتن ثم الشرح المبسط والمراجع.</p><div class="learn-ref-row"><a href="${RIYAD_TEXT_URL}" target="_blank" rel="noopener">مصدر الكتاب — رياض الصالحين، تحقيق شعيب الأرنؤوط</a><a href="${RIYAD_SHARH_URL}" target="_blank" rel="noopener">مرجع الشرح — شرح رياض الصالحين لابن عثيمين</a></div><span class="learn-note">الشرح داخل تدارُك صياغة تعليمية مختصرة، وليس نقلًا حرفيًا عن الشيخ.</span>`;
   const raw=(document.getElementById('rs-search').value||'').trim(),q=searchNorm(raw),cnt=document.getElementById('rs-result-count');
   const seed=Math.floor(Date.now()/86400000),biDay=RS.books.length?seed%RS.books.length:-1,all=biDay>=0?RS.books[biDay]:null;
   if(all){const h=all.items[seed%all.items.length],p=riyadParts(h.t),k=biDay+':'+h.n;document.getElementById('hadith-day').dataset.dayHadith=k;document.getElementById('hadith-day').innerHTML=`<div class="lbl">حديث اليوم · اضغط للشرح</div><div class="t">${laterEsc(p.body)}</div><div class="learn-source">رياض الصالحين — ${laterEsc(all.name)} — الحديث ${AR(h.n)}</div>`}
@@ -1177,7 +1177,7 @@ function sourceStack(sources=[],fallbackLabel='',fallbackUrl=''){
 }
 function mediumSections(sections=[]){return sections.length?`<div class="learn-depth"><div class="learn-depth-head">التفصيل المتوسط</div>${sections.map(s=>`<section><h4>${laterEsc(s.title)}</h4><p>${laterEsc(s.text)}</p>${s.bullets?.length?`<ul>${s.bullets.map(b=>`<li>${laterEsc(b)}</li>`).join('')}</ul>`:''}</section>`).join('')}</div>`:''}
 function seerahCards(items){return items.map((x,i)=>{const plus=laterRegister(`seerah:${x.id}`,{kind:'سيرة',title:x.title,text:x.lead,source:x.sourceLabel,tab:'sunnah'});return `<details class="learn-card seerah-card"><summary><span class="ln">${AR(i+1)}</span><span class="learn-summary-copy"><span class="lt">${laterEsc(x.title)}</span><span class="learn-summary-hint">خلاصة سريعة · افتح للتفصيل</span></span>${plus}</summary><div class="learn-body"><div class="learn-depth-head soft">الخلاصة السريعة</div><p class="learn-lead">${laterEsc(x.lead)}</p>${x.bullets?.length?`<ul>${x.bullets.map(b=>`<li>${laterEsc(b)}</li>`).join('')}</ul>`:''}${mediumSections(x.detailSections||[])}<div class="source-stack">${sourceStack(x.sources||[],x.sourceLabel,x.sourceUrl)}</div></div></details>`}).join('')}
-async function renderSeerah(){await loadSeerah();const host=document.getElementById('learn-seerah'),items=SEERAH.items||[],q=searchNorm(learnQuery),groups=['all',...new Set(items.map(x=>x.group).filter(Boolean))],F=items.filter(x=>(learnGroup==='all'||x.group===learnGroup)&&(!q||searchNorm(deepSearchText(x)).includes(q))),m=SEERAH.meta||{};host.innerHTML=`<div class="learn-intro seerah-intro"><b>${laterEsc(m.title||'السيرة النبوية')}</b><br>ابدأ بالخلاصة، ثم افتح أي محطة لقراءة تفصيل متوسط من المراجع المعروضة تحتها.<div class="learn-ref-row"><a href="${laterEsc(m.url)}" target="_blank" rel="noopener">${laterEsc(m.book||'رسول الإسلام محمد ﷺ')}</a>${m.detailUrl?`<a href="${laterEsc(m.detailUrl)}" target="_blank" rel="noopener">${laterEsc(m.detailBook||'مرجع السيرة المفصل')}</a>`:''}</div><span class="learn-note">${laterEsc(m.note||'')}</span></div><div class="learn-tools"><input id="seerah-search" class="q-search" type="search" value="${laterEsc(learnQuery)}" placeholder="ابحث في السيرة: بدر، الهجرة، مكة…"><div class="learn-groups">${groups.map(x=>`<button data-sg="${laterEsc(x)}" class="${learnGroup===x?'on':''}">${x==='all'?'كل المحطات':laterEsc(x)}</button>`).join('')}</div></div><div class="search-count">${AR(F.length)} من ${AR(items.length)} محطة</div>${seerahCards(F)}<div class="learn-intro" style="margin-top:12px"><b>كتاب متوسط للتوسع</b><br><a href="${laterEsc(m.expansionUrl)}" target="_blank" rel="noopener">${laterEsc(m.expansionTitle||'فتح مرجع التوسع')}</a><br><span class="learn-note">الكتاب المرجعي أوسع من بطاقات رفيق؛ والبطاقات هنا تلخيص تعليمي وليست نقلًا حرفيًا.</span></div>`;host.querySelector('#seerah-search').oninput=e=>{learnQuery=e.target.value;renderSeerah()};host.querySelector('.learn-groups').onclick=e=>{const b=e.target.closest('button[data-sg]');if(!b)return;learnGroup=b.dataset.sg;renderSeerah()}}
+async function renderSeerah(){await loadSeerah();const host=document.getElementById('learn-seerah'),items=SEERAH.items||[],q=searchNorm(learnQuery),groups=['all',...new Set(items.map(x=>x.group).filter(Boolean))],F=items.filter(x=>(learnGroup==='all'||x.group===learnGroup)&&(!q||searchNorm(deepSearchText(x)).includes(q))),m=SEERAH.meta||{};host.innerHTML=`<div class="learn-intro seerah-intro"><b>${laterEsc(m.title||'السيرة النبوية')}</b><br>ابدأ بالخلاصة، ثم افتح أي محطة لقراءة تفصيل متوسط من المراجع المعروضة تحتها.<div class="learn-ref-row"><a href="${laterEsc(m.url)}" target="_blank" rel="noopener">${laterEsc(m.book||'رسول الإسلام محمد ﷺ')}</a>${m.detailUrl?`<a href="${laterEsc(m.detailUrl)}" target="_blank" rel="noopener">${laterEsc(m.detailBook||'مرجع السيرة المفصل')}</a>`:''}</div><span class="learn-note">${laterEsc(m.note||'')}</span></div><div class="learn-tools"><input id="seerah-search" class="q-search" type="search" value="${laterEsc(learnQuery)}" placeholder="ابحث في السيرة: بدر، الهجرة، مكة…"><div class="learn-groups">${groups.map(x=>`<button data-sg="${laterEsc(x)}" class="${learnGroup===x?'on':''}">${x==='all'?'كل المحطات':laterEsc(x)}</button>`).join('')}</div></div><div class="search-count">${AR(F.length)} من ${AR(items.length)} محطة</div>${seerahCards(F)}<div class="learn-intro" style="margin-top:12px"><b>كتاب متوسط للتوسع</b><br><a href="${laterEsc(m.expansionUrl)}" target="_blank" rel="noopener">${laterEsc(m.expansionTitle||'فتح مرجع التوسع')}</a><br><span class="learn-note">الكتاب المرجعي أوسع من بطاقات تدارُك؛ والبطاقات هنا تلخيص تعليمي وليست نقلًا حرفيًا.</span></div>`;host.querySelector('#seerah-search').oninput=e=>{learnQuery=e.target.value;renderSeerah()};host.querySelector('.learn-groups').onclick=e=>{const b=e.target.closest('button[data-sg]');if(!b)return;learnGroup=b.dataset.sg;renderSeerah()}}
 function companionCards(items){return items.map((x,i)=>{const src=x.sources?.[0]?.label||'';const plus=laterRegister(`companion:${x.id}`,{kind:'صحابي',title:x.name,text:x.intro,source:src,tab:'sunnah'});return `<details class="learn-card companion-card"><summary><span class="ln">${AR(i+1)}</span><span class="learn-summary-copy"><span class="lt">${laterEsc(x.name)}</span><span class="companion-desc">${laterEsc(x.descriptor||'')}</span></span>${plus}</summary><div class="learn-body"><div class="companion-tags">${(x.groups||[]).map(g=>`<span>${laterEsc(g)}</span>`).join('')}</div><div class="learn-depth-head soft">تعريف سريع</div><p class="learn-lead">${laterEsc(x.intro||'')}</p>${mediumSections(x.sections||[])}<div class="source-stack">${sourceStack(x.sources||[])}</div></div></details>`}).join('')}
 async function renderCompanions(){await loadCompanions();const host=document.getElementById('learn-companions'),items=COMPANIONS.items||[],q=searchNorm(learnQuery),groups=['all',...new Set(items.flatMap(x=>x.groups||[]))],F=items.filter(x=>(learnGroup==='all'||(x.groups||[]).includes(learnGroup))&&(!q||searchNorm(deepSearchText(x)).includes(q))),m=COMPANIONS.meta||{};host.innerHTML=`<div class="learn-intro companions-intro"><b>${laterEsc(m.title||'الصحابة رضي الله عنهم')}</b><br>${laterEsc(m.subtitle||'')}<div class="learn-ref-row"><a href="${laterEsc(m.primaryUrl||'')}" target="_blank" rel="noopener">${laterEsc(m.primaryBook||'سير أعلام النبلاء')}</a><a href="${laterEsc(m.verificationUrl||'')}" target="_blank" rel="noopener">${laterEsc(m.verificationBook||'الإصابة في تمييز الصحابة')}</a></div><span class="learn-note">${laterEsc(m.note||'')}</span></div><div class="learn-tools"><input id="companion-search" class="q-search" type="search" value="${laterEsc(learnQuery)}" placeholder="ابحث: أبو بكر، عائشة، بلال…"><div class="learn-groups">${groups.map(x=>`<button data-cg="${laterEsc(x)}" class="${learnGroup===x?'on':''}">${x==='all'?'كل الشخصيات':laterEsc(x)}</button>`).join('')}</div></div><div class="search-count">${AR(F.length)} من ${AR(items.length)} شخصية في الدفعة الأولى</div>${companionCards(F)}<div class="learn-disclaimer">هذه الدفعة بداية فقط. لا نضيف رواية ملونة أو فضيلة خاصة لمجرد شهرتها؛ ما يحتاج حكمًا حديثيًا خاصًا يُراجع في مصدر الحديث قبل عرضه بصيغة تقريرية.</div>`;host.querySelector('#companion-search').oninput=e=>{learnQuery=e.target.value;renderCompanions()};host.querySelector('.learn-groups').onclick=e=>{const b=e.target.closest('button[data-cg]');if(!b)return;learnGroup=b.dataset.cg;renderCompanions()}}
 function learnSources(item,fiqh=false){
@@ -1281,7 +1281,7 @@ async function hPathsRender(){
   await loadH(); hPathCur=null;
   const active=hPathActive(),host=document.getElementById('v-qalb');
   host.innerHTML=`<div class="h-tabs">${hPathTab(true)}<button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button>${issueTabButton(false)}</div>
-    <div class="path-hero"><div class="kicker">مساري الشخصي</div><h2>مشكلتك لها باب ومسار</h2><p>اختر المشكلة التي تشغلك الآن من العقبات أو أمراض القلوب أو فقه النفس. رفيق يجمع لك أصل الفكرة والخطوات الموجودة في المحتوى نفسه، ويحفظ تقدمك محليًا على جهازك. يمكنك فتح أكثر من مسار.</p></div>
+    <div class="path-hero"><div class="kicker">مساري الشخصي</div><h2>مشكلتك لها باب ومسار</h2><p>اختر المشكلة التي تشغلك الآن من العقبات أو أمراض القلوب أو فقه النفس. تدارُك يجمع لك أصل الفكرة والخطوات الموجودة في المحتوى نفسه، ويحفظ تقدمك محليًا على جهازك. يمكنك فتح أكثر من مسار.</p></div>
     ${active.length?`<div class="path-list">${active.map(p=>{const d=hPathResolve(p);if(!d)return'';const pct=hPathProgress(p,d);return `<div class="path-card"><div class="top"><div><div class="kind">${d.kind}${d.sub?' · '+d.sub:''}</div><h3>${d.title}</h3><div class="sub">بدأ ${new Intl.DateTimeFormat('ar-EG',{day:'numeric',month:'short'}).format(new Date(p.start))}</div></div><button class="path-open" data-path-open="${laterEsc(p.key)}">افتح المسار</button></div><div class="path-progress"><i style="width:${pct}%"></i></div><div class="path-meta"><span>${AR(pct)}% من المحطات</span><span>${(p.checkins||[]).length?`آخر مراجعة: ${(p.checkins||[]).slice(-1)[0].state}`:'لم تسجل مراجعة بعد'}</span></div></div>`}).join('')}</div>`:`<div class="path-empty"><b>ما الذي يشغلك هذه الأيام؟</b><p>ابدأ من إحساسك أو موقفك الحالي. سنوصلك للباب الأقرب، وأنت تختار المشكلة التي تشبه واقعك ثم تضيفها لمسارك.</p><div class="path-suggestions"><button data-path-preset="worry">هم أو قلق</button><button data-path-preset="futuur">فتور</button><button data-path-preset="sin">ذنب يتكرر</button><button data-path-preset="family">مشكلة أسرية</button><button data-path-preset="relation">علاقة أو ارتباط</button><button data-path-preset="heart">مرض قلب</button></div><div class="path-picks"><button data-path-go="obstacles">كل العقبات</button><button data-path-go="problems">أمراض القلوب</button><button data-path-go="nafs">فقه النفس</button></div></div>`}`;
   host.onclick=hClick;
 }
@@ -1289,7 +1289,7 @@ function hPathDetail(key){
   const path=hPathFind(key),def=hPathResolve(path);if(!path||!def){hPathsRender();return}hPathCur=key;
   const stops=hPathStops(def),pct=hPathProgress(path,def),last=(path.checkins||[]).slice(-1)[0];
   const danger=def.medical?`<div class="path-danger">إن كانت الأعراض شديدة أو مستمرة أو تعطل حياتك، أو لديك تشخيص قائم، فهذا المسار مساند فقط ولا يستبدل الطبيب أو المختص أو العلاج الموصوف.</div>`:'';
-  document.getElementById('v-qalb').innerHTML=`<button class="back" id="path-back">مساري</button><div class="path-detail-head"><div class="kind">${def.kind}${def.sub?' · '+def.sub:''}</div><h2>${def.title}</h2><p>هذا مسار تنظيم ومتابعة مبني على المحتوى الموثق الموجود أصلًا في رفيق، وليس تشخيصًا أو فتوى شخصية.</p><div class="path-progress"><i style="width:${pct}%"></i></div><div class="path-meta"><span>${AR(pct)}%</span><span>${AR(stops.filter(x=>path.done?.[x.id]).length)} من ${AR(stops.length)} محطات</span></div></div>
+  document.getElementById('v-qalb').innerHTML=`<button class="back" id="path-back">مساري</button><div class="path-detail-head"><div class="kind">${def.kind}${def.sub?' · '+def.sub:''}</div><h2>${def.title}</h2><p>هذا مسار تنظيم ومتابعة مبني على المحتوى الموثق الموجود أصلًا في تدارُك، وليس تشخيصًا أو فتوى شخصية.</p><div class="path-progress"><i style="width:${pct}%"></i></div><div class="path-meta"><span>${AR(pct)}%</span><span>${AR(stops.filter(x=>path.done?.[x.id]).length)} من ${AR(stops.length)} محطات</span></div></div>
     <div class="h-sec" style="margin-top:12px">${stops.map(st=>`<div class="path-stop"><button data-path-stop="${st.id}" class="${path.done?.[st.id]?'on':''}">✓</button><div><div class="pt">${st.t}</div><div class="pd">${st.d||''}</div>${hSourceHtml(st.s)}</div></div>`).join('')}<div class="path-review"><b>كيف تبدو المشكلة بعد التجربة؟</b><div class="choices"><button data-path-state="أخف" class="${last?.state==='أخف'?'on':''}">أخف</button><button data-path-state="كما هي" class="${last?.state==='كما هي'?'on':''}">كما هي</button><button data-path-state="أشد" class="${last?.state==='أشد'?'on':''}">أشد</button></div>${danger}</div></div>
     <div class="path-actions"><button data-path-archive="${laterEsc(key)}">إنهاء وإخفاء المسار</button><button class="danger" data-path-reset="${laterEsc(key)}">تصفير التقدم</button></div>`;
   document.getElementById('v-qalb').onclick=hClick;scrollTo({top:0,behavior:'smooth'});
@@ -1305,7 +1305,7 @@ async function hRender(){
       <button data-k="deeds">بنك الأعمال</button>
       <button data-k="nafs">فقه النفس</button>${issueTabButton(false)}
     </div>
-    <p class="h-src"><b>قاعدة رفيق:</b> كل توجيه ديني تحته مصدره، وفقه النفس مستفاد من منهج مكاني مع فصل واضح بين التثقيف وبين التشخيص والعلاج الطبي.</p>
+    <p class="h-src"><b>قاعدة تدارُك:</b> كل توجيه ديني تحته مصدره، وفقه النفس مستفاد من منهج مكاني مع فصل واضح بين التثقيف وبين التشخيص والعلاج الطبي.</p>
     <input id="heart-search" class="q-search" type="search" value="${hQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في هذا القسم: رياء، توكل، صبر، شهوة…" aria-label="بحث في التزكية">
     <div class="search-count" id="heart-result-count"></div><div id="heart-list"></div>`;
   document.getElementById('v-qalb').onclick=hClick;
@@ -1580,7 +1580,7 @@ function hIshkaliatList(){
 async function hIshkaliat(){
   await loadIsh();
   if(!issuesEnabled()){
-    document.getElementById('v-qalb').innerHTML=`<button class="back" id="ish-disabled-back">تزكية</button><div class="nafs-hero ish-optin"><div class="ish-kicker">مسار متقدم اختياري</div><h2>إشكاليات</h2><p>هذا المسار يناقش قضايا الالتزام والتدين والعمل للدين من محاضرات د. أحمد عبد المنعم، مع رابط الفيديو والتوقيت تحت كل فكرة. لا يصنف رفيق مستوى تدينك؛ أنت فقط تختار إن كنت تريد إظهاره.</p><button class="h-primary" id="ish-enable">إظهار «إشكاليات»</button></div>`;
+    document.getElementById('v-qalb').innerHTML=`<button class="back" id="ish-disabled-back">تزكية</button><div class="nafs-hero ish-optin"><div class="ish-kicker">مسار متقدم اختياري</div><h2>إشكاليات</h2><p>هذا المسار يناقش قضايا الالتزام والتدين والعمل للدين من محاضرات د. أحمد عبد المنعم، مع رابط الفيديو والتوقيت تحت كل فكرة. لا يصنف تدارُك مستوى تدينك؛ أنت فقط تختار إن كنت تريد إظهاره.</p><button class="h-primary" id="ish-enable">إظهار «إشكاليات»</button></div>`;
     document.getElementById('ish-disabled-back').onclick=()=>hRender();
     document.getElementById('ish-enable').onclick=async()=>{profile={...profile,advancedIssues:true};await store.set('profile-v1',profile);toast('تم إظهار «إشكاليات» ✓');hIshkaliat()};
     return;
@@ -1597,7 +1597,7 @@ async function hIshkaliat(){
     <input id="ish-search" class="q-search" type="search" value="${laterEsc(issueQuery)}" placeholder="ابحث: فتور، ثغر، خلاف، بناء معرفي، مثالية…" aria-label="بحث في إشكاليات">
     <div class="search-count" id="ish-result-count"></div>
     <div class="nafs-groups ish-groups"><button data-ig="all" class="${issueGroup==='all'?'on':''}">كل المحاور</button>${(ISH.groups||[]).map(g=>`<button data-ig="${g.id}" class="${issueGroup===g.id?'on':''}">${g.name}</button>`).join('')}</div>
-    <div class="nafs-note"><b>طريقة القراءة:</b> اعتبر الملخص بداية فقط. النص داخل رفيق ليس اقتباسًا حرفيًا عن المحاضر؛ تحت كل فكرة رابط الفيديو من التوقيت المرتبط بها، ومنه يمكنك الرجوع إلى السياق الكامل.</div>
+    <div class="nafs-note"><b>طريقة القراءة:</b> اعتبر الملخص بداية فقط. النص داخل تدارُك ليس اقتباسًا حرفيًا عن المحاضر؛ تحت كل فكرة رابط الفيديو من التوقيت المرتبط بها، ومنه يمكنك الرجوع إلى السياق الكامل.</div>
     <div id="ish-list"></div>`;
   document.getElementById('v-qalb').onclick=hClick;
   document.getElementById('ish-search').oninput=e=>{issueQuery=e.target.value;hIshkaliatList()};
@@ -1630,7 +1630,7 @@ async function asmaVerses(it){
 }
 const ASMA_HADITH_EVIDENCE={
   'الشافي':[{t:'«اشفِ أنت الشافي، لا شفاء إلا شفاؤك…» — صحيح البخاري، وأخرجه مسلم.',u:'https://dorar.net/hadith/sharh/2287'}],
-  'الرفيق':[{t:'«إن الله رفيق يحب الرفق…» — صحيح مسلم.',u:'https://dorar.net/hadith/sharh/152138'}],
+  'التدارُك':[{t:'«إن الله تدارُك يحب الرفق…» — صحيح مسلم.',u:'https://dorar.net/hadith/sharh/152138'}],
   'الجميل':[{t:'«إن الله جميل يحب الجمال» — صحيح مسلم.',u:'https://dorar.net/hadith/sharh/26749'}],
   'القابض':[{t:'«إن الله هو المسعّر القابض الباسط الرزاق…» — حديث صحيح.',u:'https://dorar.net/hadith/sharh/35389'}],
   'الباسط':[{t:'«إن الله هو المسعّر القابض الباسط الرزاق…» — حديث صحيح.',u:'https://dorar.net/hadith/sharh/35389'}],
@@ -1949,7 +1949,7 @@ function paintHomePrayer(){
   const T=todayTimes(),title=document.getElementById('home-prayer-title'),sub=document.getElementById('home-prayer-sub'),card=document.getElementById('home-prayer-card'),action=document.getElementById('home-prayer-action');
   if(!title||!sub)return;
   const ready=!!T; card?.classList.toggle('needs-setup',!ready); if(action)action.textContent=ready?'كل المواقيت':'تفعيل المواقيت';
-  if(!ready){title.textContent='فعّل مواقيت الصلاة';sub.textContent='اضغط هنا، اسمح بالموقع مرة واحدة، وسيستخدم رفيق توقيت جهازك تلقائيًا.';return}
+  if(!ready){title.textContent='فعّل مواقيت الصلاة';sub.textContent='اضغط هنا، اسمح بالموقع مرة واحدة، وسيستخدم تدارُك توقيت جهازك تلقائيًا.';return}
   const now=new Date(),h=now.getHours()+now.getMinutes()/60;const rows=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];let n=rows.find(([k])=>T[k]>h);if(!n)n=rows[0];title.textContent=`الصلاة القادمة: ${n[1]}`;sub.textContent=`${hhmm(T[n[0]])} · ${deviceTimeZoneLabel()} · اضغط لعرض كل المواقيت`;
 }
 
@@ -1998,7 +1998,7 @@ function feedbackPayload(){
   if(!msg){ toast('اكتب ملاحظتك أولًا'); feedbackText.focus(); return null }
   const type=document.getElementById('feedback-type').value;
   const section=TITLES[tab]||'غير محدد';
-  return `رفيق يومك — ملاحظة مستخدم\nالنوع: ${type}\nالقسم: ${section}\nالإصدار: ${FEEDBACK_VERSION}\n\n${msg}`;
+  return `تدارُك - Tadaruq — ملاحظة مستخدم\nالنوع: ${type}\nالقسم: ${section}\nالإصدار: ${FEEDBACK_VERSION}\n\n${msg}`;
 }
 async function copyFeedback(text){
   try{
@@ -2020,7 +2020,7 @@ document.getElementById('feedback-copy').onclick=async()=>{
 document.getElementById('feedback-share').onclick=async()=>{
   const text=feedbackPayload(); if(!text)return;
   if(navigator.share){
-    try{ await navigator.share({title:'ملاحظة على رفيق يومك',text}); toast('شكرًا لملاحظتك'); feedbackSheet.classList.add('hide'); return }
+    try{ await navigator.share({title:'ملاحظة على تدارُك - Tadaruq',text}); toast('شكرًا لملاحظتك'); feedbackSheet.classList.add('hide'); return }
     catch(e){ if(e?.name==='AbortError')return }
   }
   const ok=await copyFeedback(text);
@@ -2041,7 +2041,7 @@ async function paintPrayerSettingsStatus(){
   if(!dot||!title||!copy)return;
   const has=!!(settings.lat&&settings.lng),perm=await geoPermissionState();
   dot.classList.toggle('ok',has);dot.classList.toggle('warn',!has);
-  if(has){title.textContent='الموقع محفوظ على هذا الجهاز';copy.textContent=`${settings.lat}, ${settings.lng} · الحساب محلي ولا يرسل رفيق موقعك إلى خادمه.`;if(btn)btn.textContent='تحديث موقعي الحالي'}
+  if(has){title.textContent='الموقع محفوظ على هذا الجهاز';copy.textContent=`${settings.lat}, ${settings.lng} · الحساب محلي ولا يرسل تدارُك موقعك إلى خادمه.`;if(btn)btn.textContent='تحديث موقعي الحالي'}
   else if(perm==='denied'){title.textContent='إذن الموقع مرفوض';copy.textContent='افتح إعدادات التطبيق/المتصفح واسمح بالموقع، ثم ارجع واضغط تفعيل موقعي.';if(btn)btn.textContent='محاولة تفعيل الموقع'}
   else{title.textContent='الموقع غير مفعّل';copy.textContent='اضغط تفعيل موقعي؛ سيظهر طلب إذن من Android/المتصفح مرة واحدة.';if(btn)btn.textContent='تفعيل موقعي للمواقيت والقبلة'}
 }
@@ -2133,9 +2133,9 @@ document.getElementById('btn-theme').onclick=async()=>{
 
 /* ================= first-use intro ================= */
 const onboarding=document.getElementById('onboarding'); let onbStep=0;
-function paintOnboarding(){document.querySelectorAll('.onb-step').forEach(x=>x.classList.toggle('on',+x.dataset.onb===onbStep));document.querySelectorAll('.onb-dots i').forEach((x,i)=>x.classList.toggle('on',i===onbStep));document.getElementById('onboarding-prev')?.classList.toggle('hide',onbStep===0);const n=document.getElementById('onboarding-next');if(n)n.textContent=onbStep===3?'ابدأ مع رفيق':'التالي'}
+function paintOnboarding(){document.querySelectorAll('.onb-step').forEach(x=>x.classList.toggle('on',+x.dataset.onb===onbStep));document.querySelectorAll('.onb-dots i').forEach((x,i)=>x.classList.toggle('on',i===onbStep));document.getElementById('onboarding-prev')?.classList.toggle('hide',onbStep===0);const n=document.getElementById('onboarding-next');if(n)n.textContent=onbStep===3?'ابدأ مع تدارُك':'التالي'}
 document.getElementById('onboarding-prev')?.addEventListener('click',()=>{onbStep=Math.max(0,onbStep-1);paintOnboarding()});
-document.getElementById('onboarding-next')?.addEventListener('click',async()=>{if(onbStep===1){const age=+(document.getElementById('profile-age')?.value||0),gender=document.querySelector('input[name="profile-gender"]:checked')?.value;if(!gender||age<10||age>100){toast('اختر النوع واكتب عمرًا صحيحًا');return}profile={...profile,age,gender};await store.set('profile-v1',profile);paintProfileUI()}if(onbStep===2){profile={...profile,advancedIssues:!!document.getElementById('profile-issues')?.checked};await store.set('profile-v1',profile)}if(onbStep<3){onbStep++;paintOnboarding();return}await store.set('onboarding-seen-v3',true);onboarding?.classList.add('hide');toast(g('أهلًا بك في رفيق','أهلًا بكِ في رفيق'));hQuery='';if(tab==='qalb')hRender()});
+document.getElementById('onboarding-next')?.addEventListener('click',async()=>{if(onbStep===1){const age=+(document.getElementById('profile-age')?.value||0),gender=document.querySelector('input[name="profile-gender"]:checked')?.value;if(!gender||age<10||age>100){toast('اختر النوع واكتب عمرًا صحيحًا');return}profile={...profile,age,gender};await store.set('profile-v1',profile);paintProfileUI()}if(onbStep===2){profile={...profile,advancedIssues:!!document.getElementById('profile-issues')?.checked};await store.set('profile-v1',profile)}if(onbStep<3){onbStep++;paintOnboarding();return}await store.set('onboarding-seen-v3',true);onboarding?.classList.add('hide');toast(g('أهلًا بك في تدارُك','أهلًا بكِ في تدارُك'));hQuery='';if(tab==='qalb')hRender()});
 
 /* ================= boot ================= */
 (async function(){
@@ -2151,7 +2151,7 @@ document.getElementById('onboarding-next')?.addEventListener('click',async()=>{i
   await loadTodo();
   await load(current);
   renderNext(); setInterval(renderNext,1000);
-  if(safetyBoot&&safetyBoot.ok===false)setTimeout(()=>toast('تنبيه: أوقف رفيق ترحيل البيانات حفاظًا على نسختك القديمة'),900);
+  if(safetyBoot&&safetyBoot.ok===false)setTimeout(()=>toast('تنبيه: أوقف تدارُك ترحيل البيانات حفاظًا على نسختك القديمة'),900);
   const onboardingSeen=await store.get('onboarding-seen-v3');
   if(!onboardingSeen){paintOnboarding();document.getElementById('onboarding')?.classList.remove('hide')}
   const h=(location.hash||'').replace('#','');
