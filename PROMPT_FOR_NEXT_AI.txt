@@ -57,3 +57,10 @@ LATEST v24 R13 NOTE: `الذكر -> حصن المسلم كاملًا` now loads 
 
 LATEST v24 R14 NOTE:
 The primary Mushaf reader is now a fixed-page Madinah Mushaf, NOT reflowed ayah HTML. It fetches sanitized SVG pages from Quranpedia `hafs/kfqc`, pinned at commit `0198423eb867ba26051aba6ac902cd5d10aadd1b`, while treating the King Fahd Complex digital Mushaf as canonical. Exact printed line/page geometry is a permanent product requirement. If SVG loading fails, the text fallback must be visibly labeled non-exact. Owner-corrected paging gesture: left-to-right finger swipe (`dx>0`) = NEXT page. `quran-pos` and Data Safety v1 are unchanged. Read section 23 of AI_HANDOFF.md and MUSHAF_PROVENANCE.md before modifying Quran reader. Never embed an Al-Mukhtasar Bearer token in public JS; inline official tafsir requires a secret-holding proxy/backend.
+
+LATEST v24 R15 NOTE:
+- Visible `القلب` tab is now named `تزكية`; keep internal route/storage identifiers as `qalb` unless a backward-compatible migration is intentionally designed.
+- تزكية navigation is intentionally text-led: do not restore decorative ♡ ◇ ↗ ◌ ⌁ icons. Functional + / ✓ state controls remain.
+- Mushaf has an immersive fullscreen mode with CSS fallback + optional browser Fullscreen API; tap empty page space toggles controls. Preserve fixed KFQC page geometry and left-to-right finger swipe = NEXT page.
+- Hadith explanations must open on a fully opaque full-viewport reader. Preserve `رجوع للأحاديث`, Escape, and browser/system Back support. Do not use undefined `--bg` for this surface.
+- R15 changes no storage schema/keys/IDs. Data Safety v1 remains mandatory.

@@ -176,3 +176,17 @@ v24 R14 QA — exact printed Mushaf + swipe-direction correction
 - [PASS] `MUSHAF_PROVENANCE.md` documents exact-page requirement and technical provenance.
 - [PENDING RUNTIME] Build container cannot resolve external CDN/GitHub hosts, so real deployed network/CORS fetching must be smoke-tested after GitHub upload. The reader has a visible non-exact fallback if both asset origins fail.
 - [NOTE] One KFQC SVG page had previously been rendered locally during development and visually confirmed to preserve fixed printed lines/page geometry; this is not a complete 604-page visual regression.
+
+v24 R15 QA — immersive Mushaf + تزكية + Hadith reader
+- [PASS] `node --check app/app.js`.
+- [PASS] All app JSON + AI_HANDOFF.json parse successfully.
+- [PASS] Deterministic Data Safety harness: `DATA_SAFETY_TEST_OK`, schema version remains 1.
+- [PASS] Manifest remains 24.0.0.
+- [PASS] `rd-fullscreen` button and fullscreen logic are present.
+- [PASS] Mushaf fixed-page SVG path is preserved; no Quran reflow logic replaced the primary reader.
+- [PASS] Swipe rule remains `dx>0 ? qPage+1 : qPage-1` = left-to-right finger swipe opens NEXT page.
+- [PASS] Visible main label is `تزكية`; internal `qalb` tab/storage IDs are unchanged.
+- [PASS] Decorative symbols were removed from تزكية top navigation; functional +/✓ state controls are preserved.
+- [PASS] Hadith reader now uses full viewport (`inset:0`, `100dvh`) and opaque `var(--paper)` background.
+- [PASS] Hadith back control has explicit click handler plus Escape/popstate handling.
+- [PENDING RUNTIME] Headless Chromium smoke attempt timed out in this container; no full visual-regression claim is made. Perform a quick real-phone check of Mushaf fullscreen and one Riyad/Nawawi hadith before production publish.

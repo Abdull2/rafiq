@@ -516,3 +516,15 @@ Al-Mukhtasar API architecture note:
 - Official API registration returns an application Bearer token, and `book-contents` can request tafsir by `sura` + `aya`.
 - **Do not put that Bearer token in public PWA/extension JavaScript.** It would be extractable by any user.
 - If the owner approves inline official tafsir later, use a minimal serverless/backend proxy holding the token in an environment secret: Rafiq -> `/api/tafsir?sura=&aya=` -> proxy adds Bearer -> official Mokhtasar API -> Rafiq renders the returned text. Current no-backend build keeps the official deep link.
+
+## 24) v24 R15 — immersive Mushaf + تزكية cleanup + solid Hadith reader
+- The Quran tab keeps the fixed KFQC 604-page SVG requirement from R14. R15 adds an **immersive fullscreen reading mode** without changing Quran text, page geometry, `quran-pos`, or any saved-content ID.
+- `rd-fullscreen` toggles CSS immersive mode and attempts the browser Fullscreen API when available. Fullscreen is a progressive enhancement: if the API is rejected/unavailable, the CSS immersive reader still works.
+- In fullscreen, a tap on empty Mushaf space toggles reading controls. Ayah taps remain reserved for ayah selection/tafsir targeting.
+- Mushaf SVG page requests are cached in-memory during the session. Page replacement no longer blanks the current page first; the new page enters with a short direction-aware fade/slide for a smoother reader feel.
+- Permanent paging rule remains: **finger swipe left -> right (`dx > 0`) = NEXT page**; right -> left = previous page.
+- Visible product label `القلب` is now **`تزكية`**. Internal route/storage IDs remain `qalb` for backward compatibility. Do not rename `qalb-*` storage keys or the `qalb` tab ID without migration.
+- Decorative glyphs/symbols were removed from the تزكية sub-navigation and decorative card/group icons. Functional symbols such as `+` / `✓` for save/path state remain because they communicate state/action.
+- Hadith detail was repaired as a truly opaque full-viewport reading surface. The old `var(--bg)`/bottom inset behavior could expose underlying UI; R15 covers the entire viewport using `var(--paper)` and locks body scrolling.
+- Hadith back navigation is now an explicit `رجوع للأحاديث` control with click handling, Escape support, and browser/system Back support via a temporary history state. Do not restore the old partial-height overlay.
+- R15 is UI/navigation only. **No persistent storage key, stored shape, Data Safety schema, or stable saved-content ID changed.**

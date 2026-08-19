@@ -148,6 +148,9 @@
 .companion-card .lt{line-height:1.45}.companion-card summary,.seerah-card summary{align-items:flex-start}
 @media(max-width:430px){.learn-ref-row{flex-direction:column;align-items:stretch}.learn-ref-row a{border-radius:11px}.learn-depth section{padding:9px 10px}.learn-summary-hint,.companion-desc{font-size:9.8px}}
 
+
+
+
 </style>
 <style>
 :root{
@@ -914,7 +917,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <button class="home-go" data-home-go="azkar"><span class="ico">☾</span><b>قلت أذكارك؟</b><span>صباح، مساء، نوم، رقية ودعاء — ومع خيار الاستماع.</span><span class="go">إلى الذكر ←</span></button>
     <button class="home-go" data-home-go="sunnah" data-learn-go="essentials"><span class="ico">◫</span><b>تعرف اللي لازم تعرفه؟</b><span>«ما لا يسع المسلم جهله» في بطاقات قصيرة بمصادرها.</span><span class="go">إلى التعلّم ←</span></button>
     <button class="home-go" data-home-go="sunnah" data-learn-go="fiqh"><span class="ico">◇</span><b>مسألة فقهية في يومك؟</b><span>الفقه الميسر: طهارة، صلاة، صيام، زكاة وحج بطريقة عملية.</span><span class="go">إلى الفقه ←</span></button>
-    <button class="home-go" data-home-go="qalb"><span class="ico">♡</span><b>كيف حال قلبك؟</b><span>اقرأ عن أعمال القلوب والعقبات وخطوات العلاج التربوي.</span><span class="go">إلى القلب ←</span></button>
+    <button class="home-go" data-home-go="qalb"><span class="ico">♡</span><b>كيف حال قلبك؟</b><span>اقرأ عن أعمال القلوب والعقبات وخطوات العلاج التربوي.</span><span class="go">إلى التزكية ←</span></button>
     <button class="home-go" data-home-go="irtaqi"><span class="ico">↗</span><b>خطوة صغيرة ترتقي بك</b><span>خطة عملية بدل محاولة إصلاح كل شيء مرة واحدة.</span><span class="go">إلى ارتقِ ←</span></button>
     <button class="home-go wide" data-home-go="prayer"><span class="ico">◌</span><b id="home-prayer-title">الصلاة القادمة</b><span id="home-prayer-sub">حدّد موقعك من الإعدادات لعرض الموعد.</span><span class="go">المواقيت ←</span></button>
   </div>
@@ -1041,6 +1044,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div class="rd-bar">
     <button class="rd-btn rd-index-btn" id="rd-back" aria-label="فتح فهرس المصحف والبحث" title="فهرس المصحف والبحث">الفهرس</button>
     <button class="rd-btn rd-tafsir-btn" id="rd-tafsir" aria-label="فتح تفسير الآية المحددة من المختصر" title="المختصر في التفسير">التفسير</button>
+    <button class="rd-btn rd-fullscreen-btn" id="rd-fullscreen" type="button" aria-label="عرض المصحف بملء الشاشة" aria-pressed="false" title="ملء الشاشة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
     <span class="rd-title" id="rd-title"></span>
     <button class="rd-btn" id="rd-minus">أ−</button>
     <button class="rd-btn" id="rd-plus">أ+</button>
@@ -1135,7 +1139,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div id="learn-fiqh" class="hide"></div>
 
   <div id="hadith-detail" class="hadith-detail hide" role="dialog" aria-modal="true" aria-labelledby="hadith-detail-title">
-    <div class="hadith-detail-bar"><button class="back" id="hadith-detail-back">رجوع</button><span id="hadith-detail-kicker"></span></div>
+    <div class="hadith-detail-bar"><button class="hadith-back" id="hadith-detail-back" type="button" aria-label="الرجوع إلى قائمة الأحاديث"><span aria-hidden="true">→</span> رجوع للأحاديث</button><span id="hadith-detail-kicker"></span></div>
     <div id="hadith-detail-content"></div>
   </div>
 </div>
@@ -1214,7 +1218,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <button data-tab="quran"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.4 5.2 8.4 4.5 6 4.5H3.5v13H6c2.4 0 4.4.7 6 2 1.6-1.3 3.6-2 6-2h2.5v-13H18c-2.4 0-4.4.7-6 2Z"/><path d="M12 6.5v13"/></svg></em>المصحف</button>
   <button data-tab="sunnah"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h6.5c1.2 0 1.5.5 1.5 1.6v12c0-1.2-.8-1.8-2.2-1.8H4Z"/><path d="M20 5.5h-6.5c-1.2 0-1.5.5-1.5 1.6v12c0-1.2.8-1.8 2.2-1.8H20Z"/><path d="M8 9h1.5M14.5 9H16"/></svg></em>العلم</button>
   <button data-tab="azkar"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="16" cy="17" r="2"/><path d="M9.5 8.5 10.7 10M13.4 13.5l1.2 1.6"/><path d="M18 5v4M16 7h4"/></svg></em>الذكر</button>
-  <button data-tab="qalb"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.3A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7 2.7C19 15.6 12 20 12 20Z"/><path d="M9 12h6"/></svg></em>القلب</button>
+  <button data-tab="qalb"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.3A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7 2.7C19 15.6 12 20 12 20Z"/><path d="M9 12h6"/></svg></em>تزكية</button>
   <button data-tab="irtaqi"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h4v-4h4v-4h4V7h4"/><path d="m17 4 3 3-3 3"/></svg></em>ارتقِ</button>
 </div></nav>
 
@@ -1359,8 +1363,8 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 @media(max-width:560px){.hisn-index{grid-template-columns:1fr}.rd-tafsir-btn{min-width:54px!important;padding-inline:8px!important}.tafsir-current{align-items:stretch;flex-direction:column}.tafsir-current>a{text-align:center}}
 
 /* v24 R14 — printed Madinah Mushaf page layout: fixed lines, fixed page boundaries */
-#v-read{background:var(--bg)}
-.rd-bar{position:sticky;top:0;z-index:15;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(12px);padding-block:7px}
+#v-read{background:var(--paper)}
+.rd-bar{position:sticky;top:0;z-index:15;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(12px);padding-block:7px}
 .mushaf{background:#fcfaf4;border:0;border-radius:18px;margin-top:6px;padding:8px 8px 7px;box-shadow:0 8px 28px rgba(77,61,30,.07);overflow-x:auto;overscroll-behavior-x:contain}
 [data-theme="dark"] .mushaf{background:#f7f3e9;border:0}
 .mus-head{padding:4px 8px 7px;margin-bottom:5px;border-bottom:0;color:#8b7650;font-size:10.5px}
@@ -1379,6 +1383,33 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .mus-body.text-fallback{font-family:Hafs,Amiri,serif;text-align:justify;text-align-last:center;line-height:2.35;color:#1E1B14;word-spacing:-1px;padding:8px}
 [data-theme="dark"] .mus-body.text-fallback{color:#1E1B14}
 @media(max-width:560px){.mushaf{margin-inline:-4px;border-radius:12px;padding-inline:4px}.mus-head{padding-inline:6px}.rd-bar{gap:5px}.rd-btn{min-width:38px}.rd-title{font-size:16px}.mus-source{font-size:8.3px}}
+/* v24 R15 — immersive Mushaf, تزكية cleanup, solid hadith reader */
+.rd-fullscreen-btn{display:grid;place-items:center;flex:none}.rd-fullscreen-btn svg{width:18px;height:18px}.rd-fullscreen-btn[aria-pressed="true"]{background:var(--deep);color:#fff;border-color:var(--deep)}
+.mushaf.page-loading-soft{cursor:progress}.mushaf.page-loading-soft .mushaf-page-svg{opacity:.72;filter:saturate(.92)}
+.mushaf-page-svg.page-enter,.mushaf-page-svg.page-enter-next,.mushaf-page-svg.page-enter-prev{opacity:.12;transition:opacity .22s ease,transform .24s cubic-bezier(.22,.72,.2,1)}
+.mushaf-page-svg.page-enter-next{transform:translateX(-14px)}.mushaf-page-svg.page-enter-prev{transform:translateX(14px)}.mushaf-page-svg.page-enter-on{opacity:1;transform:translateX(0)}
+body.mushaf-fullscreen{overflow:hidden;background:#fcfaf4}body.mushaf-fullscreen>header,body.mushaf-fullscreen>nav{display:none!important}
+body.mushaf-fullscreen #v-read{position:fixed;z-index:220;inset:0;background:#fcfaf4;overflow-y:auto;overscroll-behavior:contain;padding:0 max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));scrollbar-width:none}
+body.mushaf-fullscreen #v-read::-webkit-scrollbar{display:none}body.mushaf-fullscreen .rd-bar{top:0;margin:0;padding:calc(6px + env(safe-area-inset-top)) 6px 7px;background:rgba(252,250,244,.94);backdrop-filter:blur(16px);transition:opacity .18s ease,transform .2s ease}
+body.mushaf-fullscreen .mushaf{margin:0 auto;padding:0;border-radius:0;box-shadow:none;min-height:calc(100dvh - 58px);display:flex;flex-direction:column;justify-content:center;overflow:hidden;transition:padding .2s ease}
+body.mushaf-fullscreen .mus-body.printed{display:grid;place-items:center;width:100%!important;transition:none}
+body.mushaf-fullscreen .mus-body.printed .mushaf-page-svg{width:auto;max-width:100%;height:auto;max-height:calc(100dvh - 92px);object-fit:contain}
+body.mushaf-fullscreen .mus-source{max-width:680px;margin-inline:auto}.mushaf-controls-hidden .rd-bar{opacity:0;transform:translateY(-100%);pointer-events:none}
+.mushaf-controls-hidden .mus-head,.mushaf-controls-hidden .mushaf-swipe-hint,.mushaf-controls-hidden .mushaf-render-note,.mushaf-controls-hidden .mus-source,.mushaf-controls-hidden .mus-foot,.mushaf-controls-hidden .tafsir-current,.mushaf-controls-hidden .rd-nav{display:none!important}
+body.mushaf-fullscreen.mushaf-controls-hidden .mushaf{min-height:100dvh}body.mushaf-fullscreen.mushaf-controls-hidden .mus-body.printed .mushaf-page-svg{max-height:100dvh}
+@media(max-width:560px){body.mushaf-fullscreen #v-read{padding-inline:0}.rd-fullscreen-btn{min-width:38px!important}.mushaf-fullscreen .rd-title{font-size:15px}}
+
+/* تزكية: cleaner text-led navigation; functional +/✓ controls stay untouched */
+#v-qalb .h-tabs button{letter-spacing:0}#v-qalb .h-tile>.ic{display:none!important}#v-qalb .h-tile{padding-top:15px}#v-qalb .nafs-open{grid-template-columns:1fr auto!important}#v-qalb .nafs-open>.ni{display:none!important}
+
+/* Hadith detail is a true opaque reading surface; nothing underneath leaks through. */
+body.hadith-open{overflow:hidden}.hadith-detail{z-index:320!important;inset:0!important;width:100vw;height:100dvh;box-sizing:border-box;background:var(--paper)!important;overflow-y:auto!important;padding:0 16px calc(28px + env(safe-area-inset-bottom))!important;overscroll-behavior:contain}
+.hadith-detail::before{content:"";position:fixed;inset:0;background:var(--paper);z-index:-1}
+.hadith-detail-bar{margin-inline:-16px;padding:calc(8px + env(safe-area-inset-top)) 16px 10px;background:color-mix(in srgb,var(--paper) 97%,transparent)!important;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.hadith-back{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--deep);font:inherit;font-size:12px;font-weight:600;padding:7px 11px;cursor:pointer;touch-action:manipulation}.hadith-back span{font-size:16px}.hadith-back:active{transform:scale(.98)}
+#hadith-detail-content{max-width:780px;margin:12px auto 0;padding-bottom:24px}
+@media(max-width:430px){.hadith-detail{padding-inline:12px!important}.hadith-detail-bar{margin-inline:-12px;padding-inline:12px}.hadith-detail-bar>span{max-width:42%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+
 </style>
 
 <script src="./data-safety.js"></script>

@@ -112,7 +112,7 @@ const pText=x=>{
 };
 const profileAge=()=>Number(profile.age)||0;
 const issuesEnabled=()=>profile.advancedIssues===true;
-const issueTabButton=(active=false)=>`<button data-k="ishkaliat" class="${issuesEnabled()?'':'optional-track'}"${active?' aria-current="true"':''} title="مسار متقدم اختياري">⌁ إشكاليات</button>`;
+const issueTabButton=(active=false)=>`<button data-k="ishkaliat" class="${issuesEnabled()?'':'optional-track'}"${active?' aria-current="true"':''} title="مسار متقدم اختياري">إشكاليات</button>`;
 function audienceOk(x){
   if(!x)return true;
   if(x.audience&&x.audience!=='all'&&x.audience!==profile.gender)return false;
@@ -638,6 +638,8 @@ const MUSHAF_SVG_REV='0198423eb867ba26051aba6ac902cd5d10aadd1b';
 const MUSHAF_SVG_BASE=`https://cdn.jsdelivr.net/gh/quranpedia/quran-svg@${MUSHAF_SVG_REV}/mushafs/hafs/kfqc/svg/`;
 const MUSHAF_SVG_FALLBACK=`https://raw.githubusercontent.com/quranpedia/quran-svg/${MUSHAF_SVG_REV}/mushafs/hafs/kfqc/svg/`;
 const padMushafPage=p=>String(p).padStart(3,'0');
+const mushafSvgCache=new Map();
+let mushafPageDirection=0, mushafFullscreen=false, mushafControlsHidden=false;
 function searchNorm(x){ return (x||'').toString().toLowerCase().replace(/[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06edـ]/g,'').replace(/ٱ/g,'ا').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim() }
 function deepSearchText(v){ if(v==null)return ''; if(typeof v==='string'||typeof v==='number')return String(v); if(Array.isArray(v))return v.map(deepSearchText).join(' '); if(typeof v==='object')return Object.entries(v).filter(([k])=>!['u','url','link','video'].includes(k)).map(([,x])=>deepSearchText(x)).join(' '); return '' }
 const QKEY='quran-pos';
@@ -660,7 +662,7 @@ async function openQuranReaderDefault(){
   const saved=(await store.get(QKEY))||{};
   await openPage(saved.page||1);
 }
-function openQuranTools(){ quranToolsRequested=true; switchTab('quran') }
+function openQuranTools(){ if(mushafFullscreen)exitMushafFullscreen(); quranToolsRequested=true; switchTab('quran') }
 const MOKHTASAR_BOOK_URL='https://mokhtasr.com/ar/books/200';
 const mokhtasarAyahUrl=(s,a)=>`${MOKHTASAR_BOOK_URL}?aya=${encodeURIComponent(a||1)}&sura=${encodeURIComponent(s||1)}`;
 function firstAyahOnPage(){const run=(Q?.pages?.[qPage-1]||[])[0];return run?{s:+run[0],a:+run[1]}:{s:1,a:1}}
@@ -735,18 +737,23 @@ function renderQuranTextFallback(runs,mark){
   if(n){n.hidden=false;n.textContent='تعذر تحميل صفحة مصحف المدينة المطابقة؛ يظهر مؤقتًا النص الاحتياطي حتى يتوفر الاتصال.'}
 }
 async function fetchMushafSvg(page){
-  const file=padMushafPage(page)+'.svg';
-  let lastErr=null;
-  for(const base of [MUSHAF_SVG_BASE,MUSHAF_SVG_FALLBACK]){
-    try{
-      const r=await fetch(base+file,{cache:'force-cache'});
-      if(!r.ok)throw new Error('HTTP '+r.status);
-      const text=await r.text();
-      if(!text.includes('<svg'))throw new Error('invalid svg');
-      return text;
-    }catch(e){lastErr=e}
-  }
-  throw lastErr||new Error('mushaf page unavailable');
+  if(mushafSvgCache.has(page)) return mushafSvgCache.get(page);
+  const task=(async()=>{
+    const file=padMushafPage(page)+'.svg';
+    let lastErr=null;
+    for(const base of [MUSHAF_SVG_BASE,MUSHAF_SVG_FALLBACK]){
+      try{
+        const r=await fetch(base+file,{cache:'force-cache'});
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        const text=await r.text();
+        if(!text.includes('<svg'))throw new Error('invalid svg');
+        return text;
+      }catch(e){lastErr=e}
+    }
+    throw lastErr||new Error('mushaf page unavailable');
+  })();
+  mushafSvgCache.set(page,task);
+  try{return await task}catch(e){mushafSvgCache.delete(page);throw e}
 }
 function safeMushafSvg(text,page){
   const doc=new DOMParser().parseFromString(text,'image/svg+xml');
@@ -777,19 +784,24 @@ function highlightMushafAyah(){
   if(p)p.classList.add('mark');
 }
 async function renderPrintedMushaf(page,runs,mark){
-  const body=document.getElementById('mus-body');
-  body.classList.remove('text-fallback'); body.classList.add('printed');
-  body.style.fontSize=''; body.innerHTML='<div class="mushaf-page-loading">جاري تحميل صفحة المصحف…</div>';
+  const body=document.getElementById('mus-body'),mushaf=document.getElementById('mushaf');
+  body.classList.remove('text-fallback'); body.classList.add('printed'); body.style.fontSize='';
+  mushaf?.classList.add('page-loading-soft');
   try{
     const svg=safeMushafSvg(await fetchMushafSvg(page),page);
+    svg.classList.add(mushafPageDirection>0?'page-enter-next':mushafPageDirection<0?'page-enter-prev':'page-enter');
     body.replaceChildren(svg); applyMushafZoom(); highlightMushafAyah();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>svg.classList.add('page-enter-on')));
     const n=document.getElementById('mushaf-render-note'); if(n){n.hidden=true;n.textContent=''}
     return true;
   }catch(e){renderQuranTextFallback(runs,mark);return false}
+  finally{mushaf?.classList.remove('page-loading-soft')}
 }
 async function openPage(p){
   await loadQuran();
+  const oldPage=qPage;
   qPage=Math.min(604,Math.max(1,p));
+  mushafPageDirection=qPage===oldPage?0:(qPage>oldPage?1:-1);
   const runs=Q.pages[qPage-1]||[];
   const mark=(await store.get(QKEY))||{};
   const first=runs[0];
@@ -805,7 +817,8 @@ async function openPage(p){
   await renderPrintedMushaf(qPage,runs,mark);
   await store.set(QKEY,{page:qPage,sura:suraLabel,s:(mark.s&&mark.a&&qAyaPage[mark.s+':'+mark.a]===qPage)?mark.s:null,a:(mark.s&&mark.a&&qAyaPage[mark.s+':'+mark.a]===qPage)?mark.a:null});
   if(tab!=='read') switchTab('read');
-  scrollTo({top:0,behavior:'instant'});
+  if(!mushafFullscreen) scrollTo({top:0,behavior:'smooth'});
+  else document.getElementById('v-read')?.scrollTo({top:0,behavior:'smooth'});
   // Warm the browser cache for the adjacent pages without touching user data.
   [qPage+1,qPage-1].filter(x=>x>=1&&x<=604).forEach(x=>fetchMushafSvg(x).catch(()=>{}));
 }
@@ -822,6 +835,25 @@ document.getElementById('mus-body').onclick=async e=>{
   const cur=(await store.get(QKEY))||{};
   await store.set(QKEY,Object.assign(cur,{page:qPage,s:sn,a:an}));
   toast('حُفظ موضعك · التفسير جاهز') };
+function syncMushafFullscreenUI(){
+  document.body.classList.toggle('mushaf-fullscreen',mushafFullscreen);
+  document.body.classList.toggle('mushaf-controls-hidden',mushafFullscreen&&mushafControlsHidden);
+  const b=document.getElementById('rd-fullscreen');
+  if(b){b.setAttribute('aria-pressed',mushafFullscreen?'true':'false');b.setAttribute('aria-label',mushafFullscreen?'الخروج من ملء الشاشة':'عرض المصحف بملء الشاشة');b.title=mushafFullscreen?'الخروج من ملء الشاشة':'ملء الشاشة'}
+}
+async function enterMushafFullscreen(){
+  mushafFullscreen=true;mushafControlsHidden=false;syncMushafFullscreenUI();
+  const target=document.getElementById('v-read');
+  try{if(target?.requestFullscreen&&!document.fullscreenElement)await target.requestFullscreen({navigationUI:'hide'})}catch{}
+}
+async function exitMushafFullscreen(){
+  mushafFullscreen=false;mushafControlsHidden=false;syncMushafFullscreenUI();
+  try{if(document.fullscreenElement)await document.exitFullscreen()}catch{}
+}
+async function toggleMushafFullscreen(){mushafFullscreen?await exitMushafFullscreen():await enterMushafFullscreen()}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&mushafFullscreen){mushafFullscreen=false;mushafControlsHidden=false;syncMushafFullscreenUI()}});
+document.getElementById('rd-fullscreen').onclick=toggleMushafFullscreen;
+document.getElementById('mushaf').addEventListener('click',e=>{if(!mushafFullscreen)return;if(e.target.closest('.ayahPolygon,.ay,a,button'))return;mushafControlsHidden=!mushafControlsHidden;syncMushafFullscreenUI()});
 document.getElementById('rd-back').onclick=openQuranTools;
 document.getElementById('rd-tafsir').onclick=openCurrentTafsir;
 document.getElementById('rd-prev').onclick=()=>openPage(qPage-1);
@@ -892,7 +924,7 @@ document.getElementById('dua-search').oninput=()=>renderDua();
 const RIYAD_TEXT_URL='https://old.shamela.ws/index.php/book/12014';
 const RIYAD_SHARH_URL='https://foundation.binothaimeen.net/ar/books/show/76e12fcc-d35a-417d-a68b-954c0bf06bc6';
 const NAWAWI_SHARH_URL='https://foundation.binothaimeen.net/ar/books/show/7c9cb3e2-3b02-4ad9-97dc-5db895d9a98c';
-let RS=null, rsBook=-1, rsFav=[], NAW=null, nawawiQuery='';
+let RS=null, rsBook=-1, rsFav=[], NAW=null, nawawiQuery='', hadithDetailHistory=false;
 function riyadParts(raw=''){
   const refs=[];
   let body=String(raw).replace(/\(\(([\s\S]*?)\)\)/g,(_,x)=>{const v=x.trim();if(v)refs.push(v);return ' '});
@@ -952,10 +984,20 @@ function openHadithDetail(kind,data){
     kick.textContent=`الأربعون النووية · ${AR(h.n)}`;
     host.innerHTML=`<div class="hadith-reader-hero"><div class="eyebrow">الحديث ${AR(h.n)} من ٤٢</div><h2 id="hadith-detail-title">${laterEsc(h.title)}</h2><div class="hadith-matn">${laterEsc(h.text)}</div></div><div class="hadith-ref-card"><div class="label">مصدر الحديث والتخريج</div><a href="${h.textUrl}" target="_blank" rel="noopener">الأربعون النووية — الحديث ${AR(h.n)}</a><div class="note">${laterEsc(h.takhrij||'راجع رابط الحديث للتخريج.')}</div></div>${sourceRefCard(meta.commentaryBook||'شرح الأربعين النووية — الشيخ محمد بن صالح العثيمين رحمه الله',h.commentaryUrl||NAWAWI_SHARH_URL,'المصدر الرسمي: مؤسسة الشيخ محمد بن صالح العثيمين الخيرية.')}<div class="hadith-sharh"><div class="head"><b>الشرح المبسط</b><span class="badge">على ضوء المرجع</span></div><p>${laterEsc(h.explanation)}</p><div class="disclaimer">${laterEsc(meta.commentaryNote||'الشرح مختصر وليس نقلًا حرفيًا؛ راجع المرجع المعتمد للتفصيل.')}</div></div>`;
   }
-  shell.classList.remove('hide');shell.scrollTop=0;
+  const wasHidden=shell.classList.contains('hide');
+  shell.classList.remove('hide');shell.scrollTop=0;document.body.classList.add('hadith-open');
+  if(wasHidden&&!hadithDetailHistory){try{history.pushState({rafiqHadith:true},'',location.href);hadithDetailHistory=true}catch{}}
 }
-function closeHadithDetail(){document.getElementById('hadith-detail')?.classList.add('hide')}
-document.getElementById('hadith-detail-back').onclick=closeHadithDetail;
+function closeHadithDetail(fromPop=false){
+  const shell=document.getElementById('hadith-detail');if(!shell||shell.classList.contains('hide'))return;
+  shell.classList.add('hide');document.body.classList.remove('hadith-open');
+  if(!fromPop&&hadithDetailHistory){hadithDetailHistory=false;try{history.back()}catch{}}
+  else if(fromPop)hadithDetailHistory=false;
+}
+document.getElementById('hadith-detail-back').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();closeHadithDetail()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('hadith-detail')?.classList.contains('hide'))closeHadithDetail()});
+window.addEventListener('popstate',()=>{if(!document.getElementById('hadith-detail')?.classList.contains('hide'))closeHadithDetail(true)});
+
 
 async function renderSunnah(){
   await loadRS();
@@ -1042,7 +1084,7 @@ function hPct(p){
   return Math.round(n/tr.length*100) }
 const hFind=id=>(HD.problems||[]).concat(HD.works||[],HD.obstacles||[]).find(x=>x.id===id);
 const hPathActive=()=>hPaths.filter(x=>x.status!=='archived');
-const hPathTab=(active=false)=>`<button data-k="path"${active?' aria-current="true"':''}>◎ مساري${hPathActive().length?` · ${AR(hPathActive().length)}`:''}</button>`;
+const hPathTab=(active=false)=>`<button data-k="path"${active?' aria-current="true"':''}>مساري${hPathActive().length?` · ${AR(hPathActive().length)}`:''}</button>`;
 function hPathKey(type,parentId,itemId=''){return [type,parentId,itemId].filter(Boolean).join(':')}
 function hPathFind(key){return hPaths.find(x=>x.key===key)}
 function hPathResolve(path){
@@ -1106,7 +1148,7 @@ function hPathProgress(path,def){const stops=hPathStops(def);if(!stops.length)re
 async function hPathsRender(){
   await loadH(); hPathCur=null;
   const active=hPathActive(),host=document.getElementById('v-qalb');
-  host.innerHTML=`<div class="h-tabs">${hPathTab(true)}<button data-k="problems">♡ أمراض القلوب</button><button data-k="works">◇ أعمال القلوب</button><button data-k="obstacles">↗ العقبات</button><button data-k="deeds">＋ بنك الأعمال</button><button data-k="nafs">◌ فقه النفس</button>${issueTabButton(false)}</div>
+  host.innerHTML=`<div class="h-tabs">${hPathTab(true)}<button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button>${issueTabButton(false)}</div>
     <div class="path-hero"><div class="kicker">مساري الشخصي</div><h2>مشكلتك لها باب ومسار</h2><p>اختر المشكلة التي تشغلك الآن من العقبات أو أمراض القلوب أو فقه النفس. رفيق يجمع لك أصل الفكرة والخطوات الموجودة في المحتوى نفسه، ويحفظ تقدمك محليًا على جهازك. يمكنك فتح أكثر من مسار.</p></div>
     ${active.length?`<div class="path-list">${active.map(p=>{const d=hPathResolve(p);if(!d)return'';const pct=hPathProgress(p,d);return `<div class="path-card"><div class="top"><div><div class="kind">${d.kind}${d.sub?' · '+d.sub:''}</div><h3>${d.title}</h3><div class="sub">بدأ ${new Intl.DateTimeFormat('ar-EG',{day:'numeric',month:'short'}).format(new Date(p.start))}</div></div><button class="path-open" data-path-open="${laterEsc(p.key)}">افتح المسار</button></div><div class="path-progress"><i style="width:${pct}%"></i></div><div class="path-meta"><span>${AR(pct)}% من المحطات</span><span>${(p.checkins||[]).length?`آخر مراجعة: ${(p.checkins||[]).slice(-1)[0].state}`:'لم تسجل مراجعة بعد'}</span></div></div>`}).join('')}</div>`:`<div class="path-empty"><b>ما الذي يشغلك هذه الأيام؟</b><p>ابدأ من إحساسك أو موقفك الحالي. سنوصلك للباب الأقرب، وأنت تختار المشكلة التي تشبه واقعك ثم تضيفها لمسارك.</p><div class="path-suggestions"><button data-path-preset="worry">هم أو قلق</button><button data-path-preset="futuur">فتور</button><button data-path-preset="sin">ذنب يتكرر</button><button data-path-preset="family">مشكلة أسرية</button><button data-path-preset="relation">علاقة أو ارتباط</button><button data-path-preset="heart">مرض قلب</button></div><div class="path-picks"><button data-path-go="obstacles">كل العقبات</button><button data-path-go="problems">أمراض القلوب</button><button data-path-go="nafs">فقه النفس</button></div></div>`}`;
   host.onclick=hClick;
@@ -1125,14 +1167,14 @@ async function hRender(){
   await loadH(); hCur=null;
   document.getElementById('v-qalb').innerHTML=
    `<div class="h-tabs">${hPathTab(false)}
-      <button data-k="problems" aria-current="${hKind==='problems'}">♡ أمراض القلوب</button>
-      <button data-k="works" aria-current="${hKind==='works'}">◇ أعمال القلوب</button>
-      <button data-k="obstacles">↗ العقبات</button>
-      <button data-k="deeds">＋ بنك الأعمال</button>
-      <button data-k="nafs">◌ فقه النفس</button>${issueTabButton(false)}
+      <button data-k="problems" aria-current="${hKind==='problems'}">أمراض القلوب</button>
+      <button data-k="works" aria-current="${hKind==='works'}">أعمال القلوب</button>
+      <button data-k="obstacles">العقبات</button>
+      <button data-k="deeds">بنك الأعمال</button>
+      <button data-k="nafs">فقه النفس</button>${issueTabButton(false)}
     </div>
     <p class="h-src"><b>قاعدة رفيق:</b> كل توجيه ديني تحته مصدره، وفقه النفس مستفاد من منهج مكاني مع فصل واضح بين التثقيف وبين التشخيص والعلاج الطبي.</p>
-    <input id="heart-search" class="q-search" type="search" value="${hQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في هذا القسم: رياء، توكل، صبر، شهوة…" aria-label="بحث في القلب">
+    <input id="heart-search" class="q-search" type="search" value="${hQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في هذا القسم: رياء، توكل، صبر، شهوة…" aria-label="بحث في التزكية">
     <div class="search-count" id="heart-result-count"></div><div id="heart-list"></div>`;
   document.getElementById('v-qalb').onclick=hClick;
   document.getElementById('heart-search').oninput=e=>{hQuery=e.target.value;hRenderList()};
@@ -1142,7 +1184,7 @@ function hRenderList(){
   const items=(HD[hKind]||[]).filter(audienceOk), q=searchNorm(hQuery), F=items.filter(p=>!q||searchNorm(deepSearchText(p)).includes(q));
   const cnt=document.getElementById('heart-result-count'), host=document.getElementById('heart-list'); if(!cnt||!host)return;
   cnt.textContent=`${AR(F.length)} من ${AR(items.length)} بابًا`;
-  host.innerHTML=F.length?`<div class="h-grid">${F.map(p=>{ const pct=hPct(p),j=(hJournal[p.id]||[]).length,pathBtn=hKind==='problems'?hPathQuickButton('problem',p.id):''; return `<div class="h-tile" data-id="${p.id}">${laterRegister(`heart:${hKind}:${p.id}`,{kind:'القلب',title:p.name,text:p.sub||'',source:p.defSource?.t||'',tab:'qalb'})}<div class="ic">${p.icon||'◈'}</div><div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div>${pathBtn?`<div class="path-quick-wrap">${pathBtn}</div>`:''}<div class="pr"><i style="width:${pct}%"></i></div><div class="st">${pct?'اليوم '+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة في هذا القسم.</div>';
+  host.innerHTML=F.length?`<div class="h-grid">${F.map(p=>{ const pct=hPct(p),j=(hJournal[p.id]||[]).length,pathBtn=hKind==='problems'?hPathQuickButton('problem',p.id):''; return `<div class="h-tile" data-id="${p.id}">${laterRegister(`heart:${hKind}:${p.id}`,{kind:'القلب',title:p.name,text:p.sub||'',source:p.defSource?.t||'',tab:'qalb'})}<div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div>${pathBtn?`<div class="path-quick-wrap">${pathBtn}</div>`:''}<div class="pr"><i style="width:${pct}%"></i></div><div class="st">${pct?'اليوم '+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة في هذا القسم.</div>';
 }
 function hProgHtml(id,label){
   const p=hProg[id];
@@ -1321,8 +1363,8 @@ async function hClick(e){
 async function hObstacles(){
   await loadH(); hKind='obstacles'; hCur=null;
   const cats=(HD.obstacles||[]).filter(audienceOk), q=searchNorm(hQuery);
-  document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}<button data-k="problems">♡ أمراض القلوب</button><button data-k="works">◇ أعمال القلوب</button><button data-k="obstacles" aria-current="true">↗ العقبات</button><button data-k="deeds">＋ بنك الأعمال</button><button data-k="nafs">◌ فقه النفس</button>${issueTabButton(false)}</div><div class="nafs-hero"><h2>${g('مشكلتك مختلفة… والدين ثابت.','مشكلتك مختلفة… والدين ثابت.')}</h2><p>العقبات هنا للحياة الواقعية: أسرة، دراسة، عمل، علاقات، هاتف، فتور، قلق وأسئلة. ${g('اختر ما يشبه موقفك','اختاري ما يشبه موقفكِ')}؛ وكل جواب وخطوة تحته مصدره.</p></div><input id="heart-search" class="q-search" type="search" value="${laterEsc(hQuery)}" placeholder="ابحث: أسرة، علاقة، دراسة، قلق، هاتف…"><div class="search-count" id="heart-result-count"></div><div id="heart-list"></div>`;
-  const render=()=>{const qq=searchNorm(hQuery), F=cats.filter(x=>!qq||searchNorm(deepSearchText(x)).includes(qq));document.getElementById('heart-result-count').textContent=`${AR(F.length)} من ${AR(cats.length)} أبواب`;document.getElementById('heart-list').innerHTML=F.length?`<div class="h-grid">${F.map(p=>`<div class="h-tile" data-id="${p.id}">${laterRegister(`obstaclecat:${p.id}`,{kind:'العقبات',title:p.name,text:p.sub||'',source:'مصادر داخل كل مسألة',tab:'qalb'})}<div class="ic">${p.icon||'↗'}</div><div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div><div class="st">${AR((p.items||[]).filter(audienceOk).length)} مسائل</div></div>`).join('')}</div>`:'<div class="nafs-empty">لا توجد نتيجة مطابقة.</div>'};
+  document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}<button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles" aria-current="true">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button>${issueTabButton(false)}</div><div class="nafs-hero"><h2>${g('مشكلتك مختلفة… والدين ثابت.','مشكلتك مختلفة… والدين ثابت.')}</h2><p>العقبات هنا للحياة الواقعية: أسرة، دراسة، عمل، علاقات، هاتف، فتور، قلق وأسئلة. ${g('اختر ما يشبه موقفك','اختاري ما يشبه موقفكِ')}؛ وكل جواب وخطوة تحته مصدره.</p></div><input id="heart-search" class="q-search" type="search" value="${laterEsc(hQuery)}" placeholder="ابحث: أسرة، علاقة، دراسة، قلق، هاتف…"><div class="search-count" id="heart-result-count"></div><div id="heart-list"></div>`;
+  const render=()=>{const qq=searchNorm(hQuery), F=cats.filter(x=>!qq||searchNorm(deepSearchText(x)).includes(qq));document.getElementById('heart-result-count').textContent=`${AR(F.length)} من ${AR(cats.length)} أبواب`;document.getElementById('heart-list').innerHTML=F.length?`<div class="h-grid">${F.map(p=>`<div class="h-tile" data-id="${p.id}">${laterRegister(`obstaclecat:${p.id}`,{kind:'العقبات',title:p.name,text:p.sub||'',source:'مصادر داخل كل مسألة',tab:'qalb'})}<div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div><div class="st">${AR((p.items||[]).filter(audienceOk).length)} مسائل</div></div>`).join('')}</div>`:'<div class="nafs-empty">لا توجد نتيجة مطابقة.</div>'};
   document.getElementById('v-qalb').onclick=hClick;document.getElementById('heart-search').oninput=e=>{hQuery=e.target.value;render()};render();
 }
 
@@ -1333,12 +1375,12 @@ function hNafsList(){
   const N=HD.nafs||[], q=nafsNorm(nafsQuery), GM=Object.fromEntries((HD.nafsGroups||[]).map(g=>[g.id,g]));
   const F=N.filter(audienceOk).filter(it=>(nafsGroup==='all'||it.group===nafsGroup) && (!q||nafsNorm([it.q,it.summary,it.psych,it.iman,...(it.questions||[])].join(' ')).includes(q)));
   const host=document.getElementById('nafs-list'); if(!host)return; const cnt=document.getElementById('nafs-result-count'); if(cnt)cnt.textContent=`${AR(F.length)} من ${AR(N.filter(audienceOk).length)} موضوعًا`;
-  host.innerHTML=F.length?`<div class="nafs-topic-list">${F.map(it=>{const gr=GM[it.group]||{};return `<div class="nafs-topic">${laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الظاهرة',tab:'qalb'})}<button class="nafs-open" data-nafs-id="${it.id}"><span class="ni">${gr.icon||'◌'}</span><span><span class="ng">${gr.name||'فقه النفس'}</span><span class="nq">${it.q}</span><span class="ns">${it.summary||''}</span></span><span class="go">←</span></button><div class="nafs-path-quick">${hPathQuickButton('nafs',it.id)}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة. جرّب كلمة أخرى أو اختر كل المسارات.</div>';
+  host.innerHTML=F.length?`<div class="nafs-topic-list">${F.map(it=>{const gr=GM[it.group]||{};return `<div class="nafs-topic">${laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الظاهرة',tab:'qalb'})}<button class="nafs-open" data-nafs-id="${it.id}"><span><span class="ng">${gr.name||'فقه النفس'}</span><span class="nq">${it.q}</span><span class="ns">${it.summary||''}</span></span><span class="go">←</span></button><div class="nafs-path-quick">${hPathQuickButton('nafs',it.id)}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة. جرّب كلمة أخرى أو اختر كل المسارات.</div>';
 }
 function hNafsDetail(id){
   const it=(HD.nafs||[]).find(x=>x.id===id);if(!it){hNafs();return}nafsCur=id;const gr=(HD.nafsGroups||[]).find(g=>g.id===it.group)||{};
   const plus=laterRegister(`nafs:${it.id}`,{kind:'فقه النفس',title:it.q,text:it.summary,source:'فقه النفس | مكاني + المصادر الظاهرة',tab:'qalb'});
-  document.getElementById('v-qalb').innerHTML=`<button class="back" id="nafs-back">فقه النفس</button><div class="nafs-detail-hero"><div class="crumb">${gr.icon||'◌'} ${gr.name||'فقه النفس'}</div><h2>${it.q}</h2><p>${it.summary}</p>${hSourceHtml(it.summarySource)}<div class="nafs-actions">${hPathButton('nafs',it.id)}${plus}</div></div>
+  document.getElementById('v-qalb').innerHTML=`<button class="back" id="nafs-back">فقه النفس</button><div class="nafs-detail-hero"><div class="crumb">${gr.name||'فقه النفس'}</div><h2>${it.q}</h2><p>${it.summary}</p>${hSourceHtml(it.summarySource)}<div class="nafs-actions">${hPathButton('nafs',it.id)}${plus}</div></div>
     <div class="nafs-detail-grid"><div class="nafs-detail-card"><h3>ما الذي يحدث في النفس؟</h3><div class="tx">${it.psych}</div>${hSourceHtml(it.psychSource)}</div><div class="nafs-detail-card"><h3>البوصلة الإيمانية</h3><div class="tx">${it.iman}</div>${hSourceHtml(it.imanSource)}</div></div>
     <div class="h-sec" style="margin-top:10px"><div class="h-sh">أسئلة تساعدك على فهم نفسك</div><div class="h-bd"><div class="nafs-qcards">${(it.questions||[]).map((x,i)=>`<div class="nafs-qcard"><i>${AR(i+1)}</i><span>${x}</span></div>`).join('')}</div>${hSourceHtml(it.questionsSource)}</div></div>
     <div class="h-sec"><div class="h-sh">خطوات عملية</div>${hStepsHtml('nafs/'+it.id,it.steps||[])}</div>
@@ -1357,7 +1399,7 @@ function hNafs(){
     <div class="nafs-hero"><h2>فقه النفس — من الفهم إلى التزكية</h2><p>${HD.meta?.nafsMethod||'صياغة تعليمية مستفادة من فقه النفس | مكاني.'}</p><div class="learn-source">المصدر المنهجي: <a href="${HD.meta?.nafsUrl||'https://makany.co/'}" target="_blank" rel="noopener">فقه النفس | مكاني — بإشراف د. عبد الرحمن ذاكر الهاشمي ↗</a></div></div>
     <input id="nafs-search" class="q-search" type="search" value="${nafsQuery.replace(/"/g,'&quot;')}" placeholder="ابحث: قلق، غضب، كمالية، تعلق، وسواس…" aria-label="بحث في فقه النفس">
     <div class="search-count" id="nafs-result-count"></div>
-    <div class="nafs-groups"><button data-ng="all" class="${nafsGroup==='all'?'on':''}">كل المسارات</button>${groups.map(g=>`<button data-ng="${g.id}" class="${nafsGroup===g.id?'on':''}">${g.icon||''} ${g.name}</button>`).join('')}</div>
+    <div class="nafs-groups"><button data-ng="all" class="${nafsGroup==='all'?'on':''}">كل المسارات</button>${groups.map(g=>`<button data-ng="${g.id}" class="${nafsGroup===g.id?'on':''}">${g.name}</button>`).join('')}</div>
     <div class="nafs-note"><b>مهم:</b> ${HD.meta?.medicalNote||'هذا القسم للتثقيف ولا يستبدل التقييم الطبي.'}<div class="learn-source">المصدر الطبي العام: <a href="https://www.who.int/news-room/fact-sheets/detail/depression" target="_blank" rel="noopener">منظمة الصحة العالمية ↗</a></div></div>
     <div id="nafs-list"></div>`;
   document.getElementById('v-qalb').onclick=hClick;
@@ -1406,15 +1448,15 @@ function hIshkaliatList(){
 async function hIshkaliat(){
   await loadIsh();
   if(!issuesEnabled()){
-    document.getElementById('v-qalb').innerHTML=`<button class="back" id="ish-disabled-back">القلب</button><div class="nafs-hero ish-optin"><div class="ish-kicker">مسار متقدم اختياري</div><h2>إشكاليات</h2><p>هذا المسار يناقش قضايا الالتزام والتدين والعمل للدين من محاضرات د. أحمد عبد المنعم، مع رابط الفيديو والتوقيت تحت كل فكرة. لا يصنف رفيق مستوى تدينك؛ أنت فقط تختار إن كنت تريد إظهاره.</p><button class="h-primary" id="ish-enable">إظهار «إشكاليات»</button></div>`;
+    document.getElementById('v-qalb').innerHTML=`<button class="back" id="ish-disabled-back">تزكية</button><div class="nafs-hero ish-optin"><div class="ish-kicker">مسار متقدم اختياري</div><h2>إشكاليات</h2><p>هذا المسار يناقش قضايا الالتزام والتدين والعمل للدين من محاضرات د. أحمد عبد المنعم، مع رابط الفيديو والتوقيت تحت كل فكرة. لا يصنف رفيق مستوى تدينك؛ أنت فقط تختار إن كنت تريد إظهاره.</p><button class="h-primary" id="ish-enable">إظهار «إشكاليات»</button></div>`;
     document.getElementById('ish-disabled-back').onclick=()=>hRender();
     document.getElementById('ish-enable').onclick=async()=>{profile={...profile,advancedIssues:true};await store.set('profile-v1',profile);toast('تم إظهار «إشكاليات» ✓');hIshkaliat()};
     return;
   }
   document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}
-      <button data-k="problems">♡ أمراض القلوب</button><button data-k="works">◇ أعمال القلوب</button>
-      <button data-k="obstacles">↗ العقبات</button><button data-k="deeds">＋ بنك الأعمال</button>
-      <button data-k="nafs">◌ فقه النفس</button>${issueTabButton(true)}</div>
+      <button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button>
+      <button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button>
+      <button data-k="nafs">فقه النفس</button>${issueTabButton(true)}</div>
     <div class="nafs-hero ish-hero"><div class="ish-kicker">مسار متقدم اختياري</div><h2>${ISH.meta?.title||'إشكاليات'}</h2>
       <p>${ISH.meta?.audience||''}</p>
       <div class="ish-method">${ISH.meta?.method||''}</div>
@@ -1422,7 +1464,7 @@ async function hIshkaliat(){
     </div>
     <input id="ish-search" class="q-search" type="search" value="${laterEsc(issueQuery)}" placeholder="ابحث: فتور، ثغر، خلاف، بناء معرفي، مثالية…" aria-label="بحث في إشكاليات">
     <div class="search-count" id="ish-result-count"></div>
-    <div class="nafs-groups ish-groups"><button data-ig="all" class="${issueGroup==='all'?'on':''}">كل المحاور</button>${(ISH.groups||[]).map(g=>`<button data-ig="${g.id}" class="${issueGroup===g.id?'on':''}">${g.icon||''} ${g.name}</button>`).join('')}</div>
+    <div class="nafs-groups ish-groups"><button data-ig="all" class="${issueGroup==='all'?'on':''}">كل المحاور</button>${(ISH.groups||[]).map(g=>`<button data-ig="${g.id}" class="${issueGroup===g.id?'on':''}">${g.name}</button>`).join('')}</div>
     <div class="nafs-note"><b>طريقة القراءة:</b> اعتبر الملخص بداية فقط. النص داخل رفيق ليس اقتباسًا حرفيًا عن المحاضر؛ تحت كل فكرة رابط الفيديو من التوقيت المرتبط بها، ومنه يمكنك الرجوع إلى السياق الكامل.</div>
     <div id="ish-list"></div>`;
   document.getElementById('v-qalb').onclick=hClick;
@@ -1575,15 +1617,15 @@ function renderDeedsContent(D,pick,w){
   const host=document.getElementById('deeds-results'),cnt=document.getElementById('deeds-result-count'); if(!host||!cnt)return; const q=searchNorm(deedsQuery);
   if(q){ const hits=[]; D.forEach(c=>c.items.forEach((it,i)=>{if(searchNorm(c.name+' '+(c.sub||'')+' '+pText(it)).includes(q))hits.push([c,it,i])})); cnt.textContent=`${AR(hits.length)} نتيجة من ${AR(D.reduce((n,c)=>n+c.items.length,0))} عملًا`; host.innerHTML=hits.length?`<div class="h-sec">${hits.map(([c,it,i])=>{const k=dKey(c.id,i),on=hDone(k,0,hToday());return `<div class="h-cure">${laterRegister(`deed:${c.id}:${i}`,{kind:'بنك الأعمال',title:c.name,text:pText(it),source:it.s?.t||'',tab:'qalb'})}<button class="h-chk ${on?'on':''}" data-k="${k}" data-i="0">✓</button><div><div class="search-source">${c.name}</div><div class="t">${pText(it)}</div>${deedSourceHtml(it)}</div></div>`}).join('')}</div>`:'<div class="nafs-empty">لا توجد أعمال مطابقة لبحثك.</div>'; return }
   cnt.textContent=`${AR(D.reduce((n,c)=>n+c.items.length,0))} عملًا في ${AR(D.length)} أبواب`;
-  host.innerHTML=`${pick?`<div class="h-p40" style="background:linear-gradient(150deg,var(--gold),#8A6A2F)"><div class="hh">عمل اليوم — ${pick[0].name}</div><div class="nn" style="font-size:19px;line-height:1.7">${pText(pick[1])}</div>${deedSourceHtml(pick[1])}<div style="display:flex;gap:8px;margin-top:12px"><button data-dd="${dKey(pick[0].id,pick[2])}" style="flex:2;margin:0">${hDone(dKey(pick[0].id,pick[2]),0,hToday())?'✓ تم بحمد الله':'تم'}</button><button data-skip="1" style="flex:1;margin:0;background:rgba(255,255,255,.14)">غيّره</button></div></div>`:''}<div class="kh-card" id="kh-card">${khHtml()}</div><div class="h-sec" style="margin-top:12px"><div class="h-sh">هذا الأسبوع</div><div class="h-bd" style="display:flex;gap:10px"><div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.n)}</div><div style="font-size:11px;color:var(--soft)">عملًا صالحًا</div></div><div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.cats)} / ٦</div><div style="font-size:11px;color:var(--soft)">أبوابًا لمستها</div></div></div></div><div class="h-grid">${D.map(c=>{let t=0;c.items.forEach((_,i)=>{if(hDone(dKey(c.id,i),0,hToday()))t++});return `<div class="h-tile" data-dcat="${c.id}"><div class="ic">${c.icon}</div><div class="nm" style="font-size:18px">${c.name}</div><div class="ds">${c.sub||''}</div><div class="st">${AR(c.items.length)} عملًا${t?' · اليوم '+AR(t)+' ✓':''}</div></div>`}).join('')}</div>`;
+  host.innerHTML=`${pick?`<div class="h-p40" style="background:linear-gradient(150deg,var(--gold),#8A6A2F)"><div class="hh">عمل اليوم — ${pick[0].name}</div><div class="nn" style="font-size:19px;line-height:1.7">${pText(pick[1])}</div>${deedSourceHtml(pick[1])}<div style="display:flex;gap:8px;margin-top:12px"><button data-dd="${dKey(pick[0].id,pick[2])}" style="flex:2;margin:0">${hDone(dKey(pick[0].id,pick[2]),0,hToday())?'✓ تم بحمد الله':'تم'}</button><button data-skip="1" style="flex:1;margin:0;background:rgba(255,255,255,.14)">غيّره</button></div></div>`:''}<div class="kh-card" id="kh-card">${khHtml()}</div><div class="h-sec" style="margin-top:12px"><div class="h-sh">هذا الأسبوع</div><div class="h-bd" style="display:flex;gap:10px"><div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.n)}</div><div style="font-size:11px;color:var(--soft)">عملًا صالحًا</div></div><div style="flex:1;text-align:center"><div style="font-family:Amiri,serif;font-size:26px;color:var(--deep)">${AR(w.cats)} / ٦</div><div style="font-size:11px;color:var(--soft)">أبوابًا لمستها</div></div></div></div><div class="h-grid">${D.map(c=>{let t=0;c.items.forEach((_,i)=>{if(hDone(dKey(c.id,i),0,hToday()))t++});return `<div class="h-tile" data-dcat="${c.id}"><div class="nm" style="font-size:18px">${c.name}</div><div class="ds">${c.sub||''}</div><div class="st">${AR(c.items.length)} عملًا${t?' · اليوم '+AR(t)+' ✓':''}</div></div>`}).join('')}</div>`;
 }
 function hDeedsTabs(){
   return `<div class="h-tabs">${hPathTab(false)}
-    <button data-k="problems">♡ أمراض القلوب</button>
-    <button data-k="works">◇ أعمال القلوب</button>
-    <button data-k="obstacles">↗ العقبات</button>
-    <button data-k="deeds" aria-current="true">＋ بنك الأعمال</button>
-    <button data-k="nafs">◌ فقه النفس</button>${issueTabButton(false)}</div>`;
+    <button data-k="problems">أمراض القلوب</button>
+    <button data-k="works">أعمال القلوب</button>
+    <button data-k="obstacles">العقبات</button>
+    <button data-k="deeds" aria-current="true">بنك الأعمال</button>
+    <button data-k="nafs">فقه النفس</button>${issueTabButton(false)}</div>`;
 }
 function khHtml(){
   if(!khOpen) return `<div class="kh-lock">
@@ -1771,7 +1813,7 @@ document.getElementById('home-journey')?.addEventListener('click',e=>{
 function paintHomePrayer(){const T=todayTimes(),title=document.getElementById('home-prayer-title'),sub=document.getElementById('home-prayer-sub');if(!title||!sub)return;if(!T){title.textContent='الصلاة القادمة';sub.textContent='حدّد موقعك من الإعدادات لعرض الموعد.';return}const now=new Date(),h=now.getHours()+now.getMinutes()/60;const rows=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];let n=rows.find(([k])=>T[k]>h);if(!n)n=rows[0];title.textContent=`الصلاة القادمة: ${n[1]}`;sub.textContent=`موعدها ${hhmm(T[n[0]])} · اضغط لعرض كل المواقيت`}
 
 /* ================= tabs ================= */
-const TITLES={today:'اليوم',quran:'المصحف',read:'المصحف',azkar:'الأذكار',dua:'الدعاء',tasbih:'السبحة',asma:'أسماء الله الحسنى',sunnah:'العلم',qalb:'القلب',irtaqi:'ارتقِ',history:'السجل'};
+const TITLES={today:'اليوم',quran:'المصحف',read:'المصحف',azkar:'الأذكار',dua:'الدعاء',tasbih:'السبحة',asma:'أسماء الله الحسنى',sunnah:'العلم',qalb:'تزكية',irtaqi:'ارتقِ',history:'السجل'};
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 function switchTab(t){
   if(t==='quran'&&!quranToolsRequested){ openQuranReaderDefault(); return }

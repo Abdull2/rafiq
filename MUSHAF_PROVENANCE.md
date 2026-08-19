@@ -34,3 +34,6 @@ This supersedes older R12 documentation that described the opposite gesture.
 
 ## User data
 R14 changes no user-data key or shape. `quran-pos` remains the reading-position key and Data Safety schema stays v1.
+
+## R15 reader UX note
+R15 changes only the reading shell around the same pinned fixed KFQC pages: immersive fullscreen, optional control hiding, session cache, and a short page-entry transition. It does **not** reflow, rewrite, crop, or reconstruct Quran text. The complete page SVG remains the indivisible visual unit, so printed line and page boundaries remain fixed.
