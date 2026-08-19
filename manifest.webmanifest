@@ -1,105 +1,98 @@
 {
-  "name": "محاسبة النفس — رفيق يومك",
-  "short_name": "رفيق يومك",
-  "description": "محاسبة يومية، أذكار الصباح والمساء والنوم والرقية، مواقيت الصلاة والقبلة، المصحف بصفحات المصحف الحقيقية، رياض الصالحين، أدعية من القرآن والسنة، مسبحة، وبرنامج ارتقِ لقياس اللياقة الإيمانية — بدون إعلانات، بدون حساب، ويعمل بدون إنترنت.",
+  "id": "./",
+  "name": "رفيق يومك",
+  "short_name": "رفيق",
+  "description": "رفيق يومك: قرآن وأذكار وعلم وفقه، مع مسارات شخصية للمشكلات الواقعية وفقه النفس ومصادر ظاهرة.",
   "lang": "ar",
   "dir": "rtl",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0B3A2F",
+  "orientation": "any",
+  "background_color": "#F7F5EF",
   "theme_color": "#0B3A2F",
   "categories": [
+    "education",
     "lifestyle",
-    "productivity"
+    "books"
   ],
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "icon-maskable-512.png",
+      "src": "./icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "./icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./screenshot-1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "الواجهة الرئيسية"
+    },
+    {
+      "src": "./screenshot-2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "المصحف"
+    },
+    {
+      "src": "./screenshot-3.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "الأذكار"
+    },
+    {
+      "src": "./screenshot-4.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "التعلم والتزكية"
+    },
+    {
+      "src": "./screenshot-5.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "رفيق يومك على الهاتف"
     }
   ],
   "shortcuts": [
     {
-      "name": "الأذكار",
-      "url": "./index.html#azkar",
+      "name": "السبحة",
+      "short_name": "السبحة",
+      "description": "فتح عداد الذكر",
+      "url": "./tasbih.html",
       "icons": [
         {
-          "src": "icon-192.png",
-          "sizes": "192x192"
+          "src": "./icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
-    },
-    {
-      "name": "المصحف",
-      "url": "./index.html#quran",
-      "icons": [
-        {
-          "src": "icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "ارتقِ",
-      "url": "./index.html#irtaqi",
-      "icons": [
-        {
-          "src": "icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    }
-  ],
-  "id": "/rafiq/",
-  "display_override": [
-    "standalone",
-    "minimal-ui",
-    "browser"
-  ],
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
-  "screenshots": [
-    {
-      "src": "screenshot-1.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "محاسبة يومك"
-    },
-    {
-      "src": "screenshot-2.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "المصحف بصفحاته"
-    },
-    {
-      "src": "screenshot-3.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "قياس ارتقِ"
-    },
-    {
-      "src": "screenshot-5.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "فقه النفس"
     }
   ]
 }

@@ -1,55 +1,124 @@
-/* رفيق يومك — عامل الخدمة
-   الاستراتيجية: الشبكة أولًا لكل شيء، والمخزَّن احتياطٌ عند انقطاع الإنترنت.
-   بهذا يظهر أي تعديل ترفعه فورًا دون تغيير رقم النسخة،
-   ويظل التطبيق يعمل كاملًا بدون إنترنت.
-*/
-const CACHE = 'rafiq-v21-life-plan';
-const ASSETS = [
-  './', './index.html', './tasbih.html', './qalb.json', './asma.json', './riyad.json', './irtaqi.json', './adiya.json',
-  './amiri-400.woff2', './amiri-700.woff2', './plex-400.woff2', './plex-500.woff2', './plex-600.woff2',
-  './azkar.json', './quran.json', './hafs.woff2',
-  './manifest.webmanifest', './privacy.html', './sources.html', './icon-192.png', './icon-512.png',
-  './icon-maskable-512.png', './apple-touch-icon.png'
+/* Rafiq PWA service worker — generated for v24 R15. */
+const CACHE_NAME = 'rafiq-v24-r15-pwa-20260819';
+const RUNTIME_CACHE = 'rafiq-runtime-v24-r15-20260819';
+const PRECACHE_URLS = [
+  "./",
+  "./adiya.json",
+  "./amiri-400.woff2",
+  "./amiri-700.woff2",
+  "./app.js",
+  "./apple-touch-icon.png",
+  "./asma.json",
+  "./azkar.json",
+  "./companions.json",
+  "./data-safety.js",
+  "./extension-bridge.js",
+  "./hafs.woff2",
+  "./icon-1024.png",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./icon-maskable-512.png",
+  "./index.html",
+  "./irtaqi.json",
+  "./ishkaliat.json",
+  "./knowledge.json",
+  "./manifest.webmanifest",
+  "./nawawi40.json",
+  "./plex-400.woff2",
+  "./plex-500.woff2",
+  "./plex-600.woff2",
+  "./privacy.html",
+  "./pwa-register.js",
+  "./qalb.json",
+  "./quran.json",
+  "./riyad.json",
+  "./screenshot-1.png",
+  "./screenshot-2.png",
+  "./screenshot-3.png",
+  "./screenshot-4.png",
+  "./screenshot-5.png",
+  "./seerah.json",
+  "./sources.html",
+  "./tasbih.html"
 ];
 
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE)
-      .then(c => Promise.allSettled(ASSETS.map(u => c.add(u))))
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(PRECACHE_URLS))
       .then(() => self.skipWaiting())
   );
 });
 
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(
-        keys.filter(k => k !== CACHE && k !== 'durus-audio' && k !== 'mushaf-audio')
-            .map(k => caches.delete(k))
-      ))
-      .then(() => self.clients.claim())
-  );
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const keep = new Set([CACHE_NAME, RUNTIME_CACHE]);
+    const names = await caches.keys();
+    await Promise.all(names.filter(name => !keep.has(name)).map(name => caches.delete(name)));
+    if ('navigationPreload' in self.registration) {
+      try { await self.registration.navigationPreload.enable(); } catch (_) {}
+    }
+    await self.clients.claim();
+  })());
 });
 
-self.addEventListener('fetch', e => {
-  const req = e.request;
-  if (req.method !== 'GET') return;
+async function cacheResponse(cacheName, request, response) {
+  if (!response || (!response.ok && response.type !== 'opaque')) return response;
+  const cache = await caches.open(cacheName);
+  await cache.put(request, response.clone());
+  return response;
+}
 
-  const url = new URL(req.url);
-  if (url.origin !== location.origin) return;   // الروابط الخارجية تمرّ كما هي
-  if (url.pathname.endsWith('.mp3')) return;    // الصوت يديره التطبيق نفسه
+async function handleNavigation(event) {
+  try {
+    const preload = await event.preloadResponse;
+    if (preload) return cacheResponse(RUNTIME_CACHE, event.request, preload);
+    const network = await fetch(event.request);
+    return cacheResponse(RUNTIME_CACHE, event.request, network);
+  } catch (_) {
+    return (await caches.match(event.request, { ignoreSearch: true }))
+      || (await caches.match('./index.html'))
+      || (await caches.match('./'));
+  }
+}
 
-  e.respondWith(
-    fetch(req)
-      .then(res => {
-        if (res && res.status === 200) {
-          const copy = res.clone();
-          caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
-        }
-        return res;
-      })
-      .catch(() =>
-        caches.match(req, {ignoreSearch:true}).then(hit => hit || caches.match('./index.html'))
-      )
-  );
+async function handleSameOrigin(request) {
+  const cached = await caches.match(request, { ignoreSearch: false });
+  if (cached) return cached;
+  try {
+    const network = await fetch(request);
+    return cacheResponse(RUNTIME_CACHE, request, network);
+  } catch (_) {
+    return cached || Response.error();
+  }
+}
+
+async function handleCrossOrigin(request) {
+  try {
+    const network = await fetch(request);
+    return cacheResponse(RUNTIME_CACHE, request, network);
+  } catch (_) {
+    return (await caches.match(request)) || Response.error();
+  }
+}
+
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+
+  if (request.mode === 'navigate') {
+    event.respondWith(handleNavigation(event));
+    return;
+  }
+
+  const url = new URL(request.url);
+  if (url.origin === self.location.origin) {
+    event.respondWith(handleSameOrigin(request));
+  } else {
+    event.respondWith(handleCrossOrigin(request));
+  }
+});
+
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });

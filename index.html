@@ -1,7 +1,18 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>رفيق يومك</title>
 <meta name="theme-color" content="#0B3A2F">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="رفيق يومك">
 <style>
 @font-face{font-family:'Amiri';src:url('./amiri-400.woff2') format('woff2');font-weight:400;font-display:swap}
 @font-face{font-family:'Amiri';src:url('./amiri-700.woff2') format('woff2');font-weight:700;font-display:swap}
@@ -888,6 +899,8 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 }
 </style>
 
+</head>
+<body>
 <header><div class="wrap hrow">
   <div>
     <h1 id="page-title">اليوم</h1>
@@ -1415,3 +1428,6 @@ body.hadith-open{overflow:hidden}.hadith-detail{z-index:320!important;inset:0!im
 <script src="./data-safety.js"></script>
 <script src="./app.js"></script>
 <script src="./extension-bridge.js"></script>
+<script src="./pwa-register.js"></script>
+</body>
+</html>
