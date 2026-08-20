@@ -1010,6 +1010,40 @@ function safeMushafSvg(text,page){
   svg.classList.add('mushaf-page-svg');
   return document.importNode(svg,true);
 }
+function fitMushafSvgViewBox(svg){
+  /* MUSHAF_FIT: false يعطّل الضبط تماماً ويعيد العرض الأصلي بلا أي تعديل هندسي.
+     غيّر هذا الثابت وحده للتراجع الفوري. */
+  const MUSHAF_FIT=true;
+  if(!MUSHAF_FIT)return;
+  if(!svg||svg.dataset.viewboxFitted==='true')return;
+  const raw=(svg.getAttribute('viewBox')||'').trim().split(/[ ,]+/).map(Number);
+  if(raw.length!==4||raw.some(n=>!Number.isFinite(n))||raw[2]<=0||raw[3]<=0)return;
+  const [ox,oy,ow,oh]=raw;
+
+  /* القياس من جذر الـSVG: getBBox على الجذر تُطبّق تحويلات كل الأبناء وتُرجع الحدود
+     في فضاء الـviewBox نفسه. قياس الأبناء المباشرين كان يخلط فضاءين مختلفين لأن
+     getBBox لا تُطبّق تحويل العنصر نفسه، وصفحات المصحف عليها transform في المجموعة العليا. */
+  let b; try{ b=svg.getBBox() }catch{ return }
+  if(!b||!Number.isFinite(b.x)||!Number.isFinite(b.y)||b.width<=0||b.height<=0)return;
+
+  /* حارس: لو الحدود غير منطقية (أكبر من اللوح أو أصغر من ثلثه) لا تلمس شيئاً. */
+  if(b.width>ow*1.02||b.height>oh*1.02)return;
+  if(b.width<ow*.35||b.height<oh*.35)return;
+
+  /* هامش أمان حول الحبر حتى لا تلامس الترويسة أو رقم الصفحة الحافة. */
+  const padX=Math.max(ow*.010,b.width*.010), padY=Math.max(oh*.010,b.height*.010);
+  let x=b.x-padX, y=b.y-padY, w=b.width+padX*2, h=b.height+padY*2;
+
+  /* لا تخرج عن اللوح الأصلي إطلاقاً. */
+  if(x<ox){w-=(ox-x);x=ox}
+  if(y<oy){h-=(oy-y);y=oy}
+  if(x+w>ox+ow)w=ox+ow-x;
+  if(y+h>oy+oh)h=oy+oh-y;
+  if(w<=0||h<=0)return;
+
+  svg.setAttribute('viewBox',`${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)}`);
+  svg.dataset.viewboxFitted='true';
+}
 function applyMushafZoom(){
   const body=document.getElementById('mus-body'); if(!body)return;
   if(body.classList.contains('printed')) body.style.width=qZoom+'%';
@@ -1027,7 +1061,7 @@ async function renderPrintedMushaf(page,runs,mark){
   try{
     const svg=safeMushafSvg(await fetchMushafSvg(page),page);
     svg.classList.add(mushafPageDirection>0?'page-enter-next':mushafPageDirection<0?'page-enter-prev':'page-enter');
-    body.replaceChildren(svg); applyMushafZoom(); highlightMushafAyah();
+    body.replaceChildren(svg); requestAnimationFrame(()=>fitMushafSvgViewBox(svg)); applyMushafZoom(); highlightMushafAyah();
     requestAnimationFrame(()=>requestAnimationFrame(()=>svg.classList.add('page-enter-on')));
     const n=document.getElementById('mushaf-render-note'); if(n){n.hidden=true;n.textContent=''}
     return true;
@@ -1079,12 +1113,40 @@ let _lpTimer=null,_lpFired=false,_lpX=0,_lpY=0;
   mb.addEventListener('touchcancel',cancel,{passive:true});
 })();
 document.getElementById('mus-body').addEventListener('ayah-longpress',e=>{
-  document.getElementById('mus-body').onclick({target:e.detail.poly,_forced:true});
+  const p=e.detail.poly; if(!p)return;
+  openAyahMenu(+p.getAttribute('surah'),+p.getAttribute('ayah'));
 });
+/* قائمة خيارات الآية — تُفتح بالضغط المطوّل فقط */
+function closeAyahMenu(){ const m=document.getElementById('ayah-menu'); if(m)m.remove();
+  document.querySelectorAll('.mushaf-page-svg .ayahPolygon.mark').forEach(x=>x.classList.remove('mark')); }
+function openAyahMenu(sn,an){
+  closeAyahMenu();
+  const poly=document.querySelector(`.ayahPolygon[surah="${sn}"][ayah="${an}"]`);
+  if(poly)poly.classList.add('mark');
+  const el=document.createElement('div');
+  el.id='ayah-menu'; el.className='ayah-menu';
+  el.innerHTML=`<div class="am-sheet" role="dialog" aria-label="خيارات الآية">
+    <div class="am-h">الآية ${AR(an)} — ${(suraOf(sn)?.name)||('سورة '+sn)}</div>
+    <button class="am-b" data-am="tafsir">تفسير الآية</button>
+    <button class="am-b" data-am="save">حفظ الموضع هنا</button>
+    <button class="am-b" data-am="copy">نسخ مرجع الآية</button>
+    <button class="am-b am-x" data-am="close">إلغاء</button></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click',async ev=>{
+    const act=ev.target.closest('[data-am]')?.dataset.am;
+    if(!act||act==='close'){ if(ev.target===el||act==='close')closeAyahMenu(); return }
+    qSelectedAyah={s:sn,a:an};
+    if(act==='tafsir'){ updateTafsirPanel(); closeAyahMenu(); toast('التفسير جاهز'); }
+    else if(act==='save'){ const cur=(await store.get(QKEY))||{};
+      await store.set(QKEY,Object.assign(cur,{page:qPage,s:sn,a:an})); closeAyahMenu(); toast('حُفظ موضعك'); }
+    else if(act==='copy'){ const t=`${(suraOf(sn)?.name)||('سورة '+sn)} — الآية ${an}`;
+      try{await navigator.clipboard.writeText(t);toast('نُسخ المرجع')}catch{toast('تعذّر النسخ')} closeAyahMenu(); }
+  });
+}
 document.getElementById('mus-body').onclick=async e=>{
   // على اللمس: التحديد يتم بالضغط المطوّل فقط، حتى لا يُحدَّد بالخطأ أثناء السحب
-  if(!e._forced&&window.matchMedia('(hover:none)').matches&&!_lpFired)return;
-  _lpFired=false;
+  // على اللمس: لا يفعل النقر شيئاً؛ كل تحديد يتم عبر قائمة الضغط المطوّل
+  if(window.matchMedia('(hover:none)').matches)return;
   const poly=e.target.closest?.('.ayahPolygon');
   const fallback=e.target.closest?.('.ay');
   if(!poly&&!fallback)return;
@@ -1101,8 +1163,20 @@ function syncMushafViewportHeight(){
   const h=Math.round(window.visualViewport?.height||window.innerHeight||document.documentElement.clientHeight||0);
   if(h)document.documentElement.style.setProperty('--mushaf-vh',h+'px');
 }
+function ensureFsExitBtn(){
+  let b=document.getElementById('fs-exit');
+  if(!mushafFullscreen){ b?.remove(); return }
+  if(b)return;
+  b=document.createElement('button');
+  b.id='fs-exit'; b.className='fs-exit'; b.type='button';
+  b.setAttribute('aria-label','الخروج من ملء الشاشة'); b.textContent='✕';
+  b.onclick=ev=>{ ev.stopPropagation(); exitMushafFullscreen?.() ||
+    (mushafFullscreen=false,syncMushafFullscreenUI()); };
+  document.body.appendChild(b);
+}
 function syncMushafFullscreenUI(){
   syncMushafViewportHeight();
+  ensureFsExitBtn();
   document.body.classList.toggle('mushaf-fullscreen',mushafFullscreen);
   document.body.classList.toggle('mushaf-controls-hidden',mushafFullscreen&&mushafControlsHidden);
   const b=document.getElementById('rd-fullscreen');
@@ -1129,7 +1203,16 @@ document.addEventListener('webkitfullscreenchange',()=>{syncMushafViewportHeight
 window.visualViewport?.addEventListener('resize',()=>{if(mushafFullscreen)syncMushafViewportHeight()});
 window.addEventListener('orientationchange',()=>setTimeout(()=>{if(mushafFullscreen)syncMushafViewportHeight()},120));
 document.getElementById('rd-fullscreen').onclick=toggleMushafFullscreen;
-document.getElementById('mushaf').addEventListener('click',e=>{if(!mushafFullscreen)return;if(e.target.closest('.ayahPolygon,.ay,a,button'))return;mushafControlsHidden=!mushafControlsHidden;syncMushafFullscreenUI()});
+document.getElementById('mushaf').addEventListener('click',e=>{
+  if(!mushafFullscreen)return;
+  if(document.getElementById('ayah-menu'))return;          // القائمة مفتوحة
+  if(e.target.closest('a,button'))return;
+  /* على اللمس تُظهر أي لمسة الأدوات — حتى فوق الآيات — لأن التحديد صار بالضغط
+     المطوّل وحده. بدون هذا تصبح أغلب الشاشة ميتة ويصعب الخروج. */
+  const touch=window.matchMedia('(hover:none)').matches;
+  if(!touch&&e.target.closest('.ayahPolygon,.ay'))return;
+  mushafControlsHidden=!mushafControlsHidden;syncMushafFullscreenUI();
+});
 document.getElementById('rd-back').onclick=openQuranTools;
 document.getElementById('rd-tafsir').onclick=openCurrentTafsir;
 document.getElementById('tafsir-sheet-close')?.addEventListener('click',closeTafsirSheet);

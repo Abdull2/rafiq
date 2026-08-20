@@ -180,6 +180,30 @@
 
 
 
+/* v24 R27 — Mushaf dark mode + Aya-like page fit (preserve fixed KFQC SVG geometry/content) */
+#v-read{--mushaf-paper:#fcfaf4;--mushaf-night:#0b0e0b}
+.mushaf{margin-top:2px;padding:0;border-radius:0;box-shadow:none;background:var(--mushaf-paper);overflow:hidden}
+.mus-body.printed{overflow:hidden;background:var(--mushaf-paper)}
+.mus-body.printed .mushaf-page-svg{display:block;width:100%;height:auto;max-width:none;margin:0;background:var(--mushaf-paper);transform-origin:center center}
+/* In dark mode invert the vector page as one visual surface. This keeps the exact printed geometry intact. */
+[data-theme="dark"] #v-read,[data-theme="dark"] .mushaf,[data-theme="dark"] .mus-body.printed{background:var(--mushaf-night)!important}
+[data-theme="dark"] .mus-body.printed .mushaf-page-svg{background:var(--mushaf-night)!important;filter:invert(1) hue-rotate(180deg) brightness(.88) contrast(1.04)}
+[data-theme="dark"] .mus-body.text-fallback{background:var(--mushaf-night);color:#f1eadb!important}
+[data-theme="dark"] .mushaf-page-loading{color:#d8c7a3}
+[data-theme="dark"] body.mushaf-fullscreen,[data-theme="dark"] body.mushaf-fullscreen #v-read,[data-theme="dark"] body.mushaf-fullscreen .mushaf,[data-theme="dark"] body.mushaf-fullscreen .mus-body.printed{background:var(--mushaf-night)!important}
+[data-theme="dark"] body.mushaf-fullscreen .rd-bar{background:rgba(11,14,11,.92)!important;box-shadow:0 5px 20px rgba(0,0,0,.28)!important}
+/* The source SVGs can contain generous internal page whitespace. R27 tightens the SVG viewBox in JS, then lets the page use the screen edge-to-edge like a dedicated Mushaf app. */
+.mushaf-page-svg[data-viewbox-fitted="true"]{will-change:auto}
+@media(max-width:760px){
+  #v-read{width:100vw;max-width:100vw;margin-inline:calc(50% - 50vw);padding-inline:0!important}
+  #v-read .rd-bar{padding-inline:max(7px,env(safe-area-inset-left)) max(7px,env(safe-area-inset-right))}
+  .mushaf{width:100vw;margin:0;padding:0;border-radius:0}
+  .mus-body.printed{width:100%!important}
+  .mus-body.printed .mushaf-page-svg{width:100%!important;max-width:100vw!important}
+  .mus-head{padding-inline:10px}.mushaf-swipe-hint{margin-bottom:3px}.mus-source{margin-inline:10px}
+}
+body.mushaf-fullscreen .mushaf,body.mushaf-fullscreen .mus-body.printed{background:var(--mushaf-paper)}
+body.mushaf-fullscreen .mus-body.printed .mushaf-page-svg{width:100vw!important;height:var(--mushaf-vh)!important;max-width:100vw!important;max-height:var(--mushaf-vh)!important;object-fit:contain!important}
 
 
 /* v24 R28 — professional launch handoff */
@@ -1536,17 +1560,9 @@ body.mushaf-fullscreen .mushaf{margin:0 auto;padding:0;border-radius:0;box-shado
 body.mushaf-fullscreen .mus-body.printed{display:grid;place-items:center;width:100%!important;transition:none}
 body.mushaf-fullscreen .mus-body.printed .mushaf-page-svg{width:auto;max-width:100%;height:auto;max-height:calc(100dvh - 92px);object-fit:contain}
 body.mushaf-fullscreen .mus-source{max-width:680px;margin-inline:auto}.mushaf-controls-hidden .rd-bar{opacity:0;transform:translateY(-100%);pointer-events:none}
-.mushaf-controls-hidden .mus-head,.mushaf-controls-hidden .mushaf-swipe-hint,.mushaf-controls-hidden .mushaf-render-note,.mushaf-controls-hidden .mus-source,.mushaf-controls-hidden .mus-foot,.mushaf-controls-hidden .tafsir-current,.mushaf-controls-hidden .rd-nav{display:none!important}
+.mushaf-controls-hidden .mushaf-swipe-hint,.mushaf-controls-hidden .mushaf-render-note,.mushaf-controls-hidden .mus-source,.mushaf-controls-hidden .tafsir-current,.mushaf-controls-hidden .rd-nav{display:none!important}
 body.mushaf-fullscreen.mushaf-controls-hidden .mushaf{min-height:100dvh}body.mushaf-fullscreen.mushaf-controls-hidden .mus-body.printed .mushaf-page-svg{max-height:100dvh}
 @media(max-width:560px){body.mushaf-fullscreen #v-read{padding-inline:0}.rd-fullscreen-btn{min-width:38px!important}.mushaf-fullscreen .rd-title{font-size:15px}}
-/* v24 R29 — SAFE Mushaf dark mode hotfix. Visual only: never change SVG viewBox, sizing geometry, or printed-page layout. */
-[data-theme="dark"] #v-read{background:#0b0e0b}
-[data-theme="dark"] .mushaf,[data-theme="dark"] .mus-body.printed{background:#0b0e0b!important}
-[data-theme="dark"] .mus-body.printed .mushaf-page-svg{background:#fcfaf4!important;filter:invert(1) hue-rotate(180deg) brightness(.88) contrast(1.04)}
-[data-theme="dark"] .mushaf-page-loading{color:#d8c7a3}
-[data-theme="dark"] body.mushaf-fullscreen,[data-theme="dark"] body.mushaf-fullscreen #v-read,[data-theme="dark"] body.mushaf-fullscreen .mushaf,[data-theme="dark"] body.mushaf-fullscreen .mus-body.printed{background:#0b0e0b!important}
-[data-theme="dark"] body.mushaf-fullscreen .rd-bar{background:rgba(11,14,11,.92)!important;box-shadow:0 5px 20px rgba(0,0,0,.28)!important}
-
 /* v24 R16 — true immersive Mushaf request + Android/PWA prayer setup clarity */
 :root{--mushaf-vh:100dvh}
 body.mushaf-fullscreen{overscroll-behavior:none;touch-action:pan-y;background:#fcfaf4}
@@ -1555,7 +1571,10 @@ body.mushaf-fullscreen .rd-bar{position:fixed!important;z-index:230;top:0;right:
 body.mushaf-fullscreen .mushaf{width:100vw;max-width:100vw;height:var(--mushaf-vh);min-height:var(--mushaf-vh)!important;margin:0!important;padding:0!important;display:grid!important;place-items:center;overflow:hidden!important;background:#fcfaf4}
 body.mushaf-fullscreen .mus-body.printed{width:100vw!important;height:var(--mushaf-vh)!important;display:grid!important;place-items:center!important;overflow:hidden!important}
 body.mushaf-fullscreen .mus-body.printed .mushaf-page-svg{width:auto!important;height:auto!important;max-width:100vw!important;max-height:var(--mushaf-vh)!important;margin:auto!important;object-fit:contain!important}
-body.mushaf-fullscreen .mus-head,body.mushaf-fullscreen .mushaf-swipe-hint,body.mushaf-fullscreen .mushaf-render-note,body.mushaf-fullscreen .mus-source,body.mushaf-fullscreen .mus-foot,body.mushaf-fullscreen .tafsir-current,body.mushaf-fullscreen .rd-nav{display:none!important}
+body.mushaf-fullscreen .mushaf-swipe-hint,body.mushaf-fullscreen .mushaf-render-note,body.mushaf-fullscreen .mus-source,body.mushaf-fullscreen .tafsir-current,body.mushaf-fullscreen .rd-nav{display:none!important}
+/* الجزء واسم السورة ورقم الصفحة تبقى ظاهرة في ملء الشاشة */
+body.mushaf-fullscreen .mus-head{display:flex!important;padding:calc(2px + env(safe-area-inset-top)) 12px 3px;margin:0;border-bottom:0;font-size:11px}
+body.mushaf-fullscreen .mus-foot{display:block!important;margin:0;padding:3px 0 calc(2px + env(safe-area-inset-bottom));border-top:0;font-size:11px}
 body.mushaf-fullscreen:not(.mushaf-controls-hidden) .rd-bar{opacity:1;transform:none;pointer-events:auto}
 body.mushaf-fullscreen.mushaf-controls-hidden .rd-bar{opacity:0;transform:translateY(-105%);pointer-events:none}
 .prayer-settings-shell{border:1px solid var(--line);background:var(--wash);border-radius:15px;padding:11px 12px;margin-bottom:10px}.prayer-status-line{display:flex;gap:9px;align-items:flex-start}.prayer-status-line+.prayer-status-line{margin-top:9px;padding-top:9px;border-top:1px solid color-mix(in srgb,var(--line) 75%,transparent)}.prayer-status-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;background:var(--soft);box-shadow:0 0 0 4px color-mix(in srgb,var(--soft) 10%,transparent);flex:none}.prayer-status-dot.ok{background:#3f7c57;box-shadow:0 0 0 4px rgba(63,124,87,.10)}.prayer-status-dot.warn{background:var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 12%,transparent)}.prayer-status-copy{min-width:0}.prayer-status-copy b{display:block;color:var(--deep);font-size:12.5px;margin-bottom:1px}.prayer-status-copy span{display:block;color:var(--soft);font-size:10.5px;line-height:1.65}.geo-primary{width:100%;padding:11px 12px;border-radius:12px;border:0;background:var(--deep);color:#fff;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;margin-top:10px}.geo-primary:disabled{opacity:.6;cursor:wait}.geo-help{font-size:10px;color:var(--soft);line-height:1.7;margin-top:7px}.geo-help b{color:var(--deep)}
@@ -1613,6 +1632,33 @@ body.hadith-open{overflow:hidden}.hadith-detail{z-index:320!important;inset:0!im
 .h-obb>.lv-wrap{margin:10px}.ob-depth-mini{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--paper);color:var(--soft);border-radius:999px;padding:3px 7px;font-size:8.8px;margin-inline-start:6px}.nafs-topic>.depth-tile{margin:0 12px 9px;padding-top:8px}
 @media(max-width:520px){.depth-home{align-items:stretch;flex-direction:column}.depth-home>button{width:100%}.depth-map>div{display:grid;gap:3px}.lv-review{align-items:stretch;flex-direction:column}.lv-review button{width:100%}}
 
+.ayah-menu{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.42);display:flex;align-items:flex-end;justify-content:center}
+.am-sheet{width:100%;max-width:460px;background:var(--paper);border-radius:20px 20px 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.25)}
+.am-h{font-size:12px;color:var(--gold);text-align:center;padding:6px 0 12px}
+.am-b{width:100%;font:inherit;font-size:15px;padding:14px;margin-bottom:8px;border-radius:14px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.am-b:active{background:rgba(0,0,0,.05)}
+.am-x{border-color:transparent;color:var(--soft)}
+.fs-exit{position:fixed;z-index:9998;top:calc(6px + env(safe-area-inset-top));left:calc(8px + env(safe-area-inset-left));width:38px;height:38px;border-radius:50%;border:1px solid rgba(0,0,0,.10);background:rgba(252,250,244,.82);backdrop-filter:blur(10px);color:#5a4a2e;font-size:17px;line-height:1;cursor:pointer;opacity:.55;transition:opacity .18s ease}
+.fs-exit:active{opacity:1}
+body:not(.mushaf-fullscreen) .fs-exit{display:none}
+/* ===== ترويسة وتذييل الصفحة بأسلوب مصحف المدينة ===== */
+.mus-head{font-family:Amiri,serif!important;color:#A98545!important;font-size:13px!important;
+  border-bottom:0!important;padding:2px 14px 6px!important;margin-bottom:4px!important;
+  display:flex!important;justify-content:space-between!important;align-items:baseline;letter-spacing:.2px}
+#mus-juz,#mus-sura{font-family:Amiri,serif;font-size:13px;color:#A98545;white-space:nowrap}
+.mus-foot{font-family:Amiri,serif!important;border-top:0!important;margin-top:6px!important;
+  padding-top:2px!important;display:flex!important;justify-content:center!important;align-items:center}
+#mus-page{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  min-width:58px;height:30px;padding:0 14px;font-family:Amiri,serif;font-size:14px;color:#A98545;
+  border:1px solid #D8C79A;border-radius:50%/50%;background:transparent;line-height:1}
+#mus-page::before,#mus-page::after{content:"";position:absolute;top:3px;bottom:3px;width:1px;background:#E6D8B6}
+#mus-page::before{inset-inline-start:5px}
+#mus-page::after{inset-inline-end:5px}
+[data-theme="dark"] .mus-head,[data-theme="dark"] #mus-juz,[data-theme="dark"] #mus-sura,[data-theme="dark"] #mus-page{color:#C2A468}
+[data-theme="dark"] #mus-page{border-color:#4A4126}
+[data-theme="dark"] #mus-page::before,[data-theme="dark"] #mus-page::after{background:#3C3520}
+body.mushaf-fullscreen .mus-head{font-size:12px!important;padding:calc(2px + env(safe-area-inset-top)) 14px 4px!important}
+body.mushaf-fullscreen #mus-page{height:27px;min-width:52px;font-size:13px}
 </style>
 
 
