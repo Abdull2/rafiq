@@ -1,0 +1,8 @@
+R28 — Professional launch splash
+
+- Solid Tadaruq green launch surface (#0B3A2F).
+- Small centered gold Tadaruq mark instead of an oversized full icon.
+- PWA/web boot handoff uses the same color and mark, then fades quickly into the app.
+- 512px `any` icon is now splash-safe for PWABuilder; maskable icon remains unchanged for the Android adaptive launcher icon.
+- PWA cache bumped to R28.
+- Native Google Play launch screen still requires a new Android AAB because the splash drawable is embedded in the Android package.

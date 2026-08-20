@@ -1445,3 +1445,27 @@ Owner requirement (2026-08-20):
 - PWA cache: `tadaruq-v24-r27-pwa-20260820`; runtime cache R27.
 - Data Safety schema remains 2; backup metadata version is `24.7.0`; no persistent data keys changed.
 - Required real-device regression after deploy: light Mushaf, dark Mushaf, fullscreen light/dark, pages with headers/footers/surah starts, ayah tap polygons, swipe directions, zoom, and several pages with historically large internal whitespace.
+
+
+## 30) v24 R28 — Professional Android/PWA launch splash (2026-08-20)
+
+### Owner request
+Owner reported that the image shown while the mobile app launches looks unprofessional and requested a launch experience closer to Facebook/LinkedIn/Instagram: a clean solid surface with a small centered brand icon.
+
+### Diagnosis
+The currently uploaded PWABuilder AAB embeds a native `splash.png` where the old 512 icon is effectively scaled to a large square, so its ornamental logo fills too much of the screen. This first native Android frame is inside the AAB and **cannot be changed by a GitHub-only web update**. A new AAB/version code is required to change the Google Play launch splash.
+
+### R28 implementation
+- Brand launch background standardized to `#0B3A2F`.
+- `app/icon-512.png` is now intentionally splash-safe: a solid Tadaruq green 512 canvas with a much smaller centered gold Tadaruq mark. This follows PWABuilder's historic behavior of using the 512 `any` icon for the TWA splash.
+- `app/icon-maskable-512.png` is deliberately unchanged so Android adaptive launcher icon behavior is preserved.
+- Added `app/splash-mark.png` (transparent gold mark) and a very short web/PWA startup handoff overlay. The overlay uses the exact same brand background and small mark, then fades after the first DOM paint; this avoids an ugly color/size jump between native splash and loaded web UI.
+- Web Manifest `background_color` is now `#0B3A2F`; `theme_color` remains the same brand green.
+- PWA cache/runtime cache bumped from R27 to R28.
+- No user storage schema changes and no new permissions. Data Safety schema remains 2.
+
+### Required Android store update
+To change the actual Google Play launch frame, rebuild in PWABuilder only **after R28 is deployed**, keeping package ID `com.tadaruqnoor.rafiq`, using **version code 2**, and signing with the exact existing upload keystore/alias/passwords. Do not create a new signing key. Play App Signing continues to sign distribution builds. See `PWABUILDER-R28-ANDROID-SETTINGS.md`.
+
+### Standing UX rule
+Do not revert to a large full-canvas ornamental splash. Launch should remain minimal: solid Tadaruq background, small centered mark, fast fade, no text, no spinner, no marketing copy.
