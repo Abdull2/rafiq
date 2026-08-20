@@ -82,3 +82,14 @@ R24 also fixes an R23 omission: `qalb-levels-v1` is now explicitly registered in
 
 ## R26 — موضع قارئ المختصر
 أضيف المفتاح المحلي `tafsir-pos-v1` ويحفظ فقط موضع القراءة المتتابعة في المختصر (`sura`, `aya`, `updatedAt`). لا يحفظ نص كتاب المختصر أو نسخة منه. المفتاح مسجل في Data Safety backup/restore كبنية `object`. Data schema يبقى 2 لأن الإضافة توافقية وغير هادمة.
+
+
+## R32 additive local data
+Registered in the Data Safety exact-key registry without changing schema version 2:
+- `mujahada-weight-v1` — user's optional self-rating of the impact/frequency of each Mujahada obstacle; object, local only. It is not a spiritual score or medical diagnosis.
+- `fiqh-busola-progress-v1` — completed/open learning stages in Fiqh al-Busola; object, local only.
+- `benefit-choice-v1` — optional selected service/benefit route; object, local only.
+
+`profile-v1` also accepts optional `married`, `hasKids`, `timeBand`, `moneyBand`, and `skills[]`. These are used only for on-device recommendations. No exact income or exact free-time hours are collected.
+
+**Play-policy note:** R32 adds smoking/nicotine education and a self-organization cessation path. Re-check the Google Play Health apps declaration before shipping this feature publicly; do not conceal the feature to preserve a prior declaration.

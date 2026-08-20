@@ -1470,22 +1470,308 @@ To change the actual Google Play launch frame, rebuild in PWABuilder only **afte
 ### Standing UX rule
 Do not revert to a large full-canvas ornamental splash. Launch should remain minimal: solid Tadaruq background, small centered mark, fast fade, no text, no spinner, no marketing copy.
 
+## R29–R31 — Mushaf interaction, fullscreen chrome, header/footer styling, new icon — 2026-08-20
 
-## 31) v24 R29 — Emergency Mushaf geometry rollback / safe dark mode (2026-08-20)
+### What the owner asked
 
-User reported that the Mushaf appearance was broken after R27. Root cause was the R27 `fitMushafSvgViewBox()` auto-crop plus aggressive `100vw` geometry overrides. This was too risky for a fixed-layout Quran page and violated the project principle that the 604 printed pages must not be reflowed, cropped, or geometrically reinterpreted.
+Across one session: verify whether the Mushaf edges were being cropped in fullscreen; remove the persistent highlight on ayat; make long-press open an options menu (tafsir / save); make fullscreen resemble the "آية" app; make exiting fullscreen easier; restore the juz / surah / page labels that vanished in fullscreen; and replace the app icon with a higher-quality one.
 
-### Permanent rule
-- **Never auto-crop or rewrite the SVG `viewBox` of Mushaf pages.**
-- **Never infer ink bounds with `getBBox()` to zoom Quran pages.**
-- Keep the original fixed SVG geometry and ayah polygons intact.
-- Any dark mode must be visual-only (background/filter) and must not alter page geometry.
-- Any future spacing change must be in the surrounding reader chrome only, not the Quran SVG coordinate system.
+### Verified findings — these settle questions, do not re-investigate
 
-### R29 changes
-- Removed `fitMushafSvgViewBox()` entirely and removed its render-time call.
-- Removed the R27 edge-to-edge geometry override block.
-- Restored R26/R16 stable Mushaf sizing/fullscreen rules.
-- Added dark mode using only CSS visual filtering/backgrounds; no viewBox/geometry changes.
-- Kept all R28 splash work and all R26 tafsir-reader work.
-- `quran-pos`, 604-page mapping, swipe direction, ayah selection, tafsir position, and saved user data remain unchanged.
+**1. The Mushaf source SVGs contain text only.** A real page was downloaded from `MUSHAF_SVG_BASE` and rasterised to PNG for direct visual inspection. Page 2 renders as basmala, verse text and ayah markers on a blank square canvas. There are **zero `<text>` elements**, no frame, no ornament, no juz/surah header, no page-number cartouche. The decorated appearance of the "آية" app therefore **cannot** be reproduced by unhiding or restyling anything in the source.
+
+**2. The available metadata does not cover hizb quarters.** `mushafs/hafs/kfqc/json/surah.json` (surah names, `headerPosition`, `juzNumber`, `pageNumber`) and `markers.json` (per-ayah x/y) were both downloaded and inspected. Local `quran.json` exposes `suras`, `pages`, `juz` only. **There is no rub'/hizb data anywhere in the project.** The "ثلاثة أرباع الحزب ٢" line seen in آية has no data source available and cannot currently be produced. Adding it requires a new 240-entry dataset.
+
+**3. Replacing the page source with decorated images is a dead end** unless the replacement also ships matching ayah polygons. Losing the polygons breaks long-press, tafsir and position-saving — the app's most valuable Mushaf feature. No such source was found.
+
+**4. The R28 fit algorithm had a real coordinate-space defect.** It measured `[...svg.children]` with `el.getBBox()`, which in browsers does **not** apply the element's own transform. The Mushaf pages carry `transform="matrix(1.3333 0 0 -1.3333 -136 482)"` on the top-level `<g>`, so those boxes were in a different coordinate space than the `viewBox` they were compared against. Guards could not catch it because the values came out **larger**, not smaller.
+
+**5. The missing fullscreen labels were never a cropping problem.** `.mus-head` / `.mus-foot` are HTML elements, not part of the SVG, and a CSS rule explicitly set `display:none` on them under `body.mushaf-fullscreen`. Unrelated to geometry.
+
+**6. `updateTafsirPanel()` was not modified.** The tafsir source is **المختصر في التفسير** (مركز تفسير للدراسات القرآنية), configured in `tafsir-config.js`. `proxyBase` is still empty, so inline tafsir text is **not yet enabled** — the app points at the official source instead. This remains an open item, not a regression.
+
+### Changes shipped
+
+**`app.js`**
+- `fitMushafSvgViewBox()` rewritten to measure from **`svg.getBBox()` on the root**, which does apply descendant transforms and returns bounds in `viewBox` space. Guards now no-op when bounds exceed the canvas (`>ow*1.02`) or fall under a third of it (`<ow*.35`) — the failure mode is "leave the page untouched", never "crop". Single revert constant `MUSHAF_FIT`.
+- Long-press (420 ms, cancels on >10 px movement, 12 ms vibration) now opens `openAyahMenu()` — a bottom sheet with تفسير الآية / حفظ الموضع / نسخ مرجع الآية / إلغاء. `closeAyahMenu()` clears the `.mark` highlight.
+- Plain tap on touch devices no longer selects or highlights anything.
+- **Bug fixed:** the menu initially called `surahName()`, which does not exist in this project and would have thrown. Replaced with the real `suraOf(n)?.name`.
+- Fullscreen tap now reveals the toolbar **anywhere, including over ayah polygons**. Previously polygons were excluded, and since they cover most of the page, most of the screen was dead and exiting was hard.
+- `ensureFsExitBtn()` adds a persistent ✕ button, wired into `syncMushafFullscreenUI()`, so exiting never depends on the toolbar being visible.
+
+**`index.html`**
+- Removed the rules hiding `.mus-head` / `.mus-foot` in fullscreen and under `.mushaf-controls-hidden`; added compact fullscreen variants with safe-area padding.
+- Header/footer restyled toward the printed Mushaf: Amiri, gold `#A98545`, no divider rules, juz right / surah left, page number inside a CSS-drawn oval cartouche with two thin side rules. Dark-theme variants included.
+- Styles for `.ayah-menu` / `.am-*` and `.fs-exit`.
+
+**Icons** — regenerated. The old mark occupied roughly a quarter of the canvas and its 36-dot bead ring disappeared at small sizes. The new mark is a single bold crescent plus one counterweight dot, **centred by measuring rendered pixel extents rather than by eye** (equal 74 px top/bottom margins), occupying 54% × 71% of the frame. Files: `icon-192`, `icon-512`, `icon-1024`, `apple-touch-icon`, `splash-mark`, plus a separate `icon-maskable-512` scaled to 62% so it survives Android's circular mask. `CACHE_NAME` → `tadaruq-v24-r31-pwa-20260820`.
+
+**Google Play icon and splash still require a new AAB** — they are embedded in the Android package, same constraint noted in R28.
+
+### Tested vs untested
+
+Executed: syntax parse of `app.js` after every edit; real page SVG downloaded, structure analysed and rasterised for visual confirmation; `surah.json` and `markers.json` downloaded and inspected; icon rendered and **visually reviewed at both 512 px and 48 px**; icon extents measured programmatically to confirm centring; CSS rule order checked to confirm the new header rules are last and win.
+
+Not executed: **the Mushaf UI has never been rendered in a browser.** The header/footer styling, the oval cartouche, the ayah menu, the exit button, and the fullscreen fit result are all unverified visually. Packages were labelled `PREVIEW` for this reason.
+
+### Owner-facing note carried forward
+
+The owner deploys straight to production with no staging environment. A `staging` branch or separate preview deployment remains the single highest-value outstanding item, and it protects against the owner's own edits, not only against AI-authored ones.
+
+## البنود المفتوحة — محدَّثة 2026-08-20
+
+مرتّبة بالأولوية الحقيقية لا بترتيب الطلب:
+
+**1. بيئة تجريبية (`staging`).** أعلى بند قيمة في المشروع كله. النشر حاليًا مباشر على الإنتاج بلا أي طبقة فاصلة، وهذا يحمي من أخطاء صاحب المشروع نفسه لا من أخطاء المساعد فقط.
+
+**2. معاينة R31 على جهاز حقيقي.** الترويسة والتذييل، الإطار البيضاوي لرقم الصفحة، قائمة الضغط المطوّل، زر الخروج ✕، ونتيجة ضبط ملء الشاشة — كلها لم تُعرض في متصفح قط.
+
+**3. ثلاثة بنود مترابطة مصمَّمة وغير منفَّذة** — المواصفة الكاملة في `SPEC-SHABAB-TOPICS.md` بجذر المشروع:
+
+- **توسيع الملف الشخصي:** إضافة `married`, `hasKids`, `timeBand`, `moneyBand`, `skills` إلى `profile-v1` الذي يحمل حاليًا `age`/`gender`/`advancedIssues` فقط. الافتتاح متعدد الخطوات قائم بالفعل فالمطلوب توسيع لا بناء. كل سؤال قابل للتخطّي، ولا يُسأل عن الأولاد إلا للمتزوج، والحقول الجديدة تُقرأ بـ `?? null` حتى لا يُعاد الافتتاح على المستخدمين الحاليين.
+- **عقبة «مجاهدة النفس»:** التدخين، الأغاني والمسلسلات، انعدام الهوية، الهدف غير الواضح. لكل عنصر حقلان جديدان: `weight` (درجة العقبة في حياة المستخدم، تُخزَّن في مفتاح مستقل `mujahada-weight-v1`) و`plan` (أصل المشكلة + أربع مراحل: الوعي، التقليل، الاستبدال، الثبات).
+- **«العمل: اختيار الثغر»** في تبويب التزكية: يقرأ الملف الشخصي ويرشّح ثلاثة ثغور نافعة تناسب وقت المستخدم وعمره وحاله المادي، لكل ثغر خطوة أولى ملموسة.
+
+الترتيب: حقول الملف أولًا (كود بلا محتوى شرعي)، ثم التدخين وحده كاملًا ليُقرّه صاحب المشروع، ثم البقية، ثم اختيار الثغر.
+
+**قيدان جوهريان مسجَّلان في المواصفة:** درجة العقبة أداة توجيه لا حكم — يُمنع عرض مجموع أو نسبة أو تصنيف للشخص (القسم 2.9). ومسألة الأغاني فيها خلاف فقهي معتبر يُعرض كخلاف بمصادره ولا يُفرض فيه قول واحد كأنه إجماع.
+
+**4. `proxyBase` في `tafsir-config.js` فارغ**، فنص «المختصر في التفسير» لا يُعرض داخل التطبيق. يحتاج خادمًا وسيطًا يحمل مفتاح الوصول. ممنوع وضع المفتاح في أي ملف عام.
+
+**5. سطر «ثلاثة أرباع الحزب» في تذييل المصحف** غير ممكن حاليًا: لا توجد بيانات أرباع الأحزاب في المشروع ولا في مصدر الصفحات. يحتاج ملف بيانات جديدًا بـ240 مدخلًا.
+
+**6. أيقونة تطبيق Google Play وشاشة البداية الأصلية** لن تتغيّرا إلا برفع AAB جديد؛ فهما مدمجتان في حزمة أندرويد.
+
+**7. مراجعة سياسات Google Play** بعد إيقاف إقرار Health apps — ما زالت معلّقة. لا يُدَّعى القبول قبل ظهوره في Play Console.
+
+**8. رفع `CACHE_NAME` إلزامي** مع أي تعديل لاحق على ملفات المحتوى أو الواجهة (نتيجة تغيير R20).
+
+## R32 — Fiqh al-Busola + Mujahadat al-Nafs + Work/Benefit matching — 2026-08-20
+
+### Owner request / source of truth
+
+The owner supplied `tadaruq-v24-r31-full-source.zip` plus the continuity handoff and explicitly asked for the previously designed additions to be implemented on **that latest R31 source**, with the standing rule that every religious/scientific statement must retain a visible reliable source and that the whole app must be reviewed to avoid repetition/confusion.
+
+Substantive owner request carried into this release:
+- Add **فقه المقاصد + فقه الأولويات + فقه الواقع** from reliable Sharia sources, with the source shown for every learning unit.
+- Add **مجاهدة النفس** inside `العقبات`, including: smoking/nicotine, songs/series/media, identity confusion, and unclear goals. Each should assess the *impact of the obstacle in the user's life* (not the person's faith), explain roots, and offer phased practical work with Sharia/scientific sources where relevant.
+- Add **العمل والنفع / اختيار الثغر** inside Tazkiyah, using optional life context (age, gender for language/relevance only, marital/family context, realistic time, financial room, and skills) to recommend appropriate forms of service/benefit with a concrete first step.
+- Audit the information architecture so the new work does not create another Todo system, another `ارتقِ`, or a duplicate personal-path engine.
+
+**R31 is the code/content source of truth.** R32 is additive on top of it. Mushaf R29–R31 code/CSS was intentionally not changed in this release because that area is fragile and has unresolved real-device visual QA.
+
+### A. Information-architecture decision — no new bottom tab
+
+The six bottom tabs remain unchanged. R32 adds features where their semantic role already belongs:
+
+1. `العلم` -> new **فقه البوصلة** section. It teaches principles and reasoning tools; it does not issue personal fatwas.
+2. `تزكية -> العقبات` -> new **مجاهدة النفس** category. It works on obstacles and repeated patterns; it does not score religiosity.
+3. `تزكية` -> new **العمل والنفع** segment. It recommends a practical service route; it does not create a new spiritual rank or separate task manager.
+4. Existing `خطة اليوم` remains the only daily Todo owner. A first step from `العمل والنفع` can be sent into the existing `todo-items` list.
+5. Existing `مساري` remains the personal follow-up path engine. Mujahada obstacles can still use the existing `أضف لمساري` flow rather than creating a competing path system.
+6. `ارتقِ` remains the user's broader personal prioritization/planning experience. `فقه البوصلة` teaches *why/how to reason about priorities* rather than duplicating the personal plan.
+
+### B. New `fiqh-busola.json` — sourced Fiqh al-Busola curriculum
+
+Added a first-class structured content file `fiqh-busola.json` and UI/engine in `app.js` + `index.html`.
+
+Coverage:
+- **3 tracks**: `maqasid`, `priorities`, `reality`.
+- **10 lessons per track = 30 lessons**.
+- **4 sequential study stages per lesson = 120 sourced stages**.
+- **12 application labs** (`مختبر البوصلة`) that ask what information/questions should precede a ruling. Labs do not manufacture a final personal fatwa.
+- Progress is local under new key **`fiqh-busola-progress-v1`**. Completion means study progress only; it is not an academic qualification or iman rank.
+
+Core verified institutional/primary references embedded directly in the content/source UI:
+- مجمع الفقه الإسلامي الدولي — قرار 167 (18/5) بشأن المقاصد الشرعية ودورها في استنباط الأحكام: `https://iifa-aifi.org/ar/2268.html`
+- مجمع الفقه الإسلامي الدولي — ضوابط إعمال المقاصد في المعاملات المالية المعاصرة: `https://iifa-aifi.org/ar/44173.html`
+- دار الإفتاء المصرية — `مقاصد الشريعة`: `https://www.dar-alifta.org/ar/articles/details/5212/مقاصد-الشريعة`
+- دائرة الإفتاء العام الأردنية — `تأصيل الأولويات وكيفية تحديدها`: `https://aliftaa.jo/Research/79/تأصيل-الأولويات-وكيفية-تحديدها`
+- دار الإفتاء المصرية — `منهج الفتوى في دار الإفتاء`: `https://www.dar-alifta.org/ar/fatwaconcepts/fatwa-approach`
+- Primary Qur'an/hadith references are linked at the relevant stages, including Qur'an 16:43, 17:23, 64:16 and Sahih al-Bukhari 6502 where used.
+
+Source/provenance ledger: **`CONTENT_PROVENANCE-FIQH-BUSOLA.md`**.
+
+Standing content rule: Fiqh al-Busola is educational. It must never tell a user that four short app lessons make them qualified for ijtihad/fatwa, and it must never use maqasid to override a clear text or claimed consensus.
+
+### C. `العقبات -> مجاهدة النفس`
+
+Added a new obstacle category `id: mujahada` to `qalb.json`, preserving every existing obstacle category/item ID.
+
+Published items:
+1. `m1` — **التدخين والنيكوتين (سجائر/شيشة/فيب)**
+2. `m2` — **المحتوى المسموع والمرئي (أغاني/مسلسلات وغيرها)**
+3. `m3` — **هويتي وبوصلتي** (user-facing framing for identity confusion; explicitly not a sin label or psychological diagnosis)
+4. `m4` — **وضوح الوجهة** (user-facing framing for an unclear goal; explicitly organizational, not a sacred “life mission” score)
+
+Each item now has:
+- `weight`: optional self-rated **impact** options stored locally. This is the size/effect of the obstacle in the user's life, never a score of faith, piety, sinfulness, or human worth.
+- `plan.origin`: sourced explanation of the root/context.
+- `plan.stages`: four sourced practical stages: awareness -> reducing ease/triggers -> replacement/action -> stability/review (wording is adapted per topic).
+- Four source-backed study-depth layers integrated with the existing `qalb-levels-v1` depth engine.
+- Existing `مساري` + daily-step tracking remain available; no second path/todo system was created.
+
+#### Smoking / nicotine source and medical boundary
+
+R32 uses:
+- دار الإفتاء المصرية — فتوى `حكم التدخين`: `https://www.dar-alifta.org/ar/Fatwa/Details/11799/حكم-التدخين`
+- WHO — `Tobacco`: `https://www.who.int/news-room/fact-sheets/detail/tobacco`
+- WHO — `Clinical treatment guideline for tobacco cessation in adults`: `https://www.who.int/publications/i/item/9789240096431`
+
+The app explicitly states that nicotine dependence is not reduced to “weak will”, and that the app does not prescribe medicines/doses or replace qualified clinical care. Strong dependence/repeated unsuccessful attempts are routed toward qualified healthcare support.
+
+#### Music/media disagreement rule
+
+R32 **does not** present the ruling on all music as unanimous. It explicitly labels the issue as a recognized fiqh disagreement and separates:
+- the jurisprudential disagreement over music/instruments,
+- clearly obscene/forbidden accompanying content,
+- and the separate practical issue of entertainment displacing obligations/rights/time.
+
+Sources displayed in the item:
+- دائرة الإفتاء الأردنية — فتوى 3463: `https://aliftaa.jo/fatwa/3463/`
+- دار الإفتاء المصرية — فتوى `حكم استخدام الغناء والموسيقى في الإعلانات`: `https://www.dar-alifta.org/ar/Fatwa/Details/16350/حكم-استخدام-الغناء-والموسيقى-في-الإعلانات`
+
+Never regress this item into a one-line “consensus” claim.
+
+#### Identity / goals scientific boundary
+
+Identity content is framed as reflection/education, not diagnosis, using the review:
+- `Dynamics of Identity Development in Adolescence` (Journal of Research on Adolescence / PMC): `https://pmc.ncbi.nlm.nih.gov/articles/PMC9298910/`
+
+Goal clarity uses research support for goal setting/progress monitoring as **organizational tools**:
+- Epton et al. goal-setting systematic review/meta-analysis: `https://pubmed.ncbi.nlm.nih.gov/29189034/`
+- Harkin et al. progress-monitoring meta-analysis: `https://pubmed.ncbi.nlm.nih.gov/26479070/`
+
+Religious orientation is separately sourced in the UI (e.g. Qur'an 51:56 and 59:18) rather than mislabelling psychology research as Sharia evidence.
+
+Source/provenance ledger: **`CONTENT_PROVENANCE-MUJAHADA-WORK.md`**.
+
+### D. Optional life context added to `profile-v1`
+
+Existing `profile-v1` remains the same persistent key and continues to support old `{age, gender, advancedIssues}` records. R32 adds optional fields only:
+
+```text
+married: null | true | false
+hasKids: null | true | false
+timeBand: null | scarce | moderate | free
+moneyBand: null | tight | ok | able
+skills: []
+```
+
+Rules implemented:
+- Existing users are **not forced through onboarding again**. The current `onboarding-seen-v3` flag is preserved.
+- New context fields are optional and can be edited later in Settings.
+- The children question is shown only when the user selected married.
+- No exact income, salary, wealth, or exact free-hour count is requested.
+- Gender is retained for wording and genuinely relevant content; it is **not** used to stereotype service roles or assign different religious worth.
+- All context remains local-only.
+
+Onboarding was expanded to include the optional context step for new users. Existing settings now exposes the same fields for current users.
+
+### E. New `benefit.json` + `العمل والنفع`
+
+Added **العمل والنفع — اختر بابًا يناسب واقعك** inside Tazkiyah.
+
+The engine reads only locally stored optional profile context and ranks up to three practical routes. It explains *why* a route appeared and provides one concrete first step. This is suitability matching, **not a ranking of virtue**.
+
+Current routes:
+- family/responsibilities (only when married; stronger with children)
+- Qur'an teaching/support for users with relevant ability and age context
+- teaching a useful skill
+- technical/writing/organizational support
+- direct field/community service
+- professional excellence in a socially needed field
+- writing/translation of beneficial material with source/review boundaries
+- financial support only when the user has not said money is tight
+
+Primary foundations displayed in the section include:
+- دار الإفتاء المصرية — `تحمل المسئولية` / collective duties and community needs: `https://dar-alifta.org/ar/ourreligion/details/6661/تحمل-المسئولية`
+- Qur'an 5:2 (cooperation in righteousness), Qur'an 66:6 (family responsibility), Qur'an 2:261 (spending), and Sahih al-Bukhari 5027 (teaching Qur'an), where relevant to a route.
+
+The chosen route is stored in **`benefit-choice-v1`**. The first step can be sent into the **existing** `todo-items` system, tagged `source:'benefit-route'`; no duplicate Todo database was introduced.
+
+### F. Data Safety / privacy
+
+New persistent keys registered in `data-safety.js`:
+- `fiqh-busola-progress-v1` — object
+- `mujahada-weight-v1` — object
+- `benefit-choice-v1` — object
+
+`profile-v1` keeps its existing key/type and receives only optional additive fields. Data Safety schema remains **2**; no destructive migration is needed.
+
+`privacy.html`, `DATA_SAFETY.md`, and `DATA_ARCHITECTURE.md` now disclose:
+- optional life-context fields,
+- Fiqh al-Busola study progress,
+- obstacle-impact self-rating,
+- chosen benefit route,
+- all as local device data under the existing local-first architecture.
+
+### G. Google Play Health Apps policy warning — release-blocking review item
+
+This R32 full source contains a structured smoking/nicotine cessation-support journey plus WHO health information. Google Play's Health Apps declaration explicitly includes **Mental and Behavioral Health / addiction recovery programs** among health features. The owner previously switched Health Apps to “off / no health features” to address a Play rejection.
+
+Therefore **do not silently deploy the R32 smoking feature to the Play-distributed TWA while continuing to declare “no health features.”** Before a public/Play-facing deployment, re-check the current Health Apps declaration/account eligibility and disclose the actual feature accurately. This is a store-policy decision, not a Data Safety migration.
+
+The content itself keeps a non-medical boundary (no diagnosis, medication instruction, or treatment change), but that boundary does not by itself make the Play declaration irrelevant.
+
+### H. Version/cache and changed files
+
+PWA cache bumped because R20 makes JSON/content genuinely cached:
+- `CACHE_NAME = tadaruq-v24-r32-pwa-20260820`
+- `RUNTIME_CACHE = tadaruq-runtime-v24-r32-20260820`
+
+`data-safety.js` backup metadata app version: `24.32.0`.
+
+New files:
+- `fiqh-busola.json`
+- `benefit.json`
+- `CONTENT_PROVENANCE-FIQH-BUSOLA.md`
+- `CONTENT_PROVENANCE-MUJAHADA-WORK.md`
+- `RELEASE-NOTES-R32.txt`
+- `QA-REPORT-R32.txt`
+- `AI_HANDOFF.json`
+- `PROMPT_FOR_NEXT_AI.txt`
+
+Changed files:
+- `app.js`
+- `index.html`
+- `qalb.json`
+- `data-safety.js`
+- `sw.js`
+- `privacy.html`
+- `sources.html`
+- `DATA_ARCHITECTURE.md`
+- `DATA_SAFETY.md`
+- `SPEC-SHABAB-TOPICS.md`
+- `AI_HANDOFF.md`
+
+No Android package ID, Android shell, native permission, Digital Asset Links, `quran-pos`, Mushaf source/geometry, existing stable `qalb-*` IDs, or existing daily-log/Todo keys were renamed.
+
+### I. QA actually executed
+
+PASS:
+- `node --check`: `app.js`, `data-safety.js`, `sw.js`, `pwa-register.js`, `extension-bridge.js`, `tafsir-config.js`.
+- All root JSON files + `manifest.webmanifest` parse.
+- Fiqh al-Busola deterministic audit: **30 lessons / 120 stages / 12 labs**, every published stage/lab has valid source IDs.
+- Mujahada deterministic audit: exactly 4 requested topics; each has impact options, sourced why/answer/steps, sourced 4-stage plan and 4 source-backed depth levels.
+- Benefit deterministic audit: 8 routes; every route has visible source IDs and a concrete first step; Qur'an-teaching route carries a minimum-age rule and financial route excludes `moneyBand:'tight'`.
+- New Data Safety keys are registered; schema remains 2.
+- HTML duplicate-ID scan: no duplicate IDs.
+- Service-worker precache audit: every local path exists; the two new content JSON files are included.
+- R31 -> R32 diff scan found **no Mushaf/Qur'an fullscreen/ayah-selection geometry markers changed** in `app.js` or `index.html`.
+
+Environment limitation:
+- A headless Chromium localhost smoke attempt timed out in this sandbox. Therefore **no claim is made that the new Busola/Mujahada/Benefit layouts have been visually verified on a real Android phone or browser**. Preview on a real device/staging deployment before replacing the live site.
+
+### J. Continuation rules after R32
+
+1. `AI_HANDOFF.md` remains mandatory, append-only and must never be deleted/renamed/truncated/excluded.
+2. Every new religious claim must retain an immediate source; every scientific/medical/psychological claim must retain its appropriate scientific/official source.
+3. Never hide recognized fiqh disagreement in the media/music topic.
+4. Never turn `mujahada-weight-v1` into a composite “sin/faith score”.
+5. Never use `العمل والنفع` to claim divine selection/calling or to rank users spiritually.
+6. Do not duplicate `خطة اليوم`, `مساري`, or `ارتقِ`; link to/reuse them.
+7. Any content/UI edit requires a Service Worker cache bump under the R20 caching model.
+8. Re-audit Google Play Health Apps declaration before shipping the structured smoking/nicotine feature to Play users.
+9. Do not touch R29–R31 Mushaf geometry/fullscreen code without a dedicated regression task and real-device visual verification.

@@ -1,0 +1,229 @@
+{
+  "meta": {
+    "title": "العمل والنفع — اختر بابًا يناسب واقعك",
+    "intro": "ليس المطلوب أن تفعل كل شيء. تدارُك يقترح ثلاثة أبواب نفع بناءً على ما اخترته أنت عن وقتك ومسؤولياتك ومهاراتك. الترشيح ملاءمة عملية، لا ترتيب فضل ديني بين الناس.",
+    "privacy": "كل المدخلات والاختيار محفوظة محليًا على جهازك. يمكنك ترك أي معلومة بلا إجابة.",
+    "rule": "الأسرة والحقوق والواجبات القائمة لا تُزاح باسم مشروع تطوعي. والترشيحات المالية لا تظهر لمن اختار أن حاله المادي ضيق."
+  },
+  "sources": {
+    "responsibility": {
+      "label": "دار الإفتاء المصرية — تحمل المسئولية (فروض الكفايات وحاجات المجتمع)",
+      "url": "https://dar-alifta.org/ar/ourreligion/details/6661/%D8%AA%D8%AD%D9%85%D9%84-%D8%A7%D9%84%D9%85%D8%B3%D8%A6%D9%88%D9%84%D9%8A%D8%A9"
+    },
+    "q_cooperate": {
+      "label": "القرآن الكريم — المائدة 5:2: التعاون على البر والتقوى",
+      "url": "https://quran.com/5/2"
+    },
+    "q_family": {
+      "label": "القرآن الكريم — التحريم 66:6: مسؤولية الأهل والتربية",
+      "url": "https://quran.com/66/6"
+    },
+    "b_quran": {
+      "label": "صحيح البخاري 5027 — «خيركم من تعلم القرآن وعلمه»",
+      "url": "https://sunnah.com/bukhari:5027"
+    },
+    "q_charity": {
+      "label": "القرآن الكريم — البقرة 2:261 في فضل الإنفاق",
+      "url": "https://quran.com/2/261"
+    }
+  },
+  "routes": [
+    {
+      "id": "family",
+      "title": "بناء بيتك وتربية من تحت مسؤوليتك",
+      "description": "إذا كان لديك زوج/زوجة أو أولاد، فالقيام بالحقوق والتربية نفسها باب نفع أساسي وليس «شيئًا أقل» من العمل العام.",
+      "skills": [
+        "care",
+        "teaching",
+        "organizing"
+      ],
+      "time": [
+        "scarce",
+        "moderate",
+        "free"
+      ],
+      "money": [
+        "tight",
+        "ok",
+        "able"
+      ],
+      "needsMarried": true,
+      "bonusKids": true,
+      "firstStep": "اختر مسؤولية أسرية واحدة تحتاج حضورك هذا الأسبوع، وحدد لها موعدًا واقعيًا بلا هاتف أو تشتيت.",
+      "sourceIds": [
+        "q_family",
+        "responsibility"
+      ]
+    },
+    {
+      "id": "quran-teach",
+      "title": "تعليم القرآن أو مساعدة مبتدئ",
+      "description": "لمن لديه قدرة معتبرة على القراءة/التعليم: نقل ما أتقنه تحت إشراف مناسب، من غير تصدّر لما لا يعرفه.",
+      "skills": [
+        "quran",
+        "teaching"
+      ],
+      "time": [
+        "moderate",
+        "free"
+      ],
+      "money": [
+        "tight",
+        "ok",
+        "able"
+      ],
+      "minAge": 16,
+      "firstStep": "اسأل في محيطك عن مبتدئ أو حلقة موثوقة تحتاج مساعدة في المراجعة، والتزم بما تتقنه فقط.",
+      "sourceIds": [
+        "b_quran"
+      ],
+      "requiresAnySkills": true
+    },
+    {
+      "id": "teaching",
+      "title": "تعليم مهارة نافعة أو مساعدة متعلم",
+      "description": "التعليم لا يقتصر على العلوم الشرعية؛ المجتمع يحتاج من ينقل المعرفة النافعة بإتقان وأمانة.",
+      "skills": [
+        "teaching",
+        "professional",
+        "writing"
+      ],
+      "time": [
+        "moderate",
+        "free"
+      ],
+      "money": [
+        "tight",
+        "ok",
+        "able"
+      ],
+      "firstStep": "اختر مهارة تتقنها فعلًا، وساعد شخصًا واحدًا أو مجموعة صغيرة في أساس واضح منها هذا الأسبوع.",
+      "sourceIds": [
+        "responsibility",
+        "q_cooperate"
+      ],
+      "requiresAnySkills": true
+    },
+    {
+      "id": "technical",
+      "title": "دعم تقني/كتابي لمشروع نافع",
+      "description": "البرمجة والتصميم والكتابة والترجمة والتنظيم قد تسد حاجة حقيقية لدى مشروع تعليمي أو مجتمعي.",
+      "skills": [
+        "tech",
+        "writing",
+        "creative",
+        "organizing"
+      ],
+      "time": [
+        "scarce",
+        "moderate",
+        "free"
+      ],
+      "money": [
+        "tight",
+        "ok",
+        "able"
+      ],
+      "firstStep": "اعرض ساعة أو مهمة صغيرة محددة من مهارتك على مشروع نافع تعرفه وتثق به، بدل التزام مفتوح لا تقدر عليه.",
+      "sourceIds": [
+        "responsibility",
+        "q_cooperate"
+      ],
+      "requiresAnySkills": true
+    },
+    {
+      "id": "field-service",
+      "title": "خدمة ميدانية مباشرة",
+      "description": "لمن عنده وقت وطاقة للتعامل مع الناس: خدمة كبار السن، تنظيم مبادرة، قضاء حاجة، أو مساعدة مجتمعية موثوقة.",
+      "skills": [
+        "field",
+        "care",
+        "organizing"
+      ],
+      "time": [
+        "moderate",
+        "free"
+      ],
+      "money": [
+        "tight",
+        "ok",
+        "able"
+      ],
+      "firstStep": "ابحث في محيطك القريب عن حاجة واضحة يمكن إنجازها في زيارة أو مهمة واحدة، وابدأ بالأقرب والأكثر قابلية للتنفيذ.",
+      "sourceIds": [
+        "q_cooperate",
+        "responsibility"
+      ]
+    },
+    {
+      "id": "professional",
+      "title": "إتقان مهنتك في ثغر يحتاجه المجتمع",
+      "description": "الطب والهندسة والحرف والصناعات والمهن والعلوم النافعة من حاجات المجتمع التي تناولها الفقهاء في باب فروض الكفايات.",
+      "skills": [
+        "professional",
+        "tech",
+        "creative"
+      ],
+      "time": [
+        "scarce",
+        "moderate",
+        "free"
+      ],
+      "money": [
+        "tight",
+        "ok",
+        "able"
+      ],
+      "firstStep": "حدد مهارة مهنية واحدة لو أتقنتها أكثر ستخدم بها الناس مباشرة، وضع لها جلسة تعلم أو تطبيق محددة هذا الأسبوع.",
+      "sourceIds": [
+        "responsibility"
+      ],
+      "requiresAnySkills": true
+    },
+    {
+      "id": "writing",
+      "title": "كتابة/ترجمة محتوى نافع بمراجعة",
+      "description": "إذا كانت لديك مهارة لغوية، يمكنك تسهيل معرفة نافعة أو توثيقها، مع تجنب الكلام الشرعي من غير أهلية ومراجعة المصدر.",
+      "skills": [
+        "writing",
+        "creative"
+      ],
+      "time": [
+        "scarce",
+        "moderate",
+        "free"
+      ],
+      "money": [
+        "tight",
+        "ok",
+        "able"
+      ],
+      "firstStep": "اختر مادة نافعة مرخّصة أو من إنتاجك، ولخّصها أو ترجم فقرة منها مع حفظ نسبتها إلى مصدرها.",
+      "sourceIds": [
+        "q_cooperate",
+        "responsibility"
+      ],
+      "requiresAnySkills": true
+    },
+    {
+      "id": "financial",
+      "title": "دعم مالي بقدر لا يضر واجباتك",
+      "description": "لمن لديه سعة حقيقية بعد الحقوق والنفقات اللازمة: دعم حاجة موثوقة أو باب نفع بصورة لا تضر من يعولهم.",
+      "skills": [],
+      "time": [
+        "scarce",
+        "moderate",
+        "free"
+      ],
+      "money": [
+        "ok",
+        "able"
+      ],
+      "firstStep": "حدد مبلغًا يمكنك بذله بلا إخلال بنفقة أو دين أو حق، ثم اختر حاجة موثوقة تعرفها وتحقق منها.",
+      "sourceIds": [
+        "q_charity",
+        "responsibility"
+      ]
+    }
+  ]
+}

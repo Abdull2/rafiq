@@ -51,3 +51,10 @@ R24 keeps `rafiq:data-version = 2`. The persistent key `qalb-levels-v1` already 
 
 ## R26 — قارئ المختصر
 `tafsir-pos-v1` هو موضع قراءة محلي مستقل عن `quran-pos`. الاستفسار السريع عن تفسير آية من المصحف لا يغيّر موضع قراءة المختصر؛ زر «فتح في قارئ المختصر» فقط ينقل القراءة لهذا الموضع. نص التفسير، عند تفعيل التكامل، يُجلب آية واحدة في كل مرة عبر proxy سري ولا يُضمّن في المستودع.
+
+
+## R32 — profile context, Fiqh al-Busola, Mujahada, benefit routing
+- `profile-v1` may now include optional additive fields: `married`, `hasKids`, `timeBand`, `moneyBand`, `skills[]`. Existing age/gender/advancedIssues remain unchanged. Current users are not forced through onboarding again.
+- New local user keys: `mujahada-weight-v1`, `fiqh-busola-progress-v1`, `benefit-choice-v1`.
+- New static content files: `fiqh-busola.json`, `benefit.json`. Static religious/scientific content is not user data.
+- No backend, account system, analytics, cloud sync or telemetry was added.

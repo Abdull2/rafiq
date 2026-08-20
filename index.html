@@ -1270,6 +1270,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <button data-learn="companions">الصحابة</button>
     <button data-learn="essentials">ما لا يسع المسلم جهله</button>
     <button data-learn="fiqh">الفقه الميسر</button>
+    <button data-learn="busola">فقه البوصلة</button>
   </div>
   <div id="learn-riyad" class="hide">
     <div class="nw-intro" id="riyad-intro"></div>
@@ -1284,6 +1285,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div id="learn-companions" class="hide"></div>
   <div id="learn-essentials" class="hide"></div>
   <div id="learn-fiqh" class="hide"></div>
+  <div id="learn-busola" class="hide"></div>
 
   <div id="hadith-detail" class="hadith-detail hide" role="dialog" aria-modal="true" aria-labelledby="hadith-detail-title">
     <div class="hadith-detail-bar"><button class="hadith-back" id="hadith-detail-back" type="button" aria-label="الرجوع إلى قائمة الأحاديث"><span aria-hidden="true">→</span> رجوع للأحاديث</button><span id="hadith-detail-kicker"></span></div>
@@ -1353,18 +1355,30 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
       <p class="tiny">تُحفظ هذه البيانات محليًا داخل المتصفح للتخصيص، ولا تُرسل إلى خوادم تدارُك.</p>
     </div>
     <div class="onb-step" data-onb="2">
+      <h2>لو تحب… خلّي الترشيحات أقرب لواقعك.</h2>
+      <p>هذه الأسئلة اختيارية، وتُستخدم فقط في «العمل والنفع» وبعض التخصيصات. يمكنك ترك أي خانة كما هي.</p>
+      <div class="profile-form life-onb">
+        <label>الحالة الاجتماعية<select id="profile-married"><option value="">أفضّل عدم الإجابة</option><option value="yes">متزوج/ة</option><option value="no">غير متزوج/ة</option></select></label>
+        <label id="profile-kids-wrap">هل لديك أولاد؟<select id="profile-kids"><option value="">أفضّل عدم الإجابة</option><option value="yes">نعم</option><option value="no">لا</option></select></label>
+        <label>الوقت المتاح غالبًا<select id="profile-time"><option value="">أفضّل عدم الإجابة</option><option value="scarce">ضيق جدًا</option><option value="moderate">متوسط</option><option value="free">عندي مساحة جيدة</option></select></label>
+        <label>القدرة المادية للنفع<select id="profile-money"><option value="">أفضّل عدم الإجابة</option><option value="tight">ضيق — لا أريد ترشيحات مالية</option><option value="ok">مستقرة بحدود</option><option value="able">عندي سعة</option></select></label>
+      </div>
+      <div class="skill-pick" id="profile-skills"><span>مهاراتك — اختياري</span><div class="skill-grid"><label><input type="checkbox" value="tech"> تقنية</label><label><input type="checkbox" value="writing"> كتابة/ترجمة</label><label><input type="checkbox" value="teaching"> تعليم</label><label><input type="checkbox" value="quran"> قرآن</label><label><input type="checkbox" value="organizing"> تنظيم</label><label><input type="checkbox" value="care"> رعاية</label><label><input type="checkbox" value="field"> ميداني</label><label><input type="checkbox" value="professional"> مهني</label><label><input type="checkbox" value="creative"> إبداع</label></div></div>
+      <p class="tiny">لا تُرسل هذه الاختيارات إلى خوادم تدارُك. ويمكن تعديلها أو مسحها من الإعدادات لاحقًا.</p>
+    </div>
+    <div class="onb-step" data-onb="3">
       <h2>مشكلتك مختلفة… والباب المناسب أقرب.</h2>
-      <p>من الصفحة الرئيسية أو «القلب» ستجد أبوابًا للمشاكل اليومية: أسرة، علاقات، دراسة، شغل، قلق، هاتف، فتور وأسئلة — مع مصدر تحت كل توجيه.</p>
+      <p>من الصفحة الرئيسية أو «تزكية» ستجد أبوابًا للمشاكل اليومية: أسرة، علاقات، دراسة، شغل، قلق، هاتف، فتور وأسئلة — مع مصدر تحت كل توجيه.</p>
       <p class="tiny">ولو ظهرت مادة مهمة في وقت غير مناسب، علامة ＋ تحفظها في «محفوظاتي» للرجوع إليها لاحقًا.</p>
       <label class="advanced-opt"><input id="profile-issues" type="checkbox"><span><b>إظهار «إشكاليات» — المسار المتقدم</b><span>محتوى أعمق يناقش البناء المعرفي، الفتور بعد الالتزام، اختيار الثغر، أنماط التدين، والخلافات — من محاضرات د. أحمد عبد المنعم مع رابط المصدر والتوقيت تحت كل فكرة.</span></span></label>
       <p class="tiny">هذا اختيار محتوى فقط، وليس تقييمًا لتدينك أو حكمًا عليك، ويُحفظ محليًا على جهازك.</p>
     </div>
-    <div class="onb-step" data-onb="3">
+    <div class="onb-step" data-onb="4">
       <h2>ابدأ بخطة… وأنهِ اليوم بمراجعة واضحة.</h2>
       <p>في أول اليوم اكتب هدفًا وتارجت ومهامًا قليلة. وفي آخره قيّم نتيجة الهدف والمهام ثم أجب عن ٥ أسئلة أساسية فقط.</p>
       <p class="tiny">و«فقه النفس» للتثقيف والتزكية، وليس تشخيصًا طبيًا ولا بديلًا عن علاج قائم. عند أعراض مستمرة أو معطلة للحياة، تدارُك يذكّر بطلب تقييم من مختص.</p>
     </div>
-    <div class="onb-dots"><i class="on"></i><i></i><i></i><i></i></div>
+    <div class="onb-dots"><i class="on"></i><i></i><i></i><i></i><i></i></div>
     <div class="onb-nav"><button id="onboarding-prev" class="ghost hide" type="button">السابق</button><button id="onboarding-next" type="button">التالي</button></div>
   </div>
 </div>
@@ -1396,7 +1410,21 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <div class="field"><label>العمر</label><input id="profile-edit-age" type="number" min="10" max="100" inputmode="numeric"></div>
     <div class="field"><label>النوع</label><div class="gender-pick"><label><input type="radio" name="profile-edit-gender" value="male"> ذكر</label><label><input type="radio" name="profile-edit-gender" value="female"> أنثى</label></div></div>
     <div class="field"><label>المسارات الاختيارية</label><label class="advanced-opt"><input id="profile-edit-issues" type="checkbox"><span><b>إظهار «إشكاليات»</b><span>مسار متقدم يناقش إشكالات الالتزام والتدين والعمل للدين. يمكنك إخفاؤه في أي وقت.</span></span></label></div>
-    <div class="profile-privacy">يُستخدم العمر والنوع لتخصيص الصياغة وإخفاء/إظهار موضوعات تحتاج معالجة مختلفة، واختيار «إشكاليات» يحدد فقط ظهور المسار المتقدم. كل ذلك يُحفظ محليًا.</div>
+    <div class="field profile-life-field"><label>سياق حياتك — اختياري</label>
+      <div class="life-grid">
+        <label><span>الحالة الاجتماعية</span><select id="profile-edit-married"><option value="">أفضّل عدم الإجابة</option><option value="yes">متزوج/ة</option><option value="no">غير متزوج/ة</option></select></label>
+        <label id="profile-edit-kids-wrap"><span>هل لديك أولاد؟</span><select id="profile-edit-kids"><option value="">أفضّل عدم الإجابة</option><option value="yes">نعم</option><option value="no">لا</option></select></label>
+        <label><span>الوقت المتاح غالبًا</span><select id="profile-edit-time"><option value="">أفضّل عدم الإجابة</option><option value="scarce">ضيق جدًا</option><option value="moderate">متوسط</option><option value="free">عندي مساحة جيدة</option></select></label>
+        <label><span>القدرة المادية للنفع</span><select id="profile-edit-money"><option value="">أفضّل عدم الإجابة</option><option value="tight">ضيق — لا أريد ترشيحات مالية</option><option value="ok">مستقرة بحدود</option><option value="able">عندي سعة</option></select></label>
+      </div>
+      <div class="skill-pick" id="profile-edit-skills">
+        <span>مهارات يمكن أن تنفع بها — اختر ما ينطبق</span>
+        <div class="skill-grid">
+          <label><input type="checkbox" value="tech"> تقنية/برمجة</label><label><input type="checkbox" value="writing"> كتابة/ترجمة</label><label><input type="checkbox" value="teaching"> تعليم</label><label><input type="checkbox" value="quran"> قرآن</label><label><input type="checkbox" value="organizing"> تنظيم</label><label><input type="checkbox" value="care"> رعاية وخدمة</label><label><input type="checkbox" value="field"> عمل ميداني</label><label><input type="checkbox" value="professional"> خبرة مهنية</label><label><input type="checkbox" value="creative"> تصميم/إبداع</label>
+        </div>
+      </div>
+    </div>
+    <div class="profile-privacy">يُستخدم العمر والنوع وبعض بيانات السياق التي تختارها فقط لتحسين الصياغة وترشيحات «العمل والنفع». لا يُطلب دخل رقمي ولا ساعات دقيقة، وكل البيانات تبقى محليًا على جهازك.</div>
     <button class="h-primary" id="profile-save">حفظ التخصيص</button>
   </div>
 </div>
@@ -1406,7 +1434,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div class="box">
     <div class="sec-head" style="border-radius:0"><span>الإعدادات</span>
       <button id="close-settings" style="border:0;background:none;color:var(--deep);font-size:19px;cursor:pointer">✕</button></div>
-    <div class="field"><label>تخصيص تدارُك</label><button id="btn-profile" style="width:100%;padding:10px;border-radius:11px;border:1px solid var(--line);background:var(--wash);color:var(--deep);cursor:pointer">تعديل العمر والنوع والمسارات</button><div class="muted" style="margin-top:6px;font-size:11px">تُستخدم هذه الاختيارات محليًا لتخصيص الصياغة وبعض الموضوعات والمسارات.</div></div>
+    <div class="field"><label>تخصيص تدارُك</label><button id="btn-profile" style="width:100%;padding:10px;border-radius:11px;border:1px solid var(--line);background:var(--wash);color:var(--deep);cursor:pointer">تعديل العمر والنوع وسياق الحياة</button><div class="muted" style="margin-top:6px;font-size:11px">تُستخدم هذه الاختيارات محليًا لتخصيص الصياغة وبعض الموضوعات والمسارات.</div></div>
     <div class="field" id="prayer-location-field"><label>الصلاة والوقت والموقع</label>
       <div class="prayer-settings-shell">
         <div class="prayer-status-line"><span class="prayer-status-dot warn" id="geo-status-dot"></span><div class="prayer-status-copy"><b id="geo-status-title">الموقع غير مفعّل</b><span id="geo-status-copy">اضغط الزر ليطلب Android/المتصفح إذن الموقع، ثم تُحفظ الإحداثيات محليًا لحساب المواقيت والقبلة.</span></div></div>
@@ -1659,6 +1687,16 @@ body:not(.mushaf-fullscreen) .fs-exit{display:none}
 [data-theme="dark"] #mus-page::before,[data-theme="dark"] #mus-page::after{background:#3C3520}
 body.mushaf-fullscreen .mus-head{font-size:12px!important;padding:calc(2px + env(safe-area-inset-top)) 14px 4px!important}
 body.mushaf-fullscreen #mus-page{height:27px;min-width:52px;font-size:13px}
+
+/* ===== R32: Fiqh al-Busola + life profile + Mujahada + benefit routes ===== */
+.life-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.life-grid label,.life-onb label{display:grid;gap:5px;font-size:11px;color:var(--soft)}.life-grid select,.life-onb select{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:9px;font:inherit;font-size:12px}.skill-pick{margin-top:10px}.skill-pick>span{display:block;font-size:11px;color:var(--soft);margin-bottom:7px}.skill-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.skill-grid label{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:7px 8px;font-size:10.5px;color:var(--ink);display:flex;gap:5px;align-items:center}.skill-grid input{accent-color:var(--deep)}#profile-edit-kids-wrap.hide,#profile-kids-wrap.hide{display:none!important}
+.busola-hero,.benefit-hero{margin:13px 0;border:1px solid var(--line);border-radius:19px;background:linear-gradient(145deg,color-mix(in srgb,var(--wash) 75%,var(--card)),var(--card));padding:17px}.busola-hero small,.benefit-hero small{display:block;color:var(--gold);font-size:10px;font-weight:700}.busola-hero h2,.benefit-hero h2{font-family:Amiri,serif;color:var(--deep);font-size:26px;margin:3px 0}.busola-hero p,.benefit-hero p{font-size:12px;line-height:1.85;color:var(--soft);margin:0}.busola-note{margin-top:9px;padding:8px 10px;border-radius:11px;background:var(--paper);font-size:10.5px;color:var(--soft);line-height:1.7;border:1px solid var(--line)}
+.busola-tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:2px 0 10px}.busola-tabs::-webkit-scrollbar{display:none}.busola-tabs button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--deep);border-radius:999px;padding:8px 12px;font:inherit;font-size:11px;cursor:pointer}.busola-tabs button.on{background:var(--deep);color:#fff;border-color:var(--deep)}
+.busola-grid{display:grid;gap:9px}.busola-card{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:13px;cursor:pointer}.busola-card .k{color:var(--gold);font-size:9px}.busola-card h3{font-family:Amiri,serif;color:var(--deep);font-size:19px;margin:2px 0}.busola-card p{font-size:11px;line-height:1.7;color:var(--soft);margin:0}.busola-meter{display:flex;align-items:center;gap:8px;margin-top:9px}.busola-meter span{font-size:9px;color:var(--soft);white-space:nowrap}.busola-meter i{height:5px;background:var(--wash);border-radius:999px;overflow:hidden;flex:1}.busola-meter i em{display:block;height:100%;background:var(--gold);border-radius:inherit}.busola-detail{display:grid;gap:10px}.busola-stage{border:1px solid var(--line);background:var(--card);border-radius:15px;overflow:hidden}.busola-stage.lock{opacity:.48}.busola-stage-head{padding:11px 12px;background:var(--wash);display:flex;justify-content:space-between;gap:8px}.busola-stage-head b{font-size:12px;color:var(--deep)}.busola-stage-head span{font-size:9px;color:var(--gold)}.busola-stage-body{padding:12px}.busola-stage-body p{font-size:11.5px;line-height:1.85;margin:0 0 8px}.busola-stage-body ul{margin:7px 0;padding-inline-start:18px}.busola-stage-body li{font-size:11px;line-height:1.75;margin:3px 0}.busola-stage-done{width:100%;border:1px solid var(--deep);background:var(--deep);color:#fff;border-radius:10px;padding:9px;font:inherit;font-size:11px;cursor:pointer}.busola-stage-ok{font-size:10px;color:var(--soft);padding:7px;text-align:center;background:var(--wash);border-radius:9px}.busola-src{display:grid;gap:5px;margin-top:8px}.busola-src a{font-size:9.8px;line-height:1.5;color:var(--deep);text-decoration:none;border-inline-start:2px solid var(--gold);padding-inline-start:7px}.busola-back{border:0;background:none;color:var(--deep);font:inherit;font-size:12px;cursor:pointer;padding:6px 0}.busola-lab{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:13px;margin-bottom:9px}.busola-lab h3{font-family:Amiri,serif;color:var(--deep);font-size:19px;margin:0 0 5px}.busola-lab .sit{font-size:11px;line-height:1.8;color:var(--ink);background:var(--wash);border-radius:10px;padding:9px}.busola-lab h4{font-size:10px;color:var(--gold);margin:10px 0 4px}.busola-lab ul{margin:0;padding-inline-start:18px}.busola-lab li{font-size:10.8px;line-height:1.7}
+.muj-weight{margin:10px;border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--wash) 70%,var(--card));padding:11px}.muj-weight b{font-size:11px;color:var(--deep);display:block}.muj-weight p{font-size:9.8px;color:var(--soft);line-height:1.6;margin:4px 0 8px}.muj-options{display:grid;grid-template-columns:1fr 1fr;gap:6px}.muj-options button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px;font:inherit;font-size:9.8px;cursor:pointer;text-align:right}.muj-options button.on{background:var(--deep);color:#fff;border-color:var(--deep)}.muj-say{margin-top:8px;font-size:10.5px;color:var(--deep);line-height:1.7}.muj-boundary{margin:8px 10px 10px;padding:9px;border-radius:10px;background:color-mix(in srgb,#c88 8%,var(--card));border:1px solid color-mix(in srgb,#b66 22%,var(--line));font-size:10px;line-height:1.7;color:var(--ink)}
+.benefit-profile{margin:10px 0;padding:10px 12px;border:1px solid var(--line);border-radius:13px;background:var(--wash);font-size:10.5px;color:var(--soft);line-height:1.7}.benefit-profile button{margin-top:7px;border:1px solid var(--line);background:var(--card);color:var(--deep);border-radius:9px;padding:6px 9px;font:inherit;font-size:10px;cursor:pointer}.benefit-list{display:grid;gap:9px}.benefit-card{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:13px}.benefit-card .fit{font-size:9px;color:var(--gold);font-weight:700}.benefit-card h3{font-family:Amiri,serif;color:var(--deep);font-size:20px;margin:2px 0}.benefit-card p{font-size:11px;line-height:1.75;color:var(--soft);margin:0}.benefit-why{margin:8px 0;padding:8px;border-radius:9px;background:var(--wash);font-size:10px;color:var(--ink);line-height:1.65}.benefit-step{margin-top:8px;border-top:1px solid var(--line);padding-top:8px}.benefit-step b{display:block;font-size:9.5px;color:var(--gold)}.benefit-step span{font-size:10.8px;line-height:1.7}.benefit-actions{display:flex;gap:6px;margin-top:9px}.benefit-actions button{flex:1;border:1px solid var(--line);background:var(--paper);color:var(--deep);border-radius:10px;padding:8px;font:inherit;font-size:10px;cursor:pointer}.benefit-actions button.primary{background:var(--deep);color:#fff;border-color:var(--deep)}.benefit-card.chosen{outline:2px solid color-mix(in srgb,var(--gold) 60%,transparent)}
+@media(max-width:520px){.life-grid,.muj-options{grid-template-columns:1fr}.skill-grid{grid-template-columns:1fr 1fr}.benefit-actions{flex-direction:column}}
+
 </style>
 
 

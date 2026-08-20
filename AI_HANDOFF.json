@@ -1,138 +1,20 @@
 {
-  "state_id": "TADARUQ-HANDOFF-v24-R27-2026-08-20",
   "project": "تدارُك - Tadaruq",
-  "version": "v24 R27",
-  "platform": "GitHub Pages PWA + Google Play TWA; Chrome MV3 source retained",
-  "read_first": [
-    "AI_HANDOFF.md",
-    "CONTENT_PROVENANCE-ISHKALIAT.md",
-    "CONTENT_PROVENANCE-TAZKIYAH.md",
-    "DATA_SAFETY.md",
-    "MUSHAF_PROVENANCE.md",
-    "manifest.json",
-    "app.js",
-    "index.html",
-    "app/app.js (full extension-source layout)",
-    "app/index.html (full extension-source layout)"
+  "release": "v24 R32",
+  "date": "2026-08-20",
+  "primary_handoff": "AI_HANDOFF.md",
+  "source_of_truth": "R31 owner-supplied full source, modified additively into R32",
+  "data_schema": 2,
+  "pwa_cache": "tadaruq-v24-r32-pwa-20260820",
+  "new_persistent_keys": [
+    "fiqh-busola-progress-v1",
+    "mujahada-weight-v1",
+    "benefit-choice-v1"
   ],
-  "product_thesis": "الدين ثابت والمشكلة تختلف؛ تدارُك بوابة يومية تربط المستخدم بالقرآن والذكر والعلم وتساعده في مشكلاته الواقعية بمصدر ظاهر وخطوة عملية.",
-  "non_negotiables": [
-    "Every religious claim displayed in the app must have a visible source; unsourced religious claims are removed or rewritten.",
-    "Fiqh al-Nafs content is educational synthesis inspired by Makany methodology unless a specific quote is verified.",
-    "Mental-health content never replaces qualified medical/psychological care.",
-    "Nightly review stays lightweight: 5 essentials, quick choices, optional mood, one optional tomorrow note.",
-    "Age and male/female personalization is local-only and used only where meaningful.",
-    "Do not invent sacred counts, durations, promises, or spiritual ranks.",
-    "Keep + / Saved for later across content.",
-    "Do not restore the previously rejected home-page tagline; preserve the current calmer copy.",
-    "The Ishkaliat track is opt-in, does not classify religiosity, and every displayed idea links to the original Dr. Ahmed Abdelmonem video + timestamp; supplied summaries are not treated as verbatim transcripts.",
-    "Existing user data is production legacy data: no persistent key/shape/content-ID change without a backward-compatible migration and rollback path.",
-    "AI_HANDOFF.md is immutable project continuity: never delete/rename/truncate/exclude it; append every session chat/change ledger.",
-    "Google Play package identity for current listing is com.tadaruqnoor.rafiq; do not generate future Play bundles under a different package ID.",
-    "Never commit Android signing keystore/passwords or API/Play credentials.",
-    "Tazkiyah retention must come from useful study depth, resume/review and practical application; never label the user with spiritual ranks or use manipulative dark-pattern engagement."
+  "new_content_files": [
+    "fiqh-busola.json",
+    "benefit.json"
   ],
-  "storage_keys": {
-    "profile": "profile-v1 {age, gender, advancedIssues}",
-    "saved_later": "saved-later-v1",
-    "onboarding": "onboarding-seen-v3",
-    "qalb_paths": "qalb-paths-v1 (selected heart/obstacle/Fiqh-al-Nafs paths, local progress, check-ins)",
-    "data_schema": "rafiq:data-version = 2",
-    "safety_snapshot": "rafiq:safety-snapshot:v1",
-    "qalb_levels": "qalb-levels-v1 (local-only Tazkiyah study-depth completion/open/review timestamps; educational progress, never spiritual ranking)",
-    "tafsir_position": "tafsir-pos-v1 (local-only continuous Al-Mukhtasar reader position; independent from quran-pos)"
-  },
-  "key_sources": {
-    "essentials": "https://risala.prh.gov.sa/ar/contents/251",
-    "fiqh_nafs": "https://makany.co/",
-    "who_depression": "https://www.who.int/news-room/fact-sheets/detail/depression",
-    "nhs_depression": "https://www.nhs.uk/mental-health/conditions/depression-in-adults/diagnosis/",
-    "ishkaliat_playlist": "https://www.youtube.com/playlist?list=PLnpYU8_AiEPeOynF9Q35m_3QgRq-yFtaC",
-    "riyad_commentary_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/76e12fcc-d35a-417d-a68b-954c0bf06bc6",
-    "nawawi40_commentary_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/7c9cb3e2-3b02-4ad9-97dc-5db895d9a98c",
-    "nawawi40_text": "https://sunnah.com/nawawi40",
-    "sahaba_dua_verification": "Dorar individual hadith/athar links stored per item in app/adiya.json",
-    "seerah_primary": "https://risala.prh.gov.sa/ar/contents/321",
-    "seerah_expansion_ibn_uthaymeen": "https://foundation.binothaimeen.net/ar/books/show/912876fb-29ac-4750-b214-fee87b56a2f7?categ_id=c206a512-4395-4445-9c32-ef649e81f7d2&categ_title=%D8%A7%D9%84%D8%B3%D9%8A%D8%B1%D8%A9+%D8%A7%D9%84%D9%86%D8%A8%D9%88%D9%8A%D8%A9",
-    "seerah_detail_siyar": "https://shamela.ws/book/22669",
-    "companions_primary_siyar": "https://shamela.ws/book/22669",
-    "companions_verification_isaba": "https://shamela.ws/book/9767",
-    "hisn_official": "https://risala.prh.gov.sa/ar/content/51",
-    "hisn_digital_dataset": "https://github.com/asellam/HisnElMuslim",
-    "hisn_digital_cdn": "https://cdn.jsdelivr.net/gh/asellam/HisnElMuslim@main/hisn.json",
-    "mokhtasar_tafsir_official_reader": "https://mokhtasr.com/ar/books/200?aya=1&sura=1",
-    "mokhtasar_tafsir_center_source": "https://www.tafsir.sa/publication/5294/al-mkhtsr-fy-at-tfsyr",
-    "mokhtasar_api_docs": "https://mokhtasr.com/en/api-doc",
-    "mokhtasar_terms": "https://mokhtasr.com/ar/pages/terms-and-conditions",
-    "mushaf_kfqc_official": "https://dm.qurancomplex.gov.sa/",
-    "mushaf_quranpedia_svg": "https://github.com/quranpedia/quran-svg",
-    "mushaf_quranpedia_pinned_revision": "0198423eb867ba26051aba6ac902cd5d10aadd1b",
-    "tazkiyah_depth_registry": "CONTENT_PROVENANCE-TAZKIYAH.md (R24 verified source ledger for all 9 أعمال القلوب levels)"
-  },
-  "roadmap": [
-    "source integrity and regression testing",
-    "real-device regression for R24 Tazkiyah depth UI plus existing daily plan/history/prayer/Mushaf fullscreen flows",
-    "deep-link saved items and personal paths to exact content",
-    "refine personal-path prioritization without diagnosing users",
-    "verify/refine Ishkaliat summaries against actual transcripts/official text when available",
-    "expand real-life obstacles with rigorous sources",
-    "more meaningful age/sex personalization",
-    "licensed human audio for adhkar when a verified source/licence exists",
-    "continued large-tab UX/accessibility cleanup"
-  ],
-  "manifest_version_string": "24.7.0",
-  "current_release_changes": [
-    "R27 adds dark-mode rendering for the fixed KFQC SVG Mushaf without changing Quran glyph/page geometry.",
-    "R27 makes the mobile Mushaf edge-to-edge and tightens excessive internal SVG whitespace using a conservative measured viewBox fit while retaining printed-page aspect ratio.",
-    "Fullscreen now respects dark mode; quran-pos, swipe direction, ayah polygons, tafsir position and storage schema are unchanged.",
-    "GitHub deploy rule clarified: use the flat GitHub-pages ZIP at rafiq repo root; preserve semantic paths such as .well-known/assetlinks.json in the separate origin repo.",
-    "MV3 version 24.7.0 and PWA cache R27."
-  ],
-  "data_architecture": {
-    "cloud_backend": false,
-    "central_user_database": false,
-    "chrome_app_state": "localStorage via app store wrapper; extension notebook/prefs use chrome.storage.local",
-    "android_existing_wrapper": "PWABuilder/TWA -> https://abdull2.github.io/rafiq/",
-    "decision_required_before_cloud": "owner must explicitly approve analytics vs account sync, data categories, privacy and retention",
-    "local_data_schema_version": 2,
-    "safety_layer": "app/data-safety.js v2; local snapshot + migration + validation + rollback + portable backup"
-  },
-  "google_play": {
-    "app_name": "تدارُك - Tadaruq",
-    "package_id": "com.tadaruqnoor.rafiq",
-    "internal_test_link": "https://play.google.com/apps/internaltest/4701628883133223204",
-    "closed_track": "Alpha",
-    "closed_release_name": "tadaruq first",
-    "production_gate": "At least 12 opted-in closed testers for at least 14 consecutive days, then apply for Production access (as shown in owner Play Console).",
-    "assetlinks_requirement": "For the current launch origin https://abdull2.github.io/rafiq/, publish the statement at the ORIGIN ROOT: https://abdull2.github.io/.well-known/assetlinks.json (not under /rafiq/.well-known/). Use package com.tadaruqnoor.rafiq and the Play App Signing SHA-256.",
-    "secret_rule": "Never commit signing.keystore, signing passwords/info, API tokens, or Play credentials.",
-    "policy_status": "Previous submission rejected under Play Console Requirements. Owner turned Health apps declaration off/no health features on 2026-08-19 and is awaiting re-review; do not claim approval until Play Console confirms it.",
-    "app_signing_sha256_classical": "6D:02:CB:A8:9A:7D:B7:5F:84:C2:74:F6:16:29:35:8A:DE:49:11:28:12:D2:B4:42:EC:A7:4F:43:26:23:4D:4C",
-    "pwabuilder_local_sha256": "74:67:B8:77:C3:B6:06:4B:CC:BB:95:7C:EA:87:8A:78:25:8A:59:45:29:34:7F:00:84:FA:27:41:36:51:5C:08",
-    "twa_observed_issue": "Tester screenshot showed Chrome Custom Tab UI with abdull2.github.io visible, consistent with failed Digital Asset Links verification."
-  },
-  "immutable_handoff_policy": {
-    "file": "AI_HANDOFF.md",
-    "delete_or_rename": false,
-    "truncate_or_replace_with_summary": false,
-    "release_zip_must_include_for_full_source_handoff": true,
-    "session_rule": "Append chronological chat/change/test/error/decision ledger before returning artifacts; preserve prior history."
-  },
-  "stateId": "TADARUQ-HANDOFF-v24-R27-2026-08-20",
-  "lastRevision": "R27",
-  "revisionSummary": "R27 adds Mushaf dark mode and conservative Aya-style SVG viewport fitting to remove excess page whitespace without reflowing Quran text.",
-  "openItems": [
-    "Obtain/confirm official Mokhtasar API authorization/token and deploy the secret-holding proxy to enable full inline tafsir text in the R26 reader.",
-    "Bump CACHE_NAME on any future content JSON edit.",
-    "Real-device verify R27 Mushaf viewBox fitting on representative pages before treating the visual match as final; do not crop Quran glyphs/header/footer.",
-    "Google Play policy re-review pending after Health declaration switched off.",
-    "Set up a staging branch / preview deployment before further production changes."
-  ],
-  "current_release": "v24 R27",
-  "chrome_extension_version": "24.7.0",
-  "sources": {
-    "mokhtasar_tafsir_center_source": "https://tafsir.net/publications/13394"
-  },
-  "mokhtasar_inline_proxy": "optional; secret-holding serverless proxy only; public build defaults off",
-  "mokhtasar_reader": "R26 continuous reader UI implemented; inline official text requires configured secret-holding proxy; fallback preserves position and links exact ayah to official reader."
+  "critical_policy_gate": "Re-audit Google Play Health Apps declaration before deploying the structured smoking/nicotine journey.",
+  "mushaf_rule": "R29-R31 Mushaf/fullscreen/ayah-selection code was intentionally not changed in R32."
 }

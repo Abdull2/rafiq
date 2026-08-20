@@ -1,99 +1,10 @@
-OWNER IMMUTABLE HANDOFF RULE — READ BEFORE ANYTHING ELSE:
-- NEVER delete, rename, truncate, summarize-away, or exclude AI_HANDOFF.md. Preserve all old history and append the current session chat/change/error/test ledger before returning artifacts.
-- Current distribution is GitHub Pages PWA + Google Play TWA, package ID com.tadaruqnoor.rafiq, with Chrome MV3 source retained.
-- Never commit signing.keystore, signing passwords/info, API tokens, or Play credentials.
-- Latest code state is v24 R24 / Chrome manifest 24.4.0 / local data schema 2. Read the latest R24 section in AI_HANDOFF.md plus the relevant earlier continuity sections before changing PWA/Play, Tazkiyah, daily planning/history, Chrome browser workflow, Mushaf fullscreen, prayer/location, home UI, or Saved badge.
-
-هذه هي النسخة القانونية الحالية للمشروع: **v24 R24** (Chrome manifest = 24.4.0; local data schema = 2).
-
-اقرأ AI_HANDOFF.md and DATA_ARCHITECTURE.md وAI_HANDOFF.json وCONTENT_PROVENANCE-ISHKALIAT.md أولًا ثم افحص الكود الحالي. اعتبر ملفات الـhandoff سجل قرارات المشروع، ولا تطلب من المالك إعادة شرح الماضي إلا لو فيه تعارض حقيقي.
-
-قواعد ثابتة:
-- أي تعديل ديني: المصدر يظهر داخل التطبيق نفسه.
-- محتوى «إشكاليات»: الملخصات ليست تفريغًا حرفيًا؛ كل فكرة تربط بالفيديو الأصلي والتوقيت.
-- فقه النفس/مساري: تعليم ومساندة وتنظيم، لا تشخيص ولا استبدال للعلاج الطبي. مساري يعيد استخدام المحتوى الموثق الموجود ولا يخترع بروتوكول علاج ديني أو نفسي جديدًا.
-- لا تعد المصادر إلى داخل أسئلة اختبار «ارتقِ»؛ مكانها بعد القياس وفي الخطة/قسم المراجع.
-- حافظ على source-card UI وأزرار الرجوع RTL الجديدة.
-
-بعد **كل تعديل**: اختبر النسخة، حدّث manifest version حسب رقم المالك، وأضف بالتحديد ما غيّرته إلى AI_HANDOFF.md وAI_HANDOFF.json وRELEASE-NOTES، وحدّث هذا الـprompt إذا تغيرت قاعدة منتج مهمة.
-
-LATEST v24 UX NOTE: “مساري” must have direct visible + أضف لمساري actions on problem cards; do not hide path creation only inside detail pages. Read section 14 of AI_HANDOFF.md.
-
-V24 R3 CONTINUITY NOTE:
-Before editing, read AI_HANDOFF.md section 15. Preserve the saved-state UX: generic ＋ must visibly become ✓ immediately and survive re-render. Preserve Irtaqi v3's Sharia-priority plan: obligations/rights/necessary knowledge first, then Quran/dhikr, then nawafil only after a reasonable foundation. Sources belong under post-assessment principles/tasks, not between quiz questions. Any new release/change must update AI_HANDOFF.md + AI_HANDOFF.json + PROMPT_FOR_NEXT_AI.txt + RELEASE-NOTES-v24.txt + QA-REPORT-v24.txt.
-CURRENT STATE: v24 R4 adds Nawawi 40 and a sourced hadith reader; read AI_HANDOFF.md section 16 before editing Riyad/Nawawi or commentary behavior. Never present paraphrased explanation as a verbatim shaykh quote.
-
-R5 note: do not add a cloud backend, analytics SDK, or account sync until the owner explicitly chooses the data/privacy model.
-
-R6 continuity:
-- `أدعية الصحابة` now exists in `app/adiya.json`; preserve the distinction between a companion's own du'a and a du'a taught to that companion by the Prophet ﷺ. Every item must retain a direct verification source.
-- Names of Allah cards were repaired for narrow widths with a responsive grid and reserved save-button space. Do not revert them to a crowded single flex row.
-Latest IA note (v24 R7): ورد القرآن belongs inside المصحف, not الذكر/السبحة. Preserve this placement.
-
-R8 Asma UI continuity: after a second overlap report, the Names of Allah list was structurally rebuilt. Preserve `.asma-card-row` as number | content | bookmark, keep the bookmark in a dedicated static grid cell, and keep the source as a separate footer. Do not revert to an absolutely positioned Asma bookmark or a crowded full-row layout.
-
-
-LATEST v24 R9 NOTE — SEERAH:
-- Knowledge now includes `السيرة المختصرة` backed by app/seerah.json.
-- Primary source: `رسول الإسلام محمد ﷺ` — Scientific Committee, Presidency of Religious Affairs at the Grand Mosque and Prophet's Mosque (risala.prh.gov.sa/ar/contents/321).
-- Every seerah station must keep a visible source. Do not add famous but unverified stories/dates/details.
-- Rafiq summaries are paraphrases, not verbatim source text. Read section 19 of AI_HANDOFF.md before changing seerah.
-
-LATEST v24 R10 DATA-SAFETY NOTE:
-Rafiq now has real users. Read DATA_SAFETY.md and section 20 of AI_HANDOFF.md before touching any persistent storage. `rafiq:data-version` is schema v2. Do not rename/delete a storage key, change a stored shape, or change a stable saved-content ID without a backward-compatible migration and rollback path. Every new persistent key/prefix must be registered in app/data-safety.js. Old partial muhasabah backups must remain importable non-destructively. No cloud backend/analytics was added.
-
-
-LATEST v24 R11 NOTE:
-- Start from R11, not older builds.
-- Seerah has 19 stations with quick summary + medium detail. Preserve ALL existing seerah IDs because Saved Later uses `seerah:<id>`.
-- `app/companions.json` batch 1 contains 24 famous companions with stable `companion:<id>` Saved Later IDs. Do not rename IDs without a Data Safety migration.
-- Companion/sirah historical reports must remain source-backed; independently verify any special virtue or disputed anecdote before presenting it as fact.
-- R10 Data Safety layer remains mandatory and unchanged.
-
-
-LATEST v24 R12 NOTE:
-- Quran bottom tab now opens the Mushaf reader directly. First state = Al-Fatihah/page 1; saved `quran-pos` resumes. `الفهرس` opens the tools/wird/search screen. Preserve the owner-corrected RTL gesture: finger swipe left-to-right (`dx > 0`) -> NEXT page; right-to-left -> previous page.
-- Adhkar major sections must show their trusted source above the section. Current book-level backbone is Hisn al-Muslim linked to the official Risala al-Haramain resource; item-level sources stay visible.
-- Knowledge tab labels are intentionally text-only. Order starts: الأربعون النووية ثم رياض الصالحين. Do not restore `42` or decorative glyphs in the tabs.
-- Riyad has separate book-text source and commentary source; do not conflate the two.
-- R12 changes no persistent user schema. R10 Data Safety remains mandatory.
-
-LATEST v24 R13 NOTE: `الذكر -> حصن المسلم كاملًا` now loads the complete Hisn digital transcription on demand from the MIT-licensed asellam/HisnElMuslim dataset while treating the official Risala al-Haramain edition as the canonical religious source. The static Hisn cache is NOT user data. The Mushaf now has an official Al-Mukhtasar tafsir bridge: selected ayah -> mokhtasr.com deep link. DO NOT copy the full Al-Mukhtasar text into Rafiq unless the owner supplies permission/license or an authorized official API token. Read section 22 of AI_HANDOFF.md and DATA_SAFETY.md before changes.
-
-
-LATEST v24 R14 NOTE:
-The primary Mushaf reader is now a fixed-page Madinah Mushaf, NOT reflowed ayah HTML. It fetches sanitized SVG pages from Quranpedia `hafs/kfqc`, pinned at commit `0198423eb867ba26051aba6ac902cd5d10aadd1b`, while treating the King Fahd Complex digital Mushaf as canonical. Exact printed line/page geometry is a permanent product requirement. If SVG loading fails, the text fallback must be visibly labeled non-exact. Owner-corrected paging gesture: left-to-right finger swipe (`dx>0`) = NEXT page. `quran-pos` and Data Safety v1 are unchanged. Read section 23 of AI_HANDOFF.md and MUSHAF_PROVENANCE.md before modifying Quran reader. Never embed an Al-Mukhtasar Bearer token in public JS; inline official tafsir requires a secret-holding proxy/backend.
-
-LATEST v24 R15 NOTE:
-- Visible `القلب` tab is now named `تزكية`; keep internal route/storage identifiers as `qalb` unless a backward-compatible migration is intentionally designed.
-- تزكية navigation is intentionally text-led: do not restore decorative ♡ ◇ ↗ ◌ ⌁ icons. Functional + / ✓ state controls remain.
-- Mushaf has an immersive fullscreen mode with CSS fallback + optional browser Fullscreen API; tap empty page space toggles controls. Preserve fixed KFQC page geometry and left-to-right finger swipe = NEXT page.
-- Hadith explanations must open on a fully opaque full-viewport reader. Preserve `رجوع للأحاديث`, Escape, and browser/system Back support. Do not use undefined `--bg` for this surface.
-- R15 itself changed no storage schema/keys/IDs. Current Data Safety layer is v2 after the additive R17 migration and remains mandatory.
-
-R16 continuity:
-- Fullscreen Mushaf must keep fixed 604-page KFQC SVG geometry; native fullscreen is requested on documentElement and CSS fallback must remain. Do not reflow Quran text.
-- Prayer/location setup is user-triggered, local-only; device timezone is automatic; keep manual coordinates and clear denied/GPS-off/timeout guidance.
-- Home remains a gateway/teaser with prominent prayer state and Quran/adhkar primary actions; do not turn it into a dense dashboard.
-- Saved header uses a subtle dot, not the old large count bubble; saved-later-v1 is unchanged.
-- PWA/TWA web changes deploy through GitHub Pages; Android-shell/package/native changes require a new AAB. Package ID is com.tadaruqnoor.rafiq.
-
-R17 continuity:
-- Professional `السجل` now scans all meaningful `day:*` records + task dates, supports exact-date jump/filtering, and opens day detail with self-review, prayers, goal/target, tasks/final task review, Quran pages and tomorrow note. Preserve this all-history access.
-- `خطة اليوم` is visible near the top of Home: goal + measurable target + tasks during the day. Evening has a separate organizational goal/task review. Do not hide Todo back inside the evening-only section.
-- The five-question religious nightly review remains lightweight; do not merge productivity percentages into religiosity/iman scoring.
-- New additive fields: day goal/target/goalReview and todo review/reviewedAt/source. Schema 1 -> 2 migration is additive/no-rewrite; do not remove it.
-- Home learning copy is `اتعرّف على دينك أكثر`.
-- Chrome MV3 24.2.0: right-click selected text -> `أضف النص إلى مهام اليوم`; Alt+Shift+P opens daily plan. Extension users need a new extension package; GitHub-only updates do not update packaged Chrome extension code.
-- Google Play policy status: previous Closed-test submission was rejected under Play Console Requirements; owner turned Health apps declaration off/no-health-features and is waiting for re-review. Do not claim approval until Play Console confirms it.
-
-
-
-LATEST v24 R24 NOTE — TAZKIYAH DEPTH JOURNEY:
-- Source-backed depth now covers 69 Tazkiyah reading topics/scenarios: 9 أعمال القلوب + 10 أمراض القلوب + 22 العقبة scenarios + 15 فقه النفس + 13 إشكاليات lectures. Masari and Bank of Deeds remain action-progress sections instead of fake reading/spiritual ranks.
-- The 9 أعمال القلوب have the authored curriculum: التعريف والفهم → القرآن والسنة → هدي أهل العلم والصالحين → تطبيق عملي. Other sections use their own existing sourced content layers. Read CONTENT_PROVENANCE-TAZKIYAH.md before editing any of them.
-- UI must say study depth/progress, **never spiritual rank**. Do not add points, iman scores, sacred counts, artificial time locks, guilt mechanics or manipulative retention. Return value comes from deeper content, continue/resume, review and practical application.
-- `qalb-levels-v1` is persistent local user data. Preserve it. Existing R23 works IDs stay plain; new areas use composite depth IDs (`problem:`, `obstacle:`, `nafs:`, `ish:`). R24 records done/open/completedAt/lastAt/reviews additively. It is registered in app/data-safety.js; local schema remains 2.
-- Every published religious/educational stage item must render its visible source. Do not populate a level from model memory or unsourced aggregator pages. Safety/medical guidance must never be hidden behind completion locks.
-- `app/qalb.json` and `app/ishkaliat.json` are precached: any future edit requires a Service Worker cache-name bump. R24 cache is `tadaruq-v24-r24-pwa-20260820`.
-- The build environment could not complete visual browser QA because Chromium localhost/file navigation is blocked by administrator policy. Do not claim mobile layout/runtime verified until tested on a real deployed device.
+READ AI_HANDOFF.md FIRST. It is append-only and may not be deleted, renamed, truncated, summarized away, or omitted from a full handoff.
+Current code/content release is Tadaruq v24 R32, based additively on the owner-supplied R31 source.
+Before any edit:
+1) preserve local user data and stable IDs/keys;
+2) retain immediate sources for religious claims and appropriate scientific/official sources for scientific/medical claims;
+3) do not turn study/obstacle tracking into faith scoring;
+4) do not duplicate خطة اليوم / مساري / ارتقِ;
+5) do not touch R29-R31 Mushaf geometry/fullscreen/ayah-selection code without dedicated regression work and real-device visual QA;
+6) if content/UI changes, bump the Service Worker cache name;
+7) the R32 structured smoking/nicotine journey creates a Google Play Health Apps declaration review requirement before Play-facing deployment.

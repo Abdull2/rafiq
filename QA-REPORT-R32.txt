@@ -1,0 +1,21 @@
+Tadaruq v24 R32 — QA Report — 2026-08-20
+
+EXECUTED / PASS
+- JS syntax: app.js, data-safety.js, sw.js, pwa-register.js, extension-bridge.js, tafsir-config.js.
+- JSON/webmanifest parse: all root JSON plus manifest.webmanifest.
+- Fiqh al-Busola: 3 tracks, 30 lessons, 120 stages, 12 labs; all source IDs resolve.
+- Mujahada: 4 requested topics; each has impact options, sources on why/answer/steps, 4 sourced plan stages, 4 sourced depth levels.
+- Benefit matching: 8 routes, all source-backed and with concrete first steps; Quran teaching min-age guard; financial route excluded for tight-money profile.
+- Data Safety: fiqh-busola-progress-v1, mujahada-weight-v1, benefit-choice-v1 registered; schema remains 2.
+- HTML: no duplicate IDs.
+- Service Worker: R32 cache/runtime names; all precache paths exist; fiqh-busola.json + benefit.json included.
+- Mushaf regression scan: no R31->R32 diff on Mushaf/fullscreen/ayah-selection markers.
+
+NOT VERIFIED VISUALLY
+- Busola cards/detail layout on real phone/desktop.
+- Mujahada impact selector layout on real phone.
+- Benefit recommendation layout on real phone.
+A headless Chromium localhost attempt timed out in this sandbox, so no visual-browser PASS is claimed.
+
+POLICY GATE
+The full R32 source includes a structured smoking/nicotine cessation-support journey with WHO health information. Google Play's Health Apps declaration must be re-audited before deploying this feature to the Play-distributed TWA; do not keep declaring “no health features” if the deployed app offers a feature Google classifies as health/addiction-recovery functionality.

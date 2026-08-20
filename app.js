@@ -102,7 +102,7 @@ const toast=m=>{const t=document.getElementById('toast');t.textContent=m||'تم 
   t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1200)};
 
 /* ================= profile personalization ================= */
-let profile={age:null,gender:null,advancedIssues:false};
+let profile={age:null,gender:null,advancedIssues:false,married:null,hasKids:null,timeBand:null,moneyBand:null,skills:[]};
 const isFemale=()=>profile.gender==='female';
 const g=(male,female)=>isFemale()?female:male;
 const pText=x=>{
@@ -113,6 +113,22 @@ const pText=x=>{
 const profileAge=()=>Number(profile.age)||0;
 const issuesEnabled=()=>profile.advancedIssues===true;
 const issueTabButton=(active=false)=>`<button data-k="ishkaliat" class="${issuesEnabled()?'':'optional-track'}"${active?' aria-current="true"':''} title="مسار متقدم اختياري">إشكاليات</button>`;
+const LIFE_BOOL=v=>v==='yes'?true:v==='no'?false:null;
+const LIFE_SEL=v=>v===true?'yes':v===false?'no':'';
+function lifeSkillsFrom(rootId){return [...document.querySelectorAll(`#${rootId} input[type="checkbox"]:checked`)].map(x=>x.value)}
+function lifeSetSkills(rootId,skills=[]){document.querySelectorAll(`#${rootId} input[type="checkbox"]`).forEach(x=>x.checked=(skills||[]).includes(x.value))}
+function syncKidsVisibility(prefix='profile-edit'){
+  const m=document.getElementById(prefix+'-married'),wrap=document.getElementById(prefix+'-kids-wrap');if(!m||!wrap)return;
+  const married=LIFE_BOOL(m.value);wrap.classList.toggle('hide',married!==true);if(married!==true){const k=document.getElementById(prefix+'-kids');if(k)k.value=''}
+}
+function readLifeProfile(prefix='profile-edit',skillsRoot='profile-edit-skills'){
+  const married=LIFE_BOOL(document.getElementById(prefix+'-married')?.value||'');
+  return {married,hasKids:married===true?LIFE_BOOL(document.getElementById(prefix+'-kids')?.value||''):null,timeBand:document.getElementById(prefix+'-time')?.value||null,moneyBand:document.getElementById(prefix+'-money')?.value||null,skills:lifeSkillsFrom(skillsRoot)};
+}
+function fillLifeProfile(prefix='profile-edit',skillsRoot='profile-edit-skills'){
+  const m=document.getElementById(prefix+'-married'),k=document.getElementById(prefix+'-kids'),t=document.getElementById(prefix+'-time'),mo=document.getElementById(prefix+'-money');
+  if(m)m.value=LIFE_SEL(profile.married);if(k)k.value=LIFE_SEL(profile.hasKids);if(t)t.value=profile.timeBand||'';if(mo)mo.value=profile.moneyBand||'';lifeSetSkills(skillsRoot,profile.skills||[]);syncKidsVisibility(prefix);
+}
 function audienceOk(x){
   if(!x)return true;
   if(x.audience&&x.audience!=='all'&&x.audience!==profile.gender)return false;
@@ -608,7 +624,7 @@ function renderHistoryPlain(days,qalbOn){
   let pRecorded=0,pOn=0;
   days.forEach(x=>Object.values(x.day?.prayers||{}).forEach(v=>{pRecorded++;if(v==='time'||v==='jamaah')pOn++}));
   const host=document.getElementById('history-summary');
-  if(host)host.innerHTML=`<div class="hist-intro"><b>ماذا سجّلت هذا الأسبوع؟</b><span>الأرقام هنا تلخص ما سجلته داخل تدارُك فقط، وليست حكمًا على يومك أو عبادتك.</span></div><div class="hist-cards">${histMetricCard('خلاصة اليوم',`${AR(doneReview)} / ٧`,'أيام سجّلت فيها الخلاصة')}${histMetricCard('الصلاة',pRecorded?`${AR(pOn)} / ${AR(pRecorded)}`:'—',pRecorded?'من الصلوات التي سجّلتها كانت في وقتها':'لم تسجّل صلوات بعد')}${histMetricCard('القرآن',`${AR(qDays)} أيام`,`${AR(qPages)} صفحة مسجّلة`)}${histMetricCard('أذكار الصباح',`${AR(am)} / ٧`,'أيام أتممت فيها الورد')}${histMetricCard('أذكار المساء',`${AR(pm)} / ٧`,'أيام أتممت فيها الورد')}${histMetricCard('القلب',heart?`${AR(heart)} أيام`:'—',heart?'تابعت خطوة من علاج القلب':'لا متابعة مسجلة هذا الأسبوع')}</div>`;
+  if(host)host.innerHTML=`<div class="hist-intro"><b>ماذا سجّلت هذا الأسبوع؟</b><span>الأرقام هنا تلخص ما سجلته داخل تدارُك فقط، وليست حكمًا على يومك أو عبادتك.</span></div><div class="hist-cards">${histMetricCard('خلاصة اليوم',`${AR(doneReview)} / ٧`,'أيام سجّلت فيها الخلاصة')}${histMetricCard('الصلاة',pRecorded?`${AR(pOn)} / ${AR(pRecorded)}`:'—',pRecorded?'من الصلوات التي سجّلتها كانت في وقتها':'لم تسجّل صلوات بعد')}${histMetricCard('القرآن',`${AR(qDays)} أيام`,`${AR(qPages)} صفحة مسجّلة`)}${histMetricCard('أذكار الصباح',`${AR(am)} / ٧`,'أيام أتممت فيها الورد')}${histMetricCard('أذكار المساء',`${AR(pm)} / ٧`,'أيام أتممت فيها الورد')}${histMetricCard('تزكية',heart?`${AR(heart)} أيام`:'—',heart?'تابعت خطوة من علاج القلب':'لا متابعة مسجلة هذا الأسبوع')}</div>`;
   const metrics=[
     {id:'review',label:'خلاصة اليوم',score:doneReview/7,detail:`سجّلتها ${AR(doneReview)} من ٧ أيام`,tab:'today'},
     {id:'quran',label:'ورد القرآن',score:qDays/7,detail:`قرأت في ${AR(qDays)} من ٧ أيام`,tab:'quran'},
@@ -1404,10 +1420,23 @@ async function renderNawawi(){
 }
 
 /* ================= العلم: رياض الصالحين + الأربعون النووية + السيرة + الصحابة + الأساسيات + الفقه ================= */
-let LEARN=null, SEERAH=null, COMPANIONS=null, learnMode='nawawi', learnQuery='', learnGroup='all';
+let LEARN=null, SEERAH=null, COMPANIONS=null, BUSOLA=null, busolaMode='maqasid', busolaOpen=null, busolaProgress={}, learnMode='nawawi', learnQuery='', learnGroup='all';
 async function loadLearn(){if(LEARN)return LEARN;try{LEARN=await (await fetch('./knowledge.json')).json()}catch{LEARN={meta:{},essentials:[],fiqh:[]}}return LEARN}
 async function loadSeerah(){if(SEERAH)return SEERAH;try{SEERAH=await (await fetch('./seerah.json')).json()}catch{SEERAH={meta:{},items:[]}}return SEERAH}
 async function loadCompanions(){if(COMPANIONS)return COMPANIONS;try{COMPANIONS=await (await fetch('./companions.json')).json()}catch{COMPANIONS={meta:{},items:[]}}return COMPANIONS}
+async function loadBusola(){if(BUSOLA)return BUSOLA;try{BUSOLA=await (await fetch('./fiqh-busola.json')).json()}catch{BUSOLA={meta:{},sources:{},tracks:[],labs:[]}}busolaProgress=(await store.get('fiqh-busola-progress-v1'))||{};return BUSOLA}
+function busolaSources(ids=[]){return `<div class="busola-src">${ids.map(id=>BUSOLA?.sources?.[id]).filter(Boolean).map(s=>`<a href="${laterEsc(s.url)}" target="_blank" rel="noopener">${laterEsc(s.label)} ↗</a>`).join('')}</div>`}
+function busolaKey(track,lesson){return `${track}:${lesson}`}
+function busolaState(track,lesson){const k=busolaKey(track,lesson),x=busolaProgress[k]||{};return {...x,done:Array.isArray(x.done)?x.done:[]}}
+async function busolaMark(track,lesson,n){const k=busolaKey(track,lesson),x=busolaState(track,lesson);if(!x.done.includes(n))x.done.push(n);x.open=Math.min(4,n+1);x.lastAt=Date.now();busolaProgress[k]=x;await store.set('fiqh-busola-progress-v1',busolaProgress);renderBusola()}
+function busolaLessonCard(track,l,i){const st=busolaState(track.id,l.id),pct=Math.round(st.done.length/4*100);return `<article class="busola-card" data-busola-lesson="${laterEsc(track.id)}:${laterEsc(l.id)}"><div class="k">${laterEsc(track.title)} · باب ${AR(i+1)}</div><h3>${laterEsc(l.title)}</h3><p>${laterEsc(l.lead)}</p><div class="busola-meter"><span>${AR(st.done.length)}/٤ مستويات</span><i><em style="width:${pct}%"></em></i></div>${busolaSources(l.sourceIds||[])}</article>`}
+function busolaLessonDetail(track,l){const st=busolaState(track.id,l.id);return `<button class="busola-back" data-busola-back>→ رجوع إلى ${laterEsc(track.title)}</button><div class="busola-hero"><small>${laterEsc(track.title)}</small><h2>${laterEsc(l.title)}</h2><p>${laterEsc(l.lead)}</p><div class="busola-note">إتمام المراحل يعني دراسة المادة فقط، وليس رتبة علمية أو أهلية للفتوى.</div></div><div class="busola-detail">${(l.stages||[]).map((s,i)=>{const can=i===0||st.done.includes((l.stages||[])[i-1].n),done=st.done.includes(s.n);return `<section class="busola-stage${can?'':' lock'}"><div class="busola-stage-head"><b>${laterEsc(s.title)}</b><span>المستوى ${AR(i+1)} من ٤</span></div><div class="busola-stage-body">${can?`<p>${laterEsc(s.text)}</p>${s.points?.length?`<ul>${s.points.map(p=>`<li>${laterEsc(p)}</li>`).join('')}</ul>`:''}${busolaSources(s.sourceIds||l.sourceIds||[])}${done?`<div class="busola-stage-ok">✓ درست هذا المستوى ويمكنك مراجعته متى شئت.</div>`:`<button class="busola-stage-done" data-busola-done="${laterEsc(track.id)}:${laterEsc(l.id)}:${s.n}">فهمت هذا المستوى${i<3?' — افتح التالي':''}</button>`}`:`<p>أكمل المستوى السابق أولًا حتى يكون التدرج مترابطًا.</p>`}</div></section>`}).join('')}</div>`}
+async function renderBusola(){await loadBusola();const host=document.getElementById('learn-busola');if(!host)return;const m=BUSOLA.meta||{};if(busolaOpen){const [tid,lid]=busolaOpen.split(':'),tr=(BUSOLA.tracks||[]).find(x=>x.id===tid),l=tr?.lessons?.find(x=>x.id===lid);if(tr&&l){host.innerHTML=busolaLessonDetail(tr,l);host.onclick=busolaClick;return}busolaOpen=null}
+ const tabs=[...(BUSOLA.tracks||[]).map(t=>`<button data-busola-mode="${t.id}" class="${busolaMode===t.id?'on':''}">${laterEsc(t.title)}</button>`),`<button data-busola-mode="lab" class="${busolaMode==='lab'?'on':''}">مختبر البوصلة</button>`].join('');
+ const hero=`<div class="busola-hero"><small>مسار تعليمي جديد</small><h2>${laterEsc(m.title||'فقه البوصلة')}</h2><p>${laterEsc(m.subtitle||'')}</p><div class="busola-note">${laterEsc(m.note||'')}</div></div><div class="busola-tabs">${tabs}</div>`;
+ if(busolaMode==='lab'){host.innerHTML=hero+`<div class="busola-note">المختبر لا يعطيك «الجواب النهائي». هدفه أن تتعلم ما المعلومات والأسئلة التي تسبق الحكم، ثم ترجع إلى أهل العلم عند الحاجة.</div>`+(BUSOLA.labs||[]).map(x=>`<article class="busola-lab"><h3>${laterEsc(x.title)}</h3><div class="sit">${laterEsc(x.situation)}</div><h4>اسأل قبل أن تحكم</h4><ul>${(x.questions||[]).map(q=>`<li>${laterEsc(q)}</li>`).join('')}</ul><h4>البوصلة</h4><ul>${(x.principles||[]).map(q=>`<li>${laterEsc(q)}</li>`).join('')}</ul>${busolaSources(x.sourceIds||[])}</article>`).join('');host.onclick=busolaClick;return}
+ const tr=(BUSOLA.tracks||[]).find(x=>x.id===busolaMode)||BUSOLA.tracks?.[0];host.innerHTML=hero+`<div class="busola-note"><b>لا تكرار مع «ارتقِ»:</b> هنا تتعلم القواعد. أما ترتيب خطتك الشخصية اليومية فيبقى داخل «ارتقِ» و«خطة اليوم».</div><div class="busola-grid">${(tr?.lessons||[]).map((l,i)=>busolaLessonCard(tr,l,i)).join('')}</div>`;host.onclick=busolaClick}
+async function busolaClick(e){const mode=e.target.closest('[data-busola-mode]');if(mode){busolaMode=mode.dataset.busolaMode;busolaOpen=null;renderBusola();return}const card=e.target.closest('[data-busola-lesson]');if(card){busolaOpen=card.dataset.busolaLesson;renderBusola();scrollTo({top:0,behavior:'smooth'});return}if(e.target.closest('[data-busola-back]')){busolaOpen=null;renderBusola();return}const done=e.target.closest('[data-busola-done]');if(done){const [t,l,n]=done.dataset.busolaDone.split(':');await busolaMark(t,l,+n);toast('سُجل تقدم الدراسة ✓');return}}
 function sourceStack(sources=[],fallbackLabel='',fallbackUrl=''){
   const ss=sources.length?sources:(fallbackLabel?[{label:fallbackLabel,url:fallbackUrl}]:[]);
   return ss.map((s,i)=>`<div class="learn-source source-ref"><span class="src-mark">↗</span><span><span class="src-label">${i?'مرجع إضافي':'المصدر'}</span> ${s.url?`<a href="${laterEsc(s.url)}" target="_blank" rel="noopener">${laterEsc(s.label)}</a>`:laterEsc(s.label)}</span></div>`).join('');
@@ -1425,14 +1454,14 @@ function learnCards(items,fiqh=false){return items.map((x,i)=>{const src=(x.sour
 function learnFilters(items){const groups=['all',...new Set(items.map(x=>x.group).filter(Boolean))];return `<div class="learn-tools"><input id="learn-search" class="q-search" type="search" value="${laterEsc(learnQuery)}" placeholder="ابحث داخل هذا القسم…"><div class="learn-groups">${groups.map(x=>`<button data-lg="${laterEsc(x)}" class="${learnGroup===x?'on':''}">${x==='all'?'كل الأبواب':x}</button>`).join('')}</div></div>`}
 function filteredLearn(items){const q=searchNorm(learnQuery);return items.filter(x=>(learnGroup==='all'||x.group===learnGroup)&&(!q||searchNorm(deepSearchText(x)).includes(q)))}
 async function renderKnowledge(){
-  await loadLearn();document.querySelectorAll('#learn-seg button').forEach(b=>b.setAttribute('aria-current',b.dataset.learn===learnMode));['riyad','nawawi','seerah','companions','essentials','fiqh'].forEach(x=>document.getElementById('learn-'+x)?.classList.toggle('hide',x!==learnMode));
-  if(learnMode==='riyad'){renderSunnah();return}if(learnMode==='nawawi'){renderNawawi();return}if(learnMode==='seerah'){renderSeerah();return}if(learnMode==='companions'){renderCompanions();return}
+  await loadLearn();document.querySelectorAll('#learn-seg button').forEach(b=>b.setAttribute('aria-current',b.dataset.learn===learnMode));['riyad','nawawi','seerah','companions','essentials','fiqh','busola'].forEach(x=>document.getElementById('learn-'+x)?.classList.toggle('hide',x!==learnMode));
+  if(learnMode==='riyad'){renderSunnah();return}if(learnMode==='nawawi'){renderNawawi();return}if(learnMode==='seerah'){renderSeerah();return}if(learnMode==='companions'){renderCompanions();return}if(learnMode==='busola'){renderBusola();return}
   const items=learnMode==='essentials'?LEARN.essentials:LEARN.fiqh,fiqh=learnMode==='fiqh',F=filteredLearn(items);const intro=fiqh?`<b>الفقه الميسر</b><br>${LEARN.meta.fiqhBook}<br>نعرض ملخصات عملية، وتحت كل بطاقة مرجعها.`:`<b>ما لا يسع المسلم جهله</b><br>${LEARN.meta.essentialsBook}<br><a href="${LEARN.meta.essentialsUrl}" target="_blank" rel="noopener">فتح المرجع العام ↗</a><br>${LEARN.meta.essentialsNote||''}`;const host=document.getElementById('learn-'+learnMode);host.innerHTML=`<div class="learn-intro">${intro}</div>${learnFilters(items)}<div class="search-count">${AR(F.length)} من ${AR(items.length)} بابًا</div>${learnCards(F,fiqh)}<div class="learn-disclaimer">${LEARN.meta.note}</div>`;host.querySelector('#learn-search').oninput=e=>{learnQuery=e.target.value;renderKnowledge()};host.querySelector('.learn-groups').onclick=e=>{const b=e.target.closest('button[data-lg]');if(!b)return;learnGroup=b.dataset.lg;renderKnowledge()};
 }
 document.getElementById('learn-seg').onclick=e=>{const b=e.target.closest('button[data-learn]');if(!b)return;closeHadithDetail();learnMode=b.dataset.learn;learnQuery='';learnGroup='all';nawawiQuery='';renderKnowledge();scrollTo({top:0,behavior:'smooth'})};
 
 /* ================= القلب (مدمج) ================= */
-let HD=null, hKind='problems', hCur=null, hTrack={}, hJournal={}, hProg={}, hQuery='', hPaths=[], hPathCur=null, nafsCur=null;
+let HD=null, BENEFIT=null, hKind='problems', hCur=null, hTrack={}, hJournal={}, hProg={}, hQuery='', hPaths=[], hPathCur=null, nafsCur=null, mujWeights={}, benefitChoice={};
 const hToday=()=>iso(new Date());
 const hDone=(k,i,d)=>!!(hTrack[d]&&hTrack[d][k+':'+i]);
 function hStreak(k,i){ let s=0;
@@ -1547,7 +1576,7 @@ async function loadH(){ if(HD)return HD;
   try{ HD=await (await fetch('./qalb.json')).json() }catch{ HD={problems:[],works:[],obstacles:[]} }
   await hLevelsLoad();
   hTrack=(await store.get('qalb-track'))||{}; hJournal=(await store.get('qalb-journal'))||{};
-  hProg=(await store.get('qalb-prog'))||{}; hPaths=(await store.get('qalb-paths-v1'))||[]; return HD }
+  hProg=(await store.get('qalb-prog'))||{}; hPaths=(await store.get('qalb-paths-v1'))||[]; mujWeights=(await store.get('mujahada-weight-v1'))||{}; benefitChoice=(await store.get('benefit-choice-v1'))||{}; return HD }
 function hPct(p){
   if(p.items){ let t=0,n=0;
     p.items.forEach(it=>it.steps.forEach((st,i)=>{ if(st.track){t++; if(hDone(p.id+'/'+it.id,i,hToday()))n++ }}));
@@ -1558,6 +1587,7 @@ function hPct(p){
 const hFind=id=>(HD.problems||[]).concat(HD.works||[],HD.obstacles||[]).find(x=>x.id===id);
 const hPathActive=()=>hPaths.filter(x=>x.status!=='archived');
 const hPathTab=(active=false)=>`<button data-k="path"${active?' aria-current="true"':''}>مساري${hPathActive().length?` · ${AR(hPathActive().length)}`:''}</button>`;
+const hBenefitTab=(active=false)=>`<button data-k="benefit"${active?' aria-current="true"':''}>العمل والنفع</button>`;
 function hPathKey(type,parentId,itemId=''){return [type,parentId,itemId].filter(Boolean).join(':')}
 function hPathFind(key){return hPaths.find(x=>x.key===key)}
 function hPathResolve(path){
@@ -1621,7 +1651,7 @@ function hPathProgress(path,def){const stops=hPathStops(def);if(!stops.length)re
 async function hPathsRender(){
   await loadH(); hPathCur=null;
   const active=hPathActive(),host=document.getElementById('v-qalb');
-  host.innerHTML=`<div class="h-tabs">${hPathTab(true)}<button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button>${issueTabButton(false)}</div>
+  host.innerHTML=`<div class="h-tabs">${hPathTab(true)}<button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button>${hBenefitTab(false)}${issueTabButton(false)}</div>
     <div class="path-hero"><div class="kicker">مساري الشخصي</div><h2>مشكلتك لها باب ومسار</h2><p>اختر المشكلة التي تشغلك الآن من العقبات أو أمراض القلوب أو فقه النفس. تدارُك يجمع لك أصل الفكرة والخطوات الموجودة في المحتوى نفسه، ويحفظ تقدمك محليًا على جهازك. يمكنك فتح أكثر من مسار.</p></div>
     ${active.length?`<div class="path-list">${active.map(p=>{const d=hPathResolve(p);if(!d)return'';const pct=hPathProgress(p,d);return `<div class="path-card"><div class="top"><div><div class="kind">${d.kind}${d.sub?' · '+d.sub:''}</div><h3>${d.title}</h3><div class="sub">بدأ ${new Intl.DateTimeFormat('ar-EG',{day:'numeric',month:'short'}).format(new Date(p.start))}</div></div><button class="path-open" data-path-open="${laterEsc(p.key)}">افتح المسار</button></div><div class="path-progress"><i style="width:${pct}%"></i></div><div class="path-meta"><span>${AR(pct)}% من المحطات</span><span>${(p.checkins||[]).length?`آخر مراجعة: ${(p.checkins||[]).slice(-1)[0].state}`:'لم تسجل مراجعة بعد'}</span></div></div>`}).join('')}</div>`:`<div class="path-empty"><b>ما الذي يشغلك هذه الأيام؟</b><p>ابدأ من إحساسك أو موقفك الحالي. سنوصلك للباب الأقرب، وأنت تختار المشكلة التي تشبه واقعك ثم تضيفها لمسارك.</p><div class="path-suggestions"><button data-path-preset="worry">هم أو قلق</button><button data-path-preset="futuur">فتور</button><button data-path-preset="sin">ذنب يتكرر</button><button data-path-preset="family">مشكلة أسرية</button><button data-path-preset="relation">علاقة أو ارتباط</button><button data-path-preset="heart">مرض قلب</button></div><div class="path-picks"><button data-path-go="obstacles">كل العقبات</button><button data-path-go="problems">أمراض القلوب</button><button data-path-go="nafs">فقه النفس</button></div></div>`}`;
   host.onclick=hClick;
@@ -1644,7 +1674,7 @@ async function hRender(){
       <button data-k="works" aria-current="${hKind==='works'}">أعمال القلوب</button>
       <button data-k="obstacles">العقبات</button>
       <button data-k="deeds">بنك الأعمال</button>
-      <button data-k="nafs">فقه النفس</button>${issueTabButton(false)}
+      <button data-k="nafs">فقه النفس</button>${hBenefitTab(false)}${issueTabButton(false)}
     </div>
     <p class="h-src"><b>قاعدة تدارُك:</b> كل توجيه ديني تحته مصدره، وفقه النفس مستفاد من منهج مكاني مع فصل واضح بين التثقيف وبين التشخيص والعلاج الطبي.</p>
     <input id="heart-search" class="q-search" type="search" value="${hQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في هذا القسم: رياء، توكل، صبر، شهوة…" aria-label="بحث في التزكية">
@@ -1661,7 +1691,7 @@ function hRenderList(){
   host.innerHTML=F.length?lead+`<div class="h-grid">${F.map(p=>{
     const pct=hPct(p),j=(hJournal[p.id]||[]).length,pathBtn=hKind==='problems'?hPathQuickButton('problem',p.id):'';
     const depth=hDepthTileHtml(p);
-    return `<div class="h-tile" data-id="${p.id}">${laterRegister(`heart:${hKind}:${p.id}`,{kind:'القلب',title:p.name,text:p.sub||'',source:p.defSource?.t||'',tab:'qalb'})}<div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div>${depth}${pathBtn?`<div class="path-quick-wrap">${pathBtn}</div>`:''}<div class="pr"><i style="width:${pct}%"></i></div><div class="st">${pct?'اليوم '+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div></div>`
+    return `<div class="h-tile" data-id="${p.id}">${laterRegister(`heart:${hKind}:${p.id}`,{kind:'تزكية',title:p.name,text:p.sub||'',source:p.defSource?.t||'',tab:'qalb'})}<div class="nm">${p.name}</div><div class="ds">${p.sub||''}</div>${depth}${pathBtn?`<div class="path-quick-wrap">${pathBtn}</div>`:''}<div class="pr"><i style="width:${pct}%"></i></div><div class="st">${pct?'اليوم '+pct+'%':'ابدأ اليوم'}${j?' · ✎ '+AR(j):''}</div></div>`
   }).join('')}</div>`:'<div class="nafs-empty">لا توجد نتائج مطابقة في هذا القسم.</div>';
 }
 
@@ -1706,6 +1736,11 @@ function hStepsHtml(key,steps){
       <div><div class="t">${st.t}</div><div class="d">${st.d}</div>${hSourceHtml(st.s||st.source)}
       ${sk>1?`<div class="stk">${AR(sk)} أيام متتابعة</div>`:''}${wk}</div></div>`}).join('');
 }
+function hMujahadaHtml(it){
+  if(!it?.weight&&!it?.medicalBoundary)return '';
+  const chosen=+(mujWeights[it.id]?.value||0),opt=(it.weight?.options||[]).find(x=>+x.v===chosen);
+  return `${it.weight?`<div class="muj-weight"><b>${laterEsc(it.weight.q||'ما حجم أثر هذه العقبة؟')}</b><p>${laterEsc(it.weight.note||'')}</p><div class="muj-options">${(it.weight.options||[]).map(o=>`<button data-muj-weight="${laterEsc(it.id)}:${o.v}" class="${chosen===+o.v?'on':''}">${laterEsc(o.t)}</button>`).join('')}</div>${opt?`<div class="muj-say">${laterEsc(opt.sayTo||'')}</div>`:''}</div>`:''}${it.medicalBoundary?`<div class="muj-boundary"><b>حدّ مهم:</b> ${laterEsc(it.medicalBoundary)}</div>`:''}`;
+}
 function hOpen(id){
   const p=hFind(id); if(!p)return; hCur=id;
   const isOb=!!p.items;
@@ -1726,6 +1761,7 @@ function hOpen(id){
       return `<div class="h-ob" data-depth-card="${laterEsc(depthId)}">${laterRegister(`obstacle:${p.id}:${it.id}`,{kind:'عقبة',title:p.name,text:qq,source:it.answerSource?.t||'',tab:'qalb'})}<button class="h-obh" data-ob="${k}">
           <span class="q">${qq}</span><span class="x">⌄</span></button><div class="path-ob-quick">${hPathQuickButton('obstacle',p.id,it.id)}${itemDepth?`<span class="ob-depth-mini">${AR(hDepthMeta(it).done)}/${AR(hDepthMeta(it).total)} تعمّق</span>`:''}</div>
         <div class="h-obb hide">
+          ${p.id==='mujahada'?hMujahadaHtml(it):''}
           ${itemDepth?hLevelsHtml(it):`<div class="h-obs"><div class="lb">لماذا قد تحدث؟</div><ul>${hListHtml(it.why||[])}</ul></div><div class="h-obs"><div class="lb">الجواب باختصار</div><div class="tx">${it.answer}</div>${hSourceHtml(it.answerSource)}</div>`}
           <div class="path-inline"><span>هذه هي مشكلتك الآن؟ اجمعها في «مساري» وتابع خطواتها بدل أن تضيع بين الأقسام.</span>${hPathButton('obstacle',p.id,it.id)}</div>
           ${itemDepth?`<div class="h-obs" style="padding-bottom:0"><div class="lb">تطبيق اليوم</div><div class="depth-practice-intro">المتابعة هنا لما نفذته فقط، وليست تقييمًا لشخصك أو لإيمانك.</div></div>`:`<div class="h-obs" style="padding-bottom:0"><div class="lb">خطوات التجاوز</div></div>`}
@@ -1769,7 +1805,10 @@ async function hClick(e){
     await hDepthRender(id); toast(nxt?'فُتح المستوى التالي ✓':'أنهيت مسار دراسة هذا الموضوع ✓'); return }
   const lvr=e.target.closest?.('[data-lvreview]');
   if(lvr){const id=lvr.dataset.lvreview;await hLevelReview(id);await hDepthRender(id);toast('سُجلت المراجعة ✓');return}
-  if(kt){ const k=kt.dataset.k; dCat=null; if(k==='path'){hPathsRender();return} if(k==='ishkaliat'){hIshkaliat();return} if(k==='nafs'){hNafs();return} if(k==='deeds'){hDeeds();return} if(k==='obstacles'){hKind='obstacles';hObstacles();return} if(['problems','works'].includes(k)){hKind=k;hRender();return} }
+  if(kt){ const k=kt.dataset.k; dCat=null; if(k==='path'){hPathsRender();return} if(k==='benefit'){hBenefit();return} if(k==='ishkaliat'){hIshkaliat();return} if(k==='nafs'){hNafs();return} if(k==='deeds'){hDeeds();return} if(k==='obstacles'){hKind='obstacles';hObstacles();return} if(['problems','works'].includes(k)){hKind=k;hRender();return} }
+  const mw=e.target.closest('button[data-muj-weight]');if(mw){const [id,v]=mw.dataset.mujWeight.split(':');mujWeights[id]={value:+v,updatedAt:Date.now()};await store.set('mujahada-weight-v1',mujWeights);const cat=(HD.obstacles||[]).find(x=>x.id==='mujahada');const it=cat?.items?.find(x=>x.id===id);if(it){const box=mw.closest('.h-obb');if(box){box.querySelectorAll('[data-muj-weight]').forEach(b=>b.classList.toggle('on',b===mw));let say=box.querySelector('.muj-say'),o=it.weight?.options?.find(x=>+x.v===+v);if(!say&&o){say=document.createElement('div');say.className='muj-say';mw.closest('.muj-weight')?.appendChild(say)}if(say)say.textContent=o?.sayTo||''}}toast('حُفظ تقدير أثر العقبة محليًا ✓');return}
+  const bc=e.target.closest('button[data-benefit-choose]');if(bc){benefitChoice={routeId:bc.dataset.benefitChoose,updatedAt:Date.now()};await store.set('benefit-choice-v1',benefitChoice);hBenefit();toast('حُفظ باب النفع المختار ✓');return}
+  const bt=e.target.closest('button[data-benefit-task]');if(bt){await loadBenefit();const r=BENEFIT.routes?.find(x=>x.id===bt.dataset.benefitTask);if(r){const item={id:'benefit-'+Date.now(),text:r.firstStep,due:current||todayKey,done:false,important:false,createdAt:Date.now(),source:'benefit-route'};todoItems.push(item);await saveTodo();toast('أضفنا الخطوة إلى مهام اليوم ✓')}return}
   const pgo=e.target.closest('button[data-path-go]'); if(pgo){const k=pgo.dataset.pathGo;if(k==='obstacles'){hKind='obstacles';hQuery='';hObstacles()}else if(k==='nafs'){nafsQuery='';hNafs()}else{hKind='problems';hQuery='';hRender()}return}
   const ppreset=e.target.closest('button[data-path-preset]'); if(ppreset){const k=ppreset.dataset.pathPreset;if(k==='worry'){nafsQuery='قلق';nafsGroup='all';hNafs()}else if(k==='futuur'){hQuery='فتور';hObstacles()}else if(k==='sin'){hQuery='ذنب';hObstacles()}else if(k==='family'){hQuery='أسرة';hObstacles()}else if(k==='relation'){hQuery='علاقة';hObstacles()}else{hKind='problems';hQuery='';hRender()}return}
   const pquick=e.target.closest('button[data-path-quick]'); if(pquick){e.preventDefault();e.stopPropagation();await hPathQuickAdd(pquick,pquick.dataset.pathQuick);return}
@@ -1850,7 +1889,7 @@ async function hClick(e){
 async function hObstacles(){
   await loadH(); hKind='obstacles'; hCur=null;
   const cats=(HD.obstacles||[]).filter(audienceOk);
-  document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}<button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles" aria-current="true">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button>${issueTabButton(false)}</div><div class="nafs-hero"><h2>${g('مشكلتك مختلفة… والدين ثابت.','مشكلتك مختلفة… والدين ثابت.')}</h2><p>العقبات هنا للحياة الواقعية: أسرة، دراسة، عمل، علاقات، هاتف، فتور، قلق وأسئلة. ${g('اختر ما يشبه موقفك','اختاري ما يشبه موقفكِ')}؛ وكل جواب وخطوة تحته مصدره.</p></div><input id="heart-search" class="q-search" type="search" value="${laterEsc(hQuery)}" placeholder="ابحث: أسرة، علاقة، دراسة، قلق، هاتف…"><div class="search-count" id="heart-result-count"></div><div id="heart-list"></div>`;
+  document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}<button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles" aria-current="true">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button>${hBenefitTab(false)}${issueTabButton(false)}</div><div class="nafs-hero"><h2>${g('مشكلتك مختلفة… والدين ثابت.','مشكلتك مختلفة… والدين ثابت.')}</h2><p>العقبات هنا للحياة الواقعية: أسرة، دراسة، عمل، علاقات، هاتف، فتور، قلق وأسئلة. ${g('اختر ما يشبه موقفك','اختاري ما يشبه موقفكِ')}؛ وكل جواب وخطوة تحته مصدره.</p></div><input id="heart-search" class="q-search" type="search" value="${laterEsc(hQuery)}" placeholder="ابحث: أسرة، علاقة، دراسة، قلق، هاتف…"><div class="search-count" id="heart-result-count"></div><div id="heart-list"></div>`;
   const render=()=>{
     const qq=searchNorm(hQuery), F=cats.filter(x=>!qq||searchNorm(deepSearchText(x)).includes(qq));
     document.getElementById('heart-result-count').textContent=`${AR(F.length)} من ${AR(cats.length)} أبواب`;
@@ -1892,7 +1931,7 @@ function hNafs(){
    `<div class="h-tabs">${hPathTab(false)}
       <button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button>
       <button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button>
-      <button data-k="nafs" aria-current="true">فقه النفس</button>${issueTabButton(false)}</div>
+      <button data-k="nafs" aria-current="true">فقه النفس</button>${hBenefitTab(false)}${issueTabButton(false)}</div>
     <div class="nafs-hero"><h2>فقه النفس — من الفهم إلى التزكية</h2><p>${HD.meta?.nafsMethod||'صياغة تعليمية مستفادة من فقه النفس | مكاني.'}</p><div class="learn-source">المصدر المنهجي: <a href="${HD.meta?.nafsUrl||'https://makany.co/'}" target="_blank" rel="noopener">فقه النفس | مكاني — بإشراف د. عبد الرحمن ذاكر الهاشمي ↗</a></div></div>
     <input id="nafs-search" class="q-search" type="search" value="${nafsQuery.replace(/"/g,'&quot;')}" placeholder="ابحث: قلق، غضب، كمالية، تعلق، وسواس…" aria-label="بحث في فقه النفس">
     <div class="search-count" id="nafs-result-count"></div>
@@ -1952,7 +1991,7 @@ async function hIshkaliat(){
   document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}
       <button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button>
       <button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button>
-      <button data-k="nafs">فقه النفس</button>${issueTabButton(true)}</div>
+      <button data-k="nafs">فقه النفس</button>${hBenefitTab(false)}${issueTabButton(true)}</div>
     <div class="nafs-hero ish-hero"><div class="ish-kicker">مسار متقدم اختياري</div><h2>${ISH.meta?.title||'إشكاليات'}</h2>
       <p>${ISH.meta?.audience||''}</p>
       <div class="ish-method">${ISH.meta?.method||''}</div>
@@ -2080,6 +2119,29 @@ async function hAsma(){
   document.getElementById('asma-search').oninput=e=>{asmaQuery=e.target.value;hAsmaList()}; hAsmaList();
 }
 
+/* ---------- العمل والنفع: اختيار باب خدمة مناسب ---------- */
+async function loadBenefit(){if(BENEFIT)return BENEFIT;try{BENEFIT=await (await fetch('./benefit.json')).json()}catch{BENEFIT={meta:{},sources:{},routes:[]}}return BENEFIT}
+function benefitSourceHtml(ids=[]){return `<div class="busola-src">${ids.map(id=>BENEFIT?.sources?.[id]).filter(Boolean).map(s=>`<a href="${laterEsc(s.url)}" target="_blank" rel="noopener">${laterEsc(s.label)} ↗</a>`).join('')}</div>`}
+function benefitProfileSummary(){const bits=[];if(profile.married===true)bits.push('متزوج/ة');else if(profile.married===false)bits.push('غير متزوج/ة');if(profile.hasKids===true)bits.push('لديك أولاد');if(profile.timeBand)bits.push({scarce:'وقت ضيق',moderate:'وقت متوسط',free:'وقت متاح'}[profile.timeBand]);if(profile.moneyBand)bits.push({tight:'لا ترشيحات مالية',ok:'قدرة مادية محدودة',able:'سعة مادية'}[profile.moneyBand]);if((profile.skills||[]).length)bits.push(`${AR(profile.skills.length)} مهارات محددة`);return bits}
+function benefitScore(r){
+  const age=profileAge();if(r.minAge&&age&&age<r.minAge)return null;
+  if(r.needsMarried&&profile.married!==true)return null;if(r.id==='financial'&&profile.moneyBand==='tight')return null;
+  const skills=profile.skills||[];if(r.requiresAnySkills&&skills.length&&!r.skills.some(s=>skills.includes(s)))return null;
+  let score=1,reasons=[];const hit=(r.skills||[]).filter(s=>skills.includes(s));if(hit.length){score+=5+hit.length;reasons.push('يتقاطع مع مهارة اخترتها')}
+  if(profile.timeBand&&(r.time||[]).includes(profile.timeBand)){score+=2;reasons.push('يناسب مساحة الوقت التي وصفتها')}
+  if(profile.moneyBand&&(r.money||[]).includes(profile.moneyBand)){score+=1}
+  if(r.id==='family'&&profile.married===true){score+=6;reasons.push('يراعي مسؤولياتك الأسرية')}
+  if(r.id==='family'&&profile.hasKids===true){score+=3;reasons.push('التربية والرعاية جزء قائم من مسؤوليتك')}
+  if(r.id==='financial'&&profile.moneyBand==='able'){score+=5;reasons.push('أنت اخترت أن لديك سعة مادية')}
+  if(profile.timeBand==='scarce'&&['technical','writing','professional'].includes(r.id)){score+=2;reasons.push('يمكن البدء فيه بمهمة صغيرة محددة')}
+  if(!reasons.length)reasons.push('باب عام يمكن تجربته بخطوة صغيرة قبل أي التزام كبير');
+  return {score,reasons};
+}
+async function hBenefit(){await loadH();await loadBenefit();const host=document.getElementById('v-qalb'),m=BENEFIT.meta||{},ranked=(BENEFIT.routes||[]).map(r=>({r,m:benefitScore(r)})).filter(x=>x.m).sort((a,b)=>b.m.score-a.m.score).slice(0,3),summary=benefitProfileSummary(),chosen=benefitChoice?.routeId;
+  host.innerHTML=`<div class="h-tabs">${hPathTab(false)}<button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button>${hBenefitTab(true)}${issueTabButton(false)}</div><div class="benefit-hero"><small>تزكية تتحول إلى نفع</small><h2>${laterEsc(m.title||'العمل والنفع')}</h2><p>${laterEsc(m.intro||'')}</p><div class="busola-note">${laterEsc(m.rule||'')}</div></div><div class="benefit-profile">${summary.length?`بنيت الترشيح على: ${summary.join(' · ')}`:'لم تحدد سياقًا إضافيًا بعد؛ لذلك الترشيحات عامة.'}<br><button id="benefit-profile-edit">تعديل سياق الحياة والمهارات</button></div><div class="benefit-list">${ranked.map(({r,m:fit},i)=>`<article class="benefit-card ${chosen===r.id?'chosen':''}"><div class="fit">ترشيح ${AR(i+1)} · ملاءمة عملية وليست ترتيب فضل</div><h3>${laterEsc(r.title)}</h3><p>${laterEsc(r.description)}</p><div class="benefit-why"><b>لماذا ظهر لك؟</b><br>${fit.reasons.map(x=>laterEsc(x)).join(' · ')}</div><div class="benefit-step"><b>أول خطوة ملموسة</b><span>${laterEsc(r.firstStep)}</span></div>${benefitSourceHtml(r.sourceIds||[])}<div class="benefit-actions"><button class="primary" data-benefit-choose="${r.id}">${chosen===r.id?'✓ هذا بابي الحالي':'اختر هذا الباب'}</button><button data-benefit-task="${r.id}">أضف الخطوة لمهام اليوم</button></div></article>`).join('')}</div><div class="busola-note">${laterEsc(m.privacy||'')}</div>`;
+  host.onclick=async e=>{if(e.target.id==='benefit-profile-edit'){document.getElementById('btn-profile')?.click();return}await hClick(e)};scrollTo({top:0,behavior:'smooth'});
+}
+
 /* ---------- بنك الأعمال + الخبيئة ---------- */
 let dCat=null, kh={pin:'',items:[]}, khOpen=false, deedsQuery='';
 const dKey=(cid,i)=>'deed:'+cid+':'+i;
@@ -2121,7 +2183,7 @@ function hDeedsTabs(){
     <button data-k="works">أعمال القلوب</button>
     <button data-k="obstacles">العقبات</button>
     <button data-k="deeds" aria-current="true">بنك الأعمال</button>
-    <button data-k="nafs">فقه النفس</button>${issueTabButton(false)}</div>`;
+    <button data-k="nafs">فقه النفس</button>${hBenefitTab(false)}${issueTabButton(false)}</div>`;
 }
 function khHtml(){
   if(!khOpen) return `<div class="kh-lock">
@@ -2483,8 +2545,10 @@ document.getElementById('file-in').onchange=async e=>{
 };
 
 /* theme */
-document.getElementById('btn-profile')?.addEventListener('click',()=>{document.getElementById('profile-panel')?.classList.remove('hide');const a=document.getElementById('profile-edit-age');if(a)a.value=profile.age||'';const gEl=document.querySelector(`input[name="profile-edit-gender"][value="${profile.gender||'male'}"]`);if(gEl)gEl.checked=true;const adv=document.getElementById('profile-edit-issues');if(adv)adv.checked=issuesEnabled()});
-document.getElementById('profile-save')?.addEventListener('click',async()=>{const age=+(document.getElementById('profile-edit-age')?.value||0),gender=document.querySelector('input[name="profile-edit-gender"]:checked')?.value,advancedIssues=!!document.getElementById('profile-edit-issues')?.checked;if(!gender||age<10||age>100){toast('أدخل بيانات صحيحة');return}profile={...profile,age,gender,advancedIssues};await store.set('profile-v1',profile);paintProfileUI();document.getElementById('profile-panel')?.classList.add('hide');toast(g('تم تحديث التخصيص','تم تحديث التخصيص'));if(tab==='qalb')hRender()});
+document.getElementById('btn-profile')?.addEventListener('click',()=>{document.getElementById('profile-panel')?.classList.remove('hide');const a=document.getElementById('profile-edit-age');if(a)a.value=profile.age||'';const gEl=document.querySelector(`input[name="profile-edit-gender"][value="${profile.gender||'male'}"]`);if(gEl)gEl.checked=true;const adv=document.getElementById('profile-edit-issues');if(adv)adv.checked=issuesEnabled();fillLifeProfile()});
+document.getElementById('profile-save')?.addEventListener('click',async()=>{const age=+(document.getElementById('profile-edit-age')?.value||0),gender=document.querySelector('input[name="profile-edit-gender"]:checked')?.value,advancedIssues=!!document.getElementById('profile-edit-issues')?.checked;if(!gender||age<10||age>100){toast('أدخل بيانات صحيحة');return}profile={...profile,age,gender,advancedIssues,...readLifeProfile()};await store.set('profile-v1',profile);paintProfileUI();document.getElementById('profile-panel')?.classList.add('hide');toast(g('تم تحديث التخصيص','تم تحديث التخصيص'));if(tab==='qalb')hRender()});
+document.getElementById('profile-edit-married')?.addEventListener('change',()=>syncKidsVisibility('profile-edit'));
+document.getElementById('profile-married')?.addEventListener('change',()=>syncKidsVisibility('profile'));
 document.getElementById('profile-close')?.addEventListener('click',()=>document.getElementById('profile-panel')?.classList.add('hide'));
 document.getElementById('btn-saved')?.addEventListener('click',openSavedPanel);
 document.getElementById('saved-close')?.addEventListener('click',()=>document.getElementById('saved-panel')?.classList.add('hide'));
@@ -2498,9 +2562,9 @@ document.getElementById('btn-theme').onclick=async()=>{
 
 /* ================= first-use intro ================= */
 const onboarding=document.getElementById('onboarding'); let onbStep=0;
-function paintOnboarding(){document.querySelectorAll('.onb-step').forEach(x=>x.classList.toggle('on',+x.dataset.onb===onbStep));document.querySelectorAll('.onb-dots i').forEach((x,i)=>x.classList.toggle('on',i===onbStep));document.getElementById('onboarding-prev')?.classList.toggle('hide',onbStep===0);const n=document.getElementById('onboarding-next');if(n)n.textContent=onbStep===3?'ابدأ مع تدارُك':'التالي'}
+function paintOnboarding(){document.querySelectorAll('.onb-step').forEach(x=>x.classList.toggle('on',+x.dataset.onb===onbStep));document.querySelectorAll('.onb-dots i').forEach((x,i)=>x.classList.toggle('on',i===onbStep));document.getElementById('onboarding-prev')?.classList.toggle('hide',onbStep===0);const n=document.getElementById('onboarding-next');if(n)n.textContent=onbStep===4?'ابدأ مع تدارُك':'التالي';if(onbStep===2)syncKidsVisibility('profile')}
 document.getElementById('onboarding-prev')?.addEventListener('click',()=>{onbStep=Math.max(0,onbStep-1);paintOnboarding()});
-document.getElementById('onboarding-next')?.addEventListener('click',async()=>{if(onbStep===1){const age=+(document.getElementById('profile-age')?.value||0),gender=document.querySelector('input[name="profile-gender"]:checked')?.value;if(!gender||age<10||age>100){toast('اختر النوع واكتب عمرًا صحيحًا');return}profile={...profile,age,gender};await store.set('profile-v1',profile);paintProfileUI()}if(onbStep===2){profile={...profile,advancedIssues:!!document.getElementById('profile-issues')?.checked};await store.set('profile-v1',profile)}if(onbStep<3){onbStep++;paintOnboarding();return}await store.set('onboarding-seen-v3',true);onboarding?.classList.add('hide');toast(g('أهلًا بك في تدارُك','أهلًا بكِ في تدارُك'));hQuery='';if(tab==='qalb')hRender()});
+document.getElementById('onboarding-next')?.addEventListener('click',async()=>{if(onbStep===1){const age=+(document.getElementById('profile-age')?.value||0),gender=document.querySelector('input[name="profile-gender"]:checked')?.value;if(!gender||age<10||age>100){toast('اختر النوع واكتب عمرًا صحيحًا');return}profile={...profile,age,gender};await store.set('profile-v1',profile);paintProfileUI()}if(onbStep===2){profile={...profile,...readLifeProfile('profile','profile-skills')};await store.set('profile-v1',profile)}if(onbStep===3){profile={...profile,advancedIssues:!!document.getElementById('profile-issues')?.checked};await store.set('profile-v1',profile)}if(onbStep<4){onbStep++;paintOnboarding();return}await store.set('onboarding-seen-v3',true);onboarding?.classList.add('hide');toast(g('أهلًا بك في تدارُك','أهلًا بكِ في تدارُك'));hQuery='';if(tab==='qalb')hRender()});
 
 /* ================= boot ================= */
 (async function(){
@@ -2508,7 +2572,7 @@ document.getElementById('onboarding-next')?.addEventListener('click',async()=>{i
   if(window.RafiqDataSafety){try{safetyBoot=await RafiqDataSafety.init()}catch(e){safetyBoot={ok:false,message:'تعذر بدء حماية البيانات'}}}
   settings=(await store.get('settings'))||{method:'EGYPT',asr:'1',khatma:30};
   qada=(await store.get('qada'))||{};
-  profile={age:null,gender:null,advancedIssues:false,...((await store.get('profile-v1'))||{})};
+  profile={age:null,gender:null,advancedIssues:false,married:null,hasKids:null,timeBand:null,moneyBand:null,skills:[],...((await store.get('profile-v1'))||{})};if(!Array.isArray(profile.skills))profile.skills=[];
   paintProfileUI();
   await loadLater();
   if(settings.theme) document.documentElement.setAttribute('data-theme',settings.theme);
