@@ -1,0 +1,17 @@
+Tadaruq v24 R34 — Primary logo replacement
+Date: 2026-08-21
+
+Owner request:
+Use the supplied tadaruk-icon-square.svg as the primary app logo instead of the previous generated icon.
+
+Implemented:
+- Added tadaruk-icon-square.svg as the canonical master logo asset.
+- Re-generated icon-192.png, icon-512.png, icon-1024.png and apple-touch-icon.png directly from the supplied SVG.
+- Re-generated icon-maskable-512.png from the same design with the gold wordmark reduced into a safer adaptive-icon zone while keeping the background full bleed.
+- Re-generated splash-mark.png from the same gold wordmark on transparency; launch background remains Tadaruq green.
+- Added SVG favicon so browser tabs use the new identity crisply; PNG fallbacks remain.
+- Bumped PWA cache/runtime cache to R34 so existing installs refresh branded assets.
+- No application logic, Qur'an/Mushaf code, Tazkiyah content, user storage keys, permissions, package ID, TWA origin, or Digital Asset Links changed.
+
+Distribution note:
+A GitHub/PWA deploy updates website/PWA/browser assets. The launcher icon embedded in the Google Play Android TWA is native package artwork; changing that installed Play icon requires rebuilding/uploading a new AAB with the same package ID and signing setup and the next unused version code.

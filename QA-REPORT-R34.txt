@@ -1,0 +1,25 @@
+Tadaruq v24 R34 — QA Report
+Date: 2026-08-21
+Scope: owner-supplied primary logo replacement only
+
+PASS
+- User SVG read successfully; canonical master kept verbatim as tadaruk-icon-square.svg.
+- Generated icon sizes verified: 192x192, 512x512, 1024x1024, Apple 180x180, maskable 512x512.
+- Maskable derivative keeps the full-bleed background and reduces the Arabic wordmark into a safer central adaptive-icon area.
+- splash-mark.png is derived from the same gold wordmark on transparency.
+- index.html prefers SVG favicon and retains PNG fallback icons.
+- manifest.webmanifest parses and still points at the replaced PNG filenames.
+- node --check PASS: app.js, data-safety.js, sw.js.
+- Service-worker R34 precache path audit PASS: 0 missing files.
+- Cache/runtime cache bumped to R34.
+- Data Safety schema unchanged at 2; backup metadata only moved to appVersion 24.34.0.
+- app.js unchanged from R33; no Qur'an/Mushaf/Tazkiyah behavior edited.
+
+NOT DEVICE-TESTED
+- Android launcher masking on different OEM shapes.
+- Google Play installed launcher icon. This cannot change from GitHub alone; it needs a new AAB with the same package/signing and next unused version code.
+- iOS home-screen rendering.
+
+Distribution note
+- GitHub/PWA: deploy R34 web update to refresh browser/PWA icon assets.
+- Google Play TWA: rebuild AAB to change the native installed launcher icon.

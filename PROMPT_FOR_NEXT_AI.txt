@@ -1,5 +1,5 @@
 READ AI_HANDOFF.md FIRST. It is append-only and may not be deleted, renamed, truncated, summarized away, or omitted from a full handoff.
-Current code/content release is Tadaruq v24 R33, based additively on R32.
+Current release is Tadaruq v24 R34, based additively on R33. R34 is a branding-only update using the owner-supplied tadaruk-icon-square.svg as the master app icon.
 Before any edit:
 1) preserve local user data and stable IDs/keys;
 2) retain immediate sources for every religious claim and appropriate scientific/official sources for scientific/medical claims;
@@ -10,3 +10,5 @@ Before any edit:
 7) do not touch R29-R31 Mushaf geometry/fullscreen/ayah-selection code without dedicated regression work and real-device visual QA;
 8) any content/UI change requires a Service Worker cache bump;
 9) the structured smoking/nicotine journey requires a Google Play Health Apps declaration re-audit before Play-facing deployment.
+
+10) Preserve tadaruk-icon-square.svg as the primary app icon master unless the owner explicitly replaces it. Keep maskable safe-zone padding; do not stretch/crop the Arabic wordmark.

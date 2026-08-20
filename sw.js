@@ -1,6 +1,6 @@
-/* Tadaruq PWA service worker — v24 R33. */
-const CACHE_NAME = 'tadaruq-v24-r33-pwa-20260821';
-const RUNTIME_CACHE = 'tadaruq-runtime-v24-r33-20260821';
+/* Tadaruq PWA service worker — v24 R34. */
+const CACHE_NAME = 'tadaruq-v24-r34-pwa-20260821';
+const RUNTIME_CACHE = 'tadaruq-runtime-v24-r34-20260821';
 const PRECACHE_URLS = [
   "./",
   "./adiya.json",
@@ -16,6 +16,7 @@ const PRECACHE_URLS = [
   "./hafs.woff2",
   "./icon-192.png",
   "./icon-512.png",
+  "./icon-1024.png",
   "./icon-maskable-512.png",
   "./index.html",
   "./irtaqi.json",
@@ -32,9 +33,11 @@ const PRECACHE_URLS = [
   "./pwa-register.js",
   "./qalb.json",
   "./seerah.json",
+  "./splash-mark.png",
   "./tafsir-config.js",
   "./sources.html",
-  "./tasbih.html"
+  "./tasbih.html",
+  "./tadaruk-icon-square.svg"
 ];
 
 self.addEventListener('install', event => {

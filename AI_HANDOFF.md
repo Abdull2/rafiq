@@ -1932,3 +1932,26 @@ Executed after the R33 source/content changes:
 - PASS root JSON/webmanifest parsing, 0 duplicate HTML IDs, R33 Service Worker precache path existence.
 - PASS R32→R33 diff isolation: no Mushaf/Qur'an/fullscreen/ayah-selection marker changed in `app.js` or `index.html`.
 - NOT EXECUTED: real-device visual QA. R33 should remain labelled PREVIEW until the owner sees the new source panel and five-stage layouts on the actual phone/TWA.
+
+
+## R34 — Owner-supplied Tadaruq logo becomes the canonical app identity — 2026-08-21
+
+### Owner request
+Owner supplied `tadaruk-icon-square.svg` and asked to make it the main application logo instead of the current generated image.
+
+### Implementation
+- The supplied SVG is preserved verbatim at project root as **`tadaruk-icon-square.svg`** and is now the canonical visual master for the app icon.
+- Derived exact-size PWA/browser assets were regenerated from that SVG: `icon-192.png`, `icon-512.png`, `icon-1024.png`, and `apple-touch-icon.png`.
+- `icon-maskable-512.png` uses the same background/wordmark but shrinks the gold wordmark into a safer central maskable zone; this avoids adaptive launcher shapes clipping the Arabic calligraphy.
+- `splash-mark.png` is derived from the exact same gold wordmark with transparency, preserving the existing professional launch rule: solid Tadaruq background + small centered mark, not a large ornamental image.
+- `index.html` now prefers the supplied SVG as the browser favicon, with PNG fallbacks retained.
+- Service Worker cache/runtime names bumped to R34 and branded assets are explicitly precached so installed PWAs do not remain stuck on the previous icon.
+- Backup metadata app version bumped to `24.34.0`; Data Safety schema stays **2** and no stored user shape/key changed.
+
+### Compatibility / distribution
+- No `app.js`, Qur'an/Mushaf geometry, fullscreen, ayah selection, Tazkiyah content, source data, profile logic, permissions, package ID, TWA origin, or Digital Asset Links changed.
+- GitHub/PWA deployment updates the website/PWA favicon/manifest assets. **The Google Play Android launcher icon is embedded in the native AAB**, so the Play-installed launcher icon changes only after rebuilding and uploading a new AAB using the same package `com.tadaruqnoor.rafiq`, the existing signing setup, and the next unused version code.
+- If the Chrome extension should use this same logo, generate its 16/32/48/128 PNGs from this master and upload an extension package with a version higher than the currently published Chrome Web Store version.
+
+### R34 standing logo rule
+`tadaruk-icon-square.svg` is the canonical app logo master until the owner explicitly replaces it. Do not redraw, stretch, recolor, crop, or substitute the wordmark silently. Derivative raster sizes may scale it; adaptive/maskable variants may add safe-zone padding only.

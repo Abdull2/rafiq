@@ -1,14 +1,15 @@
 {
   "project": "تدارُك - Tadaruq",
-  "release": "v24 R33",
+  "release": "v24 R34",
   "date": "2026-08-21",
   "primary_handoff": "AI_HANDOFF.md",
-  "source_of_truth": "R32 full source, modified additively into R33 with a 5-stage robust Tazkiyah curriculum",
+  "source_of_truth": "R33 full source, modified additively into R34 with the owner-supplied Tadaruq square SVG as the primary visual identity",
   "data_schema": 2,
-  "pwa_cache": "tadaruq-v24-r33-pwa-20260821",
+  "pwa_cache": "tadaruq-v24-r34-pwa-20260821",
   "new_persistent_keys": [],
   "new_content_files": [],
   "critical_policy_gate": "Re-audit Google Play Health Apps declaration before Play-facing deployment because the structured smoking/nicotine journey remains present.",
   "mushaf_rule": "R29-R31 Mushaf/fullscreen/ayah-selection code was intentionally not changed in R33.",
-  "tazkiyah_rule": "Works, heart diseases, and obstacles use 5 distinct source-backed stages; every topic shows named studyRefs plus immediate item sources; progress is study depth, never spiritual rank."
+  "tazkiyah_rule": "Works, heart diseases, and obstacles use 5 distinct source-backed stages; every topic shows named studyRefs plus immediate item sources; progress is study depth, never spiritual rank.",
+  "logo_rule": "Primary app/browser/PWA icon master is tadaruk-icon-square.svg. PNG launcher/PWA assets are derived from it; maskable icon keeps extra safe-zone padding. Native Google Play launcher icon still requires a new AAB using the next unused version code."
 }
