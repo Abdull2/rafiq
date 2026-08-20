@@ -1,12 +1,11 @@
-// Tadaruq R25 — Cloudflare Worker proxy for the official Al-Mukhtasar API.
+// Tadaruq R26 — Cloudflare Worker proxy for the official Al-Mukhtasar API.
 // Store MOKHTASAR_TOKEN as a Worker secret. Never commit it.
 const API='https://admin.mokhtasr.com/api/v1/book-contents';
 
 function cors(origin, env){
   const allowed=(env.ALLOWED_ORIGIN||'https://abdull2.github.io').trim();
-  const value=origin===allowed?origin:allowed;
   return {
-    'Access-Control-Allow-Origin':value,
+    'Access-Control-Allow-Origin':allowed,
     'Access-Control-Allow-Methods':'GET,OPTIONS',
     'Access-Control-Allow-Headers':'Accept,Content-Type',
     'Vary':'Origin',

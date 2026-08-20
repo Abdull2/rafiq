@@ -1382,3 +1382,38 @@ The project already had an official deep-link bridge from R13. R25 makes it a fi
 
 ### Standing rule
 Al-Mukhtasar is now a required Qur'an feature. Keep the exact-ayah official link working even if an optional proxy is unavailable. Inline official text must fail safely back to the official link.
+
+
+## 27) v24 R26 — Full Al-Mukhtasar reading journey (Ayah-style continuation)
+
+Owner requirement (2026-08-20):
+> "انا محتاج اه يقرأ المختصر كله بس لما يختاج يدخل علي اي آية علي حدي مثلآ وبردو يبقي في مكنا يقدر يكمل قراءة المختصر زي تطبيق آية بالضبط"
+
+### Product decision
+- Al-Mukhtasar now has **two intentionally separate flows**:
+  1. **Quick ayah lookup from the Mushaf**: select an ayah -> `التفسير`; this must NOT disturb the user's ongoing Al-Mukhtasar book-reading position.
+  2. **Continuous Al-Mukhtasar reader**: a first-class reader from Al-Fatihah to An-Nas with previous/next ayah, surah/ayah picker, progress, and `أكمل قراءة المختصر`.
+- `فتح في قارئ المختصر` from the quick sheet explicitly moves the continuous-reading position to that ayah.
+- `فتح الآية في المصحف` returns from the reader to the exact ayah/page in the 604-page Mushaf and writes the existing `quran-pos` in its established compatible shape.
+
+### Persistence
+- New local key: `tafsir-pos-v1` = `{s, a, updatedAt}`. It is independent from `quran-pos`.
+- Registered in Data Safety backup/restore and validated as an object. Schema remains 2 (additive registration only).
+- Do NOT store/bundle the full Al-Mukhtasar database in localStorage, GitHub, or extension assets.
+
+### Official text / rights boundary
+- The full reader UI is implemented, but **official inline text is enabled only when `app/tafsir-config.js -> proxyBase` points to the secret-holding proxy**.
+- The proxy requests one ayah at a time from the official API `book-contents` with `books=200`; Bearer token stays only in server secret `MOKHTASAR_TOKEN`.
+- Without the proxy, the reader still preserves position/navigation and gives the exact official link for each ayah, but does not scrape/copy the book.
+- Official API docs provide application register/login/token flow. Terms still restrict reproduction; preserve API authorization/permission evidence. Non-profit status does not justify copying the database.
+
+### UX guarantees
+- Continue card in Qur'an tools shows surah, ayah, absolute position out of 6236, and percentage.
+- Reader has `السورة`, `الآية`, `انتقال`, previous/next, exact Qur'an ayah, official tafsir content when configured, official-source fallback link, and `فتح الآية في المصحف`.
+- Session-only in-memory cache is allowed for already fetched ayahs; do not persist a growing copy of the book.
+
+### Release / QA
+- MV3 version: `24.6.0`.
+- PWA cache: R26.
+- New release notes: `RELEASE-NOTES-R26.txt`.
+- Must keep visible attribution to `المختصر في تفسير القرآن الكريم — مركز تفسير/دار المختصر`.

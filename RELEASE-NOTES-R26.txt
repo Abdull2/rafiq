@@ -1,0 +1,8 @@
+Tadaruq v24 R26
+
+- Dedicated Al-Mukhtasar continuous reader from Al-Fatihah to An-Nas.
+- Separate saved tafsir position (`tafsir-pos-v1`) with continue-reading card and progress.
+- Previous/next ayah, surah/ayah picker, and open-current-ayah-in-Mushaf.
+- Quick tafsir lookup from Mushaf remains separate and does not overwrite book-reading progress unless the user chooses “Open in reader”.
+- Official inline text remains behind the existing secret-holding API proxy; no book database is bundled.
+- MV3 extension version 24.6.0; PWA cache bumped to R26.

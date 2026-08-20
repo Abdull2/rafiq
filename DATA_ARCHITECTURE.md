@@ -48,3 +48,6 @@ See `DATA_SAFETY.md` before changing any persistent storage key or structure.
 
 ## R24 — Tazkiyah study-depth state
 R24 keeps `rafiq:data-version = 2`. The persistent key `qalb-levels-v1` already existed in R23 and is retained for backward compatibility; R24 only registers it in the Data Safety registry and extends records additively with optional completion/review timestamps. Backups and safety snapshots now include it. The values mean **study progress/review history only**, never a religious or spiritual rank.
+
+## R26 — قارئ المختصر
+`tafsir-pos-v1` هو موضع قراءة محلي مستقل عن `quran-pos`. الاستفسار السريع عن تفسير آية من المصحف لا يغيّر موضع قراءة المختصر؛ زر «فتح في قارئ المختصر» فقط ينقل القراءة لهذا الموضع. نص التفسير، عند تفعيل التكامل، يُجلب آية واحدة في كل مرة عبر proxy سري ولا يُضمّن في المستودع.

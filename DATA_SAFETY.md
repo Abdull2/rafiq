@@ -79,3 +79,6 @@ R13 may cache the public Hisn al-Muslim digital dataset in localStorage under `h
 R23 introduced `qalb-levels-v1` for Tazkiyah study-level state. R24 keeps the same key and expands its additive shape to support `done`, `open`, `completedAt`, `lastAt`, and `reviews`. This state is educational progress only; it is **not** a spiritual score or faith rank.
 
 R24 also fixes an R23 omission: `qalb-levels-v1` is now explicitly registered in `app/data-safety.js` and validated as an object, so portable backups/safety snapshots/replace restores include it. Local schema remains **2** because this is registration of an already-existing additive key, not a destructive key rename or incompatible record rewrite. Existing R23 values such as `{done:[...], open:n}` remain valid; missing R24 fields are read with safe defaults.
+
+## R26 — موضع قارئ المختصر
+أضيف المفتاح المحلي `tafsir-pos-v1` ويحفظ فقط موضع القراءة المتتابعة في المختصر (`sura`, `aya`, `updatedAt`). لا يحفظ نص كتاب المختصر أو نسخة منه. المفتاح مسجل في Data Safety backup/restore كبنية `object`. Data schema يبقى 2 لأن الإضافة توافقية وغير هادمة.

@@ -1,7 +1,7 @@
 {
-  "state_id": "TADARUQ-HANDOFF-v24-R24-2026-08-20",
+  "state_id": "TADARUQ-HANDOFF-v24-R26-2026-08-20",
   "project": "تدارُك - Tadaruq",
-  "version": "v24 R24",
+  "version": "v24 R26",
   "platform": "GitHub Pages PWA + Google Play TWA; Chrome MV3 source retained",
   "read_first": [
     "AI_HANDOFF.md",
@@ -39,7 +39,8 @@
     "qalb_paths": "qalb-paths-v1 (selected heart/obstacle/Fiqh-al-Nafs paths, local progress, check-ins)",
     "data_schema": "rafiq:data-version = 2",
     "safety_snapshot": "rafiq:safety-snapshot:v1",
-    "qalb_levels": "qalb-levels-v1 (local-only Tazkiyah study-depth completion/open/review timestamps; educational progress, never spiritual ranking)"
+    "qalb_levels": "qalb-levels-v1 (local-only Tazkiyah study-depth completion/open/review timestamps; educational progress, never spiritual ranking)",
+    "tafsir_position": "tafsir-pos-v1 (local-only continuous Al-Mukhtasar reader position; independent from quran-pos)"
   },
   "key_sources": {
     "essentials": "https://risala.prh.gov.sa/ar/contents/251",
@@ -79,19 +80,13 @@
     "licensed human audio for adhkar when a verified source/licence exists",
     "continued large-tab UX/accessibility cleanup"
   ],
-  "manifest_version_string": "24.4.0",
+  "manifest_version_string": "24.6.0",
   "current_release_changes": [
-    "R24 expands source-backed study depth across 69 Tazkiyah reading topics/scenarios: 9 أعمال القلوب, 10 أمراض القلوب, 22 العقبة scenarios, 15 فقه النفس topics, and 13 إشكاليات lectures.",
-    "The 9 أعمال القلوب receive the strongest authored four-stage curriculum: التعريف والفهم → في القرآن والسنة → في هدي أهل العلم والصالحين → تطبيق عملي; new level-3 material was individually source-verified.",
-    "Other Tazkiyah sections use section-appropriate four-stage progression built from their already-source-backed fields rather than inventing filler claims: heart diseases = definition/causes/revelation/treatment; obstacles = situation/why/answer/steps; Fiqh al-Nafs = idea/psychological understanding/faith compass/questions+application; Ishkaliat = intro/early points/deeper points/full original lecture context.",
-    "Masari and Bank of Deeds intentionally keep action/progress semantics instead of receiving fake religious ranks. The whole Tazkiyah return loop is useful depth, resume/review and application—not points or piety scores.",
-    "Progress is explicitly framed as depth of study, never a spiritual rank. No sacred counts, artificial time locks, guilt prompts, or ad/revenue hooks were added.",
-    "qalb-levels-v1 remains the persistent local progress key. Works keep their original R23 plain IDs for backward compatibility; new section topics use composite depth IDs such as problem:..., obstacle:..., nafs:..., ish:....",
-    "R24 adds optional completedAt/lastAt/reviews fields backward-compatibly and fixes R23 Data Safety omission by registering qalb-levels-v1 as protected object data in backups/snapshots/restores. Local schema remains 2.",
-    "All published stage items are validated to have visible source data. CONTENT_PROVENANCE-TAZKIYAH.md documents the authored works sources and the source-field mapping used by the other sections.",
-    "Chrome MV3 manifest version is 24.4.0; service-worker cache/runtime names are R24 because both qalb.json and ishkaliat.json changed.",
-    "Deterministic QA covers 69 topics and 374 staged sourced items plus Data Safety. Real visual/mobile browser testing remains pending because the build sandbox blocks local Chromium navigation.",
-    "Google Play policy re-review remains pending after the owner switched Health apps declaration off/no-health-features; do not claim approval until Play Console confirms it."
+    "R26 adds a first-class continuous Al-Mukhtasar reader from Al-Fatihah to An-Nas with resume, progress, previous/next and surah/ayah jump.",
+    "Quick Mushaf tafsir lookup is separate and does not overwrite continuous Al-Mukhtasar reading progress unless the user explicitly opens the ayah in the reader.",
+    "New local key tafsir-pos-v1 is registered in Data Safety backup/restore; schema remains 2.",
+    "Official tafsir text is fetched one ayah at a time only through the secret-holding proxy when configured; no full book database is bundled or persisted.",
+    "MV3 version 24.6.0 and PWA cache R26."
   ],
   "data_architecture": {
     "cloud_backend": false,
@@ -123,20 +118,21 @@
     "release_zip_must_include_for_full_source_handoff": true,
     "session_rule": "Append chronological chat/change/test/error/decision ledger before returning artifacts; preserve prior history."
   },
-  "stateId": "TADARUQ-HANDOFF-v24-R24-2026-08-20",
-  "lastRevision": "R24",
-  "revisionSummary": "R19 Digital Asset Links fix; R20 caching/font fixes; R21 touch fixes; R22 Mushaf trim rollback; R23 depth pilot; R24 source-backed Tazkiyah depth architecture across 69 reading topics/scenarios (9 works, 10 heart diseases, 22 obstacles, 15 Fiqh al-Nafs, 13 Ishkaliat), while Masari/Deeds keep action-based progress.",
+  "stateId": "TADARUQ-HANDOFF-v24-R26-2026-08-20",
+  "lastRevision": "R26",
+  "revisionSummary": "R26 adds Ayah-style Al-Mukhtasar continuous reading while preserving exact-ay ah lookup and copyright/API boundaries.",
   "openItems": [
-    "Owner must visually review the R24 69-topic Tazkiyah depth UI on a real phone/browser before production deployment; local headless Chromium is blocked by sandbox policy.",
+    "Obtain/confirm official Mokhtasar API authorization/token and deploy the secret-holding proxy to enable full inline tafsir text in the R26 reader.",
     "Bump CACHE_NAME on any future content JSON edit.",
     "Fullscreen Mushaf enlargement unsolved; prefer reducing reserved chrome height, not SVG geometry.",
     "Google Play policy re-review pending after Health declaration switched off.",
     "Set up a staging branch / preview deployment before further production changes."
   ],
-  "current_release": "v24 R25",
-  "chrome_extension_version": "24.5.0",
+  "current_release": "v24 R26",
+  "chrome_extension_version": "24.6.0",
   "sources": {
     "mokhtasar_tafsir_center_source": "https://tafsir.net/publications/13394"
   },
-  "mokhtasar_inline_proxy": "optional; secret-holding serverless proxy only; public build defaults off"
+  "mokhtasar_inline_proxy": "optional; secret-holding serverless proxy only; public build defaults off",
+  "mokhtasar_reader": "R26 continuous reader UI implemented; inline official text requires configured secret-holding proxy; fallback preserves position and links exact ayah to official reader."
 }

@@ -1,4 +1,4 @@
-/* Tadaruq R25 — optional official Al-Mukhtasar inline tafsir bridge.
+/* Tadaruq R26 — optional official Al-Mukhtasar inline tafsir bridge.
    Keep proxyBase empty until a secret-holding backend is deployed.
    NEVER put the official Bearer token in this public file. */
 window.TADARUQ_TAFSIR = Object.freeze({

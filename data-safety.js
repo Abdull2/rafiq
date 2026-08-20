@@ -12,7 +12,7 @@
   const EXT_SAFETY_SNAPSHOT_KEY='rafiqSafetyExtensionSnapshot';
 
   const EXACT_KEYS=[
-    'settings','qada','profile-v1','onboarding-seen-v3','saved-later-v1','todo-items','quran-pos',
+    'settings','qada','profile-v1','onboarding-seen-v3','saved-later-v1','todo-items','quran-pos','tafsir-pos-v1',
     'dua-fav','my-duas','rs-fav','qalb-track','qalb-journal','qalb-prog','qalb-paths-v1','qalb-levels-v1',
     'deed-skip','khabia','irt-hist','irt-plan','irt-done','irt-journey'
   ];
@@ -22,7 +22,7 @@
 
   const EXPECTED={
     'settings':'object','qada':'object','profile-v1':'object','saved-later-v1':'array','todo-items':'array',
-    'quran-pos':'object','dua-fav':'array','my-duas':'array','rs-fav':'array','qalb-track':'object',
+    'quran-pos':'object','tafsir-pos-v1':'object','dua-fav':'array','my-duas':'array','rs-fav':'array','qalb-track':'object',
     'qalb-journal':'object','qalb-prog':'object','qalb-paths-v1':'array','qalb-levels-v1':'object','khabia':'object','irt-hist':'array',
     'irt-plan':'array','irt-done':'object','irt-journey':'object'
   };
@@ -233,7 +233,7 @@
     if(!validation.ok)throw new Error('تعذّر التصدير لأن بعض البيانات غير قابلة للقراءة. استخدم فحص البيانات أولًا.');
     const extension=await collectExtensionData();
     const core={
-      format:BACKUP_FORMAT,backupVersion:BACKUP_VERSION,appVersion:'24.5.0',
+      format:BACKUP_FORMAT,backupVersion:BACKUP_VERSION,appVersion:'24.6.0',
       dataVersion:+(await adapter.get(DATA_VERSION_KEY)||CURRENT_DATA_VERSION),createdAt:new Date().toISOString(),
       origin:location.origin,records:app.records,rawLocal:app.rawLocal,extension,
       summary:{recordCount:Object.keys(app.records).length,dayCount:Object.keys(app.records).filter(k=>k.startsWith('day:')).length}

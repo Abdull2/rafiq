@@ -1067,11 +1067,16 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <div class="item">
       <div class="tafsir-source-title">تفسير مختصر موثوق بجوار المصحف</div>
       <p>إعداد مركز تفسير للدراسات القرآنية، بصياغة مختصرة تركز على المعنى الأوضح ومقاصد السور والهدايات.</p>
-      <div class="tafsir-source-actions">
-        <a href="https://mokhtasr.com/ar/books/200?aya=1&sura=1" target="_blank" rel="noopener">فتح النسخة الرسمية الكاملة ↗</a>
-        <a class="subtle" href="https://tafsir.net/publications/13394" target="_blank" rel="noopener">تعريف مركز تفسير بالكتاب ↗</a>
+      <div class="tafsir-resume-box">
+        <div><span>أكمل قراءة المختصر</span><b id="tafsir-resume-title">الفاتحة · الآية ١</b><small id="tafsir-resume-meta">موضع القراءة محفوظ على جهازك</small></div>
+        <div class="tafsir-resume-progress"><i id="tafsir-resume-bar" style="width:0%"></i></div>
+        <button type="button" id="tafsir-start" class="tafsir-primary-btn">ابدأ / أكمل القراءة</button>
       </div>
-      <div class="tafsir-rights-note">عند قراءة المصحف: اضغط الآية ثم «التفسير». يفتح تدارُك لوحة مخصصة للآية، مع رابط مباشر للنسخة الرسمية. يمكن تفعيل عرض النص الرسمي داخل التطبيق فقط عبر API مرخّص وخادم وسيط يحفظ مفتاح الوصول خارج ملفات GitHub العامة.</div>
+      <div class="tafsir-source-actions">
+        <a href="https://mokhtasr.com/ar/books/200?aya=1&sura=1" target="_blank" rel="noopener">النسخة الرسمية ↗</a>
+        <a class="subtle" href="https://tafsir.net/publications/13394" target="_blank" rel="noopener">عن الكتاب ومصدره ↗</a>
+      </div>
+      <div class="tafsir-rights-note">للاستفسار عن آية بعينها: افتح المصحف وحدد الآية ثم «التفسير». وللقراءة المتتابعة: «ابدأ / أكمل القراءة» يحفظ موضعك من الفاتحة إلى الناس. عرض النص الرسمي داخل تدارُك يتطلب API رسميًا وخادمًا وسيطًا آمنًا؛ لا تُنسخ قاعدة بيانات الكتاب داخل GitHub.</div>
     </div>
   </section>
 
@@ -1123,6 +1128,35 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   </div>
 </div>
 
+<div id="v-tafsir" class="hide">
+  <div class="tafsir-reader-shell">
+    <div class="tafsir-reader-top">
+      <button type="button" id="tafsir-reader-back" class="tafsir-reader-back">الفهرس</button>
+      <div><span>قراءة متتابعة</span><h2>المختصر في التفسير</h2><b id="tafsir-reader-ref">الفاتحة — الآية ١</b></div>
+    </div>
+    <div class="tafsir-reader-meter"><div><span>تقدم القراءة</span><b id="tafsir-reader-progress">١ / ٦٢٣٦</b></div><div class="prog"><i id="tafsir-reader-progressbar" style="width:0%"></i></div></div>
+    <div class="tafsir-reader-picker">
+      <label>السورة<select id="tafsir-surah-select" aria-label="اختيار السورة"></select></label>
+      <label>الآية<select id="tafsir-ayah-select" aria-label="اختيار الآية"></select></label>
+      <button type="button" id="tafsir-reader-go">انتقال</button>
+    </div>
+    <article class="tafsir-reader-ayah-wrap">
+      <div class="tafsir-reader-label">نص الآية</div>
+      <blockquote id="tafsir-reader-ayah" class="tafsir-reader-ayah"></blockquote>
+    </article>
+    <div id="tafsir-reader-content" class="tafsir-reader-content"></div>
+    <div class="tafsir-reader-actions">
+      <button type="button" id="tafsir-reader-prev">الآية السابقة</button>
+      <button type="button" id="tafsir-reader-next" class="primary">الآية التالية</button>
+    </div>
+    <div class="tafsir-reader-tools">
+      <button type="button" id="tafsir-reader-mushaf">فتح الآية في المصحف</button>
+      <a id="tafsir-reader-official" href="https://mokhtasr.com/ar/books/200?aya=1&sura=1" target="_blank" rel="noopener">اقرأ التفسير الرسمي ↗</a>
+    </div>
+    <div class="tafsir-sheet-rights">المصدر: «المختصر في تفسير القرآن الكريم» — مركز تفسير/دار المختصر. موضع القراءة فقط يُحفظ محليًا. نص الكتاب لا يُضمّن كقاعدة بيانات داخل تدارُك.</div>
+  </div>
+</div>
+
 <div id="tafsir-sheet" class="tafsir-sheet hide" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="tafsir-sheet-title">
   <div class="tafsir-sheet-card">
     <div class="tafsir-sheet-head">
@@ -1132,6 +1166,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <blockquote id="tafsir-sheet-ayah" class="tafsir-sheet-ayah"></blockquote>
     <div id="tafsir-sheet-content" class="tafsir-sheet-content"></div>
     <div class="tafsir-sheet-actions">
+      <button type="button" id="tafsir-sheet-reader">فتح في قارئ المختصر</button>
       <a id="tafsir-sheet-official" href="https://mokhtasr.com/ar/books/200?aya=1&sura=1" target="_blank" rel="noopener">فتح التفسير الرسمي ↗</a>
       <a class="subtle" href="https://tafsir.net/publications/13394" target="_blank" rel="noopener">عن الكتاب ومصدره ↗</a>
     </div>
@@ -1442,6 +1477,9 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .tafsir-source-card p{font-size:11.5px;line-height:1.85;color:var(--soft);margin:0 0 10px}
 .tafsir-source-actions{display:flex;gap:8px;flex-wrap:wrap}.tafsir-source-actions a{border:1px solid var(--sage);border-radius:10px;padding:8px 10px;text-decoration:none;color:var(--deep);font-size:11px;font-weight:650;background:var(--wash)}.tafsir-source-actions a.subtle{border-color:var(--line);background:transparent;color:var(--soft)}
 .tafsir-rights-note{margin-top:9px;padding:8px 10px;border-radius:10px;background:var(--wash);font-size:9.7px;line-height:1.7;color:var(--soft)}
+.tafsir-resume-box{margin:10px 0 8px;border:1px solid color-mix(in srgb,var(--sage) 55%,var(--line));border-radius:14px;padding:12px;background:linear-gradient(180deg,var(--wash),var(--card));display:grid;gap:9px}.tafsir-resume-box>div:first-child{display:grid;gap:2px}.tafsir-resume-box span{font-size:9.5px;color:var(--gold);font-weight:750}.tafsir-resume-box b{font-family:Amiri,serif;font-size:18px;color:var(--deep)}.tafsir-resume-box small{font-size:9.5px;color:var(--soft)}.tafsir-resume-progress{height:5px;background:var(--line);border-radius:99px;overflow:hidden}.tafsir-resume-progress i{display:block;height:100%;background:var(--sage);border-radius:99px;transition:width .25s ease}.tafsir-primary-btn{border:0;border-radius:11px;padding:10px 12px;background:var(--deep);color:#fff;font:inherit;font-size:11px;font-weight:750;cursor:pointer}
+#v-tafsir{max-width:720px;margin:0 auto;padding:14px 14px 92px}.tafsir-reader-shell{display:grid;gap:12px}.tafsir-reader-top{display:flex;align-items:center;gap:12px}.tafsir-reader-top>div{display:grid;gap:1px;flex:1}.tafsir-reader-top span{font-size:9.5px;color:var(--gold);font-weight:750}.tafsir-reader-top h2{font-family:Amiri,serif;font-size:24px;line-height:1.2;margin:0;color:var(--deep)}.tafsir-reader-top b{font-size:11px;color:var(--soft)}.tafsir-reader-back{border:1px solid var(--line);background:var(--card);color:var(--deep);border-radius:11px;padding:9px 11px;font:inherit;font-size:10.5px;font-weight:700}.tafsir-reader-meter,.tafsir-reader-picker,.tafsir-reader-ayah-wrap,.tafsir-reader-content,.tafsir-reader-tools{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:12px}.tafsir-reader-meter>div:first-child{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:10px;color:var(--soft)}.tafsir-reader-meter b{color:var(--deep)}.tafsir-reader-picker{display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px;align-items:end}.tafsir-reader-picker label{display:grid;gap:5px;font-size:9.5px;color:var(--soft)}.tafsir-reader-picker select{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--wash);color:var(--ink);padding:9px;font:inherit;font-size:10.5px}.tafsir-reader-picker button{border:0;border-radius:10px;background:var(--deep);color:#fff;padding:10px 12px;font:inherit;font-size:10.5px;font-weight:700}.tafsir-reader-label{font-size:9.5px;color:var(--gold);font-weight:750;margin-bottom:7px}.tafsir-reader-ayah{font-family:Amiri,serif;font-size:22px;line-height:2.05;text-align:center;color:var(--deep);margin:0;border:0;padding:4px}.tafsir-reader-content{min-height:130px}.tafsir-reader-content.ready{border-color:color-mix(in srgb,var(--sage) 45%,var(--line))}.tafsir-reader-text{display:grid;gap:8px}.tafsir-reader-text p{font-family:Amiri,serif;font-size:19px;line-height:2;margin:0;color:var(--ink)}.tafsir-reader-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.tafsir-reader-actions button,.tafsir-reader-tools button,.tafsir-reader-tools a,.tafsir-sheet-actions button{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--deep);padding:11px 12px;font:inherit;font-size:10.5px;font-weight:700;text-decoration:none;text-align:center;cursor:pointer}.tafsir-reader-actions button.primary{border-color:var(--deep);background:var(--deep);color:#fff}.tafsir-reader-actions button:disabled{opacity:.38;cursor:default}.tafsir-reader-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tafsir-reader-tools a{border-color:var(--sage);background:var(--wash)}
+@media(max-width:560px){.tafsir-reader-picker{grid-template-columns:1fr 1fr}.tafsir-reader-picker button{grid-column:1/-1}.tafsir-reader-tools{grid-template-columns:1fr}.tafsir-reader-ayah{font-size:20px}.tafsir-reader-text p{font-size:18px}}
 .tafsir-current{margin:10px 0;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}.tafsir-current-copy{display:grid;gap:2px}.tafsir-current-copy>span{font-size:9.5px;color:var(--gold);font-weight:700}.tafsir-current-copy>b{font-size:12px;color:var(--deep)}.tafsir-current-copy>small{font-size:9.5px;color:var(--soft)}.tafsir-current>a{border:1px solid var(--sage);border-radius:10px;padding:8px 10px;text-decoration:none;color:var(--deep);font-size:10.5px;font-weight:700;white-space:nowrap}
 .hisn-reader{padding:14px}.hisn-reader-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.hisn-reader-top button{border:1px solid var(--line);background:var(--card);color:var(--deep);border-radius:10px;padding:7px 9px;font:inherit;font-size:10.5px;cursor:pointer}.hisn-reader-top span{font-size:10px;color:var(--soft)}
 .hisn-canonical-source{margin:10px 0;padding:10px;border:1px solid var(--sage);border-radius:12px;background:var(--card);display:grid;gap:3px}.hisn-canonical-source>span{font-size:9px;color:var(--gold);font-weight:700}.hisn-canonical-source>a{font-size:10.8px;color:var(--deep);text-decoration:none;line-height:1.65;font-weight:650}

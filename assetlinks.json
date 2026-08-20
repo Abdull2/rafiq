@@ -1,0 +1,16 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.tadaruqnoor.rafiq",
+      "sha256_cert_fingerprints": [
+        "6D:02:CB:A8:9A:7D:B7:5F:84:C2:74:F6:16:29:35:8A:DE:49:11:28:12:D2:B4:42:EC:A7:4F:43:26:23:4D:4C",
+        "0F:DA:C2:0A:06:FA:E5:77:CD:AD:1C:37:5D:0F:A2:00:DB:62:73:73:C9:BC:31:22:90:51:9F:D3:EE:72:63:D4",
+        "74:67:B8:77:C3:B6:06:4B:CC:BB:95:7C:EA:87:8A:78:25:8A:59:45:29:34:7F:00:84:FA:27:41:36:51:5C:08"
+      ]
+    }
+  }
+]

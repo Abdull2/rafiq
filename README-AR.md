@@ -1,21 +1,25 @@
-# ربط «المختصر في التفسير» داخل تدارُك
+# ربط قارئ «المختصر في التفسير» داخل تدارُك — R26
 
-النسخة R25 تعمل فورًا بدون خادم: اختيار آية ثم «التفسير» يفتح لوحة داخل تدارُك وبها الآية ورابط مباشر لنفس الآية في النسخة الرسمية.
+R26 يضيف قارئًا متتابعًا من الفاتحة إلى الناس: حفظ موضع القراءة، السابق/التالي، اختيار سورة وآية، وفتح الآية نفسها في المصحف.
 
-لعرض **النص الرسمي نفسه داخل تدارُك** يلزم Token مصرح به من API الرسمي للمختصر. لا يجوز وضع الـToken داخل `app.js` أو `tafsir-config.js` لأن GitHub Pages عام.
+**بدون Proxy** يظل وضع القراءة وحفظ الموضع يعملان، لكن نص المختصر نفسه لا يُنسخ داخل تدارُك؛ يظهر زر يفتح نفس الآية في المصدر الرسمي.
 
-## الخطوات بعد الحصول على Token رسمي
+لعرض النص الرسمي داخل القارئ يلزم Token مصرح به من API الرسمي للمختصر. لا تضع الـToken في `app.js` أو `tafsir-config.js` لأن GitHub Pages عام.
+
+## بعد الحصول على Token رسمي
 1. أنشئ Cloudflare Worker من `worker.js`.
-2. خزّن الـToken كـSecret باسم `MOKHTASAR_TOKEN` (لا تضعه في GitHub).
-3. انشر الـWorker.
-4. افتح `app/tafsir-config.js` وضع رابط الـWorker في `proxyBase`، مثل `https://tadaruq-mokhtasar.<account>.workers.dev`.
-5. ارفع التحديث إلى GitHub Pages.
+2. خزّن الـToken كـSecret باسم `MOKHTASAR_TOKEN`.
+3. اضبط `ALLOWED_ORIGIN` إلى `https://abdull2.github.io`.
+4. انشر الـWorker.
+5. ضع رابط الـWorker العام فقط في `app/tafsir-config.js` داخل `proxyBase`.
+6. ارفع تحديث GitHub Pages.
 
-الواجهة ترسل فقط `sura` و`aya`. الـWorker يضيف الـBearer Token من السر، يطلب `book-contents` للكتاب رقم 200، ثم يعيد نص الآية فقط للواجهة.
+الواجهة تطلب آية واحدة فقط في كل مرة (`sura` + `aya`). الـWorker يضيف Bearer Token ويطلب `book-contents` للكتاب رقم 200 ثم يعيد نص هذه الآية. لا يوجد تنزيل جماعي ولا تضمين لقاعدة بيانات الكتاب داخل المستودع.
+
+## الحصول على وصول رسمي
+وثائق API الرسمية توفر Register/Login للحصول على token للتطبيقات. استخدم بياناتك أنت، ولا تشارك كلمة المرور أو الـtoken في GitHub أو المحادثات العامة. وبسبب شروط دار المختصر، يفضّل الاحتفاظ بموافقة/ترخيص الاستخدام للتطبيق حتى لو كان تدارُك غير ربحي.
 
 المراجع الرسمية:
-- API docs: https://mokhtasr.com/ar/api-doc
-- القارئ الرسمي: https://mokhtasr.com/ar/books/200
-- شروط الاستخدام: https://mokhtasr.com/ar/pages/terms-and-conditions
-
-لا تنسخ قاعدة بيانات الكتاب أو النص الكامل داخل المستودع من دون إذن/ترخيص صريح.
+- https://mokhtasr.com/ar/api-doc
+- https://mokhtasr.com/ar/books/200
+- https://mokhtasr.com/ar/pages/terms-and-conditions
