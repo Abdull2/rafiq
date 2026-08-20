@@ -1469,3 +1469,23 @@ To change the actual Google Play launch frame, rebuild in PWABuilder only **afte
 
 ### Standing UX rule
 Do not revert to a large full-canvas ornamental splash. Launch should remain minimal: solid Tadaruq background, small centered mark, fast fade, no text, no spinner, no marketing copy.
+
+
+## 31) v24 R29 — Emergency Mushaf geometry rollback / safe dark mode (2026-08-20)
+
+User reported that the Mushaf appearance was broken after R27. Root cause was the R27 `fitMushafSvgViewBox()` auto-crop plus aggressive `100vw` geometry overrides. This was too risky for a fixed-layout Quran page and violated the project principle that the 604 printed pages must not be reflowed, cropped, or geometrically reinterpreted.
+
+### Permanent rule
+- **Never auto-crop or rewrite the SVG `viewBox` of Mushaf pages.**
+- **Never infer ink bounds with `getBBox()` to zoom Quran pages.**
+- Keep the original fixed SVG geometry and ayah polygons intact.
+- Any dark mode must be visual-only (background/filter) and must not alter page geometry.
+- Any future spacing change must be in the surrounding reader chrome only, not the Quran SVG coordinate system.
+
+### R29 changes
+- Removed `fitMushafSvgViewBox()` entirely and removed its render-time call.
+- Removed the R27 edge-to-edge geometry override block.
+- Restored R26/R16 stable Mushaf sizing/fullscreen rules.
+- Added dark mode using only CSS visual filtering/backgrounds; no viewBox/geometry changes.
+- Kept all R28 splash work and all R26 tafsir-reader work.
+- `quran-pos`, 604-page mapping, swipe direction, ayah selection, tafsir position, and saved user data remain unchanged.

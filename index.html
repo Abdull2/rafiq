@@ -180,30 +180,6 @@
 
 
 
-/* v24 R27 — Mushaf dark mode + Aya-like page fit (preserve fixed KFQC SVG geometry/content) */
-#v-read{--mushaf-paper:#fcfaf4;--mushaf-night:#0b0e0b}
-.mushaf{margin-top:2px;padding:0;border-radius:0;box-shadow:none;background:var(--mushaf-paper);overflow:hidden}
-.mus-body.printed{overflow:hidden;background:var(--mushaf-paper)}
-.mus-body.printed .mushaf-page-svg{display:block;width:100%;height:auto;max-width:none;margin:0;background:var(--mushaf-paper);transform-origin:center center}
-/* In dark mode invert the vector page as one visual surface. This keeps the exact printed geometry intact. */
-[data-theme="dark"] #v-read,[data-theme="dark"] .mushaf,[data-theme="dark"] .mus-body.printed{background:var(--mushaf-night)!important}
-[data-theme="dark"] .mus-body.printed .mushaf-page-svg{background:var(--mushaf-night)!important;filter:invert(1) hue-rotate(180deg) brightness(.88) contrast(1.04)}
-[data-theme="dark"] .mus-body.text-fallback{background:var(--mushaf-night);color:#f1eadb!important}
-[data-theme="dark"] .mushaf-page-loading{color:#d8c7a3}
-[data-theme="dark"] body.mushaf-fullscreen,[data-theme="dark"] body.mushaf-fullscreen #v-read,[data-theme="dark"] body.mushaf-fullscreen .mushaf,[data-theme="dark"] body.mushaf-fullscreen .mus-body.printed{background:var(--mushaf-night)!important}
-[data-theme="dark"] body.mushaf-fullscreen .rd-bar{background:rgba(11,14,11,.92)!important;box-shadow:0 5px 20px rgba(0,0,0,.28)!important}
-/* The source SVGs can contain generous internal page whitespace. R27 tightens the SVG viewBox in JS, then lets the page use the screen edge-to-edge like a dedicated Mushaf app. */
-.mushaf-page-svg[data-viewbox-fitted="true"]{will-change:auto}
-@media(max-width:760px){
-  #v-read{width:100vw;max-width:100vw;margin-inline:calc(50% - 50vw);padding-inline:0!important}
-  #v-read .rd-bar{padding-inline:max(7px,env(safe-area-inset-left)) max(7px,env(safe-area-inset-right))}
-  .mushaf{width:100vw;margin:0;padding:0;border-radius:0}
-  .mus-body.printed{width:100%!important}
-  .mus-body.printed .mushaf-page-svg{width:100%!important;max-width:100vw!important}
-  .mus-head{padding-inline:10px}.mushaf-swipe-hint{margin-bottom:3px}.mus-source{margin-inline:10px}
-}
-body.mushaf-fullscreen .mushaf,body.mushaf-fullscreen .mus-body.printed{background:var(--mushaf-paper)}
-body.mushaf-fullscreen .mus-body.printed .mushaf-page-svg{width:100vw!important;height:var(--mushaf-vh)!important;max-width:100vw!important;max-height:var(--mushaf-vh)!important;object-fit:contain!important}
 
 
 /* v24 R28 — professional launch handoff */
@@ -1563,6 +1539,14 @@ body.mushaf-fullscreen .mus-source{max-width:680px;margin-inline:auto}.mushaf-co
 .mushaf-controls-hidden .mus-head,.mushaf-controls-hidden .mushaf-swipe-hint,.mushaf-controls-hidden .mushaf-render-note,.mushaf-controls-hidden .mus-source,.mushaf-controls-hidden .mus-foot,.mushaf-controls-hidden .tafsir-current,.mushaf-controls-hidden .rd-nav{display:none!important}
 body.mushaf-fullscreen.mushaf-controls-hidden .mushaf{min-height:100dvh}body.mushaf-fullscreen.mushaf-controls-hidden .mus-body.printed .mushaf-page-svg{max-height:100dvh}
 @media(max-width:560px){body.mushaf-fullscreen #v-read{padding-inline:0}.rd-fullscreen-btn{min-width:38px!important}.mushaf-fullscreen .rd-title{font-size:15px}}
+/* v24 R29 — SAFE Mushaf dark mode hotfix. Visual only: never change SVG viewBox, sizing geometry, or printed-page layout. */
+[data-theme="dark"] #v-read{background:#0b0e0b}
+[data-theme="dark"] .mushaf,[data-theme="dark"] .mus-body.printed{background:#0b0e0b!important}
+[data-theme="dark"] .mus-body.printed .mushaf-page-svg{background:#fcfaf4!important;filter:invert(1) hue-rotate(180deg) brightness(.88) contrast(1.04)}
+[data-theme="dark"] .mushaf-page-loading{color:#d8c7a3}
+[data-theme="dark"] body.mushaf-fullscreen,[data-theme="dark"] body.mushaf-fullscreen #v-read,[data-theme="dark"] body.mushaf-fullscreen .mushaf,[data-theme="dark"] body.mushaf-fullscreen .mus-body.printed{background:#0b0e0b!important}
+[data-theme="dark"] body.mushaf-fullscreen .rd-bar{background:rgba(11,14,11,.92)!important;box-shadow:0 5px 20px rgba(0,0,0,.28)!important}
+
 /* v24 R16 — true immersive Mushaf request + Android/PWA prayer setup clarity */
 :root{--mushaf-vh:100dvh}
 body.mushaf-fullscreen{overscroll-behavior:none;touch-action:pan-y;background:#fcfaf4}

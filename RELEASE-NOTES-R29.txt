@@ -1,0 +1,8 @@
+Tadaruq v24 R29 — Mushaf geometry hotfix
+
+- Reverted the R27 SVG viewBox auto-cropping completely.
+- Reverted R27 mobile 100vw Mushaf geometry overrides that could distort/over-zoom the printed page.
+- Restored the stable fixed 604-page Mushaf geometry from R26/R16 behavior.
+- Kept dark mode as a visual-only filter/background layer; it does not change SVG viewBox, width/height geometry, ayah polygons, page order, or quran-pos.
+- Kept R28 professional splash changes.
+- PWA cache bumped to R29 so the hotfix is fetched promptly.
