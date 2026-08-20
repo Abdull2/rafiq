@@ -3,7 +3,7 @@
 **Project:** تدارُك - Tadaruq (legacy/internal identifiers may still use Rafiq)  
 **State ID:** `TADARUQ-HANDOFF-v24-R18-2026-08-19`  
 **Current artifact type:** GitHub Pages PWA + Google Play TWA distribution, with Chrome Manifest V3 side-panel source retained  
-**Current release:** `v24 R24` (Chrome manifest version `24.4.0`; local data schema `rafiq:data-version = 2`; Google Play package `com.tadaruqnoor.rafiq`)
+**Current release:** `v24 R27` (Chrome manifest version `24.7.0`; local data schema `rafiq:data-version = 2`; Google Play package `com.tadaruqnoor.rafiq`)
 
 > This file is the continuity record for future AI sessions. Before changing code or content, inspect this file, `manifest.json`, the hosted root `app.js` + `index.html` (and `app/app.js` + `app/index.html` in the full extension-source layout), plus the relevant JSON data. Do not ask the owner to repeat decisions already documented here unless a conflict genuinely requires a decision.
 
@@ -1417,3 +1417,31 @@ Owner requirement (2026-08-20):
 - PWA cache: R26.
 - New release notes: `RELEASE-NOTES-R26.txt`.
 - Must keep visible attribution to `المختصر في تفسير القرآن الكريم — مركز تفسير/دار المختصر`.
+
+
+## 29) v24 R27 — Mushaf dark mode + Aya-style viewport fit (2026-08-20)
+
+### Owner request / visual reference
+- Owner supplied two mobile screenshots and requested the Tadaruq Mushaf to visually use the screen like the Aya app: much less wasted top/bottom space and no unnecessary outer card margins.
+- Owner explicitly requested the Mushaf to work in dark mode too.
+- Owner asked whether GitHub upload paths must be preserved because they normally upload files at repository root.
+
+### Decisions and implementation
+- Preserve the fixed 604-page KFQC/Quranpedia SVG Mushaf. **Do not reflow Quran text or alter ayah/glyph geometry.**
+- Added dark-mode rendering to the complete SVG page as a visual filter (`invert + hue-rotate + brightness/contrast`) so the page becomes a night-reading surface while the exact vector geometry remains unchanged. Text fallback also now uses light Quran text on a dark surface.
+- Removed the card-like mobile Mushaf padding, rounded corners and shadow; the page is edge-to-edge on small screens.
+- Added `fitMushafSvgViewBox(svg)`: after the trusted SVG is inserted, it measures actual rendered child geometry, ignores likely full-page background plates, adds conservative padding, then tightens the viewBox while retaining the original printed-page aspect ratio. A 72% minimum original width/height guard prevents aggressive cropping. This is specifically to remove source-canvas whitespace, not to crop Quran content.
+- Fullscreen continues using the document Fullscreen API + CSS fallback and fixed page SVG. Dark mode now overrides the previously hard-coded light fullscreen backgrounds.
+- `quran-pos`, swipe direction (left-to-right = NEXT), ayah polygon selection and tafsir behavior are unchanged.
+
+### GitHub deployment/path rule clarified
+- For the `Abdull2/rafiq` GitHub Pages repo, use the **flat GitHub-pages deployment package**: `index.html`, `app.js`, JSON, fonts, icons, etc. belong at repo root because the deployed app was intentionally flattened and references sibling files. The owner does **not** need to recreate the full-source `app/` directory when using this package.
+- The full-source ZIP is for development/handoff and intentionally retains `app/`, `integrations/`, `qa/`, etc.; do not upload it blindly as a flattened website.
+- Paths that are semantically required must still be preserved. Most important: in the separate `Abdull2.github.io` origin repo, Digital Asset Links must remain exactly `.well-known/assetlinks.json`; placing `assetlinks.json` at root does not satisfy TWA verification.
+- Cloudflare Worker files under `integrations/mokhtasar-worker/` are deployment/source files and are not meant to be flattened into the GitHub Pages website root.
+
+### Version / cache / QA
+- Chrome MV3 version: `24.7.0`.
+- PWA cache: `tadaruq-v24-r27-pwa-20260820`; runtime cache R27.
+- Data Safety schema remains 2; backup metadata version is `24.7.0`; no persistent data keys changed.
+- Required real-device regression after deploy: light Mushaf, dark Mushaf, fullscreen light/dark, pages with headers/footers/surah starts, ayah tap polygons, swipe directions, zoom, and several pages with historically large internal whitespace.

@@ -1,0 +1,10 @@
+Tadaruq v24 R27 — Mushaf reading polish
+
+- Added a true dark presentation for the fixed KFQC SVG Mushaf without reflowing Quran text.
+- Removed card-like outer padding/rounding from the Mushaf on mobile so the printed page uses the viewport edge-to-edge.
+- Added safe automatic SVG viewBox fitting to reduce excessive internal top/bottom whitespace while preserving the printed page aspect ratio and all Quran glyph geometry/clickable ayah regions.
+- Fullscreen keeps the same fixed 604-page KFQC source and now respects dark mode.
+- No storage schema, quran-pos, tafsir-pos-v1, package ID, or religious content change.
+- PWA cache bumped to R27; Chrome MV3 version 24.7.0.
+
+GitHub Pages deployment note: use the flat GitHub-pages package at repo root. Do not flatten special origin-level paths such as .well-known/assetlinks.json in the separate Abdull2.github.io origin repo.

@@ -1010,6 +1010,51 @@ function safeMushafSvg(text,page){
   svg.classList.add('mushaf-page-svg');
   return document.importNode(svg,true);
 }
+function fitMushafSvgViewBox(svg){
+  if(!svg||svg.dataset.viewboxFitted==='true')return;
+  const raw=(svg.getAttribute('viewBox')||'').trim().split(/[ ,]+/).map(Number);
+  if(raw.length!==4||raw.some(n=>!Number.isFinite(n))||raw[2]<=0||raw[3]<=0)return;
+  const [ox,oy,ow,oh]=raw;
+  const nodes=[...svg.children].filter(el=>{
+    const tag=(el.tagName||'').toLowerCase();
+    return !['defs','style','metadata','title','desc','script'].includes(tag) && !el.classList?.contains('ayahPolygon');
+  });
+  const boxes=[];
+  for(const el of nodes){
+    try{
+      const b=el.getBBox();
+      if(!b||!Number.isFinite(b.x)||!Number.isFinite(b.y)||b.width<=0||b.height<=0)continue;
+      const fullCover=(b.width>=ow*.965 && b.height>=oh*.965);
+      const tag=(el.tagName||'').toLowerCase();
+      if(fullCover&&(tag==='rect'||tag==='image'))continue; // likely page/background plate
+      boxes.push(b);
+    }catch{}
+  }
+  let b;
+  if(boxes.length){
+    const x1=Math.min(...boxes.map(x=>x.x)),y1=Math.min(...boxes.map(x=>x.y));
+    const x2=Math.max(...boxes.map(x=>x.x+x.width)),y2=Math.max(...boxes.map(x=>x.y+x.height));
+    b={x:x1,y:y1,width:x2-x1,height:y2-y1};
+  }else{
+    try{b=svg.getBBox()}catch{return}
+  }
+  if(!b||b.width<ow*.35||b.height<oh*.35)return;
+  const padX=Math.max(ow*.012,b.width*.012),padY=Math.max(oh*.010,b.height*.010);
+  let x=b.x-padX,y=b.y-padY,w=b.width+padX*2,h=b.height+padY*2;
+  /* Keep the original printed-page aspect ratio, but center it around actual ink.
+     This removes excessive source whitespace without reflowing/cropping Quran glyphs. */
+  const target=ow/oh,cur=w/h;
+  if(cur>target){const nh=w/target;y-= (nh-h)/2;h=nh}else{const nw=h*target;x-=(nw-w)/2;w=nw}
+  /* Clamp to the source canvas where possible; never zoom beyond a conservative safe crop. */
+  const minW=ow*.72,minH=oh*.72;
+  if(w<minW){const d=minW-w;x-=d/2;w=minW}
+  if(h<minH){const d=minH-h;y-=d/2;h=minH}
+  if(x<ox){x=ox} if(y<oy){y=oy}
+  if(x+w>ox+ow)x=Math.max(ox,ox+ow-w);
+  if(y+h>oy+oh)y=Math.max(oy,oy+oh-h);
+  svg.setAttribute('viewBox',`${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)}`);
+  svg.dataset.viewboxFitted='true';
+}
 function applyMushafZoom(){
   const body=document.getElementById('mus-body'); if(!body)return;
   if(body.classList.contains('printed')) body.style.width=qZoom+'%';
@@ -1027,7 +1072,7 @@ async function renderPrintedMushaf(page,runs,mark){
   try{
     const svg=safeMushafSvg(await fetchMushafSvg(page),page);
     svg.classList.add(mushafPageDirection>0?'page-enter-next':mushafPageDirection<0?'page-enter-prev':'page-enter');
-    body.replaceChildren(svg); applyMushafZoom(); highlightMushafAyah();
+    body.replaceChildren(svg); requestAnimationFrame(()=>fitMushafSvgViewBox(svg)); applyMushafZoom(); highlightMushafAyah();
     requestAnimationFrame(()=>requestAnimationFrame(()=>svg.classList.add('page-enter-on')));
     const n=document.getElementById('mushaf-render-note'); if(n){n.hidden=true;n.textContent=''}
     return true;
