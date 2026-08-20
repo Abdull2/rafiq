@@ -1,20 +1,14 @@
 {
   "project": "تدارُك - Tadaruq",
-  "release": "v24 R32",
-  "date": "2026-08-20",
+  "release": "v24 R33",
+  "date": "2026-08-21",
   "primary_handoff": "AI_HANDOFF.md",
-  "source_of_truth": "R31 owner-supplied full source, modified additively into R32",
+  "source_of_truth": "R32 full source, modified additively into R33 with a 5-stage robust Tazkiyah curriculum",
   "data_schema": 2,
-  "pwa_cache": "tadaruq-v24-r32-pwa-20260820",
-  "new_persistent_keys": [
-    "fiqh-busola-progress-v1",
-    "mujahada-weight-v1",
-    "benefit-choice-v1"
-  ],
-  "new_content_files": [
-    "fiqh-busola.json",
-    "benefit.json"
-  ],
-  "critical_policy_gate": "Re-audit Google Play Health Apps declaration before deploying the structured smoking/nicotine journey.",
-  "mushaf_rule": "R29-R31 Mushaf/fullscreen/ayah-selection code was intentionally not changed in R32."
+  "pwa_cache": "tadaruq-v24-r33-pwa-20260821",
+  "new_persistent_keys": [],
+  "new_content_files": [],
+  "critical_policy_gate": "Re-audit Google Play Health Apps declaration before Play-facing deployment because the structured smoking/nicotine journey remains present.",
+  "mushaf_rule": "R29-R31 Mushaf/fullscreen/ayah-selection code was intentionally not changed in R33.",
+  "tazkiyah_rule": "Works, heart diseases, and obstacles use 5 distinct source-backed stages; every topic shows named studyRefs plus immediate item sources; progress is study depth, never spiritual rank."
 }

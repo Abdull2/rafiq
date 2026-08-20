@@ -1472,7 +1472,22 @@ const hList=p=>p.causes||p.fruits||[];
 
 /* ===== مستويات العمق (تزكية) — تدرّج في الدراسة لا حكم على مقام الشخص ===== */
 let hLevels={};
-async function hLevelsLoad(){ try{hLevels=await store.get('qalb-levels-v1')||{}}catch{hLevels={}} }
+async function hLevelsLoad(){
+  try{
+    hLevels=await store.get('qalb-levels-v1')||{};
+    /* R33 compatibility: users who had completed the old 4/4 curriculum keep every completion; only move the resume pointer to the newly added fifth stage. */
+    let changed=false;
+    const topics=[...(HD?.works||[]),...(HD?.problems||[])];
+    for(const cat of (HD?.obstacles||[]))topics.push(...(cat.items||[]));
+    for(const p of topics){
+      const id=hDepthKey(p), L=hLevelsOf(p), st=hLevels[id];
+      if(!id||L.length!==5||!st||!Array.isArray(st.done))continue;
+      const first4=L.slice(0,4).every(l=>st.done.includes(l.n)), fifth=L[4];
+      if(first4&&!st.done.includes(fifth.n)&&(+st.open||0)<=L[3].n){st.open=fifth.n;st.lastAt=Date.now();changed=true}
+    }
+    if(changed)await store.set('qalb-levels-v1',hLevels);
+  }catch{hLevels={}}
+}
 const hLevelsOf=p=>(p?.levels||[]).filter(l=>!l.pending);
 const hDepthKey=p=>p?.depthId||p?.id||'';
 const hDepthTitle=p=>p?.name||p?.q||p?.title||p?.sub||'الموضوع';
@@ -1539,13 +1554,17 @@ function hLevelsHtml(p){
     const canOpen=i===0||done.includes(L[i-1]?.n);
     return `<button class="lv-chip${l.n===cur.n?' on':''}${canOpen?'':' lock'}" data-lv="${laterEsc(id)}:${l.n}"${canOpen?'':' disabled'}><span>${done.includes(l.n)?'✓':AR(i+1)}</span>${l.title}</button>`;
   }).join('');
-  const items=(cur.items||[]).map(x=>`<li><div class="lv-item-tx">${x.t}</div>${x.s?hSourceHtml(x.s):''}</li>`).join('');
+  const items=(cur.items||[]).map(x=>{const head=(x.h&&!String(x.t||'').trim().startsWith(String(x.h).trim()))?`<div class="lv-item-head">${laterEsc(x.h)}</div>`:'';return `<li>${head}<div class="lv-item-tx">${laterEsc(x.t||'')}</div>${x.s?hSourceHtml(x.s):''}</li>`}).join('');
+  const refs=(p.studyRefs||[]).filter(Boolean);
+  const refsHtml=refs.length?`<details class="lv-refs" open><summary>مراجع هذا الباب <span>${AR(refs.length)}</span></summary><div class="lv-ref-grid">${refs.map(hSourceHtml).join('')}</div><small>النص داخل تدارُك صياغة تعليمية مختصرة مبنية على هذه المراجع وعلى المصادر الظاهرة تحت كل نقطة؛ وليس نقلًا حرفيًا عن كتاب بعينه إلا إذا نُص على ذلك.</small></details>`:'';
+  const methodNote=p.depthNote?`<div class="lv-method-note">${laterEsc(p.depthNote)}</div>`:'';
   const nxt=L[curI+1];
   const finished=M.done===M.total;
   const subject=p.depthType==='nafs'?'هذا الموضوع':p.depthType==='obstacle'?'هذه المسألة':p.depthType==='ish'?'هذه المحاضرة':'هذا المعنى';
   return `<div class="h-sec lv-wrap">
     <div class="lv-head"><div><b>مراحل التعمّق</b><small>تقدّم في الدراسة والفهم، لا رتبة إيمانية</small></div><span class="lv-cnt">${AR(M.done)}/${AR(M.total)}</span></div>
     <div class="lv-progress" aria-label="تقدم دراسة الموضوع"><i style="width:${M.total?Math.round(M.done/M.total*100):0}%"></i></div>
+    ${methodNote}${refsHtml}
     <div class="lv-chips">${chips}</div>
     <div class="lv-stage"><div class="lv-stage-no">المستوى ${AR(curI+1)} من ${AR(L.length)}</div><h3>${cur.title}</h3></div>
     <div class="h-bd lv-body">${cur.tx?`<p>${cur.tx}</p>`:''}${cur.s?hSourceHtml(cur.s):''}${items?`<ul class="lv-list">${items}</ul>`:''}</div>

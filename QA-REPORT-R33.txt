@@ -1,0 +1,64 @@
+Tadaruq v24 R33 — QA Report
+Date: 2026-08-21
+
+EXECUTED / PASS
+1. JavaScript syntax:
+   - node --check app.js: PASS
+   - node --check data-safety.js: PASS
+   - node --check sw.js: PASS
+
+2. Tazkiyah deterministic content audit:
+   - Works: 9
+   - Heart diseases: 10
+   - Obstacles: 26
+   - Total topics: 45
+   - Exactly 5 stages per topic: PASS (225 stages total)
+   - Minimum 3 items per stage: PASS
+   - Treatment stage minimum 3 items: PASS
+   - Prevention/review stage minimum 3 items: PASS
+   - Every staged item has a named source object: PASS
+   - Total staged sourced items: 893
+   - Every topic has >=2 topic-level `studyRefs`: PASS
+   - Works/problems have at least one named core book/reference: PASS
+   - No exact duplicate stage payload inside a topic: PASS
+   - No exact duplicate item text inside a stage: PASS
+
+3. Critical source/boundary checks:
+   - Music/media topic preserves the word/logic of recognized fiqh disagreement: PASS
+   - Jordan Iftaa source present in music topic: PASS
+   - Egypt Dar al-Ifta source present in music topic: PASS
+   - Waswasa topic contains NHS OCD treatment boundary: PASS
+   - Waswasa topic contains WHO/clinical source: PASS
+   - Smoking topic contains WHO tobacco cessation guideline: PASS
+   - Draft-time guessed Dorar direct URLs removed: PASS
+   - Re-checked Dorar IDs present for the 10 corrected hadith references: PASS
+
+4. UI/static checks:
+   - `studyRefs` rendered as visible «مراجع هذا الباب»: PASS
+   - topic depth method note renderer/style: PASS
+   - optional item heading renderer/style: PASS
+   - HTML duplicate IDs: 0 duplicates (229 IDs scanned): PASS
+
+5. Data safety:
+   - CURRENT_DATA_VERSION remains 2: PASS
+   - `qalb-levels-v1` remains registered: PASS
+   - backup metadata is 24.33.0: PASS
+   - no new R33 persistent keys: PASS by source diff/design
+   - old 4-stage completion compatibility logic moves only the resume pointer to stage 5: PASS static verification
+
+6. Service worker:
+   - R33 cache/runtime names present: PASS
+   - every local PRECACHE_URLS path exists: PASS
+
+7. Parse checks:
+   - every root JSON + manifest.webmanifest parses: PASS
+
+8. Mushaf regression isolation:
+   - compared original R32 app.js and R33 app.js: only hLevelsLoad/hLevelsHtml hunks changed.
+   - compared original R32 index.html and R33 index.html: only Tazkiyah level CSS hunk changed.
+   - no diff lines matching Mushaf / ayah / Quran / fullscreen markers in app.js or index.html: PASS.
+
+LIMITATIONS / NOT CLAIMED
+- No real-device visual QA was executed in this environment. The new five-stage layouts and source panel must be previewed on a real mobile browser/TWA before production deployment.
+- The deterministic audit validates source presence/structure and the explicitly re-checked direct hadith links; it is not a substitute for a scholar performing a line-by-line final content endorsement of all 893 educational items.
+- Google Play Health Apps declaration remains a policy gate because the structured smoking/nicotine journey is still present.

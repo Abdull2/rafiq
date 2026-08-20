@@ -1,9 +1,9 @@
 # NEXT AI — READ THIS FIRST
 
 **Project:** تدارُك - Tadaruq (legacy/internal identifiers may still use Rafiq)  
-**State ID:** `TADARUQ-HANDOFF-v24-R18-2026-08-19`  
+**State ID:** `TADARUQ-HANDOFF-v24-R33-2026-08-21`  
 **Current artifact type:** GitHub Pages PWA + Google Play TWA distribution, with Chrome Manifest V3 side-panel source retained  
-**Current release:** `v24 R27` (Chrome manifest version `24.7.0`; local data schema `rafiq:data-version = 2`; Google Play package `com.tadaruqnoor.rafiq`)
+**Current release:** `v24 R33` (PWA/content release; local data schema `rafiq:data-version = 2`; Google Play package `com.tadaruqnoor.rafiq`)
 
 > This file is the continuity record for future AI sessions. Before changing code or content, inspect this file, `manifest.json`, the hosted root `app.js` + `index.html` (and `app/app.js` + `app/index.html` in the full extension-source layout), plus the relevant JSON data. Do not ask the owner to repeat decisions already documented here unless a conflict genuinely requires a decision.
 
@@ -1775,3 +1775,160 @@ Environment limitation:
 7. Any content/UI edit requires a Service Worker cache bump under the R20 caching model.
 8. Re-audit Google Play Health Apps declaration before shipping the structured smoking/nicotine feature to Play users.
 9. Do not touch R29–R31 Mushaf geometry/fullscreen code without a dedicated regression task and real-device visual verification.
+
+
+## R33 — robust Tazkiyah curriculum: deeper heart works, heart diseases, and obstacles — 2026-08-21
+
+### Owner request / reason for this release
+
+The owner reported that the existing Tazkiyah depth system still felt too shallow: later levels in **أعمال القلوب** and **أمراض القلوب** were too similar to the first level, book names were not prominent enough, and the treatment/solution layer in diseases and obstacles was too short. The owner explicitly asked **not to delete previous work**, but to make each topic logically progress through definition, roots, treatment, and future prevention, with strong reliable Sharia/psychological/educational sourcing.
+
+Substantive owner wording preserved:
+> "المحتوي بسيط اوي في امراض القلوب واعمال القلوب... محتاج المحتوي يبقي بعد المستوي الاول يبقي اقوي واوسع واشمل... ولم تكتب مرجع الكلام من اي كتاب... علاج المشاكل والحل ضحل اوي... التعريف بالمشكلة واصلها وعلاجها وازاي نتجنبها بعد كده... solid robust مش مجرد كلام انشائي"
+
+### Scope / non-deletion guarantee
+
+R33 is **additive and depth-oriented**. It does not remove the R32 Busola/Mujahada/Benefit work, does not rename any stable topic ID, and does not delete legacy Tazkiyah fields. In `qalb.json`, existing base fields such as `def`, `defSource`, `fruits`, `means`, `causes`, `cure`, obstacle `why`, `answer`, `answerSource`, `steps`, and existing IDs remain present. The R33 rewrite is concentrated in the `levels` curriculum plus topic-level references (`studyRefs`) and a depth-method note.
+
+No Mushaf/Qur'an/fullscreen/ayah-selection code is intentionally changed in R33.
+
+### A. New 5-stage model — أعمال القلوب (9 existing IDs preserved)
+
+Every one of the 9 works now has **5 substantively different stages**, not four restatements:
+1. `التعريف وحدود المعنى` — precise definition and what the concept is not.
+2. topic-specific construction / contaminants — e.g. intention admixtures for Ikhlas, means vs reliance for Tawakkul, balance for Khawf/Raja'.
+3. `الوحي وشرح أهل العلم` — primary texts plus a named reliable scholarly/book reference.
+4. topic-specific training / building the quality — practical steps derived from the sourced material; no invented sacred counts.
+5. stability / review / relapse prevention — early-warning signs, environment, if-then planning where relevant, and return after a lapse without turning progress into faith scoring.
+
+Existing stable IDs remain: `ikhlas`, `mahabba`, `tawakkul`, `khawf`, `sabr`, `shukr`, `tawba`, `muraqaba`, `yaqeen`.
+
+### B. New 5-stage model — أمراض القلوب (10 existing IDs preserved)
+
+Every disease now follows:
+1. `تعريف المرض وحدوده`.
+2. `الجذور والمغذّيات` — drivers in knowledge, desire, habit and environment where supported.
+3. `ميزان الوحي وشرح أهل العلم`.
+4. `علاج متدرج قابل للتطبيق` — remove a feeder, build the opposite virtue, a sourced religious action, environment change, and professional escalation where appropriate.
+5. `الوقاية من الانتكاس` — early-warning indicators, recovery plan, and boundaries.
+
+This is not a diagnosis of a person's heart. The app teaches a topic and supports self-reflection; it does not declare the user's iman or inner state.
+
+Special safety example retained/enhanced: the `waswas` topic distinguishes disliked intrusive thoughts from consent to them, preserves the Sunnah guidance on isti'adhah/stopping engagement, and explicitly separates religious waswasa from clinical OCD. When compulsions/impairment are present, NHS/WHO professional-care boundaries are shown; the app does not replace CBT/ERP, medication, or clinician care.
+
+### C. New 5-stage model — العقبات (26 existing obstacle IDs / 9 categories)
+
+Every obstacle now follows:
+1. `تصوير المشكلة وحدودها`.
+2. `تحليل الجذور ودورة التكرار`.
+3. `فقه الموقف والبوصلة` — the sourced answer, plus named references and an explicit reminder that complex cases may need a qualified scholar/specialist.
+4. `خطة تدخل عملية` — immediate action + environment intervention + trigger plan rather than generic willpower advice.
+5. `منع العودة وطلب الدعم` — early-warning sign, recurrence plan, and when the app's role ends.
+
+R33 also removed generic placeholder lines such as “راجع أصل الدليل...” from stage 3 and replaces them with explicit named-reference cards attached to the actual source used for that obstacle.
+
+Recognized fiqh disagreement in the media/music topic remains explicit. It is prohibited to rewrite this topic as if all music were unanimously prohibited. Content/obscenity, displacement of obligations/rights, and uncontrolled use are treated separately from the disputed music ruling.
+
+### D. Named source books are now first-class UI
+
+Every work/problem/obstacle now has a `studyRefs` array. The UI renders an open **`مراجع هذا الباب`** panel before the level chips, with the actual book/reference names and links. Every individual stage item still renders its own immediate source underneath.
+
+Core books/references used in R33 include:
+- **مختصر منهاج القاصدين — ابن قدامة المقدسي** — IslamHouse / المكتب الإسلامي edition page: https://islamhouse.com/ar/books/192850/
+- **مدارج السالكين بين منازل إياك نعبد وإياك نستعين — ابن قيم الجوزية** — official Ibn al-Qayyim site book page: https://www.ibnalqayem.net/book/216
+- **إغاثة اللهفان في مصايد الشيطان — ابن قيم الجوزية**: https://islamhouse.com/ar/books/2827743/
+- **الداء والدواء — ابن قيم الجوزية**: https://islamhouse.com/ar/books/2841132/
+- **موسوعة الأخلاق والسلوك — مؤسسة الدرر السنية**: https://dorar.net/alakhlaq
+
+The UI explicitly states that Tadaruq wording is a concise educational synthesis based on the named references and the source attached to each point, **not a verbatim quotation from a book unless marked as such**.
+
+### E. Scientific / psychological source boundary
+
+Scientific/behavioral material is used only in the layers where it actually helps explain habits, triggers, implementation, comparison, procrastination, identity, clinical OCD or nicotine cessation. It is never presented as Sharia evidence.
+
+Representative R33 references:
+- Wood & Rünger, *Psychology of Habit* (Annual Review of Psychology, 2016): https://pubmed.ncbi.nlm.nih.gov/26361052/
+- implementation intentions / if-then planning: https://pubmed.ncbi.nlm.nih.gov/27008360/
+- Rozental et al., procrastination systematic review/meta-analysis (2018): https://pmc.ncbi.nlm.nih.gov/articles/PMC6125391/
+- social networking / social comparison systematic-review evidence: https://pmc.ncbi.nlm.nih.gov/articles/PMC5143470/
+- identity-development systematic review: https://pmc.ncbi.nlm.nih.gov/articles/PMC9298910/
+- NHS OCD treatment (CBT/ERP and care boundary): https://www.nhs.uk/mental-health/conditions/obsessive-compulsive-disorder-ocd/treatment/
+- WHO 2024 clinical treatment guideline for tobacco cessation: https://www.who.int/publications/i/item/9789240096431
+
+Scientific claims are phrased conservatively; association evidence is not turned into universal causation. Clinical/health content remains subject to the existing medical boundary.
+
+### F. Source-verification corrections in this R33 pass
+
+Several direct Dorar hadith URLs that had been inserted during drafting were re-checked and corrected before packaging. Verified direct targets used include:
+- Hadith al-wali / Bukhari 6502 -> `https://dorar.net/hadith/sharh/10320`
+- sadness at Ibrahim -> `https://dorar.net/hadith/sharh/112952`
+- riya / minor shirk -> `https://dorar.net/hadith/sharh/147277`
+- “من سمع سمع الله به” -> `https://dorar.net/hadith/sharh/26006`
+- “لا تحاسدوا” -> `https://dorar.net/hadith/sharh/17129`
+- look to those below in worldly matters -> `https://dorar.net/hadith/sharh/9051`
+- “ذاك صريح الإيمان” -> `https://dorar.net/hadith/sharh/69003`
+- certainty/ritual doubt evidence -> `https://dorar.net/hadith/sharh/10743`
+- “فليستعذ بالله ولينته” -> `https://dorar.net/hadith/sharh/10521`
+- du'a against worry/sadness -> `https://dorar.net/hadith/sharh/4121`
+
+### G. UI / progress compatibility
+
+`hLevelsHtml()` now:
+- shows the named `studyRefs` in `مراجع هذا الباب`;
+- shows optional concise item headings when they are not a duplicate of the item text;
+- shows the topic `depthNote` explaining the educational progression;
+- keeps the immediate source under every item.
+
+R33 adds a compatibility adjustment for existing R24/R32 users: a user who had completed the old four stages keeps all four completion records in `qalb-levels-v1`; if the only new unfinished stage is stage 5, the resume pointer is moved to stage 5. **No completion is deleted/reset and no new storage key is introduced.** Users can still reopen earlier completed stages after that.
+
+Data Safety schema remains **2**. Backup metadata version is `24.33.0` only.
+
+### H. Cache / version
+
+Because `qalb.json`, `app.js`, `index.html`, and source docs changed under the R20 caching model:
+- `CACHE_NAME = tadaruq-v24-r33-pwa-20260821`
+- `RUNTIME_CACHE = tadaruq-runtime-v24-r33-20260821`
+
+No Android package ID, native shell, TWA origin, permissions, Digital Asset Links, or signing information changed.
+
+### I. Google Play Health declaration still requires re-audit
+
+R32 already introduced a structured smoking/nicotine cessation-support journey. R33 deepens general Tazkiyah/obstacle education but **does not remove that policy issue**. Before Play-facing publication, re-check Google Play Health Apps declarations against the actual structured nicotine/addiction-recovery behavior. Do not continue to declare “no health features” if the shipped functionality falls under Google's health categories.
+
+### J. R33 changed files
+
+- `qalb.json`
+- `app.js`
+- `index.html`
+- `sources.html`
+- `CONTENT_PROVENANCE-TAZKIYAH.md`
+- `sw.js`
+- `data-safety.js` (backup metadata only; schema unchanged)
+- `AI_HANDOFF.md`
+- `AI_HANDOFF.json`
+- `PROMPT_FOR_NEXT_AI.txt`
+- `RELEASE-NOTES-R33.txt`
+- `QA-REPORT-R33.txt`
+
+### K. Continuation rules after R33
+
+1. Do not collapse the five Tazkiyah stages back into duplicated summaries; each stage has a distinct pedagogical job.
+2. Preserve named `studyRefs` and immediate item sources. A general bibliography does not replace point-level sourcing.
+3. Do not quote a classical book verbatim unless the exact text/location was checked; the default is transparent educational synthesis.
+4. Preserve all prior base fields/IDs and `qalb-levels-v1`; any future structural storage change needs a versioned migration.
+5. Do not score a person's faith, purity, sinfulness, or “heart rank”. Stage completion means study progress only.
+6. Clinical OCD, tobacco dependence, significant depression/anxiety/impairment, self-harm risk, and similar health issues retain professional-care boundaries.
+7. Recognized fiqh disagreement must remain visible, especially the media/music topic.
+8. Any content/UI edit requires a Service Worker cache bump.
+9. Do not touch R29–R31 Mushaf geometry/fullscreen/ayah-selection code as part of unrelated Tazkiyah work.
+10. `AI_HANDOFF.md` remains append-only and mandatory in every full source handoff.
+
+### R33 final QA execution before artifact handoff
+
+Executed after the R33 source/content changes:
+- PASS `node --check app.js`, `data-safety.js`, `sw.js`.
+- PASS deterministic Tazkiyah audit: **45 topics / 225 stages / 893 sourced staged items**; exactly 5 stages/topic, >=3 items/stage, >=2 `studyRefs`/topic, every item has a source.
+- PASS critical boundary checks for music disagreement, NHS OCD boundary, WHO smoking guideline, and the corrected direct Dorar hadith URLs.
+- PASS root JSON/webmanifest parsing, 0 duplicate HTML IDs, R33 Service Worker precache path existence.
+- PASS R32→R33 diff isolation: no Mushaf/Qur'an/fullscreen/ayah-selection marker changed in `app.js` or `index.html`.
+- NOT EXECUTED: real-device visual QA. R33 should remain labelled PREVIEW until the owner sees the new source panel and five-stage layouts on the actual phone/TWA.

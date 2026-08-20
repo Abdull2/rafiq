@@ -1,10 +1,12 @@
 READ AI_HANDOFF.md FIRST. It is append-only and may not be deleted, renamed, truncated, summarized away, or omitted from a full handoff.
-Current code/content release is Tadaruq v24 R32, based additively on the owner-supplied R31 source.
+Current code/content release is Tadaruq v24 R33, based additively on R32.
 Before any edit:
 1) preserve local user data and stable IDs/keys;
-2) retain immediate sources for religious claims and appropriate scientific/official sources for scientific/medical claims;
-3) do not turn study/obstacle tracking into faith scoring;
-4) do not duplicate خطة اليوم / مساري / ارتقِ;
-5) do not touch R29-R31 Mushaf geometry/fullscreen/ayah-selection code without dedicated regression work and real-device visual QA;
-6) if content/UI changes, bump the Service Worker cache name;
-7) the R32 structured smoking/nicotine journey creates a Google Play Health Apps declaration review requirement before Play-facing deployment.
+2) retain immediate sources for every religious claim and appropriate scientific/official sources for scientific/medical claims;
+3) R33 Works/Heart Diseases/Obstacles use five distinct stages (definition -> roots/build -> revelation/scholarship -> treatment/training -> prevention/review). Do not regress them into repeated shallow cards;
+4) preserve the visible `مراجع هذا الباب` / `studyRefs` panel and point-level source under every staged item;
+5) do not turn study/obstacle tracking into faith scoring;
+6) do not duplicate خطة اليوم / مساري / ارتقِ;
+7) do not touch R29-R31 Mushaf geometry/fullscreen/ayah-selection code without dedicated regression work and real-device visual QA;
+8) any content/UI change requires a Service Worker cache bump;
+9) the structured smoking/nicotine journey requires a Google Play Health Apps declaration re-audit before Play-facing deployment.

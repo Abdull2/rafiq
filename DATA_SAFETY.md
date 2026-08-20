@@ -93,3 +93,13 @@ Registered in the Data Safety exact-key registry without changing schema version
 `profile-v1` also accepts optional `married`, `hasKids`, `timeBand`, `moneyBand`, and `skills[]`. These are used only for on-device recommendations. No exact income or exact free-time hours are collected.
 
 **Play-policy note:** R32 adds smoking/nicotine education and a self-organization cessation path. Re-check the Google Play Health apps declaration before shipping this feature publicly; do not conceal the feature to preserve a prior declaration.
+
+## R33 — 2026-08-21: Tazkiyah 4→5 stage compatibility
+
+R33 adds a fifth study stage to the existing Works / Heart Diseases / Obstacles curriculum. This is **not** a new user-data schema and introduces no new persistent key.
+
+- Existing progress remains in `qalb-levels-v1`.
+- Existing completed level numbers are preserved exactly; R33 never deletes/reset `done` entries.
+- If a legacy topic had levels 1–4 completed and the newly added level 5 is not complete, the app moves only the stored `open`/resume pointer to level 5 so the user discovers the new material. Earlier stages remain reviewable afterward.
+- `rafiq:data-version` remains `2`.
+- Backup metadata app version is `24.33.0`.
