@@ -962,12 +962,15 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     <h1 id="page-title">اليوم</h1>
     <div class="sub" id="dateline" style="display:none"></div>
   </div>
-  <div style="display:flex;gap:7px">
+  <div class="header-actions">
     <button class="icon saved-head" id="btn-saved" aria-label="محفوظاتي" title="محفوظاتي"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.5h12v15l-6-3.5-6 3.5Z"/></svg><span id="saved-count"></span></button>
-    <button class="icon" id="btn-feedback" aria-label="إرسال ملاحظة" title="إرسال ملاحظة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 9.2 9.2 0 0 1-3.1-.5L4 20l1.5-4.1A7.1 7.1 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/><path d="M8.5 10h7M8.5 13h4.5"/></svg></button>
-    <button class="icon" id="btn-history" aria-label="السجل">▤</button>
-    <button class="icon" id="btn-theme" aria-label="الوضع الليلي">◐</button>
-    <button class="icon" id="btn-settings" aria-label="الإعدادات">⚙</button>
+    <button class="icon" id="btn-more" aria-label="المزيد" title="المزيد"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></button>
+    <span class="legacy-head-actions" aria-hidden="true">
+      <button class="icon" id="btn-feedback" tabindex="-1" aria-label="إرسال ملاحظة" title="إرسال ملاحظة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 9.2 9.2 0 0 1-3.1-.5L4 20l1.5-4.1A7.1 7.1 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/><path d="M8.5 10h7M8.5 13h4.5"/></svg></button>
+      <button class="icon" id="btn-history" tabindex="-1" aria-label="السجل">▤</button>
+      <button class="icon" id="btn-theme" tabindex="-1" aria-label="الوضع الليلي">◐</button>
+      <button class="icon" id="btn-settings" tabindex="-1" aria-label="الإعدادات">⚙</button>
+    </span>
   </div>
 </div></header>
 
@@ -1175,13 +1178,11 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 </div>
 
 <div id="v-read" class="hide">
-  <div class="rd-bar">
-    <button class="rd-btn rd-index-btn" id="rd-back" aria-label="فتح فهرس المصحف والبحث" title="فهرس المصحف والبحث">الفهرس</button>
-    <button class="rd-btn rd-tafsir-btn" id="rd-tafsir" aria-label="فتح تفسير أول آية في الصفحة" title="تفسير أول آية في الصفحة">التفسير</button>
-    <button class="rd-btn rd-fullscreen-btn" id="rd-fullscreen" type="button" aria-label="عرض المصحف بملء الشاشة" aria-pressed="false" title="ملء الشاشة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
+  <div class="rd-bar" aria-label="شريط المصحف">
+    <button class="rd-btn rd-index-btn" id="rd-back" type="button" aria-label="العودة إلى أدوات المصحف" title="أدوات المصحف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
     <span class="rd-title" id="rd-title"></span>
-    <button class="rd-btn" id="rd-minus">أ−</button>
-    <button class="rd-btn" id="rd-plus">أ+</button>
+    <div class="rd-zoom" aria-label="تكبير وتصغير صفحة المصحف"><button class="rd-btn" id="rd-minus" type="button" aria-label="تصغير صفحة المصحف">أ−</button><button class="rd-btn" id="rd-plus" type="button" aria-label="تكبير صفحة المصحف">أ+</button></div>
+    <button class="rd-btn rd-fullscreen-btn" id="rd-fullscreen" type="button" aria-label="عرض المصحف بملء الشاشة" aria-pressed="false" title="ملء الشاشة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
   </div>
 
   <div class="mushaf" id="mushaf">
@@ -1194,9 +1195,16 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
   <div class="tafsir-current" id="tafsir-current"></div>
 
-  <div class="rd-nav">
+  <div class="rd-nav" aria-label="التنقل بين صفحات المصحف">
     <button id="rd-prev">الصفحة السابقة ›</button>
     <button id="rd-next">‹ الصفحة التالية</button>
+  </div>
+  <div class="reader-actions" id="reader-actions" aria-label="أدوات القراءة">
+    <button type="button" id="rd-prev-action" aria-label="الصفحة السابقة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><span>السابق</span></button>
+    <button type="button" id="rd-search" aria-label="البحث في القرآن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg><span>بحث</span></button>
+    <button type="button" id="rd-tafsir" aria-label="فتح تفسير أول آية في الصفحة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 4H12v16H8.5A3.5 3.5 0 0 0 5 21Z"/><path d="M19 5.5A3.5 3.5 0 0 0 15.5 4H12v16h3.5A3.5 3.5 0 0 1 19 21Z"/><path d="M8 9h2M14 9h2"/></svg><span>تفسير</span></button>
+    <button type="button" id="rd-tools" aria-label="أدوات وفهرس المصحف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h14"/><circle cx="8" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="10" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg><span>الفهرس</span></button>
+    <button type="button" id="rd-next-action" aria-label="الصفحة التالية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg><span>التالي</span></button>
   </div>
 </div>
 
@@ -1428,14 +1436,26 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 <div class="toast" id="toast">تم الحفظ</div>
 
-<nav aria-label="التنقل الرئيسي"><div style="grid-template-columns:repeat(6,1fr)">
-  <button data-tab="today" aria-label="يومي">يومي</button>
-  <button data-tab="quran" aria-label="المصحف">المصحف</button>
-  <button data-tab="sunnah" aria-label="العلم">العلم</button>
-  <button data-tab="azkar" aria-label="الذكر">الذكر</button>
-  <button data-tab="qalb" aria-label="التزكية">تزكية</button>
-  <button data-tab="irtaqi" aria-label="ارتقِ">ارتقِ</button>
+<nav id="main-nav" aria-label="التنقل الرئيسي"><div class="main-nav-inner">
+  <button data-tab="today" aria-label="يومي" aria-current="true"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H7.5A3.5 3.5 0 0 1 4 16.5Z"/><path d="M9.5 20v-6h5v6"/></svg></span><span class="nav-label">يومي</span></button>
+  <button data-tab="sunnah" aria-label="العلم"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 5.5A3.5 3.5 0 0 1 8 4h4v16H8a3.5 3.5 0 0 0-3.5 1Z"/><path d="M19.5 5.5A3.5 3.5 0 0 0 16 4h-4v16h4a3.5 3.5 0 0 1 3.5 1Z"/></svg></span><span class="nav-label">العلم</span></button>
+  <button data-tab="quran" aria-label="المصحف" class="nav-quran"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 4H12v16H8.5A3.5 3.5 0 0 0 5 21Z"/><path d="M19 5.5A3.5 3.5 0 0 0 15.5 4H12v16h3.5A3.5 3.5 0 0 1 19 21Z"/><path d="M8 8.5h2M14 8.5h2"/></svg></span><span class="nav-label">المصحف</span></button>
+  <button data-tab="azkar" aria-label="الذكر"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="17.3" cy="7.2" r="2"/><circle cx="19" cy="12.5" r="2"/><circle cx="15.8" cy="17" r="2"/><circle cx="10.2" cy="17.5" r="2"/><circle cx="6" cy="14" r="2"/><circle cx="6.2" cy="8.5" r="2"/><path d="M12 19.5V22"/></svg></span><span class="nav-label">الذكر</span></button>
+  <button data-tab="qalb" aria-label="التزكية"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8.8c0 5.1-4.1 8.4-8 11.2-3.9-2.8-8-6.1-8-11.2A4.8 4.8 0 0 1 12 5.3 4.8 4.8 0 0 1 20 8.8Z"/><path d="M9 11.5c1.4.2 2.6-.4 3.4-1.8"/></svg></span><span class="nav-label">تزكية</span></button>
 </div></nav>
+
+<!-- compact app actions -->
+<div class="sheet hide" id="app-more-panel" aria-hidden="true">
+  <div class="box app-more-box">
+    <div class="sec-head"><span>المزيد</span><button id="app-more-close" class="sheet-x" aria-label="إغلاق">✕</button></div>
+    <div class="app-more-grid">
+      <button type="button" data-more-action="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12v16H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span><b>السجل</b><small>مراجعة الأيام والملخصات</small></span></button>
+      <button type="button" data-more-action="theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15.5A8 8 0 0 1 8.5 4 8 8 0 1 0 20 15.5Z"/></svg><span><b>الوضع الليلي</b><small>تبديل مظهر التطبيق</small></span></button>
+      <button type="button" data-more-action="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19 13.5v-3l-2-.6a6 6 0 0 0-.7-1.6l1-1.8-2.1-2.1-1.8 1A6 6 0 0 0 11.5 5L11 3H8l-.6 2a6 6 0 0 0-1.6.7l-1.8-1L2 6.8l1 1.8a6 6 0 0 0-.7 1.9L.5 11v3l1.8.5a6 6 0 0 0 .7 1.9l-1 1.8 2.1 2.1 1.8-1a6 6 0 0 0 1.6.7L8 22h3l.5-2a6 6 0 0 0 1.9-.7l1.8 1 2.1-2.1-1-1.8a6 6 0 0 0 .7-1.6Z"/></svg><span><b>الإعدادات</b><small>الموقع والتنبيهات والتفضيلات</small></span></button>
+      <button type="button" data-more-action="feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 9.2 9.2 0 0 1-3.1-.5L4 20l1.5-4.1A7.1 7.1 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/><path d="M8.5 10h7M8.5 13h4.5"/></svg><span><b>أرسل ملاحظة</b><small>اقتراح أو مشكلة في التطبيق</small></span></button>
+    </div>
+  </div>
+</div>
 
 <!-- saved for later -->
 <div class="sheet hide" id="saved-panel">
@@ -1792,6 +1812,55 @@ body.mushaf-fullscreen #v-read .mus-body.printed .mushaf-page-svg{width:auto!imp
 .mushaf-offline-card{margin-top:12px;border:1px solid color-mix(in srgb,var(--deep) 16%,var(--line));border-radius:18px;background:linear-gradient(145deg,color-mix(in srgb,var(--wash) 78%,var(--card)),var(--card));overflow:hidden}
 .mushaf-offline-card .item{border:0;margin:0;border-radius:0;background:transparent}.mushaf-offline-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.mushaf-offline-head>div{display:grid;gap:3px}.mushaf-offline-head b{font-size:14px;color:var(--deep);line-height:1.55}.mushaf-offline-head span{font-size:12px;color:var(--soft)}.mushaf-offline-badge{flex:none;border:1px solid var(--line);border-radius:999px;padding:4px 8px;background:var(--paper);color:var(--gold)!important;font-weight:700}.mushaf-offline-card p{font-size:12.5px;line-height:1.75;color:var(--soft);margin:10px 0 8px}.mushaf-offline-progress{height:7px;border-radius:999px;background:var(--line);overflow:hidden}.mushaf-offline-progress i{display:block;height:100%;background:var(--deep);border-radius:inherit;transition:width .2s ease}.mushaf-offline-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.mushaf-offline-actions button{border:1px solid var(--line);background:var(--paper);color:var(--deep);border-radius:11px;padding:9px 11px;font:inherit;font-size:12px;cursor:pointer}.mushaf-offline-actions button.primary{background:var(--deep);color:#fff;border-color:var(--deep)}.mushaf-offline-actions button:disabled{opacity:.55;cursor:default}.mushaf-offline-card small{display:block;margin-top:8px;color:var(--soft);font-size:11px;line-height:1.6}.mushaf-offline-note{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);color:var(--soft);font-size:11.5px;line-height:1.75}
 @media(max-width:430px){.mushaf-offline-head{flex-direction:column}.mushaf-offline-actions{display:grid;grid-template-columns:1fr}.mushaf-offline-actions button{width:100%}}
+
+/* ===== R44 — mature primary navigation + focused Quran reader ===== */
+:root{--nav-h:72px;--nav-rail-w:84px;--reader-control-bg:color-mix(in srgb,var(--card) 92%,transparent)}
+#main-nav{position:fixed;z-index:60;inset-inline:0;bottom:0;border-top:1px solid color-mix(in srgb,var(--line) 88%,transparent);background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(18px) saturate(1.15);-webkit-backdrop-filter:blur(18px) saturate(1.15);padding:5px 0 calc(5px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px rgba(25,38,25,.045)}
+#main-nav .main-nav-inner{width:min(100%,620px);margin:0 auto;padding:0 7px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}
+#main-nav button{appearance:none;border:0;background:transparent;color:var(--ink-soft);min-width:0;min-height:58px;padding:5px 2px 3px;border-radius:16px;display:grid;grid-template-rows:34px auto;place-items:center;gap:1px;cursor:pointer;font:inherit;transition:color .16s ease,transform .14s ease,background .16s ease}
+#main-nav button::before{display:none!important}
+#main-nav .nav-indicator{width:48px;height:32px;border-radius:999px;display:grid;place-items:center;transition:background .16s ease,color .16s ease,transform .16s ease}
+#main-nav .nav-indicator svg{width:21px;height:21px;display:block}
+#main-nav .nav-label{font-size:11.5px;font-weight:600;line-height:1.2;white-space:nowrap}
+#main-nav button[aria-current="true"]{color:var(--deep);background:transparent;font-weight:700}
+#main-nav button[aria-current="true"] .nav-indicator{background:color-mix(in srgb,var(--deep) 12%,var(--wash));color:var(--deep);transform:translateY(-1px)}
+#main-nav button[aria-current="true"] .nav-label{font-weight:760}
+#main-nav .nav-quran .nav-indicator{border:1px solid color-mix(in srgb,var(--deep) 15%,var(--line));background:color-mix(in srgb,var(--deep) 3%,var(--card))}
+#main-nav .nav-quran[aria-current="true"] .nav-indicator{background:var(--deep);color:var(--card);border-color:var(--deep);box-shadow:0 5px 14px color-mix(in srgb,var(--deep) 18%,transparent)}
+#main-nav button:active{transform:scale(.96)}
+@media (hover:hover) and (pointer:fine){#main-nav button:hover{color:var(--deep);background:color-mix(in srgb,var(--wash) 52%,transparent)}}
+.header-actions{display:flex;align-items:center;gap:7px}.legacy-head-actions{display:none!important}.app-more-box{padding-bottom:calc(18px + env(safe-area-inset-bottom))!important}.app-more-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 14px 10px}.app-more-grid button{min-width:0;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:15px;padding:12px;display:flex;align-items:center;gap:10px;text-align:right;font:inherit;cursor:pointer}.app-more-grid button svg{width:22px;height:22px;flex:none;color:var(--deep)}.app-more-grid button span{display:grid;gap:2px;min-width:0}.app-more-grid button b{font-size:13px;color:var(--deep)}.app-more-grid button small{font-size:10.8px;color:var(--ink-soft);line-height:1.5}.app-more-grid button:active{transform:scale(.985)}@media(max-width:390px){.app-more-grid{grid-template-columns:1fr}}
+
+body.quran-reading{padding-bottom:0}
+body.quran-reading>header,body.quran-reading>#main-nav{display:none!important}
+body.quran-reading>.wrap{max-width:760px;padding-inline:0}
+#v-read .rd-bar{position:sticky;z-index:70;top:0;min-height:54px;margin:0;padding:calc(7px + env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) 7px max(8px,env(safe-area-inset-left));display:grid;grid-template-columns:42px minmax(0,1fr) auto 42px;align-items:center;gap:6px;background:var(--reader-control-bg);border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:opacity .18s ease,transform .2s ease}
+#v-read .rd-title{min-width:0;text-align:center;font-family:Amiri,serif;font-size:18px;font-weight:700;color:var(--deep);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#v-read .rd-btn{min-width:40px;height:40px;padding:0 8px;border:1px solid color-mix(in srgb,var(--line) 86%,transparent);border-radius:13px;background:color-mix(in srgb,var(--card) 88%,transparent);color:var(--deep);display:grid;place-items:center;font:inherit;font-size:11.5px;cursor:pointer}
+#v-read .rd-btn svg{width:19px;height:19px;display:block}
+#v-read .rd-zoom{display:flex;gap:4px;border:1px solid color-mix(in srgb,var(--line) 72%,transparent);border-radius:13px;padding:2px;background:color-mix(in srgb,var(--paper) 72%,transparent)}
+#v-read .rd-zoom .rd-btn{min-width:34px;width:34px;height:34px;padding:0;border:0;background:transparent;border-radius:10px;font-size:11px;font-weight:700}
+#v-read .reader-actions{position:fixed;z-index:72;inset-inline:0;bottom:0;min-height:64px;padding:6px max(7px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(7px,env(safe-area-inset-left));display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;background:var(--reader-control-bg);border-top:1px solid color-mix(in srgb,var(--line) 76%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 -10px 28px rgba(25,38,25,.05);transition:opacity .18s ease,transform .2s ease}
+#v-read .reader-actions button{min-width:0;min-height:50px;padding:4px 1px;border:0;border-radius:12px;background:transparent;color:var(--ink-soft);font:inherit;display:grid;grid-template-rows:25px auto;place-items:center;gap:0;cursor:pointer}
+#v-read .reader-actions button svg{width:20px;height:20px;display:block}
+#v-read .reader-actions button span{font-size:10.5px;font-weight:650;line-height:1.15}
+#v-read .reader-actions #rd-tafsir{color:var(--deep)}
+#v-read .reader-actions #rd-tafsir svg{width:22px;height:22px}
+#v-read .rd-nav{display:none!important}
+body.quran-reading:not(.reader-chrome-hidden) #v-read{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+body.quran-reading.reader-chrome-hidden #v-read .rd-bar{opacity:0;transform:translateY(-104%);pointer-events:none}
+body.quran-reading.reader-chrome-hidden #v-read .reader-actions{opacity:0;transform:translateY(104%);pointer-events:none}
+body.quran-reading.reader-chrome-hidden #v-read{padding-bottom:0}
+body.mushaf-fullscreen #v-read .reader-actions{display:grid!important;background:rgba(252,250,244,.92)}
+[data-theme="dark"] body.mushaf-fullscreen #v-read .reader-actions{background:rgba(11,14,11,.91)}
+body.mushaf-fullscreen.mushaf-controls-hidden #v-read .reader-actions{opacity:0;transform:translateY(105%);pointer-events:none}
+body.mushaf-fullscreen:not(.mushaf-controls-hidden) #v-read .reader-actions{opacity:1;transform:none;pointer-events:auto}
+body.mushaf-fullscreen #v-read{padding-bottom:0!important}
+
+@media(max-width:420px){#main-nav .main-nav-inner{padding-inline:3px;gap:1px}#main-nav button{min-height:56px}.nav-label,#main-nav .nav-label{font-size:10.8px}#main-nav .nav-indicator{width:43px}.rd-zoom{display:none!important}#v-read .rd-bar{grid-template-columns:40px minmax(0,1fr) 40px}#v-read .rd-fullscreen-btn{grid-column:3}.reader-actions button span,#v-read .reader-actions button span{font-size:10px}}
+@media(orientation:landscape) and (max-height:520px){body.quran-reading #v-read{height:100vh;overflow:hidden}body.quran-reading #v-read .rd-bar{position:fixed!important;inset-inline:0;top:0;margin:0}body.quran-reading #v-read .mushaf{width:100vw!important;max-width:100vw!important;height:100vh!important;display:grid!important;place-items:center!important;overflow:hidden!important}body.quran-reading #v-read .mus-head,body.quran-reading #v-read .mus-foot,body.quran-reading #v-read .mus-source,body.quran-reading #v-read .mushaf-swipe-hint,body.quran-reading #v-read .mushaf-render-note,body.quran-reading #v-read .tafsir-current{display:none!important}body.quran-reading #v-read .mus-body.printed{width:100vw!important;height:100vh!important;display:grid!important;place-items:center!important;overflow:hidden!important}body.quran-reading #v-read .mus-body.printed .mushaf-page-svg{width:auto!important;height:auto!important;max-width:100vw!important;max-height:100vh!important;margin:auto!important;object-fit:contain!important}}
+@media(min-width:900px){body:not(.quran-reading):not(.mushaf-fullscreen){padding-bottom:24px;padding-inline-end:var(--nav-rail-w)}#main-nav{inset-inline:auto 0;top:0;bottom:0;width:var(--nav-rail-w);border-top:0;border-inline-start:1px solid var(--line);padding:calc(86px + env(safe-area-inset-top)) 7px max(10px,env(safe-area-inset-bottom));box-shadow:-10px 0 30px rgba(25,38,25,.035);display:block}#main-nav .main-nav-inner{width:100%;padding:0;display:flex;flex-direction:column;gap:8px}#main-nav button{width:100%;min-height:67px;grid-template-rows:36px auto;border-radius:18px}#main-nav .nav-indicator{width:48px;height:34px}#main-nav .nav-label{font-size:11px}body.quran-reading>.wrap{max-width:900px}#v-read .reader-actions{left:50%;right:auto;width:min(620px,calc(100vw - 32px));transform:translateX(-50%);border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0}body.quran-reading.reader-chrome-hidden #v-read .reader-actions{transform:translate(-50%,104%)}body.mushaf-fullscreen.mushaf-controls-hidden #v-read .reader-actions{transform:translate(-50%,105%)}body.mushaf-fullscreen:not(.mushaf-controls-hidden) #v-read .reader-actions{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){#main-nav button,#main-nav .nav-indicator,#v-read .rd-bar,#v-read .reader-actions{transition:none!important}}
 </style>
 
 

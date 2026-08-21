@@ -104,7 +104,7 @@ const toast=m=>{const t=document.getElementById('toast');t.textContent=m||'تم 
 /* ================= profile personalization ================= */
 let profile={age:null,gender:null,advancedIssues:false,married:null,hasKids:null,timeBand:null,moneyBand:null,skills:[]};
 const isFemale=()=>profile.gender==='female';
-const g=(male,female)=>isFemale()?female:male;
+const genderText=(male,female)=>isFemale()?female:male;
 const pText=x=>{
   if(!x)return '';
   if(typeof x==='string')return x;
@@ -149,12 +149,12 @@ function profileStage(){
 function paintProfileUI(){
   const line=document.getElementById('home-profile-line');
   if(line&&profile.gender){
-    const who=g('أهلًا بك — تدارُك يراعي عمرك وما يناسبك.','أهلًا بكِ — تدارُك يراعي عمرك وما يناسبكِ.');
+    const who=genderText('أهلًا بك — تدارُك يراعي عمرك وما يناسبك.','أهلًا بكِ — تدارُك يراعي عمرك وما يناسبكِ.');
     line.textContent=profileStage()?`${who} · ${profileStage()}`:who;
   }
   const et=document.getElementById('evening-title'), ec=document.getElementById('evening-copy');
-  if(et&&profile.gender)et.textContent=g('قبل أن تنام: خلاصة اليوم','قبل أن تنامي: خلاصة اليوم');
-  if(ec&&profile.gender)ec.textContent=g('راجع هدفك ومهامك ثم أجب عن ٥ أسئلة أساسية وأغلق يومك بهدوء.','راجعي هدفك ومهامك ثم أجيبي عن ٥ أسئلة أساسية وأغلقي يومك بهدوء.');
+  if(et&&profile.gender)et.textContent=genderText('قبل أن تنام: خلاصة اليوم','قبل أن تنامي: خلاصة اليوم');
+  if(ec&&profile.gender)ec.textContent=genderText('راجع هدفك ومهامك ثم أجب عن ٥ أسئلة أساسية وأغلق يومك بهدوء.','راجعي هدفك ومهامك ثم أجيبي عن ٥ أسئلة أساسية وأغلقي يومك بهدوء.');
 }
 
 /* ================= احفظها لوقت لاحق ================= */
@@ -776,7 +776,25 @@ const MUSHAF_TOTAL_PAGES=604;
 const padMushafPage=p=>String(p).padStart(3,'0');
 const mushafSvgCache=new Map();
 let mushafPageDirection=0, mushafFullscreen=false, mushafControlsHidden=false;
+let readerChromeHidden=false,readerChromeTimer=null;
 let mushafOfflineJob={active:false,cancelled:false,done:0,failed:0};
+function setReaderChromeHidden(hidden){
+  readerChromeHidden=!!hidden;
+  document.body.classList.toggle('reader-chrome-hidden',tab==='read'&&readerChromeHidden&&!mushafFullscreen);
+}
+function scheduleReaderChromeHide(delay=2800){
+  clearTimeout(readerChromeTimer);readerChromeTimer=null;
+  if(tab!=='read'||mushafFullscreen)return;
+  setReaderChromeHidden(false);
+  readerChromeTimer=setTimeout(()=>{if(tab==='read'&&!mushafFullscreen)setReaderChromeHidden(true)},delay);
+}
+function syncReaderSurface(nextTab){
+  const reading=nextTab==='read';
+  document.body.classList.toggle('quran-reading',reading);
+  if(!reading){clearTimeout(readerChromeTimer);readerChromeTimer=null;setReaderChromeHidden(false);return}
+  scheduleReaderChromeHide(3200);
+}
+
 function searchNorm(x){ return (x||'').toString().toLowerCase().replace(/[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06edـ]/g,'').replace(/ٱ/g,'ا').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim() }
 function deepSearchText(v){ if(v==null)return ''; if(typeof v==='string'||typeof v==='number')return String(v); if(Array.isArray(v))return v.map(deepSearchText).join(' '); if(typeof v==='object')return Object.entries(v).filter(([k])=>!['u','url','link','video'].includes(k)).map(([,x])=>deepSearchText(x)).join(' '); return '' }
 const QKEY='quran-pos';
@@ -800,6 +818,10 @@ async function openQuranReaderDefault(){
   await openPage(saved.page||1);
 }
 function openQuranTools(){ if(mushafFullscreen)exitMushafFullscreen(); quranToolsRequested=true; switchTab('quran') }
+function openQuranSearch(){
+  openQuranTools();
+  setTimeout(()=>{const q=document.getElementById('q-search');q?.scrollIntoView({behavior:'smooth',block:'center'});q?.focus()},90);
+}
 const MUYASSAR_FULL_URL='https://qurancomplex.gov.sa/isdarat-books/#flipbook-df_11362/1/';
 const MUYASSAR_BOOK_URL='https://qurancomplex.gov.sa/kfgqpc-books-tafseer-muyassar/';
 const muyassarAyahUrl=(s,a)=>`https://quran.com/ar/${encodeURIComponent(s||1)}%3A${encodeURIComponent(a||1)}/tafsirs/ar-tafsir-muyassar`;
@@ -960,6 +982,15 @@ function highlightMushafAyah(target=qTransientAyah){
   const p=body.querySelector(`.ayahPolygon[surah="${qTransientAyah.s}"][ayah="${qTransientAyah.a}"]`)||body.querySelector(`.ay[data-s="${qTransientAyah.s}"][data-a="${qTransientAyah.a}"]`);
   if(p)p.classList.add('mark');
 }
+const MUSHAF_RENDERER_ID='kfqc-svg';
+const MUSHAF_RENDERERS=Object.freeze({
+  'kfqc-svg':{id:'kfqc-svg',label:'KFQC fixed-page SVG',render:(page,runs,mark)=>renderPrintedMushaf(page,runs,mark)}
+});
+async function renderMushafPage(page,runs,mark){
+  const renderer=MUSHAF_RENDERERS[MUSHAF_RENDERER_ID];
+  if(!renderer)throw new Error('Mushaf renderer unavailable');
+  return renderer.render(page,runs,mark);
+}
 async function renderPrintedMushaf(page,runs,mark){
   const body=document.getElementById('mus-body'),mushaf=document.getElementById('mushaf');
   body.classList.remove('text-fallback'); body.classList.add('printed'); body.style.fontSize='';
@@ -990,10 +1021,10 @@ async function openPage(p){
   const swipeHint=document.getElementById('mushaf-swipe-hint'); if(swipeHint)swipeHint.classList.toggle('hide',qPage!==1);
   document.getElementById('rd-title').textContent=suraLabel||'المصحف';
   updateTafsirPanel();
-  await renderPrintedMushaf(qPage,runs,mark);
+  await renderMushafPage(qPage,runs,mark);
   await store.set(QKEY,{page:qPage,sura:suraLabel,s:(mark.s&&mark.a&&qAyaPage[mark.s+':'+mark.a]===qPage)?mark.s:null,a:(mark.s&&mark.a&&qAyaPage[mark.s+':'+mark.a]===qPage)?mark.a:null});
   if(tab!=='read') switchTab('read');
-  if(!mushafFullscreen) scrollTo({top:0,behavior:'smooth'});
+  if(!mushafFullscreen){scrollTo({top:0,behavior:'smooth'});scheduleReaderChromeHide()}
   else document.getElementById('v-read')?.scrollTo({top:0,behavior:'smooth'});
   // Warm the browser cache for the adjacent pages without touching user data.
   [qPage+1,qPage-1].filter(x=>x>=1&&x<=604).forEach(x=>fetchMushafSvg(x).catch(()=>{}));
@@ -1100,17 +1131,21 @@ window.visualViewport?.addEventListener('resize',()=>{if(mushafFullscreen)syncMu
 window.addEventListener('orientationchange',()=>setTimeout(()=>{if(mushafFullscreen)syncMushafViewportHeight()},120));
 document.getElementById('rd-fullscreen').onclick=toggleMushafFullscreen;
 document.getElementById('mushaf').addEventListener('click',e=>{
-  if(!mushafFullscreen)return;
   if(document.getElementById('ayah-menu'))return;          // القائمة مفتوحة
   if(e.target.closest('a,button'))return;
   /* على اللمس تُظهر أي لمسة الأدوات — حتى فوق الآيات — لأن التحديد صار بالضغط
      المطوّل وحده. بدون هذا تصبح أغلب الشاشة ميتة ويصعب الخروج. */
   const touch=window.matchMedia('(hover:none)').matches;
   if(!touch&&e.target.closest('.ayahPolygon,.ay'))return;
-  mushafControlsHidden=!mushafControlsHidden;syncMushafFullscreenUI();
+  if(mushafFullscreen){mushafControlsHidden=!mushafControlsHidden;syncMushafFullscreenUI();return}
+  if(tab!=='read')return;
+  setReaderChromeHidden(!readerChromeHidden);
+  if(!readerChromeHidden)scheduleReaderChromeHide(3200);
 });
 document.getElementById('rd-back').onclick=openQuranTools;
-document.getElementById('rd-tafsir').onclick=openCurrentTafsir;
+document.getElementById('rd-tools')?.addEventListener('click',openQuranTools);
+document.getElementById('rd-search')?.addEventListener('click',openQuranSearch);
+document.getElementById('rd-tafsir').onclick=()=>{setReaderChromeHidden(false);openCurrentTafsir()};
 document.getElementById('tafsir-sheet-close')?.addEventListener('click',closeTafsirSheet);
 document.getElementById('tafsir-sheet')?.addEventListener('click',e=>{if(e.target?.id==='tafsir-sheet')closeTafsirSheet()});
 document.getElementById('tafsir-sheet-full')?.addEventListener('click',()=>{closeTafsirSheet();openMuyassarSheet()});
@@ -1118,8 +1153,12 @@ document.getElementById('muyassar-open')?.addEventListener('click',openMuyassarS
 document.getElementById('muyassar-close')?.addEventListener('click',closeMuyassarSheet);
 document.getElementById('muyassar-sheet')?.addEventListener('click',e=>{if(e.target?.id==='muyassar-sheet')closeMuyassarSheet()});
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!document.getElementById('muyassar-sheet')?.classList.contains('hide')){closeMuyassarSheet();return}if(!document.getElementById('tafsir-sheet')?.classList.contains('hide'))closeTafsirSheet()});
-document.getElementById('rd-prev').onclick=()=>openPage(qPage-1);
-document.getElementById('rd-next').onclick=()=>openPage(qPage+1);
+const readerPrev=()=>{setReaderChromeHidden(false);openPage(qPage-1)};
+const readerNext=()=>{setReaderChromeHidden(false);openPage(qPage+1)};
+document.getElementById('rd-prev').onclick=readerPrev;
+document.getElementById('rd-next').onclick=readerNext;
+document.getElementById('rd-prev-action')?.addEventListener('click',readerPrev);
+document.getElementById('rd-next-action')?.addEventListener('click',readerNext);
 const setF=v=>{ qFont=Math.min(38,Math.max(15,v)); localStorage.setItem('qFont',qFont);
   const body=document.getElementById('mus-body'); if(body.classList.contains('text-fallback'))body.style.fontSize=qFont+'px' };
 const setMushafZoom=v=>{qZoom=Math.min(145,Math.max(85,v));localStorage.setItem('mushafZoom',qZoom);applyMushafZoom()};
@@ -1890,7 +1929,7 @@ async function hClick(e){
 async function hObstacles(){
   await loadH(); hKind='obstacles'; hCur=null;
   const cats=(HD.obstacles||[]).filter(audienceOk);
-  document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}<button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles" aria-current="true">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button>${hBenefitTab(false)}${issueTabButton(false)}</div><div class="nafs-hero"><h2>${g('مشكلتك مختلفة… والدين ثابت.','مشكلتك مختلفة… والدين ثابت.')}</h2><p>العقبات هنا للحياة الواقعية: أسرة، دراسة، عمل، علاقات، هاتف، فتور، قلق وأسئلة. ${g('اختر ما يشبه موقفك','اختاري ما يشبه موقفكِ')}؛ وكل جواب وخطوة تحته مصدره.</p></div><input id="heart-search" class="q-search" type="search" value="${laterEsc(hQuery)}" placeholder="ابحث: أسرة، علاقة، دراسة، قلق، هاتف…"><div class="search-count" id="heart-result-count"></div><div id="heart-list"></div>`;
+  document.getElementById('v-qalb').innerHTML=`<div class="h-tabs">${hPathTab(false)}<button data-k="problems">أمراض القلوب</button><button data-k="works">أعمال القلوب</button><button data-k="obstacles" aria-current="true">العقبات</button><button data-k="deeds">بنك الأعمال</button><button data-k="nafs">فقه النفس</button>${hBenefitTab(false)}${issueTabButton(false)}</div><div class="nafs-hero"><h2>${genderText('مشكلتك مختلفة… والدين ثابت.','مشكلتك مختلفة… والدين ثابت.')}</h2><p>العقبات هنا للحياة الواقعية: أسرة، دراسة، عمل، علاقات، هاتف، فتور، قلق وأسئلة. ${genderText('اختر ما يشبه موقفك','اختاري ما يشبه موقفكِ')}؛ وكل جواب وخطوة تحته مصدره.</p></div><input id="heart-search" class="q-search" type="search" value="${laterEsc(hQuery)}" placeholder="ابحث: أسرة، علاقة، دراسة، قلق، هاتف…"><div class="search-count" id="heart-result-count"></div><div id="heart-list"></div>`;
   const render=()=>{
     const qq=searchNorm(hQuery), F=cats.filter(x=>!qq||searchNorm(deepSearchText(x)).includes(qq));
     document.getElementById('heart-result-count').textContent=`${AR(F.length)} من ${AR(cats.length)} أبواب`;
@@ -2180,7 +2219,7 @@ async function hDeeds(){
   const flat=[]; D.forEach(c=>c.items.forEach((it,i)=>flat.push([c,it,i]))); const pick=flat.length?flat[(seed+skip)%flat.length]:null, w=dCount(7), host=document.getElementById('v-qalb');
 
   if(dCat){
-    const c=D.find(x=>x.id===dCat); host.innerHTML=`<button class="back" id="d-back">بنك الأعمال</button><div class="h-cathero"><h2>${c.name}</h2><p>${c.sub||''}</p></div><div class="h-sec">`+c.items.map((it,i)=>{ const k=dKey(c.id,i),on=hDone(k,0,hToday()); let times=0; for(let j=0;j<30;j++){const dd=new Date();dd.setDate(dd.getDate()-j);if(hDone(k,0,iso(dd)))times++} return `<div class="h-cure">${laterRegister(`deed:${c.id}:${i}`,{kind:'بنك الأعمال',title:c.name,text:pText(it),source:it.s?.t||'',tab:'qalb'})}<button class="h-chk ${on?'on':''}" data-k="${k}" data-i="0">✓</button><div><div class="t">${pText(it)}</div>${deedSourceHtml(it)}${times?`<div class="stk">${g('فعلته','فعلتِه')} ${AR(times)} مرة هذا الشهر</div>`:''}</div></div>`}).join('')+`</div>`; host.onclick=hClick; return;
+    const c=D.find(x=>x.id===dCat); host.innerHTML=`<button class="back" id="d-back">بنك الأعمال</button><div class="h-cathero"><h2>${c.name}</h2><p>${c.sub||''}</p></div><div class="h-sec">`+c.items.map((it,i)=>{ const k=dKey(c.id,i),on=hDone(k,0,hToday()); let times=0; for(let j=0;j<30;j++){const dd=new Date();dd.setDate(dd.getDate()-j);if(hDone(k,0,iso(dd)))times++} return `<div class="h-cure">${laterRegister(`deed:${c.id}:${i}`,{kind:'بنك الأعمال',title:c.name,text:pText(it),source:it.s?.t||'',tab:'qalb'})}<button class="h-chk ${on?'on':''}" data-k="${k}" data-i="0">✓</button><div><div class="t">${pText(it)}</div>${deedSourceHtml(it)}${times?`<div class="stk">${genderText('فعلته','فعلتِه')} ${AR(times)} مرة هذا الشهر</div>`:''}</div></div>`}).join('')+`</div>`; host.onclick=hClick; return;
   }
 
   host.innerHTML=`${hDeedsTabs()}<input id="deeds-search" class="q-search" type="search" value="${deedsQuery.replace(/"/g,'&quot;')}" placeholder="ابحث في بنك الأعمال: صدقة، والدين، علم، خفاء…" aria-label="بحث في بنك الأعمال"><div class="search-count" id="deeds-result-count"></div><div id="deeds-results"></div>`;
@@ -2404,6 +2443,11 @@ let zikrSectionRequested=false,tazSectionRequested=false;
 function openZikrSection(t){zikrSectionRequested=true;switchTab(t)}
 function openTazkiyahSection(){tazSectionRequested=true;switchTab('qalb')}
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+const appMorePanel=document.getElementById('app-more-panel');
+function setAppMore(open){appMorePanel?.classList.toggle('hide',!open);appMorePanel?.setAttribute('aria-hidden',open?'false':'true')}
+document.getElementById('btn-more')?.addEventListener('click',()=>setAppMore(true));
+document.getElementById('app-more-close')?.addEventListener('click',()=>setAppMore(false));
+appMorePanel?.addEventListener('click',e=>{if(e.target===appMorePanel){setAppMore(false);return}const b=e.target.closest('[data-more-action]');if(!b)return;const id={history:'btn-history',theme:'btn-theme',settings:'btn-settings',feedback:'btn-feedback'}[b.dataset.moreAction];setAppMore(false);if(id)setTimeout(()=>document.getElementById(id)?.click(),0)});
 function switchTab(t){
   if(t==='quran'&&!quranToolsRequested){ openQuranReaderDefault(); return }
   if(t==='azkar'&&!zikrSectionRequested)t='zikrhub';
@@ -2411,10 +2455,11 @@ function switchTab(t){
   zikrSectionRequested=false;tazSectionRequested=false;
   const showQuranTools=t==='quran'&&quranToolsRequested; if(showQuranTools)quranToolsRequested=false;
   tab=t;
+  syncReaderSurface(t);
   const views=['today','quran','read','zikrhub','azkar','dua','tasbih','asma','sunnah','qalb','irtaqi','history'];
   views.forEach(v=>{ const el=document.getElementById('v-'+v); if(el) el.classList.toggle('hide',v!==t) });
   const zikr=['azkar','dua','tasbih','asma'];
-  const navFor={read:'quran',zikrhub:'azkar',dua:'azkar',tasbih:'azkar',asma:'azkar'}[t]||t;
+  const navFor={read:'quran',zikrhub:'azkar',dua:'azkar',tasbih:'azkar',asma:'azkar',irtaqi:'today'}[t]||t;
   document.querySelectorAll('nav button[data-tab]').forEach(b=>
     b.setAttribute('aria-current',b.dataset.tab===navFor));
   document.getElementById('zseg').classList.toggle('hide',!zikr.includes(t));
@@ -2575,7 +2620,7 @@ document.getElementById('file-in').onchange=async e=>{
 
 /* theme */
 document.getElementById('btn-profile')?.addEventListener('click',()=>{document.getElementById('profile-panel')?.classList.remove('hide');const a=document.getElementById('profile-edit-age');if(a)a.value=profile.age||'';const gEl=document.querySelector(`input[name="profile-edit-gender"][value="${profile.gender||'male'}"]`);if(gEl)gEl.checked=true;const adv=document.getElementById('profile-edit-issues');if(adv)adv.checked=issuesEnabled();fillLifeProfile()});
-document.getElementById('profile-save')?.addEventListener('click',async()=>{const age=+(document.getElementById('profile-edit-age')?.value||0),gender=document.querySelector('input[name="profile-edit-gender"]:checked')?.value,advancedIssues=!!document.getElementById('profile-edit-issues')?.checked;if(!gender||age<10||age>100){toast('أدخل بيانات صحيحة');return}profile={...profile,age,gender,advancedIssues,...readLifeProfile()};await store.set('profile-v1',profile);paintProfileUI();document.getElementById('profile-panel')?.classList.add('hide');toast(g('تم تحديث التخصيص','تم تحديث التخصيص'));if(tab==='qalb')hRender()});
+document.getElementById('profile-save')?.addEventListener('click',async()=>{const age=+(document.getElementById('profile-edit-age')?.value||0),gender=document.querySelector('input[name="profile-edit-gender"]:checked')?.value,advancedIssues=!!document.getElementById('profile-edit-issues')?.checked;if(!gender||age<10||age>100){toast('أدخل بيانات صحيحة');return}profile={...profile,age,gender,advancedIssues,...readLifeProfile()};await store.set('profile-v1',profile);paintProfileUI();document.getElementById('profile-panel')?.classList.add('hide');toast(genderText('تم تحديث التخصيص','تم تحديث التخصيص'));if(tab==='qalb')hRender()});
 document.getElementById('profile-edit-married')?.addEventListener('change',()=>syncKidsVisibility('profile-edit'));
 document.getElementById('profile-married')?.addEventListener('change',()=>syncKidsVisibility('profile'));
 document.getElementById('profile-close')?.addEventListener('click',()=>document.getElementById('profile-panel')?.classList.add('hide'));
@@ -2593,7 +2638,7 @@ document.getElementById('btn-theme').onclick=async()=>{
 const onboarding=document.getElementById('onboarding'); let onbStep=0;
 function paintOnboarding(){document.querySelectorAll('.onb-step').forEach(x=>x.classList.toggle('on',+x.dataset.onb===onbStep));document.querySelectorAll('.onb-dots i').forEach((x,i)=>x.classList.toggle('on',i===onbStep));document.getElementById('onboarding-prev')?.classList.toggle('hide',onbStep===0);const n=document.getElementById('onboarding-next');if(n)n.textContent=onbStep===4?'ابدأ مع تدارُك':'التالي';if(onbStep===2)syncKidsVisibility('profile')}
 document.getElementById('onboarding-prev')?.addEventListener('click',()=>{onbStep=Math.max(0,onbStep-1);paintOnboarding()});
-document.getElementById('onboarding-next')?.addEventListener('click',async()=>{if(onbStep===1){const age=+(document.getElementById('profile-age')?.value||0),gender=document.querySelector('input[name="profile-gender"]:checked')?.value;if(!gender||age<10||age>100){toast('اختر النوع واكتب عمرًا صحيحًا');return}profile={...profile,age,gender};await store.set('profile-v1',profile);paintProfileUI()}if(onbStep===2){profile={...profile,...readLifeProfile('profile','profile-skills')};await store.set('profile-v1',profile)}if(onbStep===3){profile={...profile,advancedIssues:!!document.getElementById('profile-issues')?.checked};await store.set('profile-v1',profile)}if(onbStep<4){onbStep++;paintOnboarding();return}await store.set('onboarding-seen-v3',true);onboarding?.classList.add('hide');toast(g('أهلًا بك في تدارُك','أهلًا بكِ في تدارُك'));hQuery='';if(tab==='qalb')hRender()});
+document.getElementById('onboarding-next')?.addEventListener('click',async()=>{if(onbStep===1){const age=+(document.getElementById('profile-age')?.value||0),gender=document.querySelector('input[name="profile-gender"]:checked')?.value;if(!gender||age<10||age>100){toast('اختر النوع واكتب عمرًا صحيحًا');return}profile={...profile,age,gender};await store.set('profile-v1',profile);paintProfileUI()}if(onbStep===2){profile={...profile,...readLifeProfile('profile','profile-skills')};await store.set('profile-v1',profile)}if(onbStep===3){profile={...profile,advancedIssues:!!document.getElementById('profile-issues')?.checked};await store.set('profile-v1',profile)}if(onbStep<4){onbStep++;paintOnboarding();return}await store.set('onboarding-seen-v3',true);onboarding?.classList.add('hide');toast(genderText('أهلًا بك في تدارُك','أهلًا بكِ في تدارُك'));hQuery='';if(tab==='qalb')hRender()});
 
 /* ================= boot ================= */
 (async function(){
@@ -2616,4 +2661,5 @@ document.getElementById('onboarding-next')?.addEventListener('click',async()=>{i
   if(h==='tafsir'){quranToolsRequested=true;switchTab('quran')}
   else if(h==='plan'){switchTab('today');setTimeout(()=>document.getElementById('day-plan')?.scrollIntoView({behavior:'smooth',block:'start'}),120)}
   else if(['today','quran','read','azkar','dua','tasbih','asma','sunnah','qalb','irtaqi','history'].includes(h)) switchTab(h);
+  else switchTab('today');
 })();

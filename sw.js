@@ -1,6 +1,6 @@
-/* Tadaruq PWA service worker — v24 R43. */
-const CACHE_NAME = 'tadaruq-v24-r43-pwa-20260821';
-const RUNTIME_CACHE = 'tadaruq-runtime-v24-r43-20260821';
+/* Tadaruq PWA service worker — v24 R44. */
+const CACHE_NAME = 'tadaruq-v24-r44-pwa-20260821';
+const RUNTIME_CACHE = 'tadaruq-runtime-v24-r44-20260821';
 const HADITH_CORPUS_CACHE = 'tadaruq-lulu-marjan-v1';
 const MUSHAF_PUBLIC_CACHE = 'tadaruq-mushaf-kfqc-r43-v1';
 const PRECACHE_URLS = [
