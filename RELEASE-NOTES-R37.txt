@@ -1,0 +1,16 @@
+Tadaruq v24 R37 — Home + Knowledge Architecture + Muyassar-only Tafsir
+2026-08-21
+
+- Implemented the owner-approved Home refresh: one resume card, three primary daily doors, then secondary gateways; existing daily plan/review systems are reused, not duplicated.
+- Removed Al-Mukhtasar from active UI/runtime. Tafsir from the Mushaf is now Tafseer Muyassar only. Legacy `tafsir-pos-v1` data remains preserved/backupable; it is no longer written by an active reader.
+- Added an official KFGQPC card for trusted Mushafs in other narrations; current in-app reader stays the protected 604-page Hafs layout.
+- Rebuilt the top-level `العلم` information architecture into:
+  1) السنة والسيرة — الأربعون النووية، رياض الصالحين، السيرة النبوية.
+  2) التفسير وعلوم القرآن — التفسير الميسر كاملًا، أصول التفسير.
+  3) الفقه وأصوله — الفقه الميسر، أصول الفقه، فقهاء عبر العصور، فقه البوصلة/المقاصد.
+  4) التاريخ الإسلامي — الصحابة، مختصر التاريخ الإسلامي.
+- Added `usul-tafsir.json`, `usul-fiqh.json`, `fuqaha.json`, `islamic-history.json` with visible source stacks.
+- Added `CONTENT_PROVENANCE-KNOWLEDGE-R37.md`.
+- No persistent user key was added/renamed/deleted. Data schema stays 2.
+- PWA cache bumped to R37.
+- Protected Mushaf geometry/page/ayah-selection behavior was not modified.

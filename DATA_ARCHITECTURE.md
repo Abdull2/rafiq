@@ -58,3 +58,16 @@ R24 keeps `rafiq:data-version = 2`. The persistent key `qalb-levels-v1` already 
 - New local user keys: `mujahada-weight-v1`, `fiqh-busola-progress-v1`, `benefit-choice-v1`.
 - New static content files: `fiqh-busola.json`, `benefit.json`. Static religious/scientific content is not user data.
 - No backend, account system, analytics, cloud sync or telemetry was added.
+
+## R36 — Tafsir Muyassar external-content path
+R36 does not add a backend or database. It adds an on-demand external content view for **التفسير الميسر** using the official King Fahd Complex embed URL. The iframe is lazy: it receives a `src` only after the user explicitly opens the tafsir. Exact-ayah Tafsir Muyassar links use Quran.com as a viewer; the canonical publisher/source remains the King Fahd Complex. No new user persistence is created, and the existing Al-Mukhtasar proxy architecture remains separate and unchanged.
+
+## R37 — Home/Knowledge restructure + Al-Mukhtasar retirement (2026-08-21)
+
+R37 adds no new cloud/backend architecture and no new persistent user key.
+
+- Home resume reads existing local state only (`quran-pos`, `qalb-levels-v1`, `fiqh-busola-progress-v1`) and routes to existing systems. It does not create a second planning/history/progress database.
+- New knowledge datasets (`usul-tafsir.json`, `usul-fiqh.json`, `fuqaha.json`, `islamic-history.json`) are static educational content, not user data.
+- Full Tafseer Muyassar reading is opened through the official King Fahd Complex embed. No new local tafsir-reading-position key is created.
+- Al-Mukhtasar active runtime/UI is removed. Existing `tafsir-pos-v1` records are intentionally retained as legacy local data to avoid silently deleting a user's prior record. New R37 UI does not write/update that key.
+- `rafiq:data-version` remains 2. Backup metadata app version is 24.37.0.

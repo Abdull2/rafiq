@@ -103,3 +103,24 @@ R33 adds a fifth study stage to the existing Works / Heart Diseases / Obstacles 
 - If a legacy topic had levels 1–4 completed and the newly added level 5 is not complete, the app moves only the stored `open`/resume pointer to level 5 so the user discovers the new material. Earlier stages remain reviewable afterward.
 - `rafiq:data-version` remains `2`.
 - Backup metadata app version is `24.33.0`.
+
+## R36 — trusted Tafsir Muyassar + typography (2026-08-21)
+
+R36 introduces **no persistent user-data key, no schema migration, and no stored-shape change**. `rafiq:data-version` remains **2** and existing keys including `quran-pos` and `tafsir-pos-v1` are unchanged.
+
+- The new Tafsir Muyassar full-book view is a user-initiated external iframe from `qurancomplex.gov.sa`; it does not create a local reading-position key.
+- Exact-ayah Tafsir Muyassar links may open `quran.com`; Tadaruq sends only the ayah/surah encoded in the requested URL, not profile/day/location/worship data.
+- The existing Al-Mukhtasar `tafsir-pos-v1` behavior and proxy-secret boundary are preserved.
+- The typography pass changes CSS only and has no data effect.
+- Backup metadata app version is `24.36.0`; backup schema remains unchanged.
+
+## R37 — 2026-08-21
+
+No persistent storage key was added, renamed, deleted, or incompatibly reshaped.
+
+- `rafiq:data-version` remains **2**.
+- Home redesign reads existing state only and reuses existing navigation/planning systems.
+- New Knowledge JSON files are static public educational content and are not included as personal data in backup/snapshot registries.
+- Al-Mukhtasar UI/runtime was removed at the owner's request. **`tafsir-pos-v1` remains in the exact-key/type registry as legacy data** so upgrades do not silently delete or orphan an existing user's backup/restore record. R37 has no active code that advances this key.
+- Tafseer Muyassar is accessed by user action through official/public web content; no profile, daily record, worship log, journal, personal path, or exact coordinates are sent by Tadaruq as payload fields.
+- Backup metadata app version: **24.37.0**.

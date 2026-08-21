@@ -1,0 +1,45 @@
+TADARUQ v24 R37 — QA REPORT
+Date: 2026-08-21
+
+Status legend: VERIFIED / STATICALLY VERIFIED / NOT VERIFIED / REQUIRES REAL-DEVICE TEST
+
+Automated/static checks are filled by the final QA command below. Visual changes require a real-device check because the local headless Chromium attempt did not yield a usable screenshot in this environment.
+
+## VERIFIED automated/static results
+- `node --check app.js` — PASS.
+- `node --check data-safety.js` — PASS.
+- `node --check sw.js` — PASS.
+- `node --check pwa-register.js` — PASS.
+- `node --check extension-bridge.js` — PASS.
+- JSON/webmanifest parse — PASS: 21 parsed artifacts.
+- HTML duplicate-ID audit — PASS: 232 IDs, 0 duplicates.
+- Service Worker precache audit — PASS: 38 local entries, 0 missing.
+- New source datasets — PASS:
+  - `usul-tafsir.json`: 9 unique modules, every module has visible HTTPS source(s).
+  - `usul-fiqh.json`: 10 unique modules, every module has visible HTTPS source(s).
+  - `fuqaha.json`: 12 unique biographies, every biography has visible HTTPS source(s).
+  - `islamic-history.json`: 12 unique timeline cards, every card has visible HTTPS source(s).
+- Active Al-Mukhtasar runtime marker audit — PASS: no `mokhtasr`, `MOKHTASAR`, `tafsir-config.js`, or `v-tafsir` marker in active runtime/user-facing files.
+- Legacy Data Safety compatibility — PASS: `tafsir-pos-v1` remains registered as object; backup appVersion is `24.37.0`; schema remains 2.
+- Protected Mushaf comparison — PASS: `safeMushafSvg`, `openPage`, `enterMushafFullscreen`, `exitMushafFullscreen`, and `toggleMushafFullscreen` are byte-identical to the prior baseline.
+- Required Home/Knowledge text markers — PASS.
+- A manual markup review found one missing closing `</section>` in the new qira'at card; corrected before final packaging and checks rerun.
+
+## Source verification performed on the web
+- King Fahd Complex official qira'at page confirms official Mushafs for Warsh, al-Duri, Qalun, Shu'bah and al-Susi in addition to Hafs.
+- King Fahd Complex official digital/print resources confirm vector resources for Hafs and multiple other narrations.
+- King Fahd Complex developer platform describes Tafseer Muyassar data as trusted/approved and intended for use by developers/researchers/publishers.
+- Official KFGQPC embed service exposes Tafseer Muyassar as embeddable content.
+- Official Ibn Uthaymeen Foundation pages verified `أصول في التفسير` and `الأصول من علم الأصول` and their stated scopes.
+- Dorar historical encyclopedia verified as the backbone for the history map.
+- Representative direct Siyar biography pages verified for Abu Hanifa, Malik, al-Shafi'i and Ahmad ibn Hanbal.
+
+## NOT VERIFIED / REQUIRES REAL-DEVICE TEST
+A headless Chromium attempt timed out and did not yield a usable screenshot. Therefore the following are **not** visually verified in this environment:
+- new Home hierarchy at narrow Android/TWA widths;
+- Knowledge category cards and segmented subnavigation;
+- official Tafseer Muyassar iframe behavior inside the installed TWA/browser;
+- qira'at source card layout;
+- dark/light visual appearance and system/browser Back behavior around the new Knowledge flow.
+
+Exact status: **Automated/static checks passed, but visual/device verification was not possible in this environment.**

@@ -1,0 +1,78 @@
+Tadaruq v24 R36 — QA REPORT
+Date: 2026-08-21
+
+STATUS LEGEND
+- VERIFIED: executed in the build environment.
+- STATICALLY VERIFIED: inspected in source/data but not runtime-rendered.
+- REQUIRES REAL-DEVICE TEST: depends on browser/TWA/device behavior.
+
+A) VERIFIED — JavaScript syntax
+- node --check app.js: PASS
+- node --check data-safety.js: PASS
+- node --check sw.js: PASS
+- node --check pwa-register.js: PASS
+- node --check extension-bridge.js: PASS
+- node --check tafsir-config.js: PASS
+
+B) VERIFIED — structured files / HTML
+- Parsed 16 root JSON files + manifest.webmanifest: PASS (17 total parsed artifacts).
+- index.html duplicate-ID audit: PASS — 237 IDs, 0 duplicates.
+- Service Worker precache audit: PASS — 36 local precache entries, 0 missing.
+- Cache names: tadaruq-v24-r36-pwa-20260821 / tadaruq-runtime-v24-r36-20260821.
+
+C) VERIFIED — Tafsir Muyassar integration
+Deterministic checks passed for:
+- Quran-tools Tafsir Muyassar card exists.
+- Official KFGQPC embed URL is present and lazy-opened.
+- Exact-ayah Tafsir Muyassar URL generation exists.
+- Tafsir sheet offers Muyassar and keeps the existing Al-Mukhtasar path.
+- Continuous Al-Mukhtasar reader remains present.
+- Existing tafsir-pos-v1 marker remains present.
+- Existing Al-Mukhtasar proxy integration remains present.
+- sources.html names King Fahd Complex as the canonical source.
+- privacy.html discloses qurancomplex.gov.sa and quran.com user-initiated requests.
+
+D) VERIFIED — data compatibility
+- Compared literal localStorage/store key usage R35 -> R36: 26 before / 26 after; added []; removed [].
+- rafiq:data-version remains 2.
+- Backup metadata appVersion = 24.36.0.
+- All content JSON files (excluding continuity AI_HANDOFF.json) are byte-hash unchanged from R35.
+- No persistent key, stable content ID, or content dataset changed.
+
+E) VERIFIED — Home request isolation
+- R35 vs R36 `v-today` Home markup: byte-identical.
+- Home redesign was intentionally NOT implemented; HOME-REFRESH-PROPOSAL-R36.md is proposal-only pending owner approval.
+
+F) VERIFIED / STATICALLY VERIFIED — Mushaf isolation
+The following protected functions were compared R35 -> R36 and are byte-identical:
+- safeMushafSvg
+- openPage
+- enterMushafFullscreen
+- exitMushafFullscreen
+- toggleMushafFullscreen
+Protected Mushaf/fullscreen CSS rules were also compared and are unchanged. R36 changes only the tafsir choice/action around the selected ayah; it does not change fixed-page SVG geometry, quran-pos, swipe direction, zoom, fullscreen geometry, or ayah polygons.
+
+G) VERIFIED — typography transformation
+- Deterministic pre-edit audit found 184 explicit CSS font-size declarations below 11px outside protected Mushaf/read/fullscreen selectors.
+- R36 raises those eligible declarations by exactly +1px.
+- Protected selectors (`mushaf`, `mus-`, `#mus-`, `.rd-`, `body.mushaf`, `.ayahPolygon`) were excluded.
+- Existing normal/body/headline sizes >=11px were not mass-scaled.
+
+H) WEB SOURCE VERIFICATION
+Verified against official/public sources during the R36 session:
+- King Fahd Glorious Qur'an Printing Complex developer platform identifies Tafseer Muyassar content as trusted/approved and explicitly provides it for developers/researchers/publishers to use in applications; it includes tafsir per ayah.
+- King Fahd Complex official content-embedding service explicitly provides the `isdarat-books/#flipbook-df_11362/1/` iframe for «التفسير الميسر».
+- Quran.com exact Tafsir Muyassar route was verified on a representative ayah (2:255). Quran.com is treated only as an exact-ayah viewer, not the canonical publisher.
+
+I) VISUAL / DEVICE STATUS
+- Automated/static checks passed, but visual/device verification was not possible in this environment.
+- Headless Chromium attempts did not successfully render a usable screenshot.
+- REQUIRES REAL-DEVICE TEST: Android/TWA narrow layout, dark/light display of the new card/modal, iframe rendering/scrolling/close behavior, and the modest typography increase across representative screens.
+- REQUIRES REAL-DEVICE TEST: official KFGQPC iframe behavior inside the actual installed TWA/browser environment. A direct official-site fallback remains visible if the iframe does not render.
+
+J) DISTRIBUTION
+- GitHub Pages/PWA/TWA web-content update: YES.
+- New Android AAB solely for R36: NO (no native-shell/resource/config change).
+- Chrome Web Store extension update: NOT INCLUDED in this artifact; extension users do not automatically receive GitHub web code.
+- New backend/serverless service: NO. Existing optional Al-Mukhtasar proxy remains unchanged.
+- New Play declaration caused by R36: NO. The previously documented R32 smoking/nicotine Health Apps declaration concern remains a separate carried-forward issue.

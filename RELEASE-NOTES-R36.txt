@@ -1,0 +1,10 @@
+Tadaruq v24 R36 — trusted tafsir + readability
+
+1) Added «التفسير الميسر» as an immediately usable trusted tafsir path:
+   - canonical source: King Fahd Glorious Qur’an Printing Complex; prepared by a group of scholars.
+   - official KFGQPC embedded book viewer inside Tadaruq, with external official fallback.
+   - selected ayah tafsir sheet now offers an exact Tafsir Muyassar link for that ayah on Quran.com, alongside the existing Al-Mukhtasar flow.
+   - Al-Mukhtasar reader, `tafsir-pos-v1`, and authorized proxy architecture remain unchanged.
+2) Increased sub-11px UI helper/meta text by ~1px across the general interface. Protected Mushaf/fullscreen/page geometry selectors were excluded.
+3) Home redesign was NOT implemented. Added HOME-REFRESH-PROPOSAL-R36.md because the owner explicitly requested a proposal before execution.
+4) PWA cache bumped to R36. Data schema remains 2; no persistent keys/IDs/migrations.

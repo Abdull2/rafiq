@@ -1,14 +1,20 @@
-READ AI_HANDOFF.md FIRST. It is append-only and may not be deleted, renamed, truncated, summarized away, or omitted from a full handoff.
-Current release is Tadaruq v24 R34, based additively on R33. R34 is a branding-only update using the owner-supplied tadaruk-icon-square.svg as the master app icon.
-Before any edit:
-1) preserve local user data and stable IDs/keys;
-2) retain immediate sources for every religious claim and appropriate scientific/official sources for scientific/medical claims;
-3) R33 Works/Heart Diseases/Obstacles use five distinct stages (definition -> roots/build -> revelation/scholarship -> treatment/training -> prevention/review). Do not regress them into repeated shallow cards;
-4) preserve the visible `مراجع هذا الباب` / `studyRefs` panel and point-level source under every staged item;
-5) do not turn study/obstacle tracking into faith scoring;
-6) do not duplicate خطة اليوم / مساري / ارتقِ;
-7) do not touch R29-R31 Mushaf geometry/fullscreen/ayah-selection code without dedicated regression work and real-device visual QA;
-8) any content/UI change requires a Service Worker cache bump;
-9) the structured smoking/nicotine journey requires a Google Play Health Apps declaration re-audit before Play-facing deployment.
+READ AI_HANDOFF.md FIRST. It is append-only and may never be deleted, renamed, truncated, summarized away, moved out of the project, or omitted from a full handoff.
 
-10) Preserve tadaruk-icon-square.svg as the primary app icon master unless the owner explicitly replaces it. Keep maskable safe-zone padding; do not stretch/crop the Arabic wordmark.
+Current release: Tadaruq v24 R37 (2026-08-21).
+
+Critical current rules:
+1) Preserve all persistent user keys/stable content IDs. Data schema remains 2.
+2) Religious claims require visible verified sources; distinguish educational paraphrase from quotation.
+3) R33 Tazkiyah Works/Heart Diseases/Obstacles use five distinct source-backed stages and visible named references; do not regress them.
+4) Preserve `qalb-*`, `quran-pos`, `profile-v1`, `saved-later-v1`, `day:*`, `todo-items`, and all other registered keys.
+5) R37 RETIRES Al-Mukhtasar from active UI/runtime. Do not reintroduce it unless the owner explicitly asks. Keep legacy `tafsir-pos-v1` registered/backed up so old local data is not deleted.
+6) Tafsir shown from the Mushaf is Tafseer Muyassar, canonical publisher/source King Fahd Glorious Qur'an Printing Complex.
+7) `العلم` is now organized by top-level categories: السنة والسيرة; التفسير وعلوم القرآن; الفقه وأصوله; التاريخ الإسلامي. New static datasets: usul-tafsir.json, usul-fiqh.json, fuqaha.json, islamic-history.json. See CONTENT_PROVENANCE-KNOWLEDGE-R37.md.
+8) Home refresh approved and implemented in R37. It reuses existing state and daily-plan systems; do not create duplicate Home progress/Todo systems.
+9) Current in-app Mushaf remains protected 604-page Hafs/KFQC fixed geometry. Do not crop/reflow/change viewBox or ayah interaction geometry. Left-to-right swipe = NEXT.
+10) Other official qira'at Mushafs exist (KFGQPC Warsh/Qalun/Shu'bah/Duri/etc.), but R37 only links official resources; do not silently switch the in-app reader without dedicated fixed-page/mapping QA.
+11) tadaruk-icon-square.svg remains the canonical logo master unless the owner explicitly replaces it.
+12) Any UI/content change requires Service Worker cache bump.
+13) Structured smoking/nicotine journey remains a Google Play Health Apps declaration review item before Play-facing deployment.
+14) Chrome extension users do not automatically receive GitHub/PWA changes; package/update MV3 separately when requested.
+15) State testing truthfully. R37 visual Home/Knowledge changes still require real Android/TWA visual verification in this environment.

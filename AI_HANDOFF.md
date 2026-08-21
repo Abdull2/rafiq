@@ -1955,3 +1955,362 @@ Owner supplied `tadaruk-icon-square.svg` and asked to make it the main applicati
 
 ### R34 standing logo rule
 `tadaruk-icon-square.svg` is the canonical app logo master until the owner explicitly replaces it. Do not redraw, stretch, recolor, crop, or substitute the wordmark silently. Derivative raster sizes may scale it; adaptive/maskable variants may add safe-zone padding only.
+
+
+## R35 — Combined deployment correction: R33 Tazkiyah + R34 logo — 2026-08-21
+
+### Owner report
+Owner reported that no real Tazkiyah change was visible after the recent releases despite the R33 claim that Works / Heart Diseases / Obstacles had been expanded.
+
+### Root cause found
+This was a packaging/deployment continuity mistake, not an absence of R33 content in the full source. The R33 full source contains the expanded `qalb.json` (5 stages/topic) and matching `app.js`/`index.html`. However, the later **R34 GitHub logo-only update ZIP intentionally contained only branding files and did not include `qalb.json` or `app.js`**. If R34 was applied directly on top of an older R32 deployment without first deploying the R33 GitHub update, the website kept the older shallow Tazkiyah content. The R34 cache bump could then cache that older `qalb.json`, making the situation look like R33 never existed.
+
+### R35 correction
+- Built a single combined GitHub update that contains the complete R33 Tazkiyah implementation **and** the R34 canonical logo assets.
+- Included `qalb.json`, `app.js`, `index.html`, `sources.html`, Tazkiyah provenance/source docs, Data Safety metadata, plus all R34 icon/splash assets.
+- Bumped PWA and runtime cache names to R35 so deployed devices cannot remain on the older cached Tazkiyah JSON.
+- Backup metadata app version bumped to `24.35.0`; Data Safety schema remains 2.
+- No persistent key, stable content ID, Mushaf geometry/fullscreen/ayah-selection code, package ID, permissions, TWA origin, or Digital Asset Links changed.
+
+### Verified Tazkiyah payload in R35
+- Works: 9 topics, exactly 5 stages/topic.
+- Heart diseases: 10 topics, exactly 5 stages/topic.
+- Obstacles: 26 scenarios, exactly 5 stages/topic.
+- Total: 45 topics / 225 stages.
+- Example `ikhlas`: `التعريف وحدود المعنى` -> `بناء المعنى وتمييز شوائبه` -> `الوحي وشرح أهل العلم` -> `كيف يُبنى الإخلاص في النفس` -> `الثبات والمراجعة بعد الانتكاس`.
+- Every staged item retains its immediate source and every topic retains named `studyRefs` / `مراجع هذا الباب`.
+
+### Deployment instruction
+For GitHub Pages, deploy the R35 combined update ZIP over the current `Abdull2/rafiq` root. Do not deploy only the older R34 logo ZIP if the goal is to receive the R33 Tazkiyah changes. After Pages finishes, fully close/reopen the installed PWA/TWA once so the R35 service worker takes control.
+
+### Process correction
+Future incremental update ZIPs must declare their required base release. A branding-only delta must not be presented in a way that can be safely applied to an older base when it omits intervening content changes. When there is uncertainty, provide a cumulative update pack or full source.
+
+## R36 — Trusted Tafsir Muyassar + global small-text readability + Home proposal only — 2026-08-21
+
+### Owner request / session input
+The owner supplied the current MASTER AI DEVELOPMENT PROMPT and requested, substantively/verbatim:
+
+> "+محتاج اي تفسير للقرآن معتمد ضروري"
+>
+> "+ممكن تفكر في فكرة ازاي الhome يبقي اشد جذبآ اقترح قبل التنفيذ"
+>
+> "+ممكن تكبير بسيط للكتابة الصغيرة في التصميم ككل"
+
+The MASTER prompt reiterates that this is a production app with existing local data; do not break existing functionality/data, preserve source integrity, test truthfully, make minimal safe changes, and never claim unexecuted tests.
+
+### Baseline / source of truth
+- R35 cumulative full source was used as the source of truth. R35 already contains the R33 deep Tazkiyah curriculum plus the R34 canonical logo and the R35 cumulative deployment correction.
+- `AI_HANDOFF.md` was read completely before final delivery, together with `DATA_SAFETY.md`, `DATA_ARCHITECTURE.md`, `MUSHAF_PROVENANCE.md`, `THIRD_PARTY_LICENSES.md`, relevant provenance/spec files, `app.js`, `index.html`, `sw.js`, `data-safety.js`, `manifest.webmanifest`, `tafsir-config.js`, and relevant source/privacy files.
+- Data schema at baseline: 2. Existing `quran-pos` and `tafsir-pos-v1` are protected.
+- R35 cache baseline was bumped to a new R36 cache because UI/code changed.
+
+### A. Tafsir decision — add an immediately usable trusted tafsir without weakening Al-Mukhtasar
+The existing Al-Mukhtasar experience is retained exactly as a separate feature: exact-ayah source link, continuous reader, `tafsir-pos-v1`, and optional authorized API proxy. Its full inline corpus is still not copied/scraped into public files.
+
+R36 adds **«التفسير الميسر للقرآن الكريم»** as the immediately usable trusted tafsir path.
+
+Canonical source/publisher:
+- **مجمع الملك فهد لطباعة المصحف الشريف — King Fahd Glorious Qur'an Printing Complex**.
+- Official developer platform: `https://qurancomplex.gov.sa/quran-dev/` / the Complex developer page for Tafseer Muyassar.
+- The official developer platform explicitly states that Tafseer Muyassar data is provided to developers/researchers/publishers for use in apps and that the digital content is trusted/approved by the Complex; the data includes `aya_tafseer` for each ayah.
+- Official content-embedding service: `https://qurancomplex.gov.sa/embed-isdarat/` explicitly provides the Tafsir Muyassar iframe URL `https://qurancomplex.gov.sa/isdarat-books/#flipbook-df_11362/1/`.
+
+Implementation:
+1. Added a prominent **التفسير الميسر** card in Quran tools before the existing Al-Mukhtasar card.
+2. `اقرأ التفسير الميسر داخل تدارُك` opens a lazy-loaded modal containing the **official KFGQPC embed**. The iframe is not loaded until the user asks for it.
+3. The selected-ayah tafsir sheet is now a neutral chooser rather than being labelled only as Al-Mukhtasar. It offers:
+   - exact `التفسير الميسر لهذه الآية` link;
+   - `فتح في قارئ المختصر`;
+   - exact official Al-Mukhtasar link;
+   - visible source links for both tafsirs.
+4. Exact Tafsir Muyassar ayah links use the verified Quran.com route `https://quran.com/ar/<sura>%3A<aya>/tafsirs/ar-tafsir-muyassar`. Quran.com is explicitly treated as a viewer only; the canonical tafsir source/publisher remains KFGQPC.
+5. The continuous Al-Mukhtasar reader also exposes a Tafsir Muyassar link for its current ayah without changing `tafsir-pos-v1`.
+6. `sources.html` records the canonical source and the viewer/publisher distinction.
+7. `privacy.html` discloses the user-initiated external requests to `qurancomplex.gov.sa` and `quran.com`. Tadaruq does not send profile/day/location/worship data to these services by its own code.
+
+### B. Home request — proposal only, deliberately NOT implemented
+The owner explicitly said **"اقترح قبل التنفيذ"**. Therefore R36 does not reorder Home, change Home logic, or introduce a new Home persistence model.
+
+Added `HOME-REFRESH-PROPOSAL-R36.md` with the proposed structure:
+1. **حال يومك الآن** — next prayer + one primary contextual CTA.
+2. **أكمل من حيث توقفت** — one dynamic resume card reading existing state such as `quran-pos`, `qalb-levels-v1`, Fiqh al-Busola progress, or `tafsir-pos-v1`; no new persistence.
+3. **ثلاثة أبواب لليوم** — Qur'an, dhikr, daily plan as the primary daily actions.
+4. **اختر بابك** — smaller secondary gateways for knowledge, fiqh, Tazkiyah, Irtaqi.
+5. Keep the five-question evening review lightweight and non-guilt-based.
+
+Static comparison confirms R35 and R36 `v-today` Home markup is byte-identical. Future AI must not implement the proposal until the owner approves it.
+
+### C. Small-text readability pass
+The owner requested a modest increase to small typography across the design.
+
+Applied a conservative CSS-only transformation:
+- Every explicit `font-size` below **11px** outside protected Mushaf/read/fullscreen selectors was raised by exactly **+1px**.
+- Deterministic baseline count: **184 eligible declarations**.
+- Headline/body sizes already >=11px were not globally scaled.
+- Protected selector tokens excluded from the transformation: `mushaf`, `mus-`, `#mus-`, `.rd-`, `body.mushaf`, `.ayahPolygon`.
+- This is intentionally a modest readability improvement, not a global zoom or layout rewrite.
+
+### D. Mushaf protection / scope isolation
+R36 does **not** modify the protected fixed-page Mushaf geometry, SVG viewBox, page layout, swipe rule, quran-pos, zoom, fullscreen geometry, or ayah polygons.
+
+R35 -> R36 exact function comparisons passed for:
+- `safeMushafSvg`
+- `openPage`
+- `enterMushafFullscreen`
+- `exitMushafFullscreen`
+- `toggleMushafFullscreen`
+
+Protected Mushaf/fullscreen CSS rules are unchanged. The only Qur'an-reader UI change is around which trusted tafsir option is presented after selecting an ayah.
+
+### E. Persistence / Data Safety
+No new persistent key was added and no existing key or shape changed.
+- `rafiq:data-version` remains **2**.
+- `quran-pos` unchanged.
+- `tafsir-pos-v1` unchanged.
+- Literal localStorage/store key audit R35 -> R36: 26 before / 26 after, added `[]`, removed `[]`.
+- All content JSON files are hash-identical to R35 except `AI_HANDOFF.json`, which is continuity metadata.
+- Backup metadata app version bumped `24.35.0 -> 24.36.0` only.
+- `DATA_SAFETY.md` and `DATA_ARCHITECTURE.md` document the R36 no-new-persistence/external-content behavior.
+
+### F. Cache / distribution
+- `CACHE_NAME = tadaruq-v24-r36-pwa-20260821`
+- `RUNTIME_CACHE = tadaruq-runtime-v24-r36-20260821`
+- Service Worker local precache audit: 36 entries, 0 missing.
+- This is a web/PWA update. Existing Play TWA users receive the hosted web update after GitHub Pages/SW activation; R36 itself does not require a new AAB because no Android-native shell/resource/config changed.
+- Chrome Web Store extension users do not automatically receive GitHub PWA code. No R36 MV3 package is included in this release.
+- No new backend/serverless service is required. The optional Al-Mukhtasar secret proxy remains separate and unchanged.
+
+### G. Files changed/added in R36
+Changed:
+- `index.html`
+- `app.js`
+- `sources.html`
+- `privacy.html`
+- `sw.js`
+- `data-safety.js` (backup metadata only)
+- `DATA_SAFETY.md`
+- `DATA_ARCHITECTURE.md`
+- `AI_HANDOFF.md`
+- `AI_HANDOFF.json`
+- `PROMPT_FOR_NEXT_AI.txt`
+
+Added:
+- `HOME-REFRESH-PROPOSAL-R36.md`
+- `RELEASE-NOTES-R36.txt`
+- `QA-REPORT-R36.txt`
+
+### H. Tests actually executed
+VERIFIED:
+- `node --check app.js` — PASS.
+- `node --check data-safety.js` — PASS.
+- `node --check sw.js` — PASS.
+- `node --check pwa-register.js` — PASS.
+- `node --check extension-bridge.js` — PASS.
+- `node --check tafsir-config.js` — PASS.
+- Parsed all root JSON plus `manifest.webmanifest` — PASS, 17 parsed artifacts.
+- HTML duplicate-ID audit — PASS, 237 IDs / 0 duplicates.
+- Service Worker precache existence — PASS, 36 entries / 0 missing.
+- R36 tafsir deterministic marker/behavior audit — PASS: card, KFGQPC embed, exact ayah URL, chooser, existing Mukhtasar reader/proxy, source doc, privacy disclosure.
+- Storage-literal compatibility audit R35 -> R36 — PASS: 26 -> 26, no added/removed key literals.
+- Content JSON hash comparison R35 -> R36 — PASS: unchanged except continuity metadata.
+- Home markup comparison R35 -> R36 — PASS: byte-identical.
+- Protected Mushaf function comparison R35 -> R36 — PASS for the five named geometry/fullscreen functions.
+- Protected Mushaf CSS comparison — PASS.
+- Typography transformation audit — PASS: 184 eligible sub-11px declarations outside protected selectors; +1px rule applied.
+- Web source verification: official KFGQPC developer page and official embed service verified; representative exact Quran.com Tafsir Muyassar route (2:255) verified.
+
+### I. Visual/device limitation — do not overclaim
+A local headless Chromium attempt was made, but the environment did not produce a usable rendered screenshot. Therefore:
+
+**Automated/static checks passed, but visual/device verification was not possible in this environment.**
+
+REQUIRES REAL-DEVICE TEST before calling the visual behavior production-verified:
+- new Tafsir Muyassar card on narrow Android/TWA;
+- modal height/scroll/close and safe-area behavior;
+- dark/light visual appearance;
+- whether the official KFGQPC iframe renders as expected in the actual installed TWA/browser;
+- representative screens after the modest small-text increase.
+
+The iframe has a visible direct official-site fallback if it does not render.
+
+### J. Carried-forward unrelated policy item
+R36 itself introduces no new Health App behavior. However, the previously documented R32 structured smoking/nicotine journey still requires honest Google Play Health Apps declaration review before Play-facing publication. Do not treat that older issue as resolved merely because R36 did not change it.
+
+### K. Continuation rules after R36
+1. Keep KFGQPC as the canonical source/publisher for Tafsir Muyassar; do not present Quran.com as the tafsir's author/publisher.
+2. Do not scrape/copy Al-Mukhtasar or expose its Bearer token; preserve the existing proxy rule and `tafsir-pos-v1`.
+3. Do not implement `HOME-REFRESH-PROPOSAL-R36.md` until the owner approves the Home direction.
+4. Preserve the small-text readability improvement unless a real visual regression justifies a targeted adjustment.
+5. Do not alter Mushaf geometry as part of tafsir/UI work.
+6. Any future UI/content change must bump the Service Worker cache under the R20 caching model.
+7. `AI_HANDOFF.md` remains mandatory, append-only, and must never be deleted/renamed/truncated/excluded.
+
+## R37 — Home approved + Knowledge map + Tafseer Muyassar only + official qira'at links — 2026-08-21
+
+### Owner request
+The owner explicitly approved implementing the R36 Home proposal and requested:
+- remove **Al-Mukhtasar** completely from the active product because Tafseer Muyassar now covers the needed tafsir use case;
+- answer whether trusted/official Mushafs exist beyond the current Madinah/Hafs experience;
+- rebuild the top-level `العلم` IA into clear subject families:
+  1. `السنة` / Sunnah + Riyad al-Salihin + Nawawi 40 + Seerah;
+  2. tafsir / Qur'an sciences with full standalone Tafseer Muyassar + Usul al-Tafsir;
+  3. fiqh with Fiqh al-Muyassar + Usul al-Fiqh + concise biographies of major jurists + Fiqh al-Maqasid;
+  4. Islamic history with Companions + a concise trusted Islamic-history map;
+- continue treating design, programming, Sharia research and pedagogy as one coherent product problem rather than adding a flat pile of cards.
+
+### A. Home redesign — now APPROVED and implemented
+The R36 proposal is no longer proposal-only.
+
+Implemented with existing systems only:
+1. Existing welcome/prayer focus remains at the top.
+2. New **`أكمل من حيث توقفت`** card chooses one useful resume route from existing local state. It currently checks `quran-pos`, then `qalb-levels-v1`, then `fiqh-busola-progress-v1`; if none exists it invites the user to start from the Mushaf.
+3. New primary row **`ثلاثة أبواب لليوم`**: Mushaf + Dhikr + the existing `خطة اليوم`.
+4. Secondary gateways remain for Knowledge, Fiqh, Tazkiyah and Irtaqi.
+5. The existing `day-plan-card` is preserved and moved below the gateways; it was not duplicated or given a new storage model.
+6. The five-question evening review remains unchanged/lightweight.
+
+No Home-specific persistent key was added.
+
+### B. Al-Mukhtasar retired from the active product
+At the owner's explicit request, R37 removes active/public Al-Mukhtasar functionality:
+- removed the Mukhtasar Qur'an-tools card;
+- removed the continuous Mukhtasar reader view;
+- removed the front-end Mukhtasar proxy/config runtime and deleted `tafsir-config.js` from this flat web build;
+- removed Mukhtasar actions from the ayah tafsir sheet;
+- ayah tafsir now routes to **Tafseer Muyassar** only;
+- removed current-source/privacy copy that described the active Mukhtasar integration.
+
+**Data-preservation exception:** `tafsir-pos-v1` remains in `data-safety.js` as a legacy key. R37 does not write/advance it, but it remains backupable/restorable so an upgrade does not silently delete an existing user's prior local record. Historical R25/R26 handoff entries are preserved as history and are superseded by this R37 product decision.
+
+### C. Trusted Mushafs beyond the current reader
+Verified against the official King Fahd Glorious Qur'an Printing Complex:
+- the Complex publishes official Mushafs for other narrations including **Warsh, al-Duri, Qalun, Shu'bah and al-Susi**;
+- its official printing/vector resources also expose Hafs and multiple other narrations;
+- the current Tadaruq internal reader remains the protected 604-page **Hafs/KFQC** fixed-page experience.
+
+R37 adds an official-source card inside Qur'an tools linking to the KFGQPC qira'at collection and Warsh. It deliberately does **not** swap the current reader or mix another narration with Hafs page/ayah interaction metadata. A future in-app alternate narration needs dedicated fixed-page assets, verified ayah-selection mapping and real-device QA.
+
+### D. Knowledge IA rebuilt
+The old long flat segment list is replaced by a first-level **خريطة العلم** with four subject families. The existing `ما لا يسع المسلم جهله` remains a separate `ابدأ من هنا` foundation shortcut rather than being buried under a specialist category.
+
+#### 1) السنة والسيرة
+- الأربعون النووية
+- رياض الصالحين
+- السيرة النبوية
+
+Existing source/provenance behavior is preserved.
+
+#### 2) التفسير وعلوم القرآن
+- **التفسير الميسر — قراءة مستقلة كاملة** using the official KFGQPC embed, so it can be read as its own book outside the Mushaf.
+- **أصول التفسير** — new `usul-tafsir.json`, 9 introductory modules.
+
+Source backbone for Usul al-Tafsir: **`أصول في التفسير` — الشيخ محمد بن صالح العثيمين**, using the official Ibn Uthaymeen Foundation book page. The Foundation describes the book as covering revelation, first revelation, kinds of revelation, writing/collection, the meaning/reference of tafsir, and the Muslim's duty when interpreting. Tadaruq wording is explicitly educational paraphrase, not a verbatim transcription.
+
+#### 3) الفقه وأصوله
+- الفقه الميسر (existing)
+- **أصول الفقه** — new `usul-fiqh.json`, 10 introductory modules.
+- **فقهاء عبر العصور** — new `fuqaha.json`, 12 concise biography cards.
+- فقه المقاصد / Fiqh al-Busola (existing sourced R32 track; remains broader than maqasid alone and includes priorities/reality/lab).
+
+Usul al-Fiqh source backbone: **`الأصول من علم الأصول` — الشيخ محمد بن صالح العثيمين**, official Foundation page. The official description lists الحكم وأقسامه، العلم، الكلام، الأمر والنهي، العام والخاص، المطلق والمقيد، المجمل والمبين and related beginner usul topics.
+
+Jurist biographies use **`سير أعلام النبلاء` — الإمام الذهبي** as the primary biographical backbone. The four madhhab-imam cards use direct verified Siyar biography links in R37; other cards identify the relevant translation and link to the book entry. Cards intentionally state only stable/basic facts and do not pretend to summarize an imam's whole madhhab or disputed positions.
+
+#### 4) التاريخ الإسلامي
+- الصحابة (existing)
+- **مختصر التاريخ الإسلامي** — new `islamic-history.json`, 12 chronological foundation cards.
+
+Primary source: **الموسوعة التاريخية — الدرر السنية**. Direct event links are used where verified; broad-era cards use the main encyclopedia rather than inventing an exact event citation. The UI explicitly frames the section as a chronological educational map, not a source for extracting modern political/legal rulings from isolated historical events.
+
+### E. New/changed files
+New:
+- `usul-tafsir.json`
+- `usul-fiqh.json`
+- `fuqaha.json`
+- `islamic-history.json`
+- `CONTENT_PROVENANCE-KNOWLEDGE-R37.md`
+- `RELEASE-NOTES-R37.txt`
+- `QA-REPORT-R37.txt`
+
+Changed:
+- `index.html`
+- `app.js`
+- `sources.html`
+- `privacy.html`
+- `sw.js`
+- `data-safety.js` (backup metadata version only; legacy key retained)
+- `DATA_ARCHITECTURE.md`
+- `DATA_SAFETY.md`
+- `AI_HANDOFF.md`
+- `AI_HANDOFF.json`
+- `PROMPT_FOR_NEXT_AI.txt`
+
+Removed from active flat web source:
+- `tafsir-config.js`
+
+### F. Persistence / migration
+- `rafiq:data-version` remains **2**.
+- no persistent key added;
+- no persistent key renamed;
+- no persistent key deleted from user storage;
+- no stable content ID migration required;
+- `tafsir-pos-v1` retained only as legacy backupable data;
+- new Knowledge JSON files are static public content, not user data;
+- Home resume reads existing state only.
+- backup metadata app version: **24.37.0**.
+
+### G. Cache / distribution
+- PWA `CACHE_NAME`: `tadaruq-v24-r37-pwa-20260821`.
+- Runtime cache: `tadaruq-runtime-v24-r37-20260821`.
+- New static Knowledge JSON files are included in the local content cache list.
+- This is a web/PWA content/UI release; it does not require a new Android AAB because no native TWA shell/package/config/resource changed.
+- Chrome Web Store extension users do not receive this code through GitHub automatically; package a new MV3 release separately when requested.
+- No new backend/serverless deployment is required by R37.
+
+### H. QA actually executed
+VERIFIED:
+- `node --check app.js` — PASS.
+- `node --check data-safety.js` — PASS.
+- `node --check sw.js` — PASS.
+- `node --check pwa-register.js` — PASS.
+- `node --check extension-bridge.js` — PASS.
+- parsed root JSON + `manifest.webmanifest` — PASS: 21 parsed artifacts.
+- HTML duplicate-ID audit — PASS: 232 IDs / 0 duplicates after final markup fix.
+- Service Worker precache existence — PASS: 38 entries / 0 missing.
+- New source-data deterministic audit — PASS: Usul Tafsir 9 items, Usul Fiqh 10, Fuqaha 12, Islamic History 12; unique IDs and at least one HTTPS visible source per item.
+- Active Mukhtasar marker audit across runtime/user-facing files — PASS: no `mokhtasr`, `MOKHTASAR`, `tafsir-config.js` or `v-tafsir` active marker.
+- legacy `tafsir-pos-v1` Data Safety registry check — PASS.
+- protected Mushaf function comparison against the prior baseline — PASS, byte-identical for `safeMushafSvg`, `openPage`, `enterMushafFullscreen`, `exitMushafFullscreen`, `toggleMushafFullscreen`.
+- Home/Knowledge required marker audit — PASS.
+- Official-source web verification completed for KFGQPC other-narration Mushafs, KFGQPC Tafseer Muyassar developer/embed pages, Ibn Uthaymeen Foundation Usul al-Tafsir/Usul al-Fiqh pages, Dorar historical encyclopedia, and representative Siyar direct biography pages.
+
+A markup review caught one missing closing `</section>` around the newly added qira'at card before packaging; it was corrected and the final duplicate-ID/static checks were rerun afterward.
+
+### I. Visual/device status
+A headless Chromium visual attempt in the working environment timed out and did not produce a reliable screenshot. Therefore:
+
+**Automated/static checks passed, but visual/device verification was not possible in this environment.**
+
+REQUIRES REAL-DEVICE TEST:
+- Home hierarchy at narrow Android/TWA widths;
+- Knowledge category cards, segmented subnavigation and Arabic wrapping;
+- full Tafseer Muyassar iframe inside the installed TWA/browser;
+- qira'at source card in Qur'an tools;
+- light/dark appearance and Back behavior for the new Knowledge navigation.
+
+Do not call these visual changes production-verified until reviewed on a real phone.
+
+### J. Religious/source integrity
+See `CONTENT_PROVENANCE-KNOWLEDGE-R37.md`. Standing rules remain:
+- source visible under each new educational card/module;
+- do not attribute Tadaruq paraphrases as verbatim scholar quotations;
+- do not turn introductory Usul modules into a claim of scholarly qualification or fatwa authority;
+- do not derive contemporary legal/political rulings from the short history cards;
+- keep KFGQPC as the canonical publisher/source for Tafseer Muyassar.
+
+### K. Carried-forward unrelated policy item
+R37 itself does not add a new health feature. The previously introduced structured smoking/nicotine journey still requires an honest Google Play Health Apps declaration review before Play-facing publication. This remains unresolved and must not be silently treated as approved.
+
+### R37 deployment note — stale file cleanup
+Because GitHub web uploads overwrite/add files but do not automatically delete files omitted from a ZIP, `README-UPLOAD-R37-AR.txt` explicitly tells the owner to delete legacy `tafsir-config.js` from the GitHub repo if it still exists. R37 runtime does not reference it, so leaving it temporarily is not a runtime failure; deletion is cleanup consistent with the owner's request to retire Al-Mukhtasar completely.

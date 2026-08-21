@@ -1,0 +1,18 @@
+Tadaruq v24 R35 — cumulative Tazkiyah deployment correction
+Date: 2026-08-21
+
+Why this release exists:
+The R33 full source really contained the expanded 5-stage Tazkiyah content, but the later R34 GitHub update ZIP was logo-only and omitted qalb.json/app.js. Applying R34 directly on top of an R32 website therefore left the old Tazkiyah visible.
+
+R35 combines:
+- full R33 Tazkiyah payload (qalb.json + app.js + UI/source files)
+- R34 canonical logo/icon/splash assets
+- R35 service-worker cache bump
+
+Verified curriculum payload:
+- 9 Works of the Heart x 5 stages
+- 10 Heart Diseases x 5 stages
+- 26 Obstacles x 5 stages
+- total 45 topics / 225 stages
+
+No persistent user key/ID or Mushaf logic changed.

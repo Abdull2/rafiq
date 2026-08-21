@@ -1,0 +1,11 @@
+Tadaruq R35 QA
+
+PASS: cumulative package contains qalb.json, app.js, index.html, sources.html, R34 logo assets.
+PASS: qalb.json parses.
+PASS: 9 works / 10 heart diseases / 26 obstacles.
+PASS: all 45 targeted topics expose exactly 5 levels.
+PASS: JavaScript syntax checks for app.js, data-safety.js, sw.js.
+PASS: Service Worker cache names are R35.
+PASS: no duplicate HTML ids.
+PASS: R35 preserves R34 logo assets.
+NOTE: real-device visual verification remains required after deploy.
