@@ -1,9 +1,10 @@
-/* Tadaruq PWA service worker — v24 R39. */
-const CACHE_NAME = 'tadaruq-v24-r39-pwa-20260821';
-const RUNTIME_CACHE = 'tadaruq-runtime-v24-r39-20260821';
+/* Tadaruq PWA service worker — v24 R41. */
+const CACHE_NAME = 'tadaruq-v24-r41-pwa-20260821';
+const RUNTIME_CACHE = 'tadaruq-runtime-v24-r41-20260821';
 const PRECACHE_URLS = [
   "./",
   "./adiya.json",
+  "./agreed-hadith.json",
   "./amiri-400.woff2",
   "./amiri-700.woff2",
   "./app.js",
@@ -25,6 +26,7 @@ const PRECACHE_URLS = [
   "./fiqh-busola.json",
   "./benefit.json",
   "./manifest.webmanifest",
+  "./manazil-sairin.json",
   "./nawawi40.json",
   "./plex-400.woff2",
   "./plex-500.woff2",
