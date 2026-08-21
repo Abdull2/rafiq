@@ -1119,7 +1119,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
       <p>إعداد مجموعة من العلماء، والمحتوى الرقمي معتمد وموثوق من مجمع الملك فهد لطباعة المصحف الشريف ومتاح للمطورين لاستخدامه في التطبيقات.</p>
       <div class="muyassar-actions">
         <button type="button" id="muyassar-open" class="primary">فتح التفسير الميسر كاملًا</button>
-        <a href="https://qurancomplex.gov.sa/quran-dev/" target="_blank" rel="noopener">منصة المصدر الرسمية ↗</a>
+        <a href="https://qurancomplex.gov.sa/en/techquran/dev/" target="_blank" rel="noopener">منصة المصدر الرسمية ↗</a>
       </div>
       <div class="muyassar-note">ومن داخل المصحف: اضغط مطولًا على الآية ثم «تفسير الآية» لفتح التفسير الميسر لنفس الآية.</div>
     </div>
@@ -1202,7 +1202,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div class="reader-actions" id="reader-actions" aria-label="أدوات القراءة">
     <button type="button" id="rd-prev-action" aria-label="الصفحة السابقة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><span>السابق</span></button>
     <button type="button" id="rd-search" aria-label="البحث في القرآن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg><span>بحث</span></button>
-    <button type="button" id="rd-tafsir" aria-label="فتح تفسير أول آية في الصفحة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 4H12v16H8.5A3.5 3.5 0 0 0 5 21Z"/><path d="M19 5.5A3.5 3.5 0 0 0 15.5 4H12v16h3.5A3.5 3.5 0 0 1 19 21Z"/><path d="M8 9h2M14 9h2"/></svg><span>تفسير</span></button>
+    <button type="button" id="rd-tafsir" aria-label="فتح التفسير الميسر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.8h8.5L18 7.3V20H6Z"/><path d="M14.5 3.8v3.7H18M9 11h6M9 14.5h6M9 18h4"/></svg><span>تفسير</span></button>
     <button type="button" id="rd-tools" aria-label="أدوات وفهرس المصحف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h14"/><circle cx="8" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="10" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg><span>الفهرس</span></button>
     <button type="button" id="rd-next-action" aria-label="الصفحة التالية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg><span>التالي</span></button>
   </div>
@@ -1211,17 +1211,17 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <div id="tafsir-sheet" class="tafsir-sheet hide" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="tafsir-sheet-title">
   <div class="tafsir-sheet-card">
     <div class="tafsir-sheet-head">
-      <div><span>مصادر تفسير موثوقة</span><h2 id="tafsir-sheet-title">تفسير الآية</h2><b id="tafsir-sheet-ref">—</b></div>
+      <div><span>التفسير الميسر · النص الكامل للآية المختارة</span><h2 id="tafsir-sheet-title">تفسير الآية</h2><b id="tafsir-sheet-ref">—</b></div>
       <button type="button" id="tafsir-sheet-close" aria-label="إغلاق التفسير">×</button>
     </div>
     <blockquote id="tafsir-sheet-ayah" class="tafsir-sheet-ayah"></blockquote>
     <div id="tafsir-sheet-content" class="tafsir-sheet-content"></div>
     <div class="tafsir-sheet-actions">
       <a id="tafsir-sheet-muyassar" class="muyassar-exact" href="https://quran.com/ar/1%3A1/tafsirs/ar-tafsir-muyassar" target="_blank" rel="noopener">التفسير الميسر لهذه الآية ↗</a>
-      <button type="button" id="tafsir-sheet-full">اقرأ التفسير الميسر كاملًا</button>
-      <a class="subtle" href="https://qurancomplex.gov.sa/quran-dev/" target="_blank" rel="noopener">مصدر التفسير الميسر — مجمع الملك فهد ↗</a>
+      <button type="button" id="tafsir-sheet-full">فتح الكتاب الكامل رسميًا ↗</button>
+      <a class="subtle" href="https://qurancomplex.gov.sa/en/techquran/dev/" target="_blank" rel="noopener">مصدر التفسير الميسر — مجمع الملك فهد ↗</a>
     </div>
-    <div class="tafsir-sheet-rights">«التفسير الميسر» إعداد مجموعة من العلماء، ومحتواه الرقمي موثوق ومعتمد من مجمع الملك فهد لطباعة المصحف الشريف. صياغة تدارُك لا تنسب إلى المجمع إلا ما هو ظاهر من المصدر الرسمي.</div>
+    <div class="tafsir-sheet-rights">«التفسير الميسر» محتوى رقمي موثوق ومعتمد من مجمع الملك فهد لطباعة المصحف الشريف ومتاح للمطورين. يعرض تدارُك نص الآية المختارة كما يصل من إصدار ar.muyassar، مع إبقاء رابط المصدر الرسمي والتحقق الخارجي.</div>
   </div>
 </div>
 
@@ -1439,8 +1439,8 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <nav id="main-nav" aria-label="التنقل الرئيسي"><div class="main-nav-inner">
   <button data-tab="today" aria-label="يومي" aria-current="true"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H7.5A3.5 3.5 0 0 1 4 16.5Z"/><path d="M9.5 20v-6h5v6"/></svg></span><span class="nav-label">يومي</span></button>
   <button data-tab="sunnah" aria-label="العلم"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 5.5A3.5 3.5 0 0 1 8 4h4v16H8a3.5 3.5 0 0 0-3.5 1Z"/><path d="M19.5 5.5A3.5 3.5 0 0 0 16 4h-4v16h4a3.5 3.5 0 0 1 3.5 1Z"/></svg></span><span class="nav-label">العلم</span></button>
-  <button data-tab="quran" aria-label="المصحف" class="nav-quran"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 4H12v16H8.5A3.5 3.5 0 0 0 5 21Z"/><path d="M19 5.5A3.5 3.5 0 0 0 15.5 4H12v16h3.5A3.5 3.5 0 0 1 19 21Z"/><path d="M8 8.5h2M14 8.5h2"/></svg></span><span class="nav-label">المصحف</span></button>
-  <button data-tab="azkar" aria-label="الذكر"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="17.3" cy="7.2" r="2"/><circle cx="19" cy="12.5" r="2"/><circle cx="15.8" cy="17" r="2"/><circle cx="10.2" cy="17.5" r="2"/><circle cx="6" cy="14" r="2"/><circle cx="6.2" cy="8.5" r="2"/><path d="M12 19.5V22"/></svg></span><span class="nav-label">الذكر</span></button>
+  <button data-tab="quran" aria-label="المصحف" class="nav-quran"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 4H19v16H7.5A3.5 3.5 0 0 1 4 16.5v-9A3.5 3.5 0 0 1 7.5 4Z"/><path d="M4 16.5A3.5 3.5 0 0 1 7.5 13H19"/><path d="M9 4v5.5l2-1.4 2 1.4V4"/></svg></span><span class="nav-label">المصحف</span></button>
+  <button data-tab="azkar" aria-label="الذكر"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="1.55"/><circle cx="12" cy="9" r="1.55"/><circle cx="12" cy="13" r="1.55"/><path d="M12 14.7v3.1M12 17.8 9.9 20.5M12 17.8l2.1 2.7"/></svg></span><span class="nav-label">الذكر</span></button>
   <button data-tab="qalb" aria-label="التزكية"><span class="nav-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8.8c0 5.1-4.1 8.4-8 11.2-3.9-2.8-8-6.1-8-11.2A4.8 4.8 0 0 1 12 5.3 4.8 4.8 0 0 1 20 8.8Z"/><path d="M9 11.5c1.4.2 2.6-.4 3.4-1.8"/></svg></span><span class="nav-label">تزكية</span></button>
 </div></nav>
 
@@ -1754,7 +1754,7 @@ body.mushaf-fullscreen #mus-page{height:27px;min-width:52px;font-size:13px}
 .muyassar-sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--card)}.muyassar-sheet-head div{min-width:0}.muyassar-sheet-head span{display:block;font-size:11px;color:var(--gold);font-weight:700}.muyassar-sheet-head h2{font-family:Amiri,serif;font-size:22px;color:var(--deep);margin:0;line-height:1.45}.muyassar-sheet-head button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--paper);color:var(--deep);font-size:20px;cursor:pointer;flex:none}
 .muyassar-launch{padding:18px;background:var(--wash);display:grid;gap:12px}.muyassar-launch p{margin:0;color:var(--soft);font-size:13px;line-height:1.9}.muyassar-launch small{color:var(--soft);font-size:11.5px;line-height:1.75}.muyassar-launch-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.muyassar-launch-actions a{font:inherit;font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--paper);color:var(--deep);font-weight:700;text-align:center}.muyassar-launch-actions a.primary{background:var(--deep);color:#fff;border-color:var(--deep)}
 .tafsir-choice-note{border:1px solid var(--line);background:var(--wash);border-radius:12px;padding:10px 11px;font-size:11.5px;line-height:1.8;color:var(--soft)}.tafsir-choice-note b{color:var(--deep)}
-.tafsir-sheet-actions a.muyassar-exact{background:color-mix(in srgb,var(--gold) 10%,var(--paper));border-color:color-mix(in srgb,var(--gold) 38%,var(--line));font-weight:700}
+.tafsir-sheet-actions a.muyassar-exact{background:color-mix(in srgb,var(--gold) 10%,var(--paper));border-color:color-mix(in srgb,var(--gold) 38%,var(--line));color:var(--deep);font-weight:700}
 @media(max-width:600px){.muyassar-sheet{padding:10px}.muyassar-sheet-card{width:100%;border-radius:18px}.muyassar-actions{display:grid;grid-template-columns:1fr}.muyassar-actions button,.muyassar-actions a{text-align:center}.muyassar-sheet-head{padding-top:12px}.muyassar-launch-actions{grid-template-columns:1fr}}
 
 
@@ -1861,6 +1861,29 @@ body.mushaf-fullscreen #v-read{padding-bottom:0!important}
 @media(orientation:landscape) and (max-height:520px){body.quran-reading #v-read{height:100vh;overflow:hidden}body.quran-reading #v-read .rd-bar{position:fixed!important;inset-inline:0;top:0;margin:0}body.quran-reading #v-read .mushaf{width:100vw!important;max-width:100vw!important;height:100vh!important;display:grid!important;place-items:center!important;overflow:hidden!important}body.quran-reading #v-read .mus-head,body.quran-reading #v-read .mus-foot,body.quran-reading #v-read .mus-source,body.quran-reading #v-read .mushaf-swipe-hint,body.quran-reading #v-read .mushaf-render-note,body.quran-reading #v-read .tafsir-current{display:none!important}body.quran-reading #v-read .mus-body.printed{width:100vw!important;height:100vh!important;display:grid!important;place-items:center!important;overflow:hidden!important}body.quran-reading #v-read .mus-body.printed .mushaf-page-svg{width:auto!important;height:auto!important;max-width:100vw!important;max-height:100vh!important;margin:auto!important;object-fit:contain!important}}
 @media(min-width:900px){body:not(.quran-reading):not(.mushaf-fullscreen){padding-bottom:24px;padding-inline-end:var(--nav-rail-w)}#main-nav{inset-inline:auto 0;top:0;bottom:0;width:var(--nav-rail-w);border-top:0;border-inline-start:1px solid var(--line);padding:calc(86px + env(safe-area-inset-top)) 7px max(10px,env(safe-area-inset-bottom));box-shadow:-10px 0 30px rgba(25,38,25,.035);display:block}#main-nav .main-nav-inner{width:100%;padding:0;display:flex;flex-direction:column;gap:8px}#main-nav button{width:100%;min-height:67px;grid-template-rows:36px auto;border-radius:18px}#main-nav .nav-indicator{width:48px;height:34px}#main-nav .nav-label{font-size:11px}body.quran-reading>.wrap{max-width:900px}#v-read .reader-actions{left:50%;right:auto;width:min(620px,calc(100vw - 32px));transform:translateX(-50%);border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0}body.quran-reading.reader-chrome-hidden #v-read .reader-actions{transform:translate(-50%,104%)}body.mushaf-fullscreen.mushaf-controls-hidden #v-read .reader-actions{transform:translate(-50%,105%)}body.mushaf-fullscreen:not(.mushaf-controls-hidden) #v-read .reader-actions{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){#main-nav button,#main-nav .nav-indicator,#v-read .rd-bar,#v-read .reader-actions{transition:none!important}}
+
+/* ===== R45 — familiar navigation + fixed Mushaf viewport ===== */
+.sheet{z-index:140;overscroll-behavior:contain}
+.sheet .box{max-height:min(88dvh,760px);overscroll-behavior:contain;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+.app-more-box{max-height:min(88dvh,720px)!important;overflow:auto!important;overscroll-behavior:contain;scrollbar-gutter:stable}
+.app-more-box .sec-head{position:sticky;top:0;z-index:2;background:var(--card);padding-top:max(10px,env(safe-area-inset-top));border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+@media(max-height:540px){.sheet{align-items:stretch}.sheet .box,.app-more-box{max-height:100dvh!important;height:100dvh;border-radius:0!important}}
+
+body.quran-reading{height:100dvh;overflow:hidden;overscroll-behavior:none}
+body.quran-reading>.wrap{position:fixed;inset:0;width:100%;height:100dvh;max-width:none!important;padding:0!important;overflow:hidden}
+body.quran-reading #v-read{height:100dvh;max-height:100dvh;overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr);padding-bottom:calc(64px + env(safe-area-inset-bottom))!important}
+body.quran-reading #v-read .rd-bar{position:relative!important;grid-row:1}
+body.quran-reading #v-read .mushaf{grid-row:2;width:100%!important;max-width:100%!important;height:100%!important;min-height:0;display:grid!important;place-items:center!important;overflow:hidden!important;margin:0!important;padding:0!important;overscroll-behavior:none}
+body.quran-reading #v-read .mus-head,body.quran-reading #v-read .mus-foot,body.quran-reading #v-read .mus-source,body.quran-reading #v-read .mushaf-swipe-hint,body.quran-reading #v-read .mushaf-render-note,body.quran-reading #v-read .tafsir-current{display:none!important}
+body.quran-reading #v-read .mus-body.printed{width:100%!important;height:100%!important;min-height:0!important;display:grid!important;place-items:center!important;overflow:hidden!important;margin:0!important;padding:0!important}
+body.quran-reading #v-read .mushaf,body.quran-reading #v-read .mus-body.printed,body.quran-reading #v-read .mushaf-page-svg{touch-action:none!important}
+body.quran-reading #v-read .mus-body.printed .mushaf-page-svg{width:auto!important;height:auto!important;max-width:100%!important;max-height:100%!important;margin:auto!important;object-fit:contain!important}
+body.quran-reading #v-read .mus-body.text-fallback{height:100%;overflow:auto;overscroll-behavior:contain;padding:12px}
+body.quran-reading.reader-chrome-hidden #v-read{padding-bottom:calc(64px + env(safe-area-inset-bottom))!important}
+body.quran-reading.reader-chrome-hidden #v-read .rd-bar{visibility:hidden}
+.tafsir-transport-note{font-size:10px;line-height:1.7;color:var(--soft);border-top:1px solid var(--line);padding-top:7px}
+.tafsir-sheet-card{overscroll-behavior:contain}
+@media(orientation:landscape) and (max-height:520px){body.quran-reading #v-read{height:100dvh!important;max-height:100dvh!important;padding-bottom:calc(58px + env(safe-area-inset-bottom))!important}body.quran-reading #v-read .mushaf,body.quran-reading #v-read .mus-body.printed{height:100%!important;width:100%!important}body.quran-reading #v-read .mus-body.printed .mushaf-page-svg{max-height:100%!important;max-width:100%!important}}
 </style>
 
 

@@ -1,8 +1,9 @@
-/* Tadaruq PWA service worker — v24 R44. */
-const CACHE_NAME = 'tadaruq-v24-r44-pwa-20260821';
-const RUNTIME_CACHE = 'tadaruq-runtime-v24-r44-20260821';
+/* Tadaruq PWA service worker — v24 R45. */
+const CACHE_NAME = 'tadaruq-v24-r45-pwa-20260821';
+const RUNTIME_CACHE = 'tadaruq-runtime-v24-r45-20260821';
 const HADITH_CORPUS_CACHE = 'tadaruq-lulu-marjan-v1';
 const MUSHAF_PUBLIC_CACHE = 'tadaruq-mushaf-kfqc-r43-v1';
+const TAFSIR_MUYASSAR_CACHE = 'tadaruq-tafsir-muyassar-r45-v1';
 const PRECACHE_URLS = [
   "./",
   "./adiya.json",
@@ -57,7 +58,7 @@ self.addEventListener('install', event => {
 
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
-    const keep = new Set([CACHE_NAME, RUNTIME_CACHE, HADITH_CORPUS_CACHE, MUSHAF_PUBLIC_CACHE]);
+    const keep = new Set([CACHE_NAME, RUNTIME_CACHE, HADITH_CORPUS_CACHE, MUSHAF_PUBLIC_CACHE, TAFSIR_MUYASSAR_CACHE]);
     const names = await caches.keys();
     await Promise.all(names.filter(name => !keep.has(name)).map(name => caches.delete(name)));
     if ('navigationPreload' in self.registration) {
@@ -116,15 +117,25 @@ function isMushafSvgRequest(request) {
   } catch (_) { return false; }
 }
 
+function isMuyassarRequest(request) {
+  try {
+    const u = new URL(request.url);
+    return u.hostname === 'api.alquran.cloud'
+      && u.pathname.startsWith('/v1/ayah/')
+      && u.pathname.endsWith('/ar.muyassar');
+  } catch (_) { return false; }
+}
+
 async function handleCrossOrigin(request) {
-  const corpus = isHadithCorpusRequest(request), mushaf = isMushafSvgRequest(request);
-  if (corpus || mushaf) {
+  const corpus = isHadithCorpusRequest(request), mushaf = isMushafSvgRequest(request), muyassar = isMuyassarRequest(request);
+  if (corpus || mushaf || muyassar) {
     const cached = await caches.match(request);
     if (cached) return cached;
   }
   try {
     const network = await fetch(request);
-    return cacheResponse(mushaf ? MUSHAF_PUBLIC_CACHE : (corpus ? HADITH_CORPUS_CACHE : RUNTIME_CACHE), request, network);
+    const cacheName = mushaf ? MUSHAF_PUBLIC_CACHE : (muyassar ? TAFSIR_MUYASSAR_CACHE : (corpus ? HADITH_CORPUS_CACHE : RUNTIME_CACHE));
+    return cacheResponse(cacheName, request, network);
   } catch (_) {
     return (await caches.match(request)) || Response.error();
   }
