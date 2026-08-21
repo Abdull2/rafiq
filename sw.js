@@ -1,7 +1,8 @@
-/* Tadaruq PWA service worker — v24 R42. */
-const CACHE_NAME = 'tadaruq-v24-r42-pwa-20260821';
-const RUNTIME_CACHE = 'tadaruq-runtime-v24-r42-20260821';
+/* Tadaruq PWA service worker — v24 R43. */
+const CACHE_NAME = 'tadaruq-v24-r43-pwa-20260821';
+const RUNTIME_CACHE = 'tadaruq-runtime-v24-r43-20260821';
 const HADITH_CORPUS_CACHE = 'tadaruq-lulu-marjan-v1';
+const MUSHAF_PUBLIC_CACHE = 'tadaruq-mushaf-kfqc-r43-v1';
 const PRECACHE_URLS = [
   "./",
   "./adiya.json",
@@ -56,7 +57,7 @@ self.addEventListener('install', event => {
 
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
-    const keep = new Set([CACHE_NAME, RUNTIME_CACHE, HADITH_CORPUS_CACHE]);
+    const keep = new Set([CACHE_NAME, RUNTIME_CACHE, HADITH_CORPUS_CACHE, MUSHAF_PUBLIC_CACHE]);
     const names = await caches.keys();
     await Promise.all(names.filter(name => !keep.has(name)).map(name => caches.delete(name)));
     if ('navigationPreload' in self.registration) {
@@ -105,15 +106,25 @@ function isHadithCorpusRequest(request) {
   } catch (_) { return false; }
 }
 
+
+function isMushafSvgRequest(request) {
+  try {
+    const u = new URL(request.url);
+    return ((u.hostname === 'cdn.jsdelivr.net' && u.pathname.includes('/quranpedia/quran-svg@'))
+      || (u.hostname === 'raw.githubusercontent.com' && u.pathname.includes('/quranpedia/quran-svg/')))
+      && u.pathname.includes('/mushafs/hafs/kfqc/svg/') && /\/[0-9]{3}\.svg$/.test(u.pathname);
+  } catch (_) { return false; }
+}
+
 async function handleCrossOrigin(request) {
-  const corpus = isHadithCorpusRequest(request);
-  if (corpus) {
+  const corpus = isHadithCorpusRequest(request), mushaf = isMushafSvgRequest(request);
+  if (corpus || mushaf) {
     const cached = await caches.match(request);
     if (cached) return cached;
   }
   try {
     const network = await fetch(request);
-    return cacheResponse(corpus ? HADITH_CORPUS_CACHE : RUNTIME_CACHE, request, network);
+    return cacheResponse(mushaf ? MUSHAF_PUBLIC_CACHE : (corpus ? HADITH_CORPUS_CACHE : RUNTIME_CACHE), request, network);
   } catch (_) {
     return (await caches.match(request)) || Response.error();
   }

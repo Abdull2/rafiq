@@ -181,31 +181,7 @@
 
 
 
-/* v24 R27 — Mushaf dark mode + Aya-like page fit (preserve fixed KFQC SVG geometry/content) */
-#v-read{--mushaf-paper:#fcfaf4;--mushaf-night:#0b0e0b}
-.mushaf{margin-top:2px;padding:0;border-radius:0;box-shadow:none;background:var(--mushaf-paper);overflow:hidden}
-.mus-body.printed{overflow:hidden;background:var(--mushaf-paper)}
-.mus-body.printed .mushaf-page-svg{display:block;width:100%;height:auto;max-width:none;margin:0;background:var(--mushaf-paper);transform-origin:center center}
-/* In dark mode invert the vector page as one visual surface. This keeps the exact printed geometry intact. */
-[data-theme="dark"] #v-read,[data-theme="dark"] .mushaf,[data-theme="dark"] .mus-body.printed{background:var(--mushaf-night)!important}
-[data-theme="dark"] .mus-body.printed .mushaf-page-svg{background:var(--mushaf-night)!important;filter:invert(1) hue-rotate(180deg) brightness(.88) contrast(1.04)}
-[data-theme="dark"] .mus-body.text-fallback{background:var(--mushaf-night);color:#f1eadb!important}
-[data-theme="dark"] .mushaf-page-loading{color:#d8c7a3}
-[data-theme="dark"] body.mushaf-fullscreen,[data-theme="dark"] body.mushaf-fullscreen #v-read,[data-theme="dark"] body.mushaf-fullscreen .mushaf,[data-theme="dark"] body.mushaf-fullscreen .mus-body.printed{background:var(--mushaf-night)!important}
-[data-theme="dark"] body.mushaf-fullscreen .rd-bar{background:rgba(11,14,11,.92)!important;box-shadow:0 5px 20px rgba(0,0,0,.28)!important}
-/* The source SVGs can contain generous internal page whitespace. R27 tightens the SVG viewBox in JS, then lets the page use the screen edge-to-edge like a dedicated Mushaf app. */
-.mushaf-page-svg[data-viewbox-fitted="true"]{will-change:auto}
-@media(max-width:760px){
-  #v-read{width:100vw;max-width:100vw;margin-inline:calc(50% - 50vw);padding-inline:0!important}
-  #v-read .rd-bar{padding-inline:max(7px,env(safe-area-inset-left)) max(7px,env(safe-area-inset-right))}
-  .mushaf{width:100vw;margin:0;padding:0;border-radius:0}
-  .mus-body.printed{width:100%!important}
-  .mus-body.printed .mushaf-page-svg{width:100%!important;max-width:100vw!important}
-  .mus-head{padding-inline:10px}.mushaf-swipe-hint{margin-bottom:3px}.mus-source{margin-inline:10px}
-}
-body.mushaf-fullscreen .mushaf,body.mushaf-fullscreen .mus-body.printed{background:var(--mushaf-paper)}
-body.mushaf-fullscreen .mus-body.printed .mushaf-page-svg{width:100vw!important;height:var(--mushaf-vh)!important;max-width:100vw!important;max-height:var(--mushaf-vh)!important;object-fit:contain!important}
-
+/* R43: legacy R27 Mushaf geometry overrides removed; see the single authoritative R43 layer near the end of this stylesheet. */
 
 /* v24 R28 — professional launch handoff */
 html,body{background:#0B3A2F}
@@ -580,9 +556,6 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .zk-note{font-size:11.5px;color:var(--gold);margin-top:11px;line-height:1.8}
 
 /* ===== صفحة المصحف ===== */
-.mushaf{background:#FBF6EA;border:1px solid #E3D6BC;border-radius:14px;margin-top:10px;
-  padding:12px 14px 8px;box-shadow:0 3px 14px rgba(80,60,20,.07)}
-[data-theme="dark"] .mushaf{background:#14180F;border-color:#2A3320;box-shadow:none}
 .mus-head{display:flex;justify-content:space-between;font-size:11.5px;color:#9A7C46;
   border-bottom:1px solid #E7DAC0;padding-bottom:7px;margin-bottom:12px}
 [data-theme="dark"] .mus-head{color:#B79A62;border-color:#2A3320}
@@ -1163,6 +1136,22 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     </div>
   </section>
 
+  <section class="mushaf-offline-card" id="mushaf-offline-card" aria-labelledby="mushaf-offline-title">
+    <div class="sec-head"><span id="mushaf-offline-title">المصحف دون اتصال</span></div>
+    <div class="item">
+      <div class="mushaf-offline-head"><div><b>٦٠٤ صفحة · مصحف المدينة برواية حفص</b><span id="mushaf-offline-count">—</span></div><span class="mushaf-offline-badge">اختياري</span></div>
+      <p id="mushaf-offline-status">يجري فحص الصفحات المحفوظة على جهازك…</p>
+      <div class="mushaf-offline-progress" aria-hidden="true"><i id="mushaf-offline-bar" style="width:0%"></i></div>
+      <div class="mushaf-offline-actions">
+        <button type="button" id="mushaf-offline-download" class="primary">تنزيل المصحف كاملًا</button>
+        <button type="button" id="mushaf-offline-stop" hidden>إيقاف مؤقت</button>
+        <button type="button" id="mushaf-offline-remove" hidden>حذف النسخة المحلية</button>
+      </div>
+      <small id="mushaf-offline-storage"></small>
+      <div class="mushaf-offline-note">لا نفرض تنزيل ٦٠٤ صفحة على كل مستخدم عند تثبيت التطبيق. التنزيل هنا مرة واحدة وبإمكانك استكماله لاحقًا؛ كما تُحفظ أي صفحة تقرؤها تلقائيًا. بيانات المصحف العامة تُحفظ في CacheStorage ولا تدخل في نسخة بياناتك الشخصية.</div>
+    </div>
+  </section>
+
   <section class="quran-wird-card">
     <div class="sec-head"><span>ورد القرآن</span></div>
     <div class="item">
@@ -1188,7 +1177,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 <div id="v-read" class="hide">
   <div class="rd-bar">
     <button class="rd-btn rd-index-btn" id="rd-back" aria-label="فتح فهرس المصحف والبحث" title="فهرس المصحف والبحث">الفهرس</button>
-    <button class="rd-btn rd-tafsir-btn" id="rd-tafsir" aria-label="فتح تفسير الآية المحددة" title="تفسير الآية">التفسير</button>
+    <button class="rd-btn rd-tafsir-btn" id="rd-tafsir" aria-label="فتح تفسير أول آية في الصفحة" title="تفسير أول آية في الصفحة">التفسير</button>
     <button class="rd-btn rd-fullscreen-btn" id="rd-fullscreen" type="button" aria-label="عرض المصحف بملء الشاشة" aria-pressed="false" title="ملء الشاشة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
     <span class="rd-title" id="rd-title"></span>
     <button class="rd-btn" id="rd-minus">أ−</button>
@@ -1604,16 +1593,9 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 /* v24 R14 — printed Madinah Mushaf page layout: fixed lines, fixed page boundaries */
 #v-read{background:var(--paper)}
 .rd-bar{position:sticky;top:0;z-index:15;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(12px);padding-block:7px}
-.mushaf{background:#fcfaf4;border:0;border-radius:18px;margin-top:6px;padding:8px 8px 7px;box-shadow:0 8px 28px rgba(77,61,30,.07);overflow-x:auto;overscroll-behavior-x:contain}
-[data-theme="dark"] .mushaf{background:#f7f3e9;border:0}
 .mus-head{padding:4px 8px 7px;margin-bottom:5px;border-bottom:0;color:#8b7650;font-size:10.5px}
 .mushaf-swipe-hint{margin:0 auto 6px;max-width:max-content;background:rgba(250,247,239,.9);font-size:9.5px;padding:4px 8px}
 .mus-body.printed{width:100%;min-width:0;margin:0 auto;transition:width .16s ease;line-height:normal!important;text-align:initial!important;font-size:initial!important;word-spacing:normal!important;touch-action:pan-y}
-.mus-body.printed .mushaf-page-svg{display:block;width:100%;height:auto;max-width:none;margin:0 auto;background:#fcfaf4}
-.mus-body.printed .mushaf-page-svg *{pointer-events:none}
-.mus-body.printed .mushaf-page-svg .ayahPolygon{pointer-events:auto;cursor:pointer;fill:#d5a94d;fill-opacity:0!important;transition:fill-opacity .12s ease}
-@media (hover:hover) and (pointer:fine){.mus-body.printed .mushaf-page-svg .ayahPolygon:hover{fill-opacity:.12!important}}
-.mus-body.printed .mushaf-page-svg .ayahPolygon.mark{fill-opacity:.25!important}
 .mushaf-page-loading{min-height:68vh;display:grid;place-items:center;color:#8b7650;font-size:12px}
 .mushaf-render-note{margin:7px 8px 2px;border-radius:10px;background:#fff2d9;color:#76551d;padding:7px 9px;font-size:9.5px;line-height:1.7}
 .mus-source{margin:7px 8px 0;padding-top:7px;border-top:1px solid rgba(139,118,80,.18);font-size:8.8px;line-height:1.65;color:#8b7650;text-align:center}
@@ -1621,7 +1603,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 .mus-foot{border-top:0;margin-top:2px;padding-top:2px;color:#8b7650;font-size:10px}
 .mus-body.text-fallback{font-family:Hafs,Amiri,serif;text-align:justify;text-align-last:center;line-height:2.35;color:#1E1B14;word-spacing:-1px;padding:8px}
 [data-theme="dark"] .mus-body.text-fallback{color:#1E1B14}
-@media(max-width:560px){.mushaf{margin-inline:-4px;border-radius:12px;padding-inline:4px}.mus-head{padding-inline:6px}.rd-bar{gap:5px}.rd-btn{min-width:38px}.rd-title{font-size:16px}.mus-source{font-size:8.3px}}
+@media(max-width:560px){.mus-head{padding-inline:6px}.rd-bar{gap:5px}.rd-btn{min-width:38px}.rd-title{font-size:16px}.mus-source{font-size:8.3px}}
 /* v24 R15 — immersive Mushaf, تزكية cleanup, solid hadith reader */
 .rd-fullscreen-btn{display:grid;place-items:center;flex:none}.rd-fullscreen-btn svg{width:18px;height:18px}.rd-fullscreen-btn[aria-pressed="true"]{background:var(--deep);color:#fff;border-color:var(--deep)}
 .mushaf.page-loading-soft{cursor:progress}.mushaf.page-loading-soft .mushaf-page-svg{opacity:.72;filter:saturate(.92)}
@@ -1630,21 +1612,14 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 body.mushaf-fullscreen{overflow:hidden;background:#fcfaf4}body.mushaf-fullscreen>header,body.mushaf-fullscreen>nav{display:none!important}
 body.mushaf-fullscreen #v-read{position:fixed;z-index:220;inset:0;background:#fcfaf4;overflow-y:auto;overscroll-behavior:contain;padding:0 max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));scrollbar-width:none}
 body.mushaf-fullscreen #v-read::-webkit-scrollbar{display:none}body.mushaf-fullscreen .rd-bar{top:0;margin:0;padding:calc(6px + env(safe-area-inset-top)) 6px 7px;background:rgba(252,250,244,.94);backdrop-filter:blur(16px);transition:opacity .18s ease,transform .2s ease}
-body.mushaf-fullscreen .mushaf{margin:0 auto;padding:0;border-radius:0;box-shadow:none;min-height:calc(100dvh - 58px);display:flex;flex-direction:column;justify-content:center;overflow:hidden;transition:padding .2s ease}
-body.mushaf-fullscreen .mus-body.printed{display:grid;place-items:center;width:100%!important;transition:none}
-body.mushaf-fullscreen .mus-body.printed .mushaf-page-svg{width:auto;max-width:100%;height:auto;max-height:calc(100dvh - 92px);object-fit:contain}
 body.mushaf-fullscreen .mus-source{max-width:680px;margin-inline:auto}.mushaf-controls-hidden .rd-bar{opacity:0;transform:translateY(-100%);pointer-events:none}
 .mushaf-controls-hidden .mushaf-swipe-hint,.mushaf-controls-hidden .mushaf-render-note,.mushaf-controls-hidden .mus-source,.mushaf-controls-hidden .tafsir-current,.mushaf-controls-hidden .rd-nav{display:none!important}
-body.mushaf-fullscreen.mushaf-controls-hidden .mushaf{min-height:100dvh}body.mushaf-fullscreen.mushaf-controls-hidden .mus-body.printed .mushaf-page-svg{max-height:100dvh}
 @media(max-width:560px){body.mushaf-fullscreen #v-read{padding-inline:0}.rd-fullscreen-btn{min-width:38px!important}.mushaf-fullscreen .rd-title{font-size:15px}}
 /* v24 R16 — true immersive Mushaf request + Android/PWA prayer setup clarity */
 :root{--mushaf-vh:100dvh}
 body.mushaf-fullscreen{overscroll-behavior:none;touch-action:pan-y;background:#fcfaf4}
 body.mushaf-fullscreen #v-read{height:var(--mushaf-vh);max-height:var(--mushaf-vh);overflow:hidden;padding:0!important}
 body.mushaf-fullscreen .rd-bar{position:fixed!important;z-index:230;top:0;right:0;left:0;margin:0!important;border-radius:0!important;padding:calc(7px + env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) 7px max(8px,env(safe-area-inset-left))!important;box-shadow:0 5px 20px rgba(35,32,24,.08)}
-body.mushaf-fullscreen .mushaf{width:100vw;max-width:100vw;height:var(--mushaf-vh);min-height:var(--mushaf-vh)!important;margin:0!important;padding:0!important;display:grid!important;place-items:center;overflow:hidden!important;background:#fcfaf4}
-body.mushaf-fullscreen .mus-body.printed{width:100vw!important;height:var(--mushaf-vh)!important;display:grid!important;place-items:center!important;overflow:hidden!important}
-body.mushaf-fullscreen .mus-body.printed .mushaf-page-svg{width:auto!important;height:auto!important;max-width:100vw!important;max-height:var(--mushaf-vh)!important;margin:auto!important;object-fit:contain!important}
 body.mushaf-fullscreen .mushaf-swipe-hint,body.mushaf-fullscreen .mushaf-render-note,body.mushaf-fullscreen .mus-source,body.mushaf-fullscreen .tafsir-current,body.mushaf-fullscreen .rd-nav{display:none!important}
 /* الجزء واسم السورة ورقم الصفحة تبقى ظاهرة في ملء الشاشة */
 body.mushaf-fullscreen .mus-head{display:flex!important;padding:calc(2px + env(safe-area-inset-top)) 12px 3px;margin:0;border-bottom:0;font-size:11px}
@@ -1796,6 +1771,27 @@ nav button:active{transform:scale(.97)}
 @media(max-width:720px){.agreed-corpus-tools{grid-template-columns:1fr 1fr}.agreed-search-box{grid-column:1/-1}.agreed-corpus-tools>button{min-height:42px}}
 @media(max-width:420px){body{font-size:14px}nav div{padding-inline:4px;gap:2px}nav button{font-size:11.25px;padding-inline:1px;min-height:42px}.agreed-mode-tabs{grid-template-columns:1fr}.agreed-corpus-tools{grid-template-columns:1fr}.agreed-search-box{grid-column:auto}.agreed-grid{grid-template-columns:1fr}.agreed-card{padding:13px}.agreed-text{font-size:18.5px}.corpus-card .agreed-text{font-size:18px}}
 
+
+
+/* ===== R43 — robust Mushaf shell: authoritative geometry + transient ayah selection + offline library ===== */
+#v-read{--mushaf-paper:#fcfaf4;--mushaf-night:#0b0e0b}
+#v-read .mushaf{width:100%;max-width:100%;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;overflow:hidden;background:var(--mushaf-paper)}
+#v-read .mus-body.printed{width:100%;overflow:hidden;background:var(--mushaf-paper)}
+#v-read .mus-body.printed .mushaf-page-svg{display:block;width:100%;height:auto;max-width:100%;margin:0 auto;background:var(--mushaf-paper);transform-origin:center center}
+#v-read .mushaf-page-svg .ayahPolygon{pointer-events:auto;cursor:pointer;fill:#d5a94d;fill-opacity:0!important;transition:fill-opacity .12s ease}
+#v-read .mushaf-page-svg *{pointer-events:none}
+#v-read .mushaf-page-svg .ayahPolygon{pointer-events:auto}
+@media (hover:hover) and (pointer:fine){#v-read .mushaf-page-svg .ayahPolygon:hover{fill-opacity:.10!important}}
+#v-read .mushaf-page-svg .ayahPolygon.mark,#v-read .mus-body.text-fallback .ay.mark{fill-opacity:.24!important;background:color-mix(in srgb,#d5a94d 24%,transparent)}
+[data-theme="dark"] #v-read,[data-theme="dark"] #v-read .mushaf,[data-theme="dark"] #v-read .mus-body.printed{background:var(--mushaf-night)!important}
+[data-theme="dark"] #v-read .mus-body.printed .mushaf-page-svg{background:var(--mushaf-night)!important;filter:invert(1) hue-rotate(180deg) brightness(.88) contrast(1.04)}
+@media(max-width:760px){#v-read{width:100vw;max-width:100vw;margin-inline:calc(50% - 50vw);padding-inline:0!important}#v-read .mushaf{width:100vw;max-width:100vw}#v-read .mus-body.printed .mushaf-page-svg{width:100%!important;max-width:100vw!important}}
+body.mushaf-fullscreen #v-read .mushaf{width:100vw!important;max-width:100vw!important;height:var(--mushaf-vh)!important;display:grid!important;place-items:center!important;overflow:hidden!important}
+body.mushaf-fullscreen #v-read .mus-body.printed{width:100vw!important;height:var(--mushaf-vh)!important;display:grid!important;place-items:center!important;overflow:hidden!important}
+body.mushaf-fullscreen #v-read .mus-body.printed .mushaf-page-svg{width:auto!important;height:auto!important;max-width:100vw!important;max-height:var(--mushaf-vh)!important;margin:auto!important;object-fit:contain!important}
+.mushaf-offline-card{margin-top:12px;border:1px solid color-mix(in srgb,var(--deep) 16%,var(--line));border-radius:18px;background:linear-gradient(145deg,color-mix(in srgb,var(--wash) 78%,var(--card)),var(--card));overflow:hidden}
+.mushaf-offline-card .item{border:0;margin:0;border-radius:0;background:transparent}.mushaf-offline-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.mushaf-offline-head>div{display:grid;gap:3px}.mushaf-offline-head b{font-size:14px;color:var(--deep);line-height:1.55}.mushaf-offline-head span{font-size:12px;color:var(--soft)}.mushaf-offline-badge{flex:none;border:1px solid var(--line);border-radius:999px;padding:4px 8px;background:var(--paper);color:var(--gold)!important;font-weight:700}.mushaf-offline-card p{font-size:12.5px;line-height:1.75;color:var(--soft);margin:10px 0 8px}.mushaf-offline-progress{height:7px;border-radius:999px;background:var(--line);overflow:hidden}.mushaf-offline-progress i{display:block;height:100%;background:var(--deep);border-radius:inherit;transition:width .2s ease}.mushaf-offline-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.mushaf-offline-actions button{border:1px solid var(--line);background:var(--paper);color:var(--deep);border-radius:11px;padding:9px 11px;font:inherit;font-size:12px;cursor:pointer}.mushaf-offline-actions button.primary{background:var(--deep);color:#fff;border-color:var(--deep)}.mushaf-offline-actions button:disabled{opacity:.55;cursor:default}.mushaf-offline-card small{display:block;margin-top:8px;color:var(--soft);font-size:11px;line-height:1.6}.mushaf-offline-note{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);color:var(--soft);font-size:11.5px;line-height:1.75}
+@media(max-width:430px){.mushaf-offline-head{flex-direction:column}.mushaf-offline-actions{display:grid;grid-template-columns:1fr}.mushaf-offline-actions button{width:100%}}
 </style>
 
 

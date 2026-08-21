@@ -767,13 +767,16 @@ document.getElementById('acc-times').onclick=e=>{
   if(!open) renderTimes() };
 
 /* ================= القرآن — عرض بالصفحات ================= */
-let Q=null, qPage=1, qFont=+(localStorage.getItem('qFont')||23), qZoom=+(localStorage.getItem('mushafZoom')||100), qAyaPage={}, qSelectedAyah=null;
+let Q=null, qPage=1, qFont=+(localStorage.getItem('qFont')||23), qZoom=+(localStorage.getItem('mushafZoom')||100), qAyaPage={}, qTransientAyah=null;
 const MUSHAF_SVG_REV='0198423eb867ba26051aba6ac902cd5d10aadd1b';
 const MUSHAF_SVG_BASE=`https://cdn.jsdelivr.net/gh/quranpedia/quran-svg@${MUSHAF_SVG_REV}/mushafs/hafs/kfqc/svg/`;
 const MUSHAF_SVG_FALLBACK=`https://raw.githubusercontent.com/quranpedia/quran-svg/${MUSHAF_SVG_REV}/mushafs/hafs/kfqc/svg/`;
+const MUSHAF_OFFLINE_CACHE='tadaruq-mushaf-kfqc-r43-v1';
+const MUSHAF_TOTAL_PAGES=604;
 const padMushafPage=p=>String(p).padStart(3,'0');
 const mushafSvgCache=new Map();
 let mushafPageDirection=0, mushafFullscreen=false, mushafControlsHidden=false;
+let mushafOfflineJob={active:false,cancelled:false,done:0,failed:0};
 function searchNorm(x){ return (x||'').toString().toLowerCase().replace(/[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06edـ]/g,'').replace(/ٱ/g,'ا').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim() }
 function deepSearchText(v){ if(v==null)return ''; if(typeof v==='string'||typeof v==='number')return String(v); if(Array.isArray(v))return v.map(deepSearchText).join(' '); if(typeof v==='object')return Object.entries(v).filter(([k])=>!['u','url','link','video'].includes(k)).map(([,x])=>deepSearchText(x)).join(' '); return '' }
 const QKEY='quran-pos';
@@ -789,7 +792,7 @@ async function loadQuran(){ if(Q)return Q;
 const suraOf=n=>Q.suras[n-1];
 const juzOf=p=>{ let j=1; Q.juz.forEach((sp,i)=>{ if(p>=sp) j=i+1 }); return j };
 
-async function openQuran(){ await loadQuran(); renderAyaDay(); renderResume(); renderSurahList() }
+async function openQuran(){ await loadQuran(); renderAyaDay(); renderResume(); renderSurahList(); refreshMushafOfflineUI().catch(()=>{}) }
 let quranToolsRequested=false;
 async function openQuranReaderDefault(){
   await loadQuran();
@@ -801,7 +804,7 @@ const MUYASSAR_FULL_URL='https://qurancomplex.gov.sa/isdarat-books/#flipbook-df_
 const MUYASSAR_BOOK_URL='https://qurancomplex.gov.sa/kfgqpc-books-tafseer-muyassar/';
 const muyassarAyahUrl=(s,a)=>`https://quran.com/ar/${encodeURIComponent(s||1)}%3A${encodeURIComponent(a||1)}/tafsirs/ar-tafsir-muyassar`;
 function firstAyahOnPage(){const run=(Q?.pages?.[qPage-1]||[])[0];return run?{s:+run[0],a:+run[1]}:{s:1,a:1}}
-function tafsirTarget(){return qSelectedAyah||firstAyahOnPage()}
+function tafsirTarget(){return firstAyahOnPage()}
 function tafsirVerseText(t){const su=Q&&suraOf(t.s);return su?.a?.[Math.max(0,(+t.a||1)-1)]||''}
 function closeTafsirSheet(){const sh=document.getElementById('tafsir-sheet');if(sh){sh.classList.add('hide');sh.setAttribute('aria-hidden','true')}}
 let muyassarReturnFocus=null;
@@ -877,7 +880,7 @@ function renderQuranTextFallback(runs,mark){
     const su=suraOf(sn);
     if(from===1){ html+=`<div class="sura-band"><span>سُورَةُ ${su.name}</span></div>`;
       if(sn!==1&&sn!==9) html+=`<div class="mus-bsm">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</div>` }
-    for(let i=from;i<=to;i++) html+=`<span class="ay ${mark.page===qPage&&mark.s===sn&&mark.a===i?'mark':''}" data-s="${sn}" data-a="${i}">${su.a[i-1]} </span>`;
+    for(let i=from;i<=to;i++) html+=`<span class="ay" data-s="${sn}" data-a="${i}">${su.a[i-1]} </span>`;
   });
   const body=document.getElementById('mus-body');
   body.classList.remove('printed'); body.classList.add('text-fallback');
@@ -885,21 +888,35 @@ function renderQuranTextFallback(runs,mark){
   const n=document.getElementById('mushaf-render-note');
   if(n){n.hidden=false;n.textContent='تعذر تحميل صفحة مصحف المدينة المطابقة؛ يظهر مؤقتًا النص الاحتياطي حتى يتوفر الاتصال.'}
 }
+function mushafPageUrl(page){return MUSHAF_SVG_BASE+padMushafPage(page)+'.svg'}
+async function readCachedMushafSvg(page){
+  if(!('caches' in window))return null;
+  try{
+    const cache=await caches.open(MUSHAF_OFFLINE_CACHE),r=await cache.match(mushafPageUrl(page));
+    if(!r)return null;const text=await r.text();return text.includes('<svg')?text:null;
+  }catch{return null}
+}
+async function cacheMushafResponse(page,response){
+  if(!('caches' in window)||!response)return false;
+  try{const cache=await caches.open(MUSHAF_OFFLINE_CACHE);await cache.put(mushafPageUrl(page),response);return true}catch{return false}
+}
+async function fetchMushafSvgRemote(page){
+  const file=padMushafPage(page)+'.svg';let lastErr=null;
+  for(const base of [MUSHAF_SVG_BASE,MUSHAF_SVG_FALLBACK]){
+    try{
+      const r=await fetch(base+file,{cache:'force-cache'});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const cacheCopy=r.clone(),text=await r.text();if(!text.includes('<svg'))throw new Error('invalid svg');
+      await cacheMushafResponse(page,cacheCopy);return text;
+    }catch(e){lastErr=e}
+  }
+  throw lastErr||new Error('mushaf page unavailable');
+}
 async function fetchMushafSvg(page){
   if(mushafSvgCache.has(page)) return mushafSvgCache.get(page);
   const task=(async()=>{
-    const file=padMushafPage(page)+'.svg';
-    let lastErr=null;
-    for(const base of [MUSHAF_SVG_BASE,MUSHAF_SVG_FALLBACK]){
-      try{
-        const r=await fetch(base+file,{cache:'force-cache'});
-        if(!r.ok)throw new Error('HTTP '+r.status);
-        const text=await r.text();
-        if(!text.includes('<svg'))throw new Error('invalid svg');
-        return text;
-      }catch(e){lastErr=e}
-    }
-    throw lastErr||new Error('mushaf page unavailable');
+    const cached=await readCachedMushafSvg(page);if(cached)return cached;
+    return fetchMushafSvgRemote(page);
   })();
   mushafSvgCache.set(page,task);
   try{return await task}catch(e){mushafSvgCache.delete(page);throw e}
@@ -923,47 +940,24 @@ function safeMushafSvg(text,page){
   return document.importNode(svg,true);
 }
 function fitMushafSvgViewBox(svg){
-  /* MUSHAF_FIT: false يعطّل الضبط تماماً ويعيد العرض الأصلي بلا أي تعديل هندسي.
-     غيّر هذا الثابت وحده للتراجع الفوري. */
-  const MUSHAF_FIT=true;
-  if(!MUSHAF_FIT)return;
-  if(!svg||svg.dataset.viewboxFitted==='true')return;
-  const raw=(svg.getAttribute('viewBox')||'').trim().split(/[ ,]+/).map(Number);
-  if(raw.length!==4||raw.some(n=>!Number.isFinite(n))||raw[2]<=0||raw[3]<=0)return;
-  const [ox,oy,ow,oh]=raw;
-
-  /* القياس من جذر الـSVG: getBBox على الجذر تُطبّق تحويلات كل الأبناء وتُرجع الحدود
-     في فضاء الـviewBox نفسه. قياس الأبناء المباشرين كان يخلط فضاءين مختلفين لأن
-     getBBox لا تُطبّق تحويل العنصر نفسه، وصفحات المصحف عليها transform في المجموعة العليا. */
-  let b; try{ b=svg.getBBox() }catch{ return }
-  if(!b||!Number.isFinite(b.x)||!Number.isFinite(b.y)||b.width<=0||b.height<=0)return;
-
-  /* حارس: لو الحدود غير منطقية (أكبر من اللوح أو أصغر من ثلثه) لا تلمس شيئاً. */
-  if(b.width>ow*1.02||b.height>oh*1.02)return;
-  if(b.width<ow*.35||b.height<oh*.35)return;
-
-  /* هامش أمان حول الحبر حتى لا تلامس الترويسة أو رقم الصفحة الحافة. */
-  const padX=Math.max(ow*.010,b.width*.010), padY=Math.max(oh*.010,b.height*.010);
-  let x=b.x-padX, y=b.y-padY, w=b.width+padX*2, h=b.height+padY*2;
-
-  /* لا تخرج عن اللوح الأصلي إطلاقاً. */
-  if(x<ox){w-=(ox-x);x=ox}
-  if(y<oy){h-=(oy-y);y=oy}
-  if(x+w>ox+ow)w=ox+ow-x;
-  if(y+h>oy+oh)h=oy+oh-y;
-  if(w<=0||h<=0)return;
-
-  svg.setAttribute('viewBox',`${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)}`);
-  svg.dataset.viewboxFitted='true';
+  /* R43 robustness rule: the pinned KFQC SVG viewBox is authoritative geometry.
+     Never crop/fit it at runtime. Scaling is handled only by CSS/zoom. */
+  return svg;
 }
 function applyMushafZoom(){
   const body=document.getElementById('mus-body'); if(!body)return;
   if(body.classList.contains('printed')) body.style.width=qZoom+'%';
 }
-function highlightMushafAyah(){
-  const body=document.getElementById('mus-body'); if(!body||!qSelectedAyah)return;
-  body.querySelectorAll('.ayahPolygon.mark').forEach(x=>x.classList.remove('mark'));
-  const p=body.querySelector(`.ayahPolygon[surah="${qSelectedAyah.s}"][ayah="${qSelectedAyah.a}"]`);
+function clearMushafSelection(){
+  qTransientAyah=null;
+  document.querySelectorAll('.mushaf-page-svg .ayahPolygon.mark,.mus-body .ay.mark').forEach(x=>x.classList.remove('mark'));
+}
+function highlightMushafAyah(target=qTransientAyah){
+  clearMushafSelection();
+  if(!target)return;
+  qTransientAyah={s:+target.s,a:+target.a};
+  const body=document.getElementById('mus-body');if(!body)return;
+  const p=body.querySelector(`.ayahPolygon[surah="${qTransientAyah.s}"][ayah="${qTransientAyah.a}"]`)||body.querySelector(`.ay[data-s="${qTransientAyah.s}"][data-a="${qTransientAyah.a}"]`);
   if(p)p.classList.add('mark');
 }
 async function renderPrintedMushaf(page,runs,mark){
@@ -973,7 +967,7 @@ async function renderPrintedMushaf(page,runs,mark){
   try{
     const svg=safeMushafSvg(await fetchMushafSvg(page),page);
     svg.classList.add(mushafPageDirection>0?'page-enter-next':mushafPageDirection<0?'page-enter-prev':'page-enter');
-    body.replaceChildren(svg); requestAnimationFrame(()=>fitMushafSvgViewBox(svg)); applyMushafZoom(); highlightMushafAyah();
+    body.replaceChildren(svg); requestAnimationFrame(()=>fitMushafSvgViewBox(svg)); applyMushafZoom(); clearMushafSelection();
     requestAnimationFrame(()=>requestAnimationFrame(()=>svg.classList.add('page-enter-on')));
     const n=document.getElementById('mushaf-render-note'); if(n){n.hidden=true;n.textContent=''}
     return true;
@@ -987,8 +981,7 @@ async function openPage(p){
   mushafPageDirection=qPage===oldPage?0:(qPage>oldPage?1:-1);
   const runs=Q.pages[qPage-1]||[];
   const mark=(await store.get(QKEY))||{};
-  const first=runs[0];
-  qSelectedAyah=(mark.s&&mark.a&&qAyaPage[mark.s+':'+mark.a]===qPage)?{s:+mark.s,a:+mark.a}:(first?{s:+first[0],a:+first[1]}:{s:1,a:1});
+  clearMushafSelection();
   const suraNames=[...new Set(runs.map(r=>suraOf(r[0])?.name).filter(Boolean))];
   const suraLabel=suraNames.length>2?`${suraNames[0]} · … · ${suraNames[suraNames.length-1]}`:suraNames.join(' · ');
   document.getElementById('mus-juz').textContent='الجزء '+JUZ_AR[juzOf(qPage)-1];
@@ -1029,12 +1022,10 @@ document.getElementById('mus-body').addEventListener('ayah-longpress',e=>{
   openAyahMenu(+p.getAttribute('surah'),+p.getAttribute('ayah'));
 });
 /* قائمة خيارات الآية — تُفتح بالضغط المطوّل فقط */
-function closeAyahMenu(){ const m=document.getElementById('ayah-menu'); if(m)m.remove();
-  document.querySelectorAll('.mushaf-page-svg .ayahPolygon.mark').forEach(x=>x.classList.remove('mark')); }
+function closeAyahMenu(){ const m=document.getElementById('ayah-menu'); if(m)m.remove(); clearMushafSelection(); }
 function openAyahMenu(sn,an){
   closeAyahMenu();
-  const poly=document.querySelector(`.ayahPolygon[surah="${sn}"][ayah="${an}"]`);
-  if(poly)poly.classList.add('mark');
+  highlightMushafAyah({s:sn,a:an});
   const el=document.createElement('div');
   el.id='ayah-menu'; el.className='ayah-menu';
   el.innerHTML=`<div class="am-sheet" role="dialog" aria-label="خيارات الآية">
@@ -1047,30 +1038,23 @@ function openAyahMenu(sn,an){
   el.addEventListener('click',async ev=>{
     const act=ev.target.closest('[data-am]')?.dataset.am;
     if(!act||act==='close'){ if(ev.target===el||act==='close')closeAyahMenu(); return }
-    qSelectedAyah={s:sn,a:an};
-    if(act==='tafsir'){ updateTafsirPanel(); closeAyahMenu(); toast('التفسير جاهز'); }
+    if(act==='tafsir'){ closeAyahMenu(); await openTafsirSheet({s:sn,a:an}); }
     else if(act==='save'){ const cur=(await store.get(QKEY))||{};
-      await store.set(QKEY,Object.assign(cur,{page:qPage,s:sn,a:an})); closeAyahMenu(); toast('حُفظ موضعك'); }
+      await store.set(QKEY,Object.assign(cur,{page:qPage,s:sn,a:an})); closeAyahMenu(); await renderResume(); toast('حُفظ موضعك'); }
     else if(act==='copy'){ const t=`${(suraOf(sn)?.name)||('سورة '+sn)} — الآية ${an}`;
       try{await navigator.clipboard.writeText(t);toast('نُسخ المرجع')}catch{toast('تعذّر النسخ')} closeAyahMenu(); }
   });
 }
-document.getElementById('mus-body').onclick=async e=>{
-  // على اللمس: التحديد يتم بالضغط المطوّل فقط، حتى لا يُحدَّد بالخطأ أثناء السحب
-  // على اللمس: لا يفعل النقر شيئاً؛ كل تحديد يتم عبر قائمة الضغط المطوّل
+document.getElementById('mus-body').onclick=e=>{
+  // R43: mouse click opens the same explicit action menu as long-press.
+  // Merely clicking an ayah never changes quran-pos and never leaves a persistent highlight.
   if(window.matchMedia('(hover:none)').matches)return;
-  const poly=e.target.closest?.('.ayahPolygon');
-  const fallback=e.target.closest?.('.ay');
+  const poly=e.target.closest?.('.ayahPolygon'),fallback=e.target.closest?.('.ay');
   if(!poly&&!fallback)return;
   const sn=poly?+poly.getAttribute('surah'):+fallback.dataset.s;
   const an=poly?+poly.getAttribute('ayah'):+fallback.dataset.a;
-  qSelectedAyah={s:sn,a:an};
-  if(poly)highlightMushafAyah();
-  else{document.querySelectorAll('.mus-body .ay').forEach(x=>x.classList.remove('mark'));fallback.classList.add('mark')}
-  updateTafsirPanel();
-  const cur=(await store.get(QKEY))||{};
-  await store.set(QKEY,Object.assign(cur,{page:qPage,s:sn,a:an}));
-  toast('حُفظ موضعك · التفسير جاهز') };
+  openAyahMenu(sn,an);
+};
 function syncMushafViewportHeight(){
   const h=Math.round(window.visualViewport?.height||window.innerHeight||document.documentElement.clientHeight||0);
   if(h)document.documentElement.style.setProperty('--mushaf-vh',h+'px');
@@ -1149,6 +1133,71 @@ document.getElementById('rd-minus').onclick=()=>document.getElementById('mus-bod
     const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
     if(Math.abs(dx)>38&&Math.abs(dx)>Math.abs(dy)*1.15) openPage(qPage+(dx>0?1:-1));
     x0=null },{passive:true}); })();
+
+function mushafOfflineEls(){return {
+  card:document.getElementById('mushaf-offline-card'),status:document.getElementById('mushaf-offline-status'),
+  count:document.getElementById('mushaf-offline-count'),bar:document.getElementById('mushaf-offline-bar'),
+  download:document.getElementById('mushaf-offline-download'),stop:document.getElementById('mushaf-offline-stop'),
+  remove:document.getElementById('mushaf-offline-remove'),storage:document.getElementById('mushaf-offline-storage')};}
+async function mushafCachedPageNumbers(){
+  if(!('caches' in window))return [];
+  try{
+    const cache=await caches.open(MUSHAF_OFFLINE_CACHE),keys=await cache.keys(),out=[];
+    for(const req of keys){const m=req.url.match(/\/([0-9]{3})\.svg(?:$|\?)/);if(m)out.push(+m[1])}
+    return [...new Set(out.filter(n=>n>=1&&n<=MUSHAF_TOTAL_PAGES))].sort((a,b)=>a-b);
+  }catch{return []}
+}
+async function refreshMushafOfflineUI(note=''){
+  const el=mushafOfflineEls();if(!el.card)return;
+  const nums=await mushafCachedPageNumbers(),done=nums.length,pct=Math.round(done/MUSHAF_TOTAL_PAGES*100);
+  if(el.count)el.count.textContent=`${AR(done)} من ${AR(MUSHAF_TOTAL_PAGES)} صفحة`;
+  if(el.bar)el.bar.style.width=pct+'%';
+  if(el.status)el.status.textContent=note||(done===MUSHAF_TOTAL_PAGES?'المصحف كامل متاح دون اتصال.':done?`يمكن استكمال التنزيل من الصفحة المخزنة التالية.`:'لم يتم تنزيل النسخة الكاملة بعد. الصفحات التي تقرؤها تُحفظ تلقائيًا للاستخدام دون اتصال.');
+  if(el.download){el.download.disabled=mushafOfflineJob.active||done===MUSHAF_TOTAL_PAGES;el.download.textContent=done===MUSHAF_TOTAL_PAGES?'تم تنزيل المصحف كاملًا':done?'استكمال تنزيل المصحف':'تنزيل المصحف كاملًا'}
+  if(el.stop)el.stop.hidden=!mushafOfflineJob.active;
+  if(el.remove)el.remove.hidden=done===0||mushafOfflineJob.active;
+  if(el.storage&&navigator.storage?.estimate){try{const x=await navigator.storage.estimate(),persisted=await navigator.storage?.persisted?.();const used=x.usage||0,quota=x.quota||0;el.storage.textContent=quota?`تخزين تدارُك على الجهاز: ${(used/1048576).toFixed(1)} م.ب من ${(quota/1048576).toFixed(0)} م.ب متاحة.${persisted===true?' · التخزين محمي من الإخلاء التلقائي قدر الإمكان.':persisted===false?' · قد يدير المتصفح المساحة تلقائيًا عند ضغط التخزين.':''}`:''}catch{}}
+  return done;
+}
+async function ensureMushafPageCached(page){
+  if(await readCachedMushafSvg(page))return true;
+  const text=await fetchMushafSvgRemote(page);return !!text;
+}
+async function downloadFullMushaf(){
+  if(mushafOfflineJob.active)return;
+  if(!('caches' in window)){toast('التخزين دون اتصال غير مدعوم في هذا المتصفح');return}
+  mushafOfflineJob={active:true,cancelled:false,done:0,failed:0};
+  try{await navigator.storage?.persist?.()}catch{}
+  try{
+  let have=new Set(await mushafCachedPageNumbers()),pending=[];
+  for(let p=1;p<=MUSHAF_TOTAL_PAGES;p++)if(!have.has(p))pending.push(p);
+  mushafOfflineJob.done=have.size;await refreshMushafOfflineUI('جاري تنزيل صفحات المصحف… يمكنك إيقافه واستكماله لاحقًا.');
+  let cursor=0;const workers=Array.from({length:3},async()=>{
+    while(!mushafOfflineJob.cancelled){
+      const i=cursor++;if(i>=pending.length)return;const p=pending[i];
+      try{await ensureMushafPageCached(p);mushafOfflineJob.done++}
+      catch{mushafOfflineJob.failed++}
+      if((mushafOfflineJob.done+mushafOfflineJob.failed)%6===0||i===pending.length-1){
+        await refreshMushafOfflineUI(mushafOfflineJob.failed?`جاري التنزيل · تعذر ${AR(mushafOfflineJob.failed)} صفحة مؤقتًا وسيعاد تنزيلها عند الاستكمال.`:'جاري تنزيل صفحات المصحف…');
+      }
+    }
+  });
+  await Promise.all(workers);
+  const done=await refreshMushafOfflineUI();
+  if(mushafOfflineJob.cancelled)await refreshMushafOfflineUI('تم إيقاف التنزيل. يمكنك استكماله لاحقًا من حيث توقف.');
+  else if(done===MUSHAF_TOTAL_PAGES){await refreshMushafOfflineUI('اكتمل تنزيل ٦٠٤ صفحة. المصحف الآن متاح كاملًا دون اتصال.');toast('اكتمل تنزيل المصحف')}
+  else await refreshMushafOfflineUI('لم يكتمل التنزيل بسبب الشبكة. اضغط «استكمال» عند توفر اتصال أفضل.');
+  }finally{mushafOfflineJob.active=false;await refreshMushafOfflineUI()}
+}
+function stopMushafDownload(){mushafOfflineJob.cancelled=true}
+async function removeOfflineMushaf(){
+  if(mushafOfflineJob.active)return;
+  if(!confirm('حذف النسخة المحلية من صفحات المصحف؟ لن تتأثر علامة القراءة أو بياناتك.'))return;
+  try{await caches.delete(MUSHAF_OFFLINE_CACHE);mushafSvgCache.clear();await refreshMushafOfflineUI('حُذفت النسخة المحلية. ستُحفظ الصفحات التي تقرؤها لاحقًا تلقائيًا.');toast('حُذفت النسخة المحلية')}catch{toast('تعذر حذف النسخة المحلية')}
+}
+document.getElementById('mushaf-offline-download')?.addEventListener('click',downloadFullMushaf);
+document.getElementById('mushaf-offline-stop')?.addEventListener('click',stopMushafDownload);
+document.getElementById('mushaf-offline-remove')?.addEventListener('click',removeOfflineMushaf);
 
 document.getElementById('btn-history').onclick=()=>switchTab(tab==='history'?'today':'history');
 
@@ -2374,7 +2423,7 @@ function switchTab(t){
   document.querySelectorAll('#zseg button').forEach(b=>b.setAttribute('aria-current',b.dataset.z===t));
   document.getElementById('page-title').textContent=TITLES[t]||'';
   if(t==='history') renderHistory();
-  if(t==='quran'){ openQuran(); renderQuran(); renderTafsirResume() }
+  if(t==='quran'){ openQuran(); renderQuran() }
   if(t==='tasbih') renderTasbih();
   if(t==='asma') hAsma();
   if(t==='azkar') renderAzkar();
