@@ -2442,3 +2442,104 @@ REQUIRES REAL-DEVICE TEST:
 
 ## Next recommended step
 Deploy R38 to GitHub Pages staging/production as appropriate, fully reload the installed PWA/TWA so the R38 Service Worker takes control, then perform the real-phone checks listed in `README-UPLOAD-R38-AR.txt` and record any visual regressions as a follow-up release rather than editing the protected Mushaf geometry speculatively.
+
+---
+
+# R39 session — 2026-08-21 — Full Tafseer Muyassar iframe reliability fix
+
+## Owner request
+Investigate why **التفسير الميسر الكامل** has not worked since R37 and provide a safe fix.
+
+## Root cause / investigation
+The R37/R38 implementation did not contain an internal Tafseer Muyassar reader. It lazy-loaded the King Fahd Complex public publications-reader page (`https://qurancomplex.gov.sa/isdarat-books/#flipbook-df_11362/1/`) inside a cross-origin iframe.
+
+Current web verification on 2026-08-21 found:
+- the official Tafseer Muyassar book page still resolves to the Complex publications-reader page and lists `التفسير الميسَّر`;
+- the previously documented public content-embedding navigation path is no longer a dependable endpoint and returned 404 during verification;
+- the Complex developer platform continues to provide a trusted/approved Tafseer Muyassar dataset for application developers, including a per-ayah `aya_tafseer` field and published integrity hashes.
+
+Decision: **do not attempt to bypass or work around remote iframe/framing policy.** R39 removes the iframe dependency and presents real external links to the official Complex full reader/book page. This is the smallest reliable correction. A future truly internal reader should use the official developer dataset rather than scrape/frame the public website.
+
+## Files inspected
+- complete R38 source package;
+- `AI_HANDOFF.md` latest R38 entry and prior R36/R37 Tafseer notes;
+- `DATA_ARCHITECTURE.md`;
+- `DATA_SAFETY.md`;
+- `CONTENT_PROVENANCE-KNOWLEDGE-R37.md` / R38;
+- `QA-REPORT-R38.txt`;
+- `app.js`, `index.html`, `sw.js`, `data-safety.js`, `manifest.webmanifest`;
+- current official King Fahd Complex Tafseer Muyassar book/developer web pages.
+
+## Runtime changes
+- `app.js`
+  - replaced `MUYASSAR_EMBED_URL` with explicit official full-reader/book URLs;
+  - `openMuyassarSheet()` no longer assigns a remote iframe `src`;
+  - updated Knowledge copy so it no longer claims full reading occurs through the old embed path.
+- `index.html`
+  - removed the active `<iframe>` from the Tafseer Muyassar sheet;
+  - preserved `id="muyassar-frame"` as a hidden compatibility marker so no prior DOM ID is unnecessarily deleted;
+  - added real external anchors for the official full reader and official book page;
+  - changed the primary button label to `فتح التفسير الميسر كاملًا`;
+  - adjusted the sheet styling for the small launch/fallback UI.
+- `sw.js`
+  - cache bump to R39.
+- `data-safety.js`
+  - backup metadata appVersion only: `24.39.0`.
+
+## Continuity/release files
+- added `CONTENT_PROVENANCE-KNOWLEDGE-R39.md`;
+- added `RELEASE-NOTES-R39.txt`;
+- added `QA-REPORT-R39.txt`;
+- added `README-UPLOAD-R39-AR.txt`;
+- appended R39 notes to `DATA_ARCHITECTURE.md` and `DATA_SAFETY.md`;
+- updated `AI_HANDOFF.json` and `PROMPT_FOR_NEXT_AI.txt`;
+- this `AI_HANDOFF.md` entry is append-only and preserves all prior history.
+
+## Persistent-data impact
+- new persistent keys: **none**;
+- renamed/deleted keys: **none**;
+- migrations: **none**;
+- `rafiq:data-version`: **2** unchanged;
+- legacy `tafsir-pos-v1`: retained/untouched;
+- no new Tafseer full-book position is stored;
+- backup metadata appVersion: **24.39.0**.
+
+## QA actually executed
+VERIFIED / STATICALLY VERIFIED:
+- `node --check app.js` — PASS.
+- `node --check data-safety.js` — PASS.
+- `node --check sw.js` — PASS.
+- `node --check pwa-register.js` — PASS.
+- `node --check extension-bridge.js` — PASS.
+- root JSON + webmanifest parse — PASS: 21 artifacts.
+- HTML duplicate-ID audit — PASS: 238 IDs / 0 duplicates.
+- R38 baseline HTML ID preservation — PASS: 0 pre-existing IDs removed.
+- active shipped HTML iframe audit — PASS: 0 `<iframe>` tags.
+- Service Worker precache — PASS: 39 entries / 0 missing.
+- R39 cache and official full-reader/book-link marker audit — PASS.
+- active old `MUYASSAR_EMBED_URL` audit — PASS: removed.
+- Data Safety exact diff vs R38 — PASS: appVersion is the only runtime registry-file change.
+- protected Mushaf function comparison vs R38 — PASS: five protected functions byte-identical.
+- changed-runtime secret-pattern scan — PASS.
+- dedicated `qa/test_data_safety.js` — NOT PRESENT in supplied flat source package.
+
+## Visual/device status
+A local headless Chromium attempt at 390x844 timed out (`exit 124`) and produced no usable screenshot.
+
+**Automated/static checks passed, but visual/device verification was not possible in this environment.**
+
+REQUIRES REAL-DEVICE TEST:
+- Qur'an tools -> full Tafseer launch;
+- Knowledge -> Tafseer Muyassar -> full launch;
+- official Complex reader opening in the installed TWA/browser;
+- browser/system Back behavior;
+- light/dark launch-sheet appearance.
+
+## Distribution
+- R39 is Web/PWA only; deploy the full source to GitHub Pages and reload the installed PWA/TWA so the R39 Service Worker takes control.
+- No Android-native shell/config/resource changed; **no new AAB is required for R39 itself**.
+- Chrome extension requires a separately packaged MV3 release only if R39 is to be published there.
+- no backend/serverless deployment required.
+
+## Unresolved / future option
+R39 intentionally does not package the 7.51MB official developer dataset. If the owner later wants a **fully native in-app full Tafseer reader** with search/surah/ayah navigation and no external page, implement it from the official King Fahd Complex developer dataset and verify its published integrity hash before ingestion. Do not return to the cross-origin public-site iframe approach.

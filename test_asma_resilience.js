@@ -1,0 +1,20 @@
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const app=fs.readFileSync(path.join(root,'app.js'),'utf8');
+const asma=JSON.parse(fs.readFileSync(path.join(root,'asma.json'),'utf8'));
+function ok(cond,msg){if(!cond){console.error('FAIL:',msg);process.exitCode=1}else console.log('PASS:',msg)}
+const a=app.indexOf('async function hAsmaDetail(n){');
+const b=app.indexOf('\nasync function hAsma(){',a);
+const fn=app.slice(a,b);
+ok(a>=0&&b>a,'hAsmaDetail exists');
+ok(fn.indexOf("document.getElementById('v-asma').innerHTML")>=0,'detail shell renders locally');
+ok(fn.indexOf("document.getElementById('v-asma').innerHTML") < fn.indexOf('await Promise.race([asmaVerses(it)'), 'detail renders before Quran scan/network wait');
+ok(fn.includes('جارٍ تحميل نص القرآن والبحث في المواضع دون تعطيل صفحة الاسم'), 'non-blocking Quran loading state is visible');
+ok(fn.includes('asma-quran-timeout') && fn.includes('8000'), 'Quran evidence wait has bounded timeout');
+ok(fn.includes("if(asmaCur!==it.n)return"), 'late async result cannot overwrite a view after navigation');
+ok(app.includes("'الرفيق':[{t:'«إن الله رفيق يحب الرفق…»"), 'Al-Rafiq hadith seed key/text restored');
+ok(!app.includes("'التدارُك':[{t:'«إن الله تدارُك يحب الرفق…'"), 'corrupted Tadaruq substitution removed from hadith seed');
+ok(Array.isArray(asma.names)&&asma.names.length===99,'Asma dataset still contains 99 entries');
+ok(asma.names.some(x=>x.name==='الرفيق'),'Asma dataset contains الرفيق');
+if(process.exitCode)process.exit(process.exitCode);

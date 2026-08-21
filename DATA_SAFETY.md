@@ -135,3 +135,6 @@ R38 changes navigation/UI and static educational content only. It introduces **n
 - `usul-tafsir.json` keeps the same nine item IDs, so Saved Later/content references are not invalidated by ID churn.
 - Source-display deduplication is presentation-only. Source arrays remain in static content files and no user record is modified.
 - Backup metadata app version: **24.38.0**.
+
+## R39 — Tafseer Muyassar iframe removal (2026-08-21)
+R39 introduces **no new persistent key, no key rename/removal, no schema migration, and no stored-shape change**. `rafiq:data-version` remains **2**. The full Tafseer Muyassar action changes only from a remote iframe presentation to user-initiated direct official-site links. No Tafseer Muyassar text or reading position is newly stored by Tadaruq. Backup metadata `appVersion` advances to **24.39.0** only.

@@ -1,0 +1,23 @@
+TADARUQ v24 R39 — RELEASE NOTES
+Date: 2026-08-21
+
+Scope: fix the full Tafseer Muyassar action that had been unreliable since R37.
+
+Changed:
+- Removed the active cross-origin iframe load for the King Fahd Complex publications reader.
+- "فتح التفسير الميسر كاملًا" now opens a small safe-launch sheet with real external links to the official full reader and official book page.
+- Updated the Knowledge description so it no longer claims the book is read through the old embed path.
+- Preserved the old `muyassar-frame` DOM ID as a hidden compatibility marker; it is no longer an iframe.
+- Per-ayah Tafseer Muyassar link behavior is unchanged.
+- No Mushaf geometry/fullscreen/ayah interaction code changed.
+
+Data safety:
+- no new/renamed/deleted persistent keys;
+- no migration;
+- data schema remains 2;
+- backup appVersion is 24.39.0.
+
+Distribution:
+- Web/PWA GitHub Pages update only for the hosted TWA content.
+- No new AAB required because no Android-native shell/config/resource changed.
+- Chrome extension requires a separate MV3 package only if R39 is to be published there.

@@ -1,20 +1,21 @@
 READ AI_HANDOFF.md FIRST. It is append-only and may never be deleted, renamed, truncated, summarized away, moved out of the project, or omitted from a full handoff.
 
-Current release: Tadaruq v24 R38 (2026-08-21).
+Current release: Tadaruq v24 R39 (2026-08-21).
 
 Critical current rules:
 1) Preserve all persistent user keys/stable content IDs. Data schema remains 2.
 2) Religious claims require visible verified sourcing. Educational paraphrase must not be presented as quotation.
 3) Tazkiyah visible tab is `تزكية` but its stable internal route/storage family remains `qalb`; do not rename `qalb-*` or `qalb-levels-v1` without a migration.
-4) R38 gives both `الذكر` and `تزكية` first-level landing maps styled like the R37 Knowledge map. Their detailed screens and existing storage systems are reused; do not create parallel progress systems.
-5) Zikr landing routes into existing `azkar`, `dua`, `tasbih`, `asma`; the Hisn card opens the existing Hisn index inside Adhkar.
-6) R38 expanded all 9 `usul-tafsir.json` modules. Preserve their IDs: quran-intro, revelation, collection, meaning, sources, companions, difference, israel, mufassir.
-7) In simple Knowledge datasets rendered by `sourceModules()`, show the dataset primary source once in the section intro. Hide only item sources with the same normalized URL; keep genuinely different/additional item sources visible. Do not delete source arrays from data.
-8) R33 Tazkiyah Works/Heart Diseases/Obstacles still use source-backed depth stages and per-item evidence. R38 source deduplication must not be generalized into removal of distinct Tazkiyah evidence.
-9) R37 retired Al-Mukhtasar from active UI/runtime. Do not reintroduce it unless the owner explicitly asks. Keep legacy `tafsir-pos-v1` registered/backed up so old local data is not deleted.
-10) Tafsir shown from the Mushaf remains Tafseer Muyassar, canonical publisher/source King Fahd Glorious Qur'an Printing Complex.
-11) Current in-app Mushaf remains protected 604-page Hafs/KFQC fixed geometry. Do not crop/reflow/change viewBox or ayah interaction geometry. Left-to-right swipe = NEXT.
-12) Any UI/content change requires a Service Worker cache bump. Current cache is `tadaruq-v24-r38-pwa-20260821`.
-13) Structured smoking/nicotine journey remains a Google Play Health Apps declaration review item before Play-facing deployment.
-14) Chrome extension users do not automatically receive GitHub/PWA changes; package/update MV3 separately when requested.
-15) State testing truthfully. R38 Zikr/Tazkiyah/expanded Usul visual behavior requires real Android/TWA verification because headless Chromium timed out in this environment.
+4) R38 gives both `الذكر` and `تزكية` first-level landing maps styled like Knowledge. Their detailed screens and existing storage systems are reused.
+5) R38 expanded all 9 `usul-tafsir.json` modules; preserve their existing IDs and source-display rules.
+6) R37 retired Al-Mukhtasar from active UI/runtime. Do not reintroduce it unless explicitly requested. Keep legacy `tafsir-pos-v1` registered/backed up so old local data is not deleted.
+7) Tafsir shown from the Mushaf remains Tafseer Muyassar; canonical publisher/source is King Fahd Glorious Qur'an Printing Complex.
+8) R39 supersedes the old R36/R37 full-book iframe approach. Do NOT restore a cross-origin iframe to `qurancomplex.gov.sa/isdarat-books/`. Full-book actions use direct official Complex reader/page links.
+9) If a future release needs a truly internal full Tafseer reader, prefer the official King Fahd Complex developer dataset containing per-ayah `aya_tafseer`; do not scrape the public site.
+10) The old DOM ID `muyassar-frame` is preserved as a hidden compatibility marker but is no longer an iframe.
+11) Exact-ayah Tafseer Muyassar convenience links to Quran.com are unchanged; do not relabel Quran.com as the publisher.
+12) Current in-app Mushaf remains protected 604-page Hafs/KFQC fixed geometry. Do not crop/reflow/change viewBox or ayah interaction geometry. Left-to-right swipe = NEXT.
+13) Any UI/content change requires a Service Worker cache bump. Current cache is `tadaruq-v24-r39-pwa-20260821`.
+14) Structured smoking/nicotine journey remains a Google Play Health Apps declaration review item before Play-facing deployment.
+15) Chrome extension users do not automatically receive GitHub/PWA changes; package/update MV3 separately when requested.
+16) State testing truthfully. R39 external-reader launch and Back behavior require real Android/TWA verification because local headless Chromium timed out in this environment.

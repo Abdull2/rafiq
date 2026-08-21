@@ -1122,7 +1122,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
       <div class="muyassar-source-title">التفسير الميسر للقرآن الكريم</div>
       <p>إعداد مجموعة من العلماء، والمحتوى الرقمي معتمد وموثوق من مجمع الملك فهد لطباعة المصحف الشريف ومتاح للمطورين لاستخدامه في التطبيقات.</p>
       <div class="muyassar-actions">
-        <button type="button" id="muyassar-open" class="primary">اقرأ التفسير الميسر داخل تدارُك</button>
+        <button type="button" id="muyassar-open" class="primary">فتح التفسير الميسر كاملًا</button>
         <a href="https://qurancomplex.gov.sa/quran-dev/" target="_blank" rel="noopener">منصة المصدر الرسمية ↗</a>
       </div>
       <div class="muyassar-note">ومن داخل المصحف: اضغط مطولًا على الآية ثم «تفسير الآية» لفتح التفسير الميسر لنفس الآية.</div>
@@ -1214,10 +1214,16 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
       <div><span>الإصدار الرسمي · مجمع الملك فهد</span><h2 id="muyassar-sheet-title">التفسير الميسر</h2></div>
       <button type="button" id="muyassar-close" aria-label="إغلاق التفسير الميسر">×</button>
     </div>
-    <div class="muyassar-frame-wrap">
-      <iframe id="muyassar-frame" title="التفسير الميسر — مجمع الملك فهد" loading="lazy" referrerpolicy="no-referrer" data-src="https://qurancomplex.gov.sa/isdarat-books/#flipbook-df_11362/1/"></iframe>
+    <div class="muyassar-launch">
+      <div id="muyassar-frame" hidden aria-hidden="true"></div>
+      <div class="muyassar-badge">فتح آمن خارج إطار التضمين</div>
+      <p>كان الإصدار السابق يحاول عرض قارئ المجمع داخل إطار مضمّن، وهو ما قد تمنعه سياسات المتصفح أو تغييرات خدمة المجمع. لذلك يفتح تدارُك الآن النسخة الرسمية مباشرة في المتصفح بدل شاشة فارغة داخل التطبيق.</p>
+      <div class="muyassar-launch-actions">
+        <a id="muyassar-full-link" class="primary" href="https://qurancomplex.gov.sa/isdarat-books/#flipbook-df_11362/1/" target="_blank" rel="noopener noreferrer">فتح القارئ الرسمي الكامل ↗</a>
+        <a id="muyassar-book-link" href="https://qurancomplex.gov.sa/kfgqpc-books-tafseer-muyassar/" target="_blank" rel="noopener noreferrer">صفحة الكتاب الرسمية ↗</a>
+      </div>
+      <small>تفسير الآية الواحدة من داخل المصحف يظل يعمل بالطريقة الحالية، ولا يغيّر هذا الإصلاح أي موضع قراءة أو بيانات محفوظة.</small>
     </div>
-    <div class="muyassar-frame-fallback">هذا العرض هو خدمة التضمين الرسمية للمجمع. إذا لم يظهر على جهازك، <a href="https://qurancomplex.gov.sa/kfgqpc-books-tafseer-muyassar/" target="_blank" rel="noopener">افتح إصدار التفسير الميسر من موقع المجمع ↗</a></div>
   </div>
 </div>
 
@@ -1727,12 +1733,12 @@ body.mushaf-fullscreen #mus-page{height:27px;min-width:52px;font-size:13px}
 .muyassar-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.muyassar-actions button,.muyassar-actions a{font:inherit;font-size:11.5px;text-decoration:none;border:1px solid var(--line);border-radius:11px;padding:9px 11px;background:var(--paper);color:var(--deep);cursor:pointer}.muyassar-actions button.primary{background:var(--deep);color:#fff;border-color:var(--deep)}
 .muyassar-note{font-size:11.5px;color:var(--soft);line-height:1.75;margin-top:9px;padding-top:8px;border-top:1px dashed var(--line)}
 .muyassar-sheet{position:fixed;inset:0;z-index:1040;background:rgba(10,18,14,.58);display:grid;place-items:center;padding:calc(10px + env(safe-area-inset-top)) 10px calc(10px + env(safe-area-inset-bottom));backdrop-filter:blur(4px)}.muyassar-sheet.hide{display:none!important}
-.muyassar-sheet-card{width:min(980px,100%);height:min(880px,94dvh);border-radius:20px;border:1px solid var(--line);background:var(--paper);box-shadow:0 24px 70px rgba(0,0,0,.24);overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+.muyassar-sheet-card{width:min(620px,100%);max-height:94dvh;border-radius:20px;border:1px solid var(--line);background:var(--paper);box-shadow:0 24px 70px rgba(0,0,0,.24);overflow:auto;display:grid;grid-template-rows:auto auto}
 .muyassar-sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--card)}.muyassar-sheet-head div{min-width:0}.muyassar-sheet-head span{display:block;font-size:11px;color:var(--gold);font-weight:700}.muyassar-sheet-head h2{font-family:Amiri,serif;font-size:22px;color:var(--deep);margin:0;line-height:1.45}.muyassar-sheet-head button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--paper);color:var(--deep);font-size:20px;cursor:pointer;flex:none}
-.muyassar-frame-wrap{min-height:0;background:var(--wash);position:relative}.muyassar-frame-wrap iframe{width:100%;height:100%;border:0;background:#fff;display:block}.muyassar-frame-fallback{padding:9px 12px;border-top:1px solid var(--line);font-size:11.5px;line-height:1.7;color:var(--soft);background:var(--card)}.muyassar-frame-fallback a{color:var(--deep);font-weight:700;text-decoration:none}
+.muyassar-launch{padding:18px;background:var(--wash);display:grid;gap:12px}.muyassar-launch p{margin:0;color:var(--soft);font-size:13px;line-height:1.9}.muyassar-launch small{color:var(--soft);font-size:11.5px;line-height:1.75}.muyassar-launch-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.muyassar-launch-actions a{font:inherit;font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--paper);color:var(--deep);font-weight:700;text-align:center}.muyassar-launch-actions a.primary{background:var(--deep);color:#fff;border-color:var(--deep)}
 .tafsir-choice-note{border:1px solid var(--line);background:var(--wash);border-radius:12px;padding:10px 11px;font-size:11.5px;line-height:1.8;color:var(--soft)}.tafsir-choice-note b{color:var(--deep)}
 .tafsir-sheet-actions a.muyassar-exact{background:color-mix(in srgb,var(--gold) 10%,var(--paper));border-color:color-mix(in srgb,var(--gold) 38%,var(--line));font-weight:700}
-@media(max-width:600px){.muyassar-sheet{padding:0}.muyassar-sheet-card{height:100dvh;border-radius:0;border:0}.muyassar-actions{display:grid;grid-template-columns:1fr}.muyassar-actions button,.muyassar-actions a{text-align:center}.muyassar-sheet-head{padding-top:calc(10px + env(safe-area-inset-top))}.muyassar-frame-fallback{padding-bottom:calc(9px + env(safe-area-inset-bottom))}}
+@media(max-width:600px){.muyassar-sheet{padding:10px}.muyassar-sheet-card{width:100%;border-radius:18px}.muyassar-actions{display:grid;grid-template-columns:1fr}.muyassar-actions button,.muyassar-actions a{text-align:center}.muyassar-sheet-head{padding-top:12px}.muyassar-launch-actions{grid-template-columns:1fr}}
 
 </style>
 

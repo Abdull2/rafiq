@@ -1,22 +1,27 @@
 {
   "project": "تدارُك - Tadaruq",
-  "release": "v24 R38",
+  "release": "v24 R40",
   "date": "2026-08-21",
   "primary_handoff": "AI_HANDOFF.md",
-  "source_of_truth": "R38: Zikr/Tazkiyah first-level maps aligned with Knowledge + expanded Usul al-Tafsir + repeated primary-source display suppression; R37 Home/Knowledge/Muyassar and R33 Tazkiyah depth systems retained",
+  "source_of_truth": "R40 corrected pre-deployment build: expanded Dua/Asma/Seerah depth + focused Chrome MV3 companion; Asma detail now renders before Quran evidence load/scan, and Al-Rafiq hadith seed corruption is corrected; R39 Tafseer reliability fix and all prior compatibility rules retained",
   "data_schema": 2,
-  "pwa_cache": "tadaruq-v24-r38-pwa-20260821",
+  "pwa_cache": "tadaruq-v24-r40-pwa-20260821",
   "new_persistent_keys": [],
   "changed_static_content": [
-    "usul-tafsir.json"
+    "adiya.json",
+    "asma.json",
+    "seerah.json"
   ],
-  "current_provenance": "CONTENT_PROVENANCE-KNOWLEDGE-R38.md",
+  "current_provenance": "CONTENT_PROVENANCE-DUA-ASMA-SEERAH-R40.md",
   "critical_policy_gate": "Re-audit Google Play Health Apps declaration before Play-facing deployment because the structured smoking/nicotine journey remains present.",
   "mushaf_rule": "Protected 604-page Hafs/KFQC reader remains unchanged. Do not mix qiraat geometry or ayah metadata.",
-  "tazkiyah_rule": "Visible tab remains تزكية but stable route/storage stays qalb. R38 adds only an entry map; existing depth progress and item sources remain.",
-  "zikr_rule": "Bottom Zikr tab opens v-zikrhub first; detailed screens remain azkar/dua/tasbih/asma and Hisn reuses existing azkarMode='hisn'.",
-  "source_display_rule": "For simple Knowledge datasets only, render meta.url once at section level and suppress item sources with the same normalized URL; display different/additional item URLs and retain all source arrays in data.",
-  "tafsir_rule": "Al-Mukhtasar remains retired from active UI/runtime. Tafseer Muyassar is the active tafsir; preserve legacy tafsir-pos-v1 in Data Safety without writing it.",
-  "deployment_note": "R38 is a web/PWA update. GitHub Pages is sufficient for TWA web content; Chrome extension requires a separate MV3 package if requested; no AAB required for R38 itself.",
-  "visual_status": "Static/automated checks passed; R38 Zikr/Tazkiyah/Usul visual behavior requires real-device verification because local headless Chromium timed out."
+  "tazkiyah_rule": "Visible tab remains تزكية but stable route/storage stays qalb. R38 entry map and existing depth progress remain unchanged.",
+  "zikr_rule": "R38 Zikr landing map and detailed routes remain unchanged.",
+  "source_display_rule": "R38 simple-Knowledge primary-source deduplication remains unchanged.",
+  "tafsir_rule": "Al-Mukhtasar remains retired. Tafseer Muyassar stays canonical to King Fahd Complex. R39 full-book reading must not use the old remote iframe; open the official Complex reader/page externally. Preserve legacy tafsir-pos-v1 without writing it.",
+  "deployment_note": "R40 requires GitHub Pages deployment for PWA/TWA web content and a separate Chrome Web Store MV3 package update. No AAB or backend deployment is required.",
+  "visual_status": "Automated/static checks passed including dedicated Asma resilience regression; real Android/TWA tap-through and desktop Chrome Extension interaction verification are still required.",
+  "extension_release": "24.40.0",
+  "extension_purpose": "Daily Islamic browsing companion: daily card, local search, local notebook/selection capture, optional daily reminder",
+  "extension_storage": "Reuse rafiqNotebook and rafiqChromePrefs; no new registered extension key"
 }

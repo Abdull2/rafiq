@@ -81,3 +81,10 @@ R38 adds no backend, account, analytics, cloud sync, or new persistent state.
 - Simple Knowledge source deduplication compares an item's source URL with the dataset's primary `meta.url` and suppresses only the repeated visual copy. Different URLs remain visible and the underlying source arrays are retained.
 - `usul-tafsir.json` keeps all existing module IDs. The change is additive educational text, not a user-data shape change.
 - `rafiq:data-version` remains 2. Backup metadata app version is 24.38.0.
+
+## R39 — Tafseer Muyassar full-reader delivery correction (2026-08-21)
+R39 removes the runtime dependency on loading the King Fahd Complex `isdarat-books` page inside a cross-origin iframe. The R36/R37 implementation used `https://qurancomplex.gov.sa/isdarat-books/#flipbook-df_11362/1/` as an iframe source; this proved unreliable in the installed PWA/TWA/browser path and is superseded by R39.
+
+The full-book action now presents direct external links to the official Complex reader/page rather than embedding the remote page inside Tadaruq. This keeps the canonical publisher/source unchanged while avoiding iframe/browser framing restrictions and remote embed-service changes. The per-ayah convenience link to Quran.com is unchanged.
+
+No new persistence, backend, database, reader-position key, or migration is introduced. A future fully internal reader should prefer the Complex's developer dataset for Tafseer Muyassar (which exposes per-ayah `aya_tafseer` data) instead of scraping or framing the public website.

@@ -1,0 +1,43 @@
+TADARUQ v24 R39 — QA REPORT
+Date: 2026-08-21
+
+Status legend: VERIFIED / STATICALLY VERIFIED / NOT VERIFIED / REQUIRES REAL-DEVICE TEST
+
+## Root-cause finding
+R37/R38 full Tafseer Muyassar reading depended on loading the King Fahd Complex publications reader page inside a cross-origin iframe. The current official book page still resolves to the Complex publications reader, but the previously documented public content-embedding route is not a dependable current endpoint. R39 removes the iframe dependency instead of trying to bypass browser/site framing policy.
+
+## VERIFIED / STATICALLY VERIFIED results
+- `node --check app.js` — PASS.
+- `node --check data-safety.js` — PASS.
+- `node --check sw.js` — PASS.
+- `node --check pwa-register.js` — PASS.
+- `node --check extension-bridge.js` — PASS.
+- Root JSON + `manifest.webmanifest` parse — PASS: 21 artifacts.
+- HTML duplicate-ID audit — PASS: 238 IDs, 0 duplicates.
+- Baseline HTML ID preservation vs R38 — PASS: 0 pre-existing IDs removed. The former `muyassar-frame` ID is retained as a hidden compatibility marker, not an iframe.
+- HTML iframe audit — PASS: 0 `<iframe>` tags in the shipped `index.html`.
+- Service Worker precache existence — PASS: 39 entries, 0 missing.
+- R39 cache markers — PASS: `tadaruq-v24-r39-pwa-20260821` and `tadaruq-runtime-v24-r39-20260821`.
+- Full-reader official-link markers — PASS: official Complex publications-reader URL plus official book-page fallback are present.
+- Active old embed constant audit — PASS: `MUYASSAR_EMBED_URL` removed from active runtime.
+- Knowledge text audit — PASS: active runtime no longer tells users the full book is read through the old official embed path.
+- Data Safety diff vs R38 — PASS: `data-safety.js` changes only backup `appVersion` from 24.38.0 to 24.39.0; schema/registry unchanged.
+- Protected Mushaf comparison vs R38 — PASS: `safeMushafSvg`, `openPage`, `enterMushafFullscreen`, `exitMushafFullscreen`, and `toggleMushafFullscreen` are byte-identical.
+- Secret-pattern scan on changed runtime files — PASS.
+- Dedicated `qa/test_data_safety.js` — NOT PRESENT in the supplied flat source package; exact registry/schema diff audits were used instead.
+
+## Web/source verification
+- The official King Fahd Complex Tafseer Muyassar book page currently resolves to the Complex publications-reader page and lists `التفسير الميسَّر`.
+- The Complex developer platform describes Tafseer Muyassar data as trusted/approved for developers/researchers/publishers and documents the per-ayah `aya_tafseer` field.
+- The developer platform publishes package integrity values MD5 `5601682965e32f4dd6992c7600fdccc3` and SHA-1 `5f533113c2f54f32eded734bb49e6a5837965722`.
+- The previously documented content-embed navigation path returned 404 during this verification, reinforcing that the iframe approach should not remain the production dependency.
+
+## NOT VERIFIED / REQUIRES REAL-DEVICE TEST
+A local Chromium headless attempt at 390x844 again timed out with exit 124 and produced no usable screenshot. Therefore these behaviors require a real Android/TWA/browser test:
+- tap `فتح التفسير الميسر كاملًا` from Qur'an tools;
+- tap `فتح القارئ الرسمي الكامل` and confirm the official Complex reader opens;
+- repeat from Knowledge > Tafsir > Tafseer Muyassar;
+- browser/system Back returns to Tadaruq acceptably;
+- light/dark appearance of the safe-launch sheet.
+
+Exact status: **Automated/static checks passed, but visual/device verification was not possible in this environment.**
