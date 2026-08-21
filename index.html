@@ -1439,13 +1439,13 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 <div class="toast" id="toast">تم الحفظ</div>
 
-<nav><div style="grid-template-columns:repeat(6,1fr)">
-  <button data-tab="today"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.5 12 3l8.5 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.5 20v-6h5v6"/></svg></em>يومي</button>
-  <button data-tab="quran"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.4 5.2 8.4 4.5 6 4.5H3.5v13H6c2.4 0 4.4.7 6 2 1.6-1.3 3.6-2 6-2h2.5v-13H18c-2.4 0-4.4.7-6 2Z"/><path d="M12 6.5v13"/></svg></em>المصحف</button>
-  <button data-tab="sunnah"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h6.5c1.2 0 1.5.5 1.5 1.6v12c0-1.2-.8-1.8-2.2-1.8H4Z"/><path d="M20 5.5h-6.5c-1.2 0-1.5.5-1.5 1.6v12c0-1.2.8-1.8 2.2-1.8H20Z"/><path d="M8 9h1.5M14.5 9H16"/></svg></em>العلم</button>
-  <button data-tab="azkar"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="16" cy="17" r="2"/><path d="M9.5 8.5 10.7 10M13.4 13.5l1.2 1.6"/><path d="M18 5v4M16 7h4"/></svg></em>الذكر</button>
-  <button data-tab="qalb"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.3A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7 2.7C19 15.6 12 20 12 20Z"/><path d="M9 12h6"/></svg></em>تزكية</button>
-  <button data-tab="irtaqi"><em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h4v-4h4v-4h4V7h4"/><path d="m17 4 3 3-3 3"/></svg></em>ارتقِ</button>
+<nav aria-label="التنقل الرئيسي"><div style="grid-template-columns:repeat(6,1fr)">
+  <button data-tab="today" aria-label="يومي">يومي</button>
+  <button data-tab="quran" aria-label="المصحف">المصحف</button>
+  <button data-tab="sunnah" aria-label="العلم">العلم</button>
+  <button data-tab="azkar" aria-label="الذكر">الذكر</button>
+  <button data-tab="qalb" aria-label="التزكية">تزكية</button>
+  <button data-tab="irtaqi" aria-label="ارتقِ">ارتقِ</button>
 </div></nav>
 
 <!-- saved for later -->
@@ -1761,6 +1761,40 @@ body.mushaf-fullscreen #mus-page{height:27px;min-width:52px;font-size:13px}
 .tafsir-choice-note{border:1px solid var(--line);background:var(--wash);border-radius:12px;padding:10px 11px;font-size:11.5px;line-height:1.8;color:var(--soft)}.tafsir-choice-note b{color:var(--deep)}
 .tafsir-sheet-actions a.muyassar-exact{background:color-mix(in srgb,var(--gold) 10%,var(--paper));border-color:color-mix(in srgb,var(--gold) 38%,var(--line));font-weight:700}
 @media(max-width:600px){.muyassar-sheet{padding:10px}.muyassar-sheet-card{width:100%;border-radius:18px}.muyassar-actions{display:grid;grid-template-columns:1fr}.muyassar-actions button,.muyassar-actions a{text-align:center}.muyassar-sheet-head{padding-top:12px}.muyassar-launch-actions{grid-template-columns:1fr}}
+
+
+/* ===== R42 — text-first navigation + readable type scale + full Lulu/Marjan reader ===== */
+:root{--ui-body:14.5px;--ui-small:12.5px;--ui-label:12px}
+body{font-size:var(--ui-body)}
+nav{padding:7px 0 calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(16px)}
+nav div{max-width:620px;gap:4px;padding:0 8px}
+nav button{position:relative;min-width:0;min-height:43px;padding:10px 2px 7px;border-radius:12px;font-size:12px;font-weight:650;line-height:1.15;display:grid;place-items:center;letter-spacing:0;color:var(--ink-soft);transition:background .18s ease,color .18s ease,transform .18s ease}
+nav button::before{content:'';position:absolute;top:4px;left:50%;width:18px;height:2.5px;border-radius:999px;background:transparent;transform:translateX(-50%);transition:.18s ease}
+nav button[aria-current="true"]{color:var(--deep);background:color-mix(in srgb,var(--deep) 7%,var(--card));font-weight:760}
+nav button[aria-current="true"]::before{background:var(--gold)}
+nav button:active{transform:scale(.97)}
+.learn-note,.learn-source,.search-count,.learn-disclaimer,.dua-card .s,.dua-card .nt,.dua-cat-note,.manazil-note{font-size:12.5px;line-height:1.8}
+.learn-card .learn-lead,.learn-card li,.manzil-lead,.manzil-card li,.busola-card p,.benefit-card p{font-size:13px;line-height:1.82}
+.dua-library-summary small,.agreed-explain b,.agreed-practice b,.manazil-hero small{font-size:11.5px}
+.dua-library-summary p{font-size:12.5px}.dua-new-doors button{font-size:11.5px;padding:7px 10px}.dua-new-doors button::before{font-size:10px}
+.agreed-mode-tabs{display:grid;grid-template-columns:1.45fr 1fr;gap:7px;margin:10px 0}
+.agreed-mode-tabs button{border:1px solid var(--line);background:var(--card);color:var(--deep);border-radius:13px;padding:10px 9px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.agreed-mode-tabs button[aria-current="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.agreed-corpus-status,.agreed-progress{border:1px solid var(--line);background:var(--wash);border-radius:13px;padding:11px 12px;font-size:12.5px;line-height:1.7;color:var(--soft)}
+.agreed-progress{margin:8px 0;color:var(--deep)}
+.spin-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-inline-end:6px}
+.agreed-corpus-tools{display:grid;grid-template-columns:minmax(180px,1.6fr) minmax(105px,.55fr) minmax(180px,1.25fr);gap:8px;align-items:end;margin:10px 0}
+.agreed-corpus-tools label{display:grid;gap:5px;color:var(--soft);font-size:11.5px;font-weight:650}
+.agreed-corpus-tools select,.agreed-corpus-tools input{width:100%;min-width:0;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:11px;padding:9px 10px;font:inherit;font-size:13px;box-sizing:border-box}
+.agreed-corpus-tools>button{min-height:40px;border:1px solid var(--line);background:var(--card);color:var(--deep);border-radius:11px;padding:8px 10px;font:inherit;font-size:11.8px;font-weight:700;cursor:pointer}
+.agreed-corpus-tools>button:disabled{opacity:.45;cursor:not-allowed}
+.agreed-corpus-tools #agreed-search-all{background:var(--deep);color:#fff;border-color:var(--deep)}
+.agreed-card{padding:15px;gap:9px}.agreed-top{font-size:11.5px}.agreed-card h3{font-size:23px}.agreed-text{font-size:20px;line-height:2.05;padding:11px 12px}.agreed-narrator{font-size:11.8px;line-height:1.65}.agreed-explain p,.agreed-practice p{font-size:13px;line-height:1.85}.agreed-source{font-size:12px;line-height:1.6}
+.corpus-card .agreed-text{font-size:19px;text-align:right}.corpus-card .agreed-explain{background:color-mix(in srgb,var(--wash) 65%,var(--card));border:0;border-radius:11px;padding:9px 10px}.corpus-card .agreed-explain p{margin:3px 0;color:var(--soft)}
+.agreed-pager{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 0}.agreed-pager button,.agreed-clear{border:1px solid var(--line);background:var(--card);color:var(--deep);border-radius:10px;padding:8px 12px;font:inherit;font-size:12px;cursor:pointer}.agreed-pager span{font-size:12px;color:var(--soft)}.agreed-pager button:disabled{opacity:.4}
+.agreed-error{display:grid;gap:8px}.agreed-error button{justify-self:start}
+@media(max-width:720px){.agreed-corpus-tools{grid-template-columns:1fr 1fr}.agreed-search-box{grid-column:1/-1}.agreed-corpus-tools>button{min-height:42px}}
+@media(max-width:420px){body{font-size:14px}nav div{padding-inline:4px;gap:2px}nav button{font-size:11.25px;padding-inline:1px;min-height:42px}.agreed-mode-tabs{grid-template-columns:1fr}.agreed-corpus-tools{grid-template-columns:1fr}.agreed-search-box{grid-column:auto}.agreed-grid{grid-template-columns:1fr}.agreed-card{padding:13px}.agreed-text{font-size:18.5px}.corpus-card .agreed-text{font-size:18px}}
 
 </style>
 

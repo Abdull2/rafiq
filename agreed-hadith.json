@@ -1,10 +1,25 @@
 {
   "meta": {
-    "title": "أحاديث متفق عليها",
-    "subtitle": "مختارات من الأحاديث التي لها أصل في صحيحي البخاري ومسلم، مع شرح تعليمي مبسط.",
-    "source": "الموسوعة الحديثية — مؤسسة الدرر السنية",
-    "url": "https://dorar.net/hadith/search",
-    "note": "«متفق عليه» هنا يعني أن للحديث أصلًا في صحيحي البخاري ومسلم. قد تختلف ألفاظ الروايتين يسيرًا؛ وتعرض البطاقة لفظًا موثقًا مع أرقام التخريج ورابط الشرح. الشرح في تدارُك صياغة تعليمية مختصرة لا نقل حرفي ولا يغني عن شروح أهل العلم."
+    "title": "اللؤلؤ والمرجان — فيما اتفق عليه الشيخان",
+    "subtitle": "الكتاب الكامل: ١٩٠٦ حديثًا جمعها محمد فؤاد عبد الباقي مما اتفق عليه البخاري ومسلم، مع ١٢ مختارًا مشروحًا داخل تدارُك.",
+    "source": "اللؤلؤ والمرجان فيما اتفق عليه الشيخان — محمد فؤاد عبد الباقي",
+    "url": "https://islamhouse.com/ar/books/409667/",
+    "note": "المتن الكامل يُحمّل بابًا بابًا من طبقة بيانات رقمية مفتوحة للكتاب مع تحقق آلي من هوية المجموعة وعددها (١٩٠٦). الشرح المبسط داخل تدارُك محصور في المختارات التي روجعت يدويًا؛ بقية الأحاديث لا نولّد لها شرحًا آليًا غير مُراجع، بل نوفر رابط بحث مباشر في الموسوعة الحديثية للدرر السنية.",
+    "catalogUrl": "https://hadithunlocked.com/lulu-marjan",
+    "dorarUrl": "https://dorar.net/hadith/search",
+    "expectedCount": 1906,
+    "corpus": {
+      "expectedCount": 1906,
+      "bases": [
+        "https://cdn.jsdelivr.net/gh/HsnSaboor/hadith-api-toon@main",
+        "https://raw.githubusercontent.com/HsnSaboor/hadith-api-toon/main"
+      ],
+      "indexPath": "info.toon",
+      "repository": "https://github.com/HsnSaboor/hadith-api-toon",
+      "transportLabel": "Hadith API — TOON (طبقة نقل رقمية مفتوحة)",
+      "canonicalBookUrl": "https://islamhouse.com/ar/books/409667/",
+      "crossCheckUrl": "https://hadithunlocked.com/lulu-marjan"
+    }
   },
   "items": [
     {
