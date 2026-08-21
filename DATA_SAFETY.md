@@ -124,3 +124,14 @@ No persistent storage key was added, renamed, deleted, or incompatibly reshaped.
 - Al-Mukhtasar UI/runtime was removed at the owner's request. **`tafsir-pos-v1` remains in the exact-key/type registry as legacy data** so upgrades do not silently delete or orphan an existing user's backup/restore record. R37 has no active code that advances this key.
 - Tafseer Muyassar is accessed by user action through official/public web content; no profile, daily record, worship log, journal, personal path, or exact coordinates are sent by Tadaruq as payload fields.
 - Backup metadata app version: **24.37.0**.
+
+## R38 — 2026-08-21
+
+R38 changes navigation/UI and static educational content only. It introduces **no new persistent user-data key and no migration**.
+
+- `rafiq:data-version` remains **2**.
+- Existing `qalb` route/storage identifiers remain unchanged; Tazkiyah still uses the established `qalb-*` keys including `qalb-levels-v1`.
+- The new Zikr and Tazkiyah landing maps route into existing screens and reuse existing storage; they do not create a parallel progress/navigation database.
+- `usul-tafsir.json` keeps the same nine item IDs, so Saved Later/content references are not invalidated by ID churn.
+- Source-display deduplication is presentation-only. Source arrays remain in static content files and no user record is modified.
+- Backup metadata app version: **24.38.0**.

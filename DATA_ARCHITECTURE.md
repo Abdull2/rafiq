@@ -71,3 +71,13 @@ R37 adds no new cloud/backend architecture and no new persistent user key.
 - Full Tafseer Muyassar reading is opened through the official King Fahd Complex embed. No new local tafsir-reading-position key is created.
 - Al-Mukhtasar active runtime/UI is removed. Existing `tafsir-pos-v1` records are intentionally retained as legacy local data to avoid silently deleting a user's prior record. New R37 UI does not write/update that key.
 - `rafiq:data-version` remains 2. Backup metadata app version is 24.37.0.
+
+## R38 — Zikr/Tazkiyah landing maps + Knowledge source presentation (2026-08-21)
+
+R38 adds no backend, account, analytics, cloud sync, or new persistent state.
+
+- `v-zikrhub` is a UI landing view. It routes to the existing `azkar`, `dua`, `tasbih`, and `asma` screens; direct Hisn access sets the existing in-memory `azkarMode` and then opens the existing Adhkar view.
+- Tazkiyah keeps the stable internal route/ID `qalb`. `hHome()` is only an entry map and routes into the existing `hRender`, `hObstacles`, `hNafs`, and `hPathsRender` systems after loading the existing local state.
+- Simple Knowledge source deduplication compares an item's source URL with the dataset's primary `meta.url` and suppresses only the repeated visual copy. Different URLs remain visible and the underlying source arrays are retained.
+- `usul-tafsir.json` keeps all existing module IDs. The change is additive educational text, not a user-data shape change.
+- `rafiq:data-version` remains 2. Backup metadata app version is 24.38.0.

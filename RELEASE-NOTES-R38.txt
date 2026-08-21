@@ -1,0 +1,10 @@
+Tadaruq v24 R38 — Zikr/Tazkiyah Maps + Expanded Usul al-Tafsir + Cleaner Sources
+2026-08-21
+
+- Redesigned the entry experience for `الذكر` to use a first-level map consistent with `العلم`: Adhkar, Dua, Tasbih, Asma al-Husna, and direct Hisn al-Muslim access. Existing detailed screens remain in place.
+- Redesigned the entry experience for `تزكية` to use a first-level map consistent with `العلم`: Masari as the resume/start shortcut, then Works of the Heart, Diseases of the Heart, Daily Obstacles, and Fiqh al-Nafs. Existing `qalb` route/storage IDs and progress systems remain unchanged.
+- Expanded all 9 existing `usul-tafsir.json` modules using the documented `أصول في التفسير` source backbone. Existing module IDs were preserved.
+- Removed repeated visual copies of the same section-level source in simple Knowledge cards. Different/additional item sources still appear on their cards; source arrays remain in the data for provenance.
+- PWA cache bumped to R38 and backup metadata app version bumped to 24.38.0.
+- No persistent key was added, renamed, deleted, or incompatibly reshaped. Data schema remains 2.
+- Protected Mushaf geometry/fullscreen/page behavior was not changed.

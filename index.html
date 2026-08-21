@@ -219,6 +219,10 @@ body.app-boot-ready #app-boot-splash{opacity:0;visibility:hidden;pointer-events:
 
 /* R37 — Home resume + top-level Knowledge categories */
 .home-resume-card{margin:12px 0;border:1px solid color-mix(in srgb,var(--gold) 28%,var(--line));background:linear-gradient(145deg,color-mix(in srgb,var(--gold) 7%,var(--card)),var(--card));border-radius:18px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.home-resume-card>div{display:grid;gap:2px;min-width:0}.home-resume-card small{font-size:11px;color:var(--gold);font-weight:750}.home-resume-card b{font-family:Amiri,serif;font-size:20px;color:var(--deep)}.home-resume-card span{font-size:12px;color:var(--soft);line-height:1.6}.home-resume-card button{flex:none;border:0;background:var(--deep);color:#fff;border-radius:11px;padding:9px 11px;font:inherit;font-size:12px;font-weight:700}.home-journey.three{grid-template-columns:repeat(3,minmax(0,1fr))}.knowledge-home{display:grid;gap:12px}.knowledge-hero{border:1px solid var(--line);border-radius:20px;padding:16px;background:linear-gradient(145deg,var(--wash),var(--card))}.knowledge-hero small{font-size:11px;color:var(--gold);font-weight:750}.knowledge-hero h2{font-family:Amiri,serif;font-size:27px;color:var(--deep);margin:2px 0 4px}.knowledge-hero p{margin:0;color:var(--soft);font-size:12px;line-height:1.75}.knowledge-essential{border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line));background:var(--card);border-radius:16px;padding:12px 14px;text-align:right;display:grid;gap:2px;color:var(--ink)}.knowledge-essential span{font-size:10.5px;color:var(--gold);font-weight:750}.knowledge-essential b{font-family:Amiri,serif;font-size:19px;color:var(--deep)}.knowledge-essential small{font-size:11.5px;color:var(--soft)}.knowledge-categories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.knowledge-categories button{border:1px solid var(--line);background:var(--card);border-radius:18px;padding:15px;text-align:right;display:grid;gap:5px;min-height:105px;color:var(--ink)}.knowledge-categories b{font-family:Amiri,serif;font-size:20px;color:var(--deep)}.knowledge-categories span{font-size:11.5px;line-height:1.65;color:var(--soft)}.learn-category-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}.learn-category-head>button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 10px;color:var(--deep);font:inherit;font-size:11.5px}.learn-category-head>div{display:grid}.learn-category-head small{font-size:10.5px;color:var(--gold)}.learn-category-head b{font-family:Amiri,serif;font-size:20px;color:var(--deep)}.learn-module-card{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:13px;margin:9px 0}.learn-module-card h3{font-family:Amiri,serif;font-size:20px;color:var(--deep);margin:0 0 5px}.learn-module-card .lead{font-size:12px;line-height:1.75;color:var(--ink)}.learn-module-card ul{margin:8px 0;padding-right:18px}.learn-module-card li{font-size:11.8px;line-height:1.75;margin:4px 0}.learn-module-card .date{font-size:10.5px;color:var(--gold);font-weight:750}.muyassar-learning{border:1px solid var(--line);border-radius:18px;padding:15px;background:var(--card);display:grid;gap:9px}.muyassar-learning h3{font-family:Amiri,serif;font-size:23px;color:var(--deep);margin:0}.muyassar-learning p{margin:0;font-size:12px;line-height:1.8;color:var(--soft)}.muyassar-learning button{border:0;background:var(--deep);color:#fff;border-radius:11px;padding:11px 13px;font:inherit;font-weight:700}@media(max-width:560px){.home-resume-card{align-items:flex-start}.home-resume-card button{align-self:center}.home-journey.three{grid-template-columns:1fr}.knowledge-categories{grid-template-columns:1fr}.knowledge-categories button{min-height:auto}}
+/* R38 — Zikr/Tazkiyah landing maps aligned with Knowledge + cleaner repeated-source UX */
+.zikr-home,.tazkiyah-home{margin-top:8px}.zikr-category-head{display:flex;align-items:center;gap:12px;margin:10px 0 2px}.zikr-category-head>button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 10px;color:var(--deep);font:inherit;font-size:11.5px}.zikr-category-head>div{display:grid}.zikr-category-head small{font-size:10.5px;color:var(--gold)}.zikr-category-head b{font-family:Amiri,serif;font-size:20px;color:var(--deep)}
+.module-extra-sources{margin-top:10px}.module-extra-sources>.source-scope-note{font-size:10.5px;color:var(--gold);font-weight:700;margin-bottom:5px}
+@media(max-width:560px){.zikr-category-head{margin-inline:2px}}
 </style>
 <style>
 :root{
@@ -1218,7 +1222,19 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 </div>
 
 <!-- ============ ZIKR HUB ============ -->
-<div class="wrap"><div class="zseg hide" id="zseg">
+<div id="v-zikrhub" class="hide">
+  <section class="knowledge-home zikr-home">
+    <div class="knowledge-hero"><small>خريطة الذكر</small><h2>اختر الباب الذي تحتاجه الآن</h2><p>أذكار اليوم، الدعاء، السبحة، وأسماء الله الحسنى — بنفس بنية الدخول الهادئة المستخدمة في «العلم».</p></div>
+    <button class="knowledge-essential" data-zgo="azkar"><span>ابدأ من هنا</span><b>الأذكار</b><small>أذكار الصباح والمساء والنوم وغيرها، مع حصن المسلم كاملًا.</small></button>
+    <div class="knowledge-categories">
+      <button data-zgo="dua"><b>الدعاء</b><span>أدعية من القرآن والسنة · المحفوظة · دفتر دعائك</span></button>
+      <button data-zgo="tasbih"><b>السبحة</b><span>عداد بسيط للأذكار الواردة أو للتنظيم الشخصي دون أعداد مخترعة.</span></button>
+      <button data-zgo="asma"><b>أسماء الله الحسنى</b><span>المعنى، الأثر، الأدلة، والبحث في القرآن والسنة.</span></button>
+      <button data-zgo="hisn"><b>حصن المسلم</b><span>الفهرس الكامل لكتاب حصن المسلم داخل قسم الأذكار.</span></button>
+    </div>
+  </section>
+</div>
+<div class="wrap"><div class="zikr-category-head hide" id="zikr-category-head"><button type="button" id="zikr-hub-back">→ خريطة الذكر</button><div><small>قسم الذكر</small><b id="zikr-category-title">الأذكار</b></div></div><div class="zseg hide" id="zseg">
   <button data-z="azkar">الأذكار</button>
   <button data-z="dua">الدعاء</button>
   <button data-z="tasbih">السبحة</button>

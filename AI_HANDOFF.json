@@ -1,27 +1,22 @@
 {
   "project": "تدارُك - Tadaruq",
-  "release": "v24 R37",
+  "release": "v24 R38",
   "date": "2026-08-21",
   "primary_handoff": "AI_HANDOFF.md",
-  "source_of_truth": "R37: approved Home refresh + reorganized Knowledge map + Tafseer Muyassar-only active tafsir + official qiraat links; R33 Tazkiyah and R34 logo retained",
+  "source_of_truth": "R38: Zikr/Tazkiyah first-level maps aligned with Knowledge + expanded Usul al-Tafsir + repeated primary-source display suppression; R37 Home/Knowledge/Muyassar and R33 Tazkiyah depth systems retained",
   "data_schema": 2,
-  "pwa_cache": "tadaruq-v24-r37-pwa-20260821",
+  "pwa_cache": "tadaruq-v24-r38-pwa-20260821",
   "new_persistent_keys": [],
-  "new_content_files": [
-    "usul-tafsir.json",
-    "usul-fiqh.json",
-    "fuqaha.json",
-    "islamic-history.json",
-    "CONTENT_PROVENANCE-KNOWLEDGE-R37.md"
+  "changed_static_content": [
+    "usul-tafsir.json"
   ],
+  "current_provenance": "CONTENT_PROVENANCE-KNOWLEDGE-R38.md",
   "critical_policy_gate": "Re-audit Google Play Health Apps declaration before Play-facing deployment because the structured smoking/nicotine journey remains present.",
-  "mushaf_rule": "Current protected 604-page Hafs/KFQC reader stays unchanged. R37 only links official KFGQPC other-narration Mushafs; do not mix qiraat page/ayah metadata.",
-  "tazkiyah_rule": "Works, heart diseases, and obstacles use 5 distinct source-backed stages; every topic shows named studyRefs plus immediate item sources; progress is study depth, never spiritual rank.",
-  "logo_rule": "Primary app/browser/PWA icon master is tadaruk-icon-square.svg. PNG launcher/PWA assets are derived from it; maskable icon keeps extra safe-zone padding. Native Google Play launcher icon still requires a new AAB using the next unused version code.",
-  "deployment_note": "R37 is a web/PWA update. GitHub Pages is sufficient for TWA web content; Chrome extension requires a separate MV3 package if requested; no AAB required for R37 itself.",
-  "tafsir_rule": "Al-Mukhtasar is retired from active UI/runtime at owner request. Tafseer Muyassar is the active tafsir; KFGQPC is canonical source/publisher. Preserve legacy tafsir-pos-v1 in Data Safety without writing it.",
-  "home_rule": "R36 Home proposal was approved and implemented in R37. Resume card reads existing state only; daily plan/review are reused, not duplicated.",
-  "typography_rule": "R36 modestly raises CSS text below 11px outside protected Mushaf/read/fullscreen selectors; preserve Arabic/mobile wrapping in future edits.",
-  "knowledge_rule": "Top-level علم categories are السنة والسيرة; التفسير وعلوم القرآن; الفقه وأصوله; التاريخ الإسلامي. New content sources are recorded in CONTENT_PROVENANCE-KNOWLEDGE-R37.md.",
-  "visual_status": "Static/automated checks passed; R37 Home/Knowledge visual behavior requires real-device verification because headless Chromium did not produce a usable screenshot."
+  "mushaf_rule": "Protected 604-page Hafs/KFQC reader remains unchanged. Do not mix qiraat geometry or ayah metadata.",
+  "tazkiyah_rule": "Visible tab remains تزكية but stable route/storage stays qalb. R38 adds only an entry map; existing depth progress and item sources remain.",
+  "zikr_rule": "Bottom Zikr tab opens v-zikrhub first; detailed screens remain azkar/dua/tasbih/asma and Hisn reuses existing azkarMode='hisn'.",
+  "source_display_rule": "For simple Knowledge datasets only, render meta.url once at section level and suppress item sources with the same normalized URL; display different/additional item URLs and retain all source arrays in data.",
+  "tafsir_rule": "Al-Mukhtasar remains retired from active UI/runtime. Tafseer Muyassar is the active tafsir; preserve legacy tafsir-pos-v1 in Data Safety without writing it.",
+  "deployment_note": "R38 is a web/PWA update. GitHub Pages is sufficient for TWA web content; Chrome extension requires a separate MV3 package if requested; no AAB required for R38 itself.",
+  "visual_status": "Static/automated checks passed; R38 Zikr/Tazkiyah/Usul visual behavior requires real-device verification because local headless Chromium timed out."
 }

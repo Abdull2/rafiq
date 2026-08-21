@@ -1321,7 +1321,8 @@ async function loadUsulFiqh(){if(USUL_FIQH)return USUL_FIQH;try{USUL_FIQH=await 
 async function loadFuqaha(){if(FUQAHA)return FUQAHA;try{FUQAHA=await (await fetch('./fuqaha.json')).json()}catch{FUQAHA={meta:{},items:[]}}return FUQAHA}
 async function loadHistory(){if(HISTORY)return HISTORY;try{HISTORY=await (await fetch('./islamic-history.json')).json()}catch{HISTORY={meta:{},items:[]}}return HISTORY}
 const KNOWLEDGE_CATS={sunnah:{title:'السنة والسيرة',items:[['nawawi','الأربعون النووية'],['riyad','رياض الصالحين'],['seerah','السيرة النبوية']]},tafsir:{title:'التفسير وعلوم القرآن',items:[['muyassar','التفسير الميسر'],['usultafsir','أصول التفسير']]},fiqh:{title:'الفقه وأصوله',items:[['fiqh','الفقه الميسر'],['usulfiqh','أصول الفقه'],['fuqaha','فقهاء عبر العصور'],['busola','فقه المقاصد والبوصلة']]},history:{title:'التاريخ الإسلامي',items:[['companions','الصحابة'],['history','مختصر التاريخ الإسلامي']]}};
-function sourceModules(data,kind='علم'){const m=data?.meta||{},items=data?.items||[];return `<div class="learn-intro"><b>${laterEsc(m.title||'')}</b><br>${laterEsc(m.subtitle||'')}<div class="learn-ref-row">${m.url?`<a href="${laterEsc(m.url)}" target="_blank" rel="noopener">${laterEsc(m.book||m.source||'فتح المرجع الأصلي')} ↗</a>`:''}</div><span class="learn-note">${laterEsc(m.note||'')}</span></div>`+items.map((x,i)=>`<article class="learn-module-card">${x.date||x.dates?`<div class="date">${laterEsc(x.date||x.dates)}</div>`:''}<h3>${laterEsc(x.title||x.name)}</h3><div class="lead">${laterEsc(x.lead||'')}</div>${x.points?.length?`<ul>${x.points.map(p=>`<li>${laterEsc(p)}</li>`).join('')}</ul>`:''}<div class="source-stack">${sourceStack(x.sources||[])}</div>${laterRegister(`${kind}:${x.id}`,{kind,title:x.title||x.name,text:x.lead||'',source:x.sources?.[0]?.label||'',tab:'sunnah'})}</article>`).join('')}
+function moduleExtraSources(m,x){const norm=u=>String(u||'').trim().replace(/\/$/,'');const primary=norm(m?.url);return (x?.sources||[]).filter(src=>!primary||norm(src?.url)!==primary)}
+function sourceModules(data,kind='علم'){const m=data?.meta||{},items=data?.items||[];return `<div class="learn-intro"><b>${laterEsc(m.title||'')}</b><br>${laterEsc(m.subtitle||'')}<div class="learn-ref-row">${m.url?`<a href="${laterEsc(m.url)}" target="_blank" rel="noopener">${laterEsc(m.book||m.source||'فتح المرجع الأصلي')} ↗</a>`:''}</div><span class="learn-note">${laterEsc(m.note||'')}</span></div>`+items.map((x,i)=>{const extra=moduleExtraSources(m,x);return `<article class="learn-module-card">${x.date||x.dates?`<div class="date">${laterEsc(x.date||x.dates)}</div>`:''}<h3>${laterEsc(x.title||x.name)}</h3><div class="lead">${laterEsc(x.lead||'')}</div>${x.points?.length?`<ul>${x.points.map(p=>`<li>${laterEsc(p)}</li>`).join('')}</ul>`:''}${extra.length?`<div class="source-stack module-extra-sources"><div class="source-scope-note">مرجع إضافي لهذه البطاقة</div>${sourceStack(extra)}</div>`:''}${laterRegister(`${kind}:${x.id}`,{kind,title:x.title||x.name,text:x.lead||'',source:x.sources?.[0]?.label||'',tab:'sunnah'})}</article>`}).join('')}
 async function renderSimpleKnowledge(mode){const host=document.getElementById('learn-'+mode);if(!host)return;if(mode==='usultafsir'){await loadUsulTafsir();host.innerHTML=sourceModules(USUL_TAFSIR,'أصول تفسير')}else if(mode==='usulfiqh'){await loadUsulFiqh();host.innerHTML=sourceModules(USUL_FIQH,'أصول فقه')}else if(mode==='fuqaha'){await loadFuqaha();host.innerHTML=sourceModules(FUQAHA,'فقيه')}else if(mode==='history'){await loadHistory();host.innerHTML=sourceModules(HISTORY,'تاريخ')}else if(mode==='muyassar'){host.innerHTML=`<div class="muyassar-learning"><small>مجمع الملك فهد لطباعة المصحف الشريف</small><h3>التفسير الميسر — قراءة مستقلة كاملة</h3><p>هذا نفس التفسير المعتمد الموجود بجوار المصحف، لكنه هنا داخل «العلم» ككتاب مستقل يمكن قراءته من أوله إلى آخره عبر خدمة التضمين الرسمية للمجمع.</p><button type="button" data-open-muyassar>فتح التفسير الميسر كاملًا</button><div class="source-stack">${sourceStack([{label:'التفسير الميسر — الإصدار الرسمي',url:'https://qurancomplex.gov.sa/kfgqpc-books-tafseer-muyassar/'},{label:'منصة مطوري القرآن — مجمع الملك فهد',url:'https://qurancomplex.gov.sa/quran-dev/'}])}</div></div>`;host.querySelector('[data-open-muyassar]')?.addEventListener('click',openMuyassarSheet)}}
 function openKnowledgeCategory(cat){const c=KNOWLEDGE_CATS[cat];if(!c)return;learnCategory=cat;learnMode=c.items[0][0];document.getElementById('knowledge-home')?.classList.add('hide');const head=document.getElementById('learn-category-head');head?.classList.remove('hide');document.getElementById('learn-category-title').textContent=c.title;document.getElementById('learn-category-kicker').textContent='قسم العلم';const seg=document.getElementById('learn-seg');seg.classList.remove('hide');seg.innerHTML=c.items.map(([id,label])=>`<button data-learn="${id}" ${id===learnMode?'aria-current="true"':''}>${label}</button>`).join('');renderKnowledge()}
 function openKnowledgeHome(){learnCategory='';learnMode='home';document.getElementById('knowledge-home')?.classList.remove('hide');document.getElementById('learn-category-head')?.classList.add('hide');document.getElementById('learn-seg')?.classList.add('hide');document.querySelectorAll('#v-sunnah>[id^="learn-"]').forEach(el=>{if(!['learn-category-head','learn-seg'].includes(el.id))el.classList.add('hide')})}
@@ -1590,6 +1591,12 @@ function hPathDetail(key){
     <div class="h-sec" style="margin-top:12px">${stops.map(st=>`<div class="path-stop"><button data-path-stop="${st.id}" class="${path.done?.[st.id]?'on':''}">✓</button><div><div class="pt">${st.t}</div><div class="pd">${st.d||''}</div>${hSourceHtml(st.s)}</div></div>`).join('')}<div class="path-review"><b>كيف تبدو المشكلة بعد التجربة؟</b><div class="choices"><button data-path-state="أخف" class="${last?.state==='أخف'?'on':''}">أخف</button><button data-path-state="كما هي" class="${last?.state==='كما هي'?'on':''}">كما هي</button><button data-path-state="أشد" class="${last?.state==='أشد'?'on':''}">أشد</button></div>${danger}</div></div>
     <div class="path-actions"><button data-path-archive="${laterEsc(key)}">إنهاء وإخفاء المسار</button><button class="danger" data-path-reset="${laterEsc(key)}">تصفير التقدم</button></div>`;
   document.getElementById('v-qalb').onclick=hClick;scrollTo({top:0,behavior:'smooth'});
+}
+
+async function hHome(){
+  await loadH(); hCur=null; const host=document.getElementById('v-qalb'); if(!host)return;
+  host.innerHTML=`<section class="knowledge-home tazkiyah-home"><div class="knowledge-hero"><small>خريطة التزكية</small><h2>اختر الباب الأقرب لما تريد إصلاحه</h2><p>نفس منطق «العلم»: بداية واضحة ثم دخول إلى الباب، مع بقاء المسارات والتقدم الحالي كما هي دون أي نظام جديد.</p></div><button class="knowledge-essential" data-taz-go="path"><span>أكمل من هنا</span><b>مساري</b><small>ارجع إلى المسارات التي بدأت بها أو ابدأ مسار متابعة من المحتوى الموجود.</small></button><div class="knowledge-categories"><button data-taz-go="works"><b>أعمال القلوب</b><span>محبة · إخلاص · توكل · صبر، مع الدراسة المتدرجة والتطبيق.</span></button><button data-taz-go="problems"><b>أمراض القلوب</b><span>فهم المرض القلبي وأسبابه وخطوات مجاهدته بالمصادر الموجودة.</span></button><button data-taz-go="obstacles"><b>العقبات اليومية</b><span>أسرة · دراسة · عمل · علاقات · هاتف · فتور، بخطوات عملية.</span></button><button data-taz-go="nafs"><b>فقه النفس</b><span>فهم النفس والتزكية مع الفصل الواضح بين التثقيف والتشخيص الطبي.</span></button></div></section>`;
+  host.onclick=e=>{const b=e.target.closest('[data-taz-go]');if(!b)return;const k=b.dataset.tazGo;if(k==='path'){hPathsRender();return}if(k==='benefit'){hBenefit();return}if(k==='obstacles'){hKind='obstacles';hQuery='';hObstacles();return}if(k==='nafs'){nafsQuery='';hNafs();return}hKind=k;hQuery='';hRender()};
 }
 
 async function hRender(){
@@ -2296,6 +2303,7 @@ document.getElementById('v-today')?.addEventListener('click',e=>{
   }
   if(go==='plan'){document.getElementById('day-plan')?.scrollIntoView({behavior:'smooth',block:'start'});return}
   if(b.dataset.learnGo){if(b.dataset.learnGo==='home'){learnMode='home';learnCategory=''}else learnMode=b.dataset.learnGo}
+  if(b.id==='home-resume-action'&&go==='qalb'){openTazkiyahSection();return}
   switchTab(go);
 });
 async function renderHomeResume(){const title=document.getElementById('home-resume-title'),copy=document.getElementById('home-resume-copy'),btn=document.getElementById('home-resume-action');if(!title||!copy||!btn)return;let choice=null;try{const q=await store.get(QKEY);if(q?.page>1)choice={t:`أكمل المصحف من صفحة ${AR(q.page)}`,c:'موضع القراءة محفوظ على جهازك.',go:'quran'};const lv=await store.get('qalb-levels-v1');if(!choice&&lv&&Object.keys(lv).length)choice={t:'أكمل رحلة التزكية',c:'لديك موضوع بدأته ويمكنك الرجوع إلى مرحلته التالية.',go:'qalb'};const bp=await store.get('fiqh-busola-progress-v1');if(!choice&&bp&&Object.keys(bp).length)choice={t:'أكمل فقه البوصلة',c:'تابع من آخر باب درسته في المقاصد أو الأولويات أو الواقع.',go:'sunnah',learn:'busola'}}catch{}if(!choice)choice={t:'ابدأ من المصحف',c:'لو لم تبدأ مسارًا بعد، اجعل أول باب اليوم قراءة القرآن.',go:'quran'};title.textContent=choice.t;copy.textContent=choice.c;btn.dataset.homeGo=choice.go;if(choice.learn)btn.dataset.learnGo=choice.learn;else delete btn.dataset.learnGo;btn.textContent='أكمل الآن ←'}
@@ -2309,19 +2317,27 @@ function paintHomePrayer(){
 }
 
 /* ================= tabs ================= */
-const TITLES={today:'اليوم',quran:'المصحف',read:'المصحف',azkar:'الأذكار',dua:'الدعاء',tasbih:'السبحة',asma:'أسماء الله الحسنى',sunnah:'العلم',qalb:'تزكية',irtaqi:'ارتقِ',history:'السجل'};
+const TITLES={today:'اليوم',quran:'المصحف',read:'المصحف',zikrhub:'الذكر',azkar:'الأذكار',dua:'الدعاء',tasbih:'السبحة',asma:'أسماء الله الحسنى',sunnah:'العلم',qalb:'تزكية',irtaqi:'ارتقِ',history:'السجل'};
+let zikrSectionRequested=false,tazSectionRequested=false;
+function openZikrSection(t){zikrSectionRequested=true;switchTab(t)}
+function openTazkiyahSection(){tazSectionRequested=true;switchTab('qalb')}
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 function switchTab(t){
   if(t==='quran'&&!quranToolsRequested){ openQuranReaderDefault(); return }
+  if(t==='azkar'&&!zikrSectionRequested)t='zikrhub';
+  const showTazDetail=t==='qalb'&&tazSectionRequested;
+  zikrSectionRequested=false;tazSectionRequested=false;
   const showQuranTools=t==='quran'&&quranToolsRequested; if(showQuranTools)quranToolsRequested=false;
   tab=t;
-  const views=['today','quran','read','azkar','dua','tasbih','asma','sunnah','qalb','irtaqi','history'];
+  const views=['today','quran','read','zikrhub','azkar','dua','tasbih','asma','sunnah','qalb','irtaqi','history'];
   views.forEach(v=>{ const el=document.getElementById('v-'+v); if(el) el.classList.toggle('hide',v!==t) });
   const zikr=['azkar','dua','tasbih','asma'];
-  const navFor={read:'quran',dua:'azkar',tasbih:'azkar',asma:'azkar'}[t]||t;
+  const navFor={read:'quran',zikrhub:'azkar',dua:'azkar',tasbih:'azkar',asma:'azkar'}[t]||t;
   document.querySelectorAll('nav button[data-tab]').forEach(b=>
     b.setAttribute('aria-current',b.dataset.tab===navFor));
   document.getElementById('zseg').classList.toggle('hide',!zikr.includes(t));
+  document.getElementById('zikr-category-head')?.classList.toggle('hide',!zikr.includes(t));
+  const ztitle={azkar:'الأذكار',dua:'الدعاء',tasbih:'السبحة',asma:'أسماء الله الحسنى'}[t]||'';const zt=document.getElementById('zikr-category-title');if(zt)zt.textContent=ztitle;
   document.querySelectorAll('#zseg button').forEach(b=>b.setAttribute('aria-current',b.dataset.z===t));
   document.getElementById('page-title').textContent=TITLES[t]||'';
   if(t==='history') renderHistory();
@@ -2332,11 +2348,13 @@ function switchTab(t){
   if(t==='dua') renderDua();
   if(t==='sunnah') renderKnowledge();
   if(t==='today') renderHomeResume();
-  if(t==='qalb') hRender();
+  if(t==='qalb') showTazDetail?hRender():hHome();
   if(t==='irtaqi') irtRender();
   scrollTo({top:0,behavior:'smooth'});
 }
-document.getElementById('zseg').onclick=e=>{const b=e.target.closest('button'); if(b) switchTab(b.dataset.z)};
+document.getElementById('zseg').onclick=e=>{const b=e.target.closest('button'); if(b) openZikrSection(b.dataset.z)};
+document.getElementById('v-zikrhub')?.addEventListener('click',e=>{const b=e.target.closest('[data-zgo]');if(!b)return;const go=b.dataset.zgo;if(go==='hisn'){azkarMode='hisn';hisnChapter=null;openZikrSection('azkar');return}openZikrSection(go)});
+document.getElementById('zikr-hub-back')?.addEventListener('click',()=>switchTab('azkar'));
 
 /* ================= date controls ================= */
 document.getElementById('datepick').onchange=e=>{if(e.target.value)load(e.target.value)};
@@ -2481,7 +2499,7 @@ document.getElementById('profile-married')?.addEventListener('change',()=>syncKi
 document.getElementById('profile-close')?.addEventListener('click',()=>document.getElementById('profile-panel')?.classList.add('hide'));
 document.getElementById('btn-saved')?.addEventListener('click',openSavedPanel);
 document.getElementById('saved-close')?.addEventListener('click',()=>document.getElementById('saved-panel')?.classList.add('hide'));
-document.getElementById('saved-list')?.addEventListener('click',async e=>{const d=e.target.closest('[data-saved-del]');if(d){laterItems=laterItems.filter(x=>x.id!==d.dataset.savedDel);await store.set('saved-later-v1',laterItems);updateLaterBadge();renderSavedPanel();return}const o=e.target.closest('[data-saved-open]');if(o&&o.dataset.savedOpen){document.getElementById('saved-panel')?.classList.add('hide');switchTab(o.dataset.savedOpen)}});
+document.getElementById('saved-list')?.addEventListener('click',async e=>{const d=e.target.closest('[data-saved-del]');if(d){laterItems=laterItems.filter(x=>x.id!==d.dataset.savedDel);await store.set('saved-later-v1',laterItems);updateLaterBadge();renderSavedPanel();return}const o=e.target.closest('[data-saved-open]');if(o&&o.dataset.savedOpen){document.getElementById('saved-panel')?.classList.add('hide');o.dataset.savedOpen==='azkar'?openZikrSection('azkar'):o.dataset.savedOpen==='qalb'?openTazkiyahSection():switchTab(o.dataset.savedOpen)}});
 document.addEventListener('click',e=>{const b=e.target.closest('.save-later');if(!b)return;e.preventDefault();e.stopPropagation();toggleLater(b.dataset.later)});
 
 document.getElementById('btn-theme').onclick=async()=>{

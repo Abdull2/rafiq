@@ -2314,3 +2314,131 @@ R37 itself does not add a new health feature. The previously introduced structur
 
 ### R37 deployment note — stale file cleanup
 Because GitHub web uploads overwrite/add files but do not automatically delete files omitted from a ZIP, `README-UPLOAD-R37-AR.txt` explicitly tells the owner to delete legacy `tafsir-config.js` from the GitHub repo if it still exists. R37 runtime does not reference it, so leaving it temporarily is not a runtime failure; deletion is cleanup consistent with the owner's request to retire Al-Mukhtasar completely.
+
+---
+
+# R38 session — 2026-08-21 — Zikr/Tazkiyah maps + expanded Usul al-Tafsir + source deduplication
+
+## Owner request
+1. Make the `الذكر` and `تزكية` tab design resemble the new `العلم` design.
+2. Expand the `أصول التفسير` material because the R37 cards were too brief, using the documented source.
+3. Stop repeating the same source under every information card when that source is already shown at section entry; keep a source visible on the card when it is genuinely different/additional.
+
+## Important decisions
+- Implemented the request as a minimal UI/content evolution, not a new navigation or persistence architecture.
+- Kept stable Tazkiyah internal route/storage naming as `qalb`; no `qalb-*` key or stable content ID was renamed.
+- Zikr now opens a first-level map (`v-zikrhub`) patterned after the R37 Knowledge map, then routes to the existing detailed Zikr screens.
+- Tazkiyah now opens a first-level map from the existing `v-qalb`, then routes into the existing Works, Heart Diseases, Obstacles, Fiqh al-Nafs and Masari systems.
+- The source-cleanup rule is deliberately narrow: only the simple Knowledge renderer suppresses an item source when its normalized URL equals the dataset's section-level primary URL. Different/additional sources remain visible; source arrays remain in JSON.
+- Distinct immediate Tazkiyah evidence was not removed, because those sources vary by item and are part of the established source-integrity model.
+
+## Religious/source work
+`usul-tafsir.json` retains its R37 source backbone: **أصول في التفسير — الشيخ محمد بن صالح العثيمين**, with the official Ibn Uthaymeen Foundation page as the canonical section source.
+
+R38 preserves all nine existing module IDs and expands the educational paraphrase. Verification used:
+- official Foundation description for revelation, first revelation, types of revelation, writing/collection, meaning/reference of tafsir and the Muslim's duty in interpretation;
+- published book index/text references for causes of revelation, general wording/specific cause, Makki/Madani, اختلاف التفسير المأثور, famous Companions/Tabi'in, collection, and Isra'iliyyat.
+
+No text is presented as a verbatim quotation from the scholar. See `CONTENT_PROVENANCE-KNOWLEDGE-R38.md`.
+
+## Files inspected
+- `AI_HANDOFF.md` (complete)
+- `DATA_SAFETY.md`
+- `DATA_ARCHITECTURE.md`
+- `CONTENT_PROVENANCE-KNOWLEDGE-R37.md`
+- `CONTENT_PROVENANCE-TAZKIYAH.md`
+- `RELEASE-NOTES-R37.txt`
+- `QA-REPORT-R37.txt`
+- `PROMPT_FOR_NEXT_AI.txt`
+- `index.html`
+- `app.js`
+- `sw.js`
+- `data-safety.js`
+- `manifest.webmanifest`
+- `usul-tafsir.json`, `usul-fiqh.json`, `fuqaha.json`, `islamic-history.json`, `qalb.json`
+- R37 baseline source package for diff/regression comparison.
+
+## Files changed in R38
+Runtime/content:
+- `index.html` — Zikr landing map + Zikr category header/back affordance + small R38 styles.
+- `app.js` — Zikr routing helper, Tazkiyah landing map, duplicate-primary-source filtering in simple Knowledge cards, Saved Later compatibility for Zikr detail.
+- `usul-tafsir.json` — expanded educational content; same nine IDs retained.
+- `sw.js` — cache/version bump to R38.
+- `data-safety.js` — backup metadata appVersion only (`24.38.0`).
+
+Continuity/release:
+- `AI_HANDOFF.md` — this append-only entry.
+- `AI_HANDOFF.json` — current R38 snapshot.
+- `PROMPT_FOR_NEXT_AI.txt` — current R38 continuation rules.
+- `DATA_SAFETY.md` — R38 no-migration note.
+- `DATA_ARCHITECTURE.md` — R38 navigation/source-presentation architecture note.
+- `CONTENT_PROVENANCE-KNOWLEDGE-R38.md` — R38 content/source display record.
+- `RELEASE-NOTES-R38.txt`
+- `QA-REPORT-R38.txt`
+- `README-UPLOAD-R38-AR.txt`
+
+## Persistent-data impact
+- new persistent keys: **none**;
+- renamed persistent keys: **none**;
+- deleted persistent keys: **none**;
+- migrations: **none**;
+- `rafiq:data-version`: **2** unchanged;
+- `qalb-levels-v1` and all other existing Tazkiyah keys remain compatible;
+- legacy `tafsir-pos-v1` remains registered and untouched;
+- Usul al-Tafsir item IDs are unchanged, preventing Saved Later/content-reference ID churn;
+- backup metadata app version: **24.38.0**.
+
+## Cache / distribution
+- `CACHE_NAME`: `tadaruq-v24-r38-pwa-20260821`.
+- runtime cache: `tadaruq-runtime-v24-r38-20260821`.
+- R38 is Web/PWA content/UI only. GitHub Pages deployment updates the hosted PWA/TWA web content.
+- No Android-native shell/config/resource changed, so no new AAB is required for R38 itself.
+- Chrome extension users need a separately packaged MV3 update if R38 is to be published there.
+- No backend/serverless deployment is required.
+
+## Errors/findings corrected during implementation
+- Initial source URL comparison could miss an otherwise identical primary source because the existing metadata URL had trailing whitespace; normalization now trims before comparison.
+- The new Tazkiyah entry map was adjusted to load existing Tazkiyah state before routing into paths/content.
+- The Hisn landing card was adjusted to enter the existing Hisn index directly.
+- A second-pass regression review found that Home resume/Saved Later `qalb` links should preserve their prior detail-entry behavior; they now bypass only the new tab landing map while the bottom Tazkiyah tab still opens the map.
+- Service Worker release comment was corrected to R38 after the cache bump.
+
+## QA actually executed
+VERIFIED / STATICALLY VERIFIED:
+- `node --check app.js` — PASS.
+- `node --check data-safety.js` — PASS.
+- `node --check sw.js` — PASS.
+- `node --check pwa-register.js` — PASS.
+- `node --check extension-bridge.js` — PASS.
+- root JSON + webmanifest parse — PASS: 21 artifacts.
+- HTML duplicate-ID audit — PASS: 236 IDs / 0 duplicates.
+- baseline HTML ID preservation — PASS: no pre-existing HTML ID removed.
+- Service Worker precache existence — PASS: 39 entries including `./`, 0 missing.
+- four structured Knowledge datasets — PASS for expected counts, unique IDs and retained HTTPS source data.
+- Usul al-Tafsir stable-ID comparison to R37 — PASS, all nine IDs preserved.
+- source-display deduplication logic audit — PASS; identical primary URLs suppress visually and differing URLs remain.
+- `data-safety.js` diff comparison to R37 — PASS; appVersion is the only change.
+- protected Mushaf function comparison to R37 — PASS; five protected functions remain byte-identical.
+- R38 cache/navigation marker audit — PASS.
+- active Al-Mukhtasar runtime marker audit — PASS; no reintroduction.
+- changed-file secret-pattern audit — PASS.
+- dedicated `qa/test_data_safety.js` — NOT PRESENT in the supplied flat source package, so it could not be executed; Data Safety compatibility was checked by exact registry diff/schema audits instead.
+
+## Visual/device status
+A local headless Chromium screenshot attempt at 390x844 timed out with exit 124 and produced no usable screenshot.
+
+**Automated/static checks passed, but visual/device verification was not possible in this environment.**
+
+REQUIRES REAL-DEVICE TEST:
+- Zikr map/card wrapping and direct Hisn touch flow;
+- Zikr back/segment navigation;
+- Tazkiyah map and transitions into its existing sections;
+- expanded Usul al-Tafsir card wrapping and scroll rhythm;
+- light/dark appearance and system/browser Back behavior around the new landing views.
+
+## Unresolved / carried forward
+- Real Android/TWA visual/device QA listed above.
+- The pre-existing smoking/nicotine journey remains a Google Play Health Apps declaration review item before a Play-facing publication decision.
+
+## Next recommended step
+Deploy R38 to GitHub Pages staging/production as appropriate, fully reload the installed PWA/TWA so the R38 Service Worker takes control, then perform the real-phone checks listed in `README-UPLOAD-R38-AR.txt` and record any visual regressions as a follow-up release rather than editing the protected Mushaf geometry speculatively.

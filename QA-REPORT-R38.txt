@@ -1,0 +1,47 @@
+TADARUQ v24 R38 — QA REPORT
+Date: 2026-08-21
+
+Status legend: VERIFIED / STATICALLY VERIFIED / NOT VERIFIED / REQUIRES REAL-DEVICE TEST
+
+## VERIFIED automated/static results
+- `node --check app.js` — PASS.
+- `node --check data-safety.js` — PASS.
+- `node --check sw.js` — PASS.
+- `node --check pwa-register.js` — PASS.
+- `node --check extension-bridge.js` — PASS.
+- Root JSON + `manifest.webmanifest` parse — PASS: 21 parsed artifacts.
+- HTML duplicate-ID audit — PASS: 236 IDs, 0 duplicates.
+- Baseline HTML stable-ID audit — PASS: 0 pre-existing HTML IDs removed.
+- Service Worker precache existence audit — PASS: 39 entries including `./`, 0 missing paths.
+- Source datasets — PASS: `usul-tafsir.json` 9, `usul-fiqh.json` 10, `fuqaha.json` 12, `islamic-history.json` 12; IDs unique and every item retains at least one HTTPS source in its data.
+- Usul al-Tafsir stable module IDs — PASS: all 9 R37 IDs preserved in the same order.
+- Source-display deduplication audit — PASS: repeated dataset-primary URLs are suppressed by normalized URL comparison; different/additional URLs remain eligible for display. Source arrays are retained in JSON.
+- Data Safety diff audit — PASS: `data-safety.js` differs from R37 only by backup `appVersion` 24.37.0 -> 24.38.0; schema/registry unchanged.
+- Protected Mushaf comparison — PASS: `safeMushafSvg`, `openPage`, `enterMushafFullscreen`, `exitMushafFullscreen`, and `toggleMushafFullscreen` are byte-identical to the R37 baseline.
+- R38 cache markers — PASS: PWA and runtime cache names use R38.
+- New navigation markers — PASS: Zikr landing view/back route exists; Tazkiyah landing map retains `qalb` route/storage identifiers.
+- Active Al-Mukhtasar runtime marker audit — PASS: no active reintroduction of the retired reader/config.
+- Secret-pattern audit on changed runtime/content files — PASS: no private-key/Bearer-token/signing-secret marker introduced.
+- Dedicated `qa/test_data_safety.js` harness — NOT PRESENT in the supplied flat R37 source package; therefore it could not be executed. Data Safety compatibility was instead checked by exact R37→R38 registry diff plus schema/static audits.
+
+## Source verification performed for expanded Usul al-Tafsir
+- Official Ibn Uthaymeen Foundation page verified the book and its stated scope: revelation, first revelation, types of revelation, writing/collection, meaning/reference of tafsir, and the Muslim's duty in interpretation.
+- Published book index/text references were checked for causes of revelation/general wording and specific cause, Makki/Madani, writing/collection, اختلاف التفسير المأثور, famous Companions/Tabi'in in tafsir, and Isra'iliyyat.
+- R38 text is educational paraphrase; no scholar quotation is presented as verbatim.
+
+## Error-reduction findings corrected before packaging
+- Normalized primary-source URL comparison was tightened with whitespace trimming so an existing trailing space in metadata cannot cause the same source to be repeated.
+- `hHome()` was made to load the existing Tazkiyah state before routing to paths/content.
+- The Hisn al-Muslim landing card was changed to open the existing Hisn index directly rather than routing through an extra generic Adhkar step.
+- Existing Home resume and Saved Later routes into Tazkiyah were kept on the prior detailed Tazkiyah flow instead of being diverted to the new tab landing map.
+- Service Worker header comment was updated to R38 after the cache-name bump.
+
+## NOT VERIFIED / REQUIRES REAL-DEVICE TEST
+A local Chromium headless screenshot attempt at 390x844 timed out (`timeout` exit 124) and did not produce a usable screenshot. Therefore the following are not visually/device verified here:
+- Zikr landing-map card layout and Arabic wrapping at narrow Android/TWA widths;
+- Zikr back/segment behavior and direct Hisn touch flow;
+- Tazkiyah landing-map layout and transitions into Works/Diseases/Obstacles/Fiqh al-Nafs/Masari;
+- expanded Usul al-Tafsir card wrapping/scroll rhythm;
+- light/dark visual appearance and browser/system Back behavior around the new landing views.
+
+Exact status: **Automated/static checks passed, but visual/device verification was not possible in this environment.**
