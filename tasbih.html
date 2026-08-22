@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>السبحة — عدّاد الذكر</title>
 <link rel="manifest" href="./manifest.webmanifest">
-<meta name="theme-color" content="#226B4F">
+<meta name="theme-color" content="#173B39">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,16 +20,16 @@
 </style>
 <style>
 :root,[data-palette="mishkat"][data-theme="light"]{
-  --bg:#F8F3E7; --card:#FFFDF9; --line:#D5E1D8; --ink:#183A31; --soft:#63756E;
-  --gold:#806A45; --gold-d:#B77860; --green:#226B4F; --r:18px;
+  --bg:#F8F3E7; --card:#FFFDF9; --line:#D5E1D8; --ink:#173B39; --soft:#63756E;
+  --gold:#806A45; --gold-d:#B77860; --green:#173B39; --r:18px;
 }
 [data-palette="sage"][data-theme="light"]{
   --bg:#F7F8F3; --card:#FFFFFF; --line:#DCE5D4; --ink:#2E3A29; --soft:#66755F;
   --gold:#B08A4A; --gold-d:#C6AC72; --green:#4A6940;
 }
 [data-theme="dark"]{
-  --bg:#172638; --card:#1D3141; --line:#3A5060; --ink:#F6EDDC; --soft:#C2CBD0;
-  --gold:#EF9472; --gold-d:#D9A082; --green:#8AC8B9;
+  --bg:#0D1A18; --card:#132421; --line:#2C4943; --ink:#F3F1E8; --soft:#B9C7C2;
+  --gold:#B7A17A; --gold-d:#C28B78; --green:#95BDB2;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
 body{margin:0;background:var(--bg);color:var(--ink);direction:rtl;
@@ -410,7 +410,7 @@ function applyTasAppearance(value){
   cfg.appearance=name;cfg.theme=name==='night'?'dark':'light';
   document.documentElement.setAttribute('data-theme',cfg.theme);
   document.documentElement.setAttribute('data-palette',name==='sage'?'sage':'mishkat');
-  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=name==='night'?'#172638':name==='sage'?'#4A6940':'#226B4F';
+  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=name==='night'?'#0D1A18':name==='sage'?'#4A6940':'#173B39';
 }
 document.getElementById('b-theme').onclick=async()=>{
   const appSettings=(await store.get('settings'))||{};

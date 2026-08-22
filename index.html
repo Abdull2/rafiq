@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>تدارُك - Tadaruq</title>
-<meta name="theme-color" content="#226B4F">
+<meta name="theme-color" content="#173B39">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./tadaruk-icon-square.svg">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
@@ -2151,10 +2151,10 @@ body.quran-reading.reader-chrome-hidden #v-read .rd-bar{visibility:hidden}
 .src-label{font-size:13.5px!important}.learn-source,.h-src-line,.zk-source,.mus-source{font-size:14px!important;line-height:1.75!important}
 @media(max-width:360px){:root{--r51-support:13.5px}.section-source-panel{padding:12px}.section-source-panel>p{font-size:13px}.saved-text,#v-sunnah .learn-lead,#v-qalb .h-bd{font-size:14.5px!important}}
 
-/* v24 R55 — refined default palette: stronger green, calmer gold. */
+/* v24 R56 — reference-matched green and forest dark mode. */
 :root,[data-palette="mishkat"][data-theme="light"]{
-  --paper:#F8F3E7;--card:#FFFDF9;--ink:#183A31;--ink-soft:#63756E;--soft:#63756E;
-  --sage:#76A48C;--deep:#226B4F;--wash:#EAEFE7;--line:#D5E1D8;--gold:#806A45;--clay:#B77860;
+  --paper:#F8F3E7;--card:#FFFDF9;--ink:#173B39;--ink-soft:#63756E;--soft:#63756E;
+  --sage:#6F968B;--deep:#173B39;--wash:#EAEFE7;--line:#D5E1D8;--gold:#806A45;--clay:#B77860;
 }
 [data-palette="sage"][data-theme="light"]{
   --paper:#F7F8F3;--card:#FFFFFF;--ink:#2E3A29;--ink-soft:#66755F;--soft:#66755F;
@@ -2181,13 +2181,13 @@ body.quran-reading.reader-chrome-hidden #v-read .rd-bar{visibility:hidden}
   --sage:#7E8BB7;--deep:#4F5F9C;--wash:#E9ECF7;--line:#DCE2EF;--gold:#9B7137;--clay:#A9696D;
 }
 [data-theme="dark"]{
-  --paper:#172638;--card:#1D3141;--ink:#F6EDDC;--ink-soft:#C2CBD0;--soft:#C2CBD0;
-  --sage:#8AC8B9;--deep:#8AC8B9;--wash:#24384B;--line:#3A5060;--gold:#EF9472;--clay:#D9A082;
+  --paper:#0D1A18;--card:#132421;--ink:#F3F1E8;--ink-soft:#B9C7C2;--soft:#B9C7C2;
+  --sage:#86AEA4;--deep:#95BDB2;--wash:#1A312D;--line:#2C4943;--gold:#B7A17A;--clay:#C28B78;
 }
 body{transition:background-color .18s ease,color .18s ease}
 header,section,#main-nav,.sheet .box,.panel .box{transition:background-color .18s ease,border-color .18s ease}
 .next{background:linear-gradient(135deg,var(--deep),color-mix(in srgb,var(--deep) 78%,#173b38))}
-[data-theme="dark"] .next{background:linear-gradient(135deg,#244650,#1B3340);border:1px solid var(--line)}
+[data-theme="dark"] .next{background:linear-gradient(135deg,#173B39,#102A28);border:1px solid var(--line)}
 [data-theme="dark"] .scale button[aria-pressed="true"],
 [data-theme="dark"] .opts button[aria-pressed="true"],
 [data-theme="dark"] .mood-strip button[aria-pressed="true"],
@@ -2202,20 +2202,20 @@ header,section,#main-nav,.sheet .box,.panel .box{transition:background-color .18
 [data-theme="dark"] .h-chk.on,
 [data-theme="dark"] .h-primary,
 [data-theme="dark"] .path-start,
-[data-theme="dark"] .feedback-actions .primary{color:#10232A}
+[data-theme="dark"] .feedback-actions .primary{color:#0D1A18}
 .appearance-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .appearance-choice{min-width:0;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px;text-align:right;cursor:pointer;display:grid;gap:8px;align-content:start}
 .appearance-choice[aria-pressed="true"]{border-color:var(--deep);box-shadow:0 0 0 2px color-mix(in srgb,var(--deep) 16%,transparent);background:color-mix(in srgb,var(--deep) 5%,var(--card))}
 .appearance-choice>span:last-child{display:grid;gap:2px}.appearance-choice b{font-size:14.5px;color:var(--deep)}.appearance-choice small{font-size:12px;line-height:1.55;color:var(--ink-soft)}
 .appearance-swatches{display:flex;direction:ltr;gap:4px}.appearance-swatches i{width:19px;height:19px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
-.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(1){background:#F8F3E7}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(2){background:#226B4F}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(3){background:#806A45}
+.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(1){background:#F8F3E7}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(2){background:#173B39}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(3){background:#806A45}
 .appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(1){background:#F7F8F3}.appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(2){background:#4A6940}.appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(3){background:#B08A4A}
 .appearance-choice[data-appearance="ocean"] .appearance-swatches i:nth-child(1){background:#F3F8FB}.appearance-choice[data-appearance="ocean"] .appearance-swatches i:nth-child(2){background:#2F6F89}.appearance-choice[data-appearance="ocean"] .appearance-swatches i:nth-child(3){background:#A96F35}
 .appearance-choice[data-appearance="lavender"] .appearance-swatches i:nth-child(1){background:#F8F5FB}.appearance-choice[data-appearance="lavender"] .appearance-swatches i:nth-child(2){background:#6F5C91}.appearance-choice[data-appearance="lavender"] .appearance-swatches i:nth-child(3){background:#9E7339}
 .appearance-choice[data-appearance="rose"] .appearance-swatches i:nth-child(1){background:#FFF7F5}.appearance-choice[data-appearance="rose"] .appearance-swatches i:nth-child(2){background:#9A5D63}.appearance-choice[data-appearance="rose"] .appearance-swatches i:nth-child(3){background:#C36F5C}
 .appearance-choice[data-appearance="sand"] .appearance-swatches i:nth-child(1){background:#FAF5EA}.appearance-choice[data-appearance="sand"] .appearance-swatches i:nth-child(2){background:#786A3E}.appearance-choice[data-appearance="sand"] .appearance-swatches i:nth-child(3){background:#A86F2D}
 .appearance-choice[data-appearance="indigo"] .appearance-swatches i:nth-child(1){background:#F5F6FC}.appearance-choice[data-appearance="indigo"] .appearance-swatches i:nth-child(2){background:#4F5F9C}.appearance-choice[data-appearance="indigo"] .appearance-swatches i:nth-child(3){background:#9B7137}
-.appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(1){background:#172638}.appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(2){background:#8AC8B9}.appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(3){background:#EF9472}
+.appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(1){background:#0D1A18}.appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(2){background:#95BDB2}.appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(3){background:#B7A17A}
 .appearance-help{margin-top:8px}
 @media(max-width:430px){.appearance-choices{grid-template-columns:1fr}.appearance-choice{grid-template-columns:auto 1fr;align-items:center}.appearance-swatches{align-self:center}}
 </style>

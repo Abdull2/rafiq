@@ -2952,14 +2952,14 @@ document.addEventListener('click',e=>{const b=e.target.closest('.save-later');if
 
 const APPEARANCE_CHOICES=['mishkat','sage','ocean','lavender','rose','sand','indigo','night'];
 const APPEARANCE_META={
-  mishkat:{themeColor:'#226B4F',toast:'تم اختيار ألوان مِشكاة'},
+  mishkat:{themeColor:'#173B39',toast:'تم اختيار ألوان مِشكاة'},
   sage:{themeColor:'#4A6940',toast:'تم اختيار ألوان تدارُك الخضراء'},
   ocean:{themeColor:'#2F6F89',toast:'تم اختيار ألوان بحر هادئ'},
   lavender:{themeColor:'#6F5C91',toast:'تم اختيار ألوان لافندر'},
   rose:{themeColor:'#9A5D63',toast:'تم اختيار ألوان الورد الترابي'},
   sand:{themeColor:'#786A3E',toast:'تم اختيار الألوان الرملية'},
   indigo:{themeColor:'#4F5F9C',toast:'تم اختيار الألوان النيلية'},
-  night:{themeColor:'#172638',toast:'تم اختيار الوضع الليلي'}
+  night:{themeColor:'#0D1A18',toast:'تم اختيار الوضع الليلي'}
 };
 function normalizeAppearance(value){return APPEARANCE_CHOICES.includes(value)?value:'mishkat'}
 function paintAppearanceChoices(){
