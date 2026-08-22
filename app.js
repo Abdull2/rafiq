@@ -2812,7 +2812,7 @@ document.getElementById('go-today').onclick=()=>load(iso(new Date()));
 function shift(n){const d=fromIso(current);d.setDate(d.getDate()+n);load(iso(d))}
 
 /* ================= feedback ================= */
-const FEEDBACK_VERSION='24.52.0';
+const FEEDBACK_VERSION='24.53.0';
 const feedbackSheet=document.getElementById('feedback-sheet');
 const feedbackText=document.getElementById('feedback-text');
 function feedbackPayload(){
@@ -2950,10 +2950,32 @@ document.getElementById('saved-close')?.addEventListener('click',()=>document.ge
 document.getElementById('saved-list')?.addEventListener('click',async e=>{const d=e.target.closest('[data-saved-del]');if(d){laterItems=laterItems.filter(x=>x.id!==d.dataset.savedDel);await store.set('saved-later-v1',laterItems);updateLaterBadge();renderSavedPanel();return}const o=e.target.closest('[data-saved-open]');if(o&&o.dataset.savedOpen){document.getElementById('saved-panel')?.classList.add('hide');o.dataset.savedOpen==='azkar'?openZikrSection('azkar'):o.dataset.savedOpen==='qalb'?openTazkiyahSection():switchTab(o.dataset.savedOpen)}});
 document.addEventListener('click',e=>{const b=e.target.closest('.save-later');if(!b)return;e.preventDefault();e.stopPropagation();toggleLater(b.dataset.later)});
 
+const APPEARANCE_CHOICES=['mishkat','sage','night'];
+function normalizeAppearance(value){return APPEARANCE_CHOICES.includes(value)?value:'mishkat'}
+function paintAppearanceChoices(){
+  const current=normalizeAppearance(settings.appearance);
+  document.querySelectorAll('[data-appearance]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.appearance===current)));
+}
+function appearanceThemeColor(name){return name==='night'?'#172638':name==='sage'?'#4A6940':'#32786D'}
+async function applyAppearance(value,{save=false}={}){
+  const name=normalizeAppearance(value),dark=name==='night',palette=name==='sage'?'sage':'mishkat';
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  document.documentElement.setAttribute('data-palette',palette);
+  settings.appearance=name; settings.theme=dark?'dark':'light';
+  if(!dark)settings.lastLightAppearance=name;
+  const themeMeta=document.querySelector('meta[name="theme-color"]');if(themeMeta)themeMeta.setAttribute('content',appearanceThemeColor(name));
+  paintAppearanceChoices();
+  if(save)await store.set('settings',settings);
+}
+document.querySelectorAll('[data-appearance]').forEach(btn=>btn.addEventListener('click',async()=>{
+  await applyAppearance(btn.dataset.appearance,{save:true});
+  toast(btn.dataset.appearance==='mishkat'?'تم اختيار ألوان مِشكاة':btn.dataset.appearance==='sage'?'تم اختيار ألوان تدارُك':'تم اختيار الوضع الليلي');
+}));
 document.getElementById('btn-theme').onclick=async()=>{
-  const cur=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
-  document.documentElement.setAttribute('data-theme',cur);
-  settings.theme=cur; await store.set('settings',settings) };
+  const current=normalizeAppearance(settings.appearance);
+  const next=current==='night'?normalizeAppearance(settings.lastLightAppearance||'mishkat'):'night';
+  await applyAppearance(next,{save:true});
+};
 
 /* ================= first-use intro ================= */
 const onboarding=document.getElementById('onboarding'); let onbStep=0;
@@ -2970,7 +2992,8 @@ document.getElementById('onboarding-next')?.addEventListener('click',async()=>{i
   profile={age:null,gender:null,advancedIssues:false,married:null,hasKids:null,timeBand:null,moneyBand:null,skills:[],...((await store.get('profile-v1'))||{})};if(!Array.isArray(profile.skills))profile.skills=[];
   paintProfileUI();
   await loadLater();
-  if(settings.theme) document.documentElement.setAttribute('data-theme',settings.theme);
+  const initialAppearance=settings.appearance||(settings.theme==='dark'?'night':'mishkat');
+  await applyAppearance(initialAppearance);
   buildMoods(); buildSections(); buildPrayerLog();
   await loadTodo();
   await load(current);

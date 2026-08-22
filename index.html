@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>تدارُك - Tadaruq</title>
-<meta name="theme-color" content="#0B3A2F">
+<meta name="theme-color" content="#32786D">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./tadaruk-icon-square.svg">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
@@ -1520,6 +1520,24 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div class="box">
     <div class="sec-head" style="border-radius:0"><span>الإعدادات</span>
       <button id="close-settings" style="border:0;background:none;color:var(--deep);font-size:19px;cursor:pointer">✕</button></div>
+    <div class="field appearance-field">
+      <label>المظهر والألوان</label>
+      <div class="appearance-choices" role="group" aria-label="اختيار ألوان تدارُك">
+        <button type="button" class="appearance-choice" data-appearance="mishkat" aria-pressed="false">
+          <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span><b>مِشكاة دافئ</b><small>عاجي هادئ مع أخضر بترولي ولمسة طينية</small></span>
+        </button>
+        <button type="button" class="appearance-choice" data-appearance="sage" aria-pressed="false">
+          <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span><b>تدارُك أخضر</b><small>الألوان الخضراء الأصلية لتدارُك</small></span>
+        </button>
+        <button type="button" class="appearance-choice" data-appearance="night" aria-pressed="false">
+          <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span><b>ليلي</b><small>داكن مريح للقراءة في الإضاءة المنخفضة</small></span>
+        </button>
+      </div>
+      <div class="muted appearance-help">يُحفظ اختيارك على هذا الجهاز، ويمكن تغييره في أي وقت.</div>
+    </div>
     <div class="field"><label>تخصيص تدارُك</label><button id="btn-profile" style="width:100%;padding:10px;border-radius:11px;border:1px solid var(--line);background:var(--wash);color:var(--deep);cursor:pointer">تعديل العمر والنوع وسياق الحياة</button><div class="muted" style="margin-top:6px;font-size:11px">تُستخدم هذه الاختيارات محليًا لتخصيص الصياغة وبعض الموضوعات والمسارات.</div></div>
     <div class="field" id="prayer-location-field"><label>الصلاة والوقت والموقع</label>
       <div class="prayer-settings-shell">
@@ -1995,123 +2013,166 @@ body.quran-reading.reader-chrome-hidden #v-read .rd-bar{visibility:hidden}
 </style>
 <style id="r51-global-readability">
 /* R51 — application-wide readability + source-once policy */
-:root{--r51-support:14px;--r51-meta:13px;--r51-reading:15px}
+:root{--r51-support:15px;--r51-meta:14px;--r51-reading:16px}
 .section-source-panel{margin:10px 0 13px;padding:13px 14px;border:1px solid color-mix(in srgb,var(--gold) 30%,var(--line));border-radius:16px;background:linear-gradient(145deg,color-mix(in srgb,var(--gold) 5%,var(--card)),var(--card));display:grid;gap:7px}
 .section-source-panel.compact{margin:8px 0 0;padding:11px 12px}
-.section-source-kicker{font-size:13px;font-weight:800;color:var(--gold);line-height:1.5}
-.section-source-panel>p{margin:0;color:var(--soft);font-size:13.5px;line-height:1.8}
-.section-source-panel>a{color:var(--deep);font-size:13.5px;line-height:1.75;text-decoration:none;font-weight:700}
+.section-source-kicker{font-size:14px;font-weight:800;color:var(--gold);line-height:1.5}
+.section-source-panel>p{margin:0;color:var(--soft);font-size:14.5px;line-height:1.8}
+.section-source-panel>a{color:var(--deep);font-size:14.5px;line-height:1.75;text-decoration:none;font-weight:700}
 .section-source-panel details{border-top:1px dashed var(--line);padding-top:7px}
-.section-source-panel summary{cursor:pointer;color:var(--deep);font-size:13px;font-weight:750;list-style:none;min-height:32px;display:flex;align-items:center}
+.section-source-panel summary{cursor:pointer;color:var(--deep);font-size:14px;font-weight:750;list-style:none;min-height:32px;display:flex;align-items:center}
 .section-source-panel summary::-webkit-details-marker{display:none}
 .section-source-panel details .source-stack{margin-top:8px}
-.section-source-panel .source-ref,.section-source-panel .source-ref a,.section-source-panel .source-ref .src-text{font-size:13px!important;line-height:1.75!important}
+.section-source-panel .source-ref,.section-source-panel .source-ref a,.section-source-panel .source-ref .src-text{font-size:14px!important;line-height:1.75!important}
 
 /* Home / daily */
-#v-today .home-welcome .eyebrow,#v-today .home-section-head span,#v-today .prayer-copy small{font-size:13px!important}
-#v-today .home-welcome p,#v-today .home-go span,#v-today .evening-gate span,#v-today .prayer-copy span{font-size:14px!important;line-height:1.8!important}
-#v-today .home-go .go,#v-today .prayer-action{font-size:13px!important}
-#v-today .muted,#v-today .note{font-size:13.5px!important;line-height:1.8!important}
+#v-today .home-welcome .eyebrow,#v-today .home-section-head span,#v-today .prayer-copy small{font-size:14px!important}
+#v-today .home-welcome p,#v-today .home-go span,#v-today .evening-gate span,#v-today .prayer-copy span{font-size:15px!important;line-height:1.8!important}
+#v-today .home-go .go,#v-today .prayer-action{font-size:14px!important}
+#v-today .muted,#v-today .note{font-size:14.5px!important;line-height:1.8!important}
 
 /* Search/status copy across content views */
 #v-quran .search-count,#v-zikrhub .search-count,#v-azkar .search-count,#v-dua .search-count,#v-qalb .search-count,#v-sunnah .search-count,#v-history .search-count,
-#v-azkar .search-source,#v-dua .search-source,#v-sunnah .search-source{font-size:13px!important;line-height:1.7!important}
+#v-azkar .search-source,#v-dua .search-source,#v-sunnah .search-source{font-size:14px!important;line-height:1.7!important}
 
 /* Quran tools / Tafsir supporting copy */
 #v-quran .mushaf-offline-head span,#v-quran .mushaf-offline-card small,#v-quran .mushaf-offline-note,#v-quran .mushaf-offline-card p,#v-quran .muyassar-source-card p,#v-quran .quran-wird-card p,
-.tafsir-choice-note,.tafsir-transport-note,.muyassar-reader-status,.muyassar-empty,.muyassar-reader-source{font-size:13.5px!important;line-height:1.8!important}
-.muyassar-ayah-ref{font-size:13px!important}
+.tafsir-choice-note,.tafsir-transport-note,.muyassar-reader-status,.muyassar-empty,.muyassar-reader-source{font-size:14.5px!important;line-height:1.8!important}
+.muyassar-ayah-ref{font-size:14px!important}
 
 /* Zikr + Hisn */
-#v-azkar .audio-note,#v-azkar .az-time,#v-azkar .zk-note,#v-azkar .hisn-note,#v-azkar .hisn-digital-note,#v-azkar .hisn-book p{font-size:14px!important;line-height:1.85!important}
-#v-azkar .az-section-source .az-src-kicker,#v-azkar .hisn-canonical-source>span,#v-azkar .hisn-author{font-size:13px!important}
-#v-azkar .az-section-source a,#v-azkar .az-section-source>span:last-child,#v-azkar .hisn-canonical-source>a,#v-azkar .hisn-open{font-size:13.5px!important;line-height:1.75!important}
-#v-azkar .hisn-index button>b{font-size:14px!important}#v-azkar .hisn-index button>small,#v-azkar .hisn-index button>span{font-size:13px!important}
-#v-azkar .hisn-entry-ref,#v-azkar .hisn-repeat{font-size:13px!important;line-height:1.7!important}
-#v-azkar .hisn-entry-actions button,#v-azkar .hisn-reader-top button,#v-azkar .hisn-reader-top span{font-size:13px!important}
-#v-azkar .zk-source,#v-azkar .src-copy a,#v-azkar .src-copy .src-text{font-size:13px!important;line-height:1.75!important}
+#v-azkar .audio-note,#v-azkar .az-time,#v-azkar .zk-note,#v-azkar .hisn-note,#v-azkar .hisn-digital-note,#v-azkar .hisn-book p{font-size:15px!important;line-height:1.85!important}
+#v-azkar .az-section-source .az-src-kicker,#v-azkar .hisn-canonical-source>span,#v-azkar .hisn-author{font-size:14px!important}
+#v-azkar .az-section-source a,#v-azkar .az-section-source>span:last-child,#v-azkar .hisn-canonical-source>a,#v-azkar .hisn-open{font-size:14.5px!important;line-height:1.75!important}
+#v-azkar .hisn-index button>b{font-size:15px!important}#v-azkar .hisn-index button>small,#v-azkar .hisn-index button>span{font-size:14px!important}
+#v-azkar .hisn-entry-ref,#v-azkar .hisn-repeat{font-size:14px!important;line-height:1.7!important}
+#v-azkar .hisn-entry-actions button,#v-azkar .hisn-reader-top button,#v-azkar .hisn-reader-top span{font-size:14px!important}
+#v-azkar .zk-source,#v-azkar .src-copy a,#v-azkar .src-copy .src-text{font-size:14px!important;line-height:1.75!important}
 
 /* Dua */
-#v-dua .dua-library-summary small,#v-dua .dua-who{font-size:13px!important}
-#v-dua .dua-library-summary p,#v-dua .dua-cat-note,#v-dua .dua-card .nt{font-size:14px!important;line-height:1.85!important}
-#v-dua .dua-card .s{font-size:13px!important;line-height:1.75!important}
-#v-dua .dua-new-doors button,#v-dua #dua-tabs button{font-size:13px!important}
-#v-dua .dua-new-doors button::before{font-size:12px!important}
+#v-dua .dua-library-summary small,#v-dua .dua-who{font-size:14px!important}
+#v-dua .dua-library-summary p,#v-dua .dua-cat-note,#v-dua .dua-card .nt{font-size:15px!important;line-height:1.85!important}
+#v-dua .dua-card .s{font-size:14px!important;line-height:1.75!important}
+#v-dua .dua-new-doors button,#v-dua #dua-tabs button{font-size:14px!important}
+#v-dua .dua-new-doors button::before{font-size:13px!important}
 
 /* Asma */
-#v-asma .asma-count,#v-asma .asma-qc,#v-asma .asma-lb,#v-asma .asma-pill{font-size:13px!important;line-height:1.7!important}
-#v-asma .asma-head p,#v-asma .asma-tx,#v-asma .asma-method,#v-asma .asma-live-note{font-size:14px!important;line-height:1.9!important}
-#v-asma .asma-srcs a,#v-asma .learn-source,#v-asma .src-copy a,#v-asma .src-copy .src-text{font-size:13px!important;line-height:1.75!important}
+#v-asma .asma-count,#v-asma .asma-qc,#v-asma .asma-lb,#v-asma .asma-pill{font-size:14px!important;line-height:1.7!important}
+#v-asma .asma-head p,#v-asma .asma-tx,#v-asma .asma-method,#v-asma .asma-live-note{font-size:15px!important;line-height:1.9!important}
+#v-asma .asma-srcs a,#v-asma .learn-source,#v-asma .src-copy a,#v-asma .src-copy .src-text{font-size:14px!important;line-height:1.75!important}
 
 /* Knowledge / hadith / seerah */
-#v-sunnah .learn-summary-hint,#v-sunnah .companion-desc,#v-sunnah .learn-depth-head,#v-sunnah .learn-depth h4,#v-sunnah .learn-evidence b{font-size:13px!important;line-height:1.7!important}
-#v-sunnah .learn-source-first p,#v-sunnah .learn-intro,#v-sunnah .learn-note,#v-sunnah .learn-disclaimer,#v-sunnah .learn-module-card .lead,#v-sunnah .learn-card .learn-lead,#v-sunnah .learn-depth p,#v-sunnah .learn-depth li,#v-sunnah .learn-body li,#v-sunnah .seerah-reflection p,#v-sunnah .manazil-note,#v-sunnah .manzil-lead,#v-sunnah .manzil-card li{font-size:14px!important;line-height:1.9!important}
-#v-sunnah .learn-source-first small,#v-sunnah .curriculum-count,#v-sunnah .source-scope-note,#v-sunnah .learn-source,#v-sunnah .src-copy a,#v-sunnah .src-copy .src-text{font-size:13px!important;line-height:1.75!important}
-#v-sunnah .agreed-top,#v-sunnah .agreed-narrator,#v-sunnah .agreed-explain b,#v-sunnah .agreed-practice b,#v-sunnah .agreed-source,#v-sunnah .agreed-pager span,#v-sunnah .agreed-pager button,#v-sunnah .agreed-corpus-tools label{font-size:13px!important;line-height:1.7!important}
-#v-sunnah .agreed-explain p,#v-sunnah .agreed-practice p{font-size:14px!important;line-height:1.9!important}
-#v-sunnah .nw-card .excerpt,#v-sunnah .nw-card .openhint,#v-sunnah .hd-card .r,#v-sunnah .hd-card .lbl,#v-sunnah .hd-item .num{font-size:13.5px!important;line-height:1.8!important}
+#v-sunnah .learn-summary-hint,#v-sunnah .companion-desc,#v-sunnah .learn-depth-head,#v-sunnah .learn-depth h4,#v-sunnah .learn-evidence b{font-size:14px!important;line-height:1.7!important}
+#v-sunnah .learn-source-first p,#v-sunnah .learn-intro,#v-sunnah .learn-note,#v-sunnah .learn-disclaimer,#v-sunnah .learn-module-card .lead,#v-sunnah .learn-card .learn-lead,#v-sunnah .learn-depth p,#v-sunnah .learn-depth li,#v-sunnah .learn-body li,#v-sunnah .seerah-reflection p,#v-sunnah .manazil-note,#v-sunnah .manzil-lead,#v-sunnah .manzil-card li{font-size:15px!important;line-height:1.9!important}
+#v-sunnah .learn-source-first small,#v-sunnah .curriculum-count,#v-sunnah .source-scope-note,#v-sunnah .learn-source,#v-sunnah .src-copy a,#v-sunnah .src-copy .src-text{font-size:14px!important;line-height:1.75!important}
+#v-sunnah .agreed-top,#v-sunnah .agreed-narrator,#v-sunnah .agreed-explain b,#v-sunnah .agreed-practice b,#v-sunnah .agreed-source,#v-sunnah .agreed-pager span,#v-sunnah .agreed-pager button,#v-sunnah .agreed-corpus-tools label{font-size:14px!important;line-height:1.7!important}
+#v-sunnah .agreed-explain p,#v-sunnah .agreed-practice p{font-size:15px!important;line-height:1.9!important}
+#v-sunnah .nw-card .excerpt,#v-sunnah .nw-card .openhint,#v-sunnah .hd-card .r,#v-sunnah .hd-card .lbl,#v-sunnah .hd-item .num{font-size:14.5px!important;line-height:1.8!important}
 
 /* Tazkiyah landing + Manazil */
-#v-qalb .tazkiyah-home .knowledge-hero small,#v-qalb .tazkiyah-home .knowledge-essential>span,#v-qalb .manazil-hero small,#v-qalb .manzil-num{font-size:13px!important}
-#v-qalb .tazkiyah-home .knowledge-hero p,#v-qalb .tazkiyah-home .knowledge-essential small,#v-qalb .tazkiyah-home .knowledge-categories span,#v-qalb .manazil-hero p,#v-qalb .manazil-note,#v-qalb .manzil-lead,#v-qalb .manzil-card li{font-size:14px!important;line-height:1.85!important}
+#v-qalb .tazkiyah-home .knowledge-hero small,#v-qalb .tazkiyah-home .knowledge-essential>span,#v-qalb .manazil-hero small,#v-qalb .manzil-num{font-size:14px!important}
+#v-qalb .tazkiyah-home .knowledge-hero p,#v-qalb .tazkiyah-home .knowledge-essential small,#v-qalb .tazkiyah-home .knowledge-categories span,#v-qalb .manazil-hero p,#v-qalb .manazil-note,#v-qalb .manzil-lead,#v-qalb .manzil-card li{font-size:15px!important;line-height:1.85!important}
 
 /* Tazkiyah / paths */
-#v-qalb .nafs-hero p,#v-qalb .h-cathero p,#v-qalb .h-tile .ds,#v-qalb .h-tile .st,#v-qalb .h-cure .d,#v-qalb .h-obs .tx,#v-qalb .h-obs li,#v-qalb .nafs-detail-hero p,#v-qalb .nafs-topic .ns,#v-qalb .path-hero p,#v-qalb .path-card .sub,#v-qalb .path-stop .pd,#v-qalb .depth-practice-intro,#v-qalb .muj-boundary,#v-qalb .muj-weight p{font-size:14px!important;line-height:1.9!important}
-#v-qalb .nafs-groups button,#v-qalb .path-quick,#v-qalb .path-suggestions button,#v-qalb .h-obs .lb,#v-qalb .h-cure .stk,#v-qalb .path-meta,#v-qalb .nafs-path,#v-qalb .h-entry .dt{font-size:13px!important;line-height:1.7!important}
-#v-qalb .h-bd,#v-qalb .h-bd li,#v-qalb .nafs-box,#v-qalb .nafs-questions{font-size:14px!important;line-height:1.9!important}
-#v-qalb .h-src-line,#v-qalb .src-copy a,#v-qalb .src-copy .src-text,#v-qalb .h-lnk{font-size:13px!important;line-height:1.75!important}
+#v-qalb .nafs-hero p,#v-qalb .h-cathero p,#v-qalb .h-tile .ds,#v-qalb .h-tile .st,#v-qalb .h-cure .d,#v-qalb .h-obs .tx,#v-qalb .h-obs li,#v-qalb .nafs-detail-hero p,#v-qalb .nafs-topic .ns,#v-qalb .path-hero p,#v-qalb .path-card .sub,#v-qalb .path-stop .pd,#v-qalb .depth-practice-intro,#v-qalb .muj-boundary,#v-qalb .muj-weight p{font-size:15px!important;line-height:1.9!important}
+#v-qalb .nafs-groups button,#v-qalb .path-quick,#v-qalb .path-suggestions button,#v-qalb .h-obs .lb,#v-qalb .h-cure .stk,#v-qalb .path-meta,#v-qalb .nafs-path,#v-qalb .h-entry .dt{font-size:14px!important;line-height:1.7!important}
+#v-qalb .h-bd,#v-qalb .h-bd li,#v-qalb .nafs-box,#v-qalb .nafs-questions{font-size:15px!important;line-height:1.9!important}
+#v-qalb .h-src-line,#v-qalb .src-copy a,#v-qalb .src-copy .src-text,#v-qalb .h-lnk{font-size:14px!important;line-height:1.75!important}
 
 /* Irtaqi */
-#v-irtaqi .irt-hero .d,#v-irtaqi .irt-framework>p,#v-irtaqi .irt-principle>span,#v-irtaqi .irt-why p,#v-irtaqi .irt-task .sm,#v-irtaqi .irt-tip{font-size:14px!important;line-height:1.85!important}
-#v-irtaqi .irt-jhead .top span,#v-irtaqi .irt-focus span,#v-irtaqi .irt-weak-list span,#v-irtaqi .irt-framework-head small,#v-irtaqi .irt-principle b,#v-irtaqi .irt-phase-line,#v-irtaqi .irt-why b{font-size:13px!important;line-height:1.7!important}
-#v-irtaqi .irt-grid button{font-size:12px!important}
-#v-irtaqi .note{font-size:13.5px!important;line-height:1.8!important}
+#v-irtaqi .irt-hero .d,#v-irtaqi .irt-framework>p,#v-irtaqi .irt-principle>span,#v-irtaqi .irt-why p,#v-irtaqi .irt-task .sm,#v-irtaqi .irt-tip{font-size:15px!important;line-height:1.85!important}
+#v-irtaqi .irt-jhead .top span,#v-irtaqi .irt-focus span,#v-irtaqi .irt-weak-list span,#v-irtaqi .irt-framework-head small,#v-irtaqi .irt-principle b,#v-irtaqi .irt-phase-line,#v-irtaqi .irt-why b{font-size:14px!important;line-height:1.7!important}
+#v-irtaqi .irt-grid button{font-size:13px!important}
+#v-irtaqi .note{font-size:14.5px!important;line-height:1.8!important}
 
 /* History/settings/saved supporting info */
-#v-history .hist-intro span,#v-history .hist-gap-head span,#v-history .hist-sub,#v-history .hist-gap span,#v-history .hist-win,#v-history .history-pro-head p,#v-history .history-day-main span,#v-history .history-archive-empty,#v-history .history-detail-card>span,#v-history .history-detail-line{font-size:13px!important;line-height:1.75!important}
-#v-history .hist-label,#v-history .history-pro-head span,#v-history .history-tools label span,#v-history .history-archive-head span,#v-history .history-chip,#v-history .history-day-detail-head small,#v-history .history-detail-card>small,#v-history .history-prayer-pills span{font-size:12.5px!important}
-#v-history .history-tools input,#v-history .history-tools select,#v-history .history-tools button,#v-history .history-day-detail-head button{font-size:13px!important;min-height:40px}
-.saved-note,.saved-source,.profile-privacy,.data-safety-card span{font-size:13.5px!important;line-height:1.8!important}
+#v-history .hist-intro span,#v-history .hist-gap-head span,#v-history .hist-sub,#v-history .hist-gap span,#v-history .hist-win,#v-history .history-pro-head p,#v-history .history-day-main span,#v-history .history-archive-empty,#v-history .history-detail-card>span,#v-history .history-detail-line{font-size:14px!important;line-height:1.75!important}
+#v-history .hist-label,#v-history .history-pro-head span,#v-history .history-tools label span,#v-history .history-archive-head span,#v-history .history-chip,#v-history .history-day-detail-head small,#v-history .history-detail-card>small,#v-history .history-prayer-pills span{font-size:13.5px!important}
+#v-history .history-tools input,#v-history .history-tools select,#v-history .history-tools button,#v-history .history-day-detail-head button{font-size:14px!important;min-height:40px}
+.saved-note,.saved-source,.profile-privacy,.data-safety-card span{font-size:14.5px!important;line-height:1.8!important}
 
 /* Remaining legacy surfaces audited in R51. */
-.onboarding-card .tiny,.advanced-opt span,.feedback-note,.feedback-context{font-size:13.5px!important;line-height:1.8!important}
-.onb-feature,.profile-form>label,.profile-box .field label,.gender-pick label,.skill-pick>span,.skill-grid label{font-size:13.5px!important;line-height:1.7!important}
-#settings .muted,#settings .field .muted,#settings .field label,#settings .data-safety-card span{font-size:13.5px!important;line-height:1.8!important}
-#settings button,#profile-panel button,#saved-panel button{font-size:13px!important}
-.saved-kind,.saved-source{font-size:13px!important;line-height:1.7!important}.saved-text{font-size:14px!important;line-height:1.85!important}.saved-note{font-size:13.5px!important}
+.onboarding-card .tiny,.advanced-opt span,.feedback-note,.feedback-context{font-size:14.5px!important;line-height:1.8!important}
+.onb-feature,.profile-form>label,.profile-box .field label,.gender-pick label,.skill-pick>span,.skill-grid label{font-size:14.5px!important;line-height:1.7!important}
+#settings .muted,#settings .field .muted,#settings .field label,#settings .data-safety-card span{font-size:14.5px!important;line-height:1.8!important}
+#settings button,#profile-panel button,#saved-panel button{font-size:14px!important}
+.saved-kind,.saved-source{font-size:14px!important;line-height:1.7!important}.saved-text{font-size:15px!important;line-height:1.85!important}.saved-note{font-size:14.5px!important}
 
 /* Today / plan / review legacy widgets. */
-#v-today .next .lbl,#v-today .sec-head .pct,#v-today .stat span,#v-today .strip .lbl,#v-today .mood-title,#v-today .rating-key,#v-today .quick-note,#v-today .todo-summary,#v-today .todo-group-title,#v-today .todo-empty,#v-today .home-resume-card small{font-size:13px!important;line-height:1.75!important}
-#v-today .home-resume-card span,#v-today .todo-item .todo-text,#v-today .acc-body,#v-today .onboarding-card p{font-size:14px!important;line-height:1.85!important}
-#v-today .scale button,#v-today .opts button,#v-today .todo-add button,#v-today .todo-actions button,#v-today .dots button,#v-today .home-resume-card button{font-size:13px!important}
+#v-today .next .lbl,#v-today .sec-head .pct,#v-today .stat span,#v-today .strip .lbl,#v-today .mood-title,#v-today .rating-key,#v-today .quick-note,#v-today .todo-summary,#v-today .todo-group-title,#v-today .todo-empty,#v-today .home-resume-card small{font-size:14px!important;line-height:1.75!important}
+#v-today .home-resume-card span,#v-today .todo-item .todo-text,#v-today .acc-body,#v-today .onboarding-card p{font-size:15px!important;line-height:1.85!important}
+#v-today .scale button,#v-today .opts button,#v-today .todo-add button,#v-today .todo-actions button,#v-today .dots button,#v-today .home-resume-card button{font-size:14px!important}
 
 /* Quran overview metadata: readable, while the printed Mushaf geometry stays untouched. */
-#v-quran .q-hero .k,#v-quran .q-hero .m,#v-quran .aya-day .lbl,#v-quran .aya-day .ref,#v-quran .q-mt,#v-quran .q-badge,#v-quran .quran-index-meta{font-size:13px!important;line-height:1.7!important}
-#v-quran .aya-day .t,#v-quran .quran-tool-card p{font-size:14px!important;line-height:1.85!important}
-#v-read .mus-head,#v-read .mus-foot{font-size:13px!important}
-.tafsir-sheet-head span,.tafsir-sheet-head b,.tafsir-loading,.tafsir-inline-note p,.tafsir-inline-note b,.tafsir-official-badge,.tafsir-sheet-actions a,.tafsir-current .tafsir-open-btn{font-size:13px!important;line-height:1.75!important}
+#v-quran .q-hero .k,#v-quran .q-hero .m,#v-quran .aya-day .lbl,#v-quran .aya-day .ref,#v-quran .q-mt,#v-quran .q-badge,#v-quran .quran-index-meta{font-size:14px!important;line-height:1.7!important}
+#v-quran .aya-day .t,#v-quran .quran-tool-card p{font-size:15px!important;line-height:1.85!important}
+#v-read .mus-head,#v-read .mus-foot{font-size:14px!important}
+.tafsir-sheet-head span,.tafsir-sheet-head b,.tafsir-loading,.tafsir-inline-note p,.tafsir-inline-note b,.tafsir-official-badge,.tafsir-sheet-actions a,.tafsir-current .tafsir-open-btn{font-size:14px!important;line-height:1.75!important}
 
 /* Knowledge surfaces that pre-date the R49 curriculum. */
-#v-sunnah .knowledge-hero small,#v-sunnah .knowledge-essential>span,#v-sunnah .learn-category-head small,#v-sunnah .learn-module-card .date,#v-sunnah .manazil-hero small,#v-sunnah .manzil-num,#v-sunnah .companion-tags span{font-size:13px!important}
-#v-sunnah .knowledge-hero p,#v-sunnah .knowledge-essential small,#v-sunnah .knowledge-categories span,#v-sunnah .manazil-hero p,#v-sunnah .nw-intro p,#v-sunnah .seerah-pedagogy-note,#v-sunnah .busola-note,#v-sunnah .busola-card p,#v-sunnah .busola-stage-body p,#v-sunnah .busola-stage-body li,#v-sunnah .busola-lab .sit,#v-sunnah .busola-lab li{font-size:14px!important;line-height:1.85!important}
-#v-sunnah .learn-category-head>button,#v-sunnah .learn-groups button,#v-sunnah .learn-ref-row a,#v-sunnah .module-extra-sources>.source-scope-note,#v-sunnah .busola-tabs button,#v-sunnah .busola-meter span,#v-sunnah .busola-stage-head span{font-size:13px!important}
-#hadith-detail .hadith-detail-bar>span,#hadith-detail .hadith-reader-hero .eyebrow,#hadith-detail .hadith-ref-card .label,#hadith-detail .hadith-ref-card a,#hadith-detail .hadith-ref-card .note,#hadith-detail .hadith-sharh .badge,#hadith-detail .hadith-sharh .disclaimer,#hadith-detail .hadith-takhrij h3,#hadith-detail .hadith-takhrij .refline{font-size:13px!important;line-height:1.75!important}
-#hadith-detail .hadith-sharh p{font-size:15px!important;line-height:1.95!important}
+#v-sunnah .knowledge-hero small,#v-sunnah .knowledge-essential>span,#v-sunnah .learn-category-head small,#v-sunnah .learn-module-card .date,#v-sunnah .manazil-hero small,#v-sunnah .manzil-num,#v-sunnah .companion-tags span{font-size:14px!important}
+#v-sunnah .knowledge-hero p,#v-sunnah .knowledge-essential small,#v-sunnah .knowledge-categories span,#v-sunnah .manazil-hero p,#v-sunnah .nw-intro p,#v-sunnah .seerah-pedagogy-note,#v-sunnah .busola-note,#v-sunnah .busola-card p,#v-sunnah .busola-stage-body p,#v-sunnah .busola-stage-body li,#v-sunnah .busola-lab .sit,#v-sunnah .busola-lab li{font-size:15px!important;line-height:1.85!important}
+#v-sunnah .learn-category-head>button,#v-sunnah .learn-groups button,#v-sunnah .learn-ref-row a,#v-sunnah .module-extra-sources>.source-scope-note,#v-sunnah .busola-tabs button,#v-sunnah .busola-meter span,#v-sunnah .busola-stage-head span{font-size:14px!important}
+#hadith-detail .hadith-detail-bar>span,#hadith-detail .hadith-reader-hero .eyebrow,#hadith-detail .hadith-ref-card .label,#hadith-detail .hadith-ref-card a,#hadith-detail .hadith-ref-card .note,#hadith-detail .hadith-sharh .badge,#hadith-detail .hadith-sharh .disclaimer,#hadith-detail .hadith-takhrij h3,#hadith-detail .hadith-takhrij .refline{font-size:14px!important;line-height:1.75!important}
+#hadith-detail .hadith-sharh p{font-size:16px!important;line-height:1.95!important}
 
 /* Tazkiyah advanced/paths/deeds. */
-#v-qalb .nafs-note,#v-qalb .flags .fl-t,#v-qalb .flags li,#v-qalb .ish-kicker,#v-qalb .ish-method,#v-qalb .ish-path,#v-qalb .ish-sub,#v-qalb .path-hero .kicker,#v-qalb .path-card .kind,#v-qalb .path-detail-head .kind,#v-qalb .path-review b,#v-qalb .path-danger,#v-qalb .path-inline span,#v-qalb .deed-evidence-label,#v-qalb .deed-evidence-ref,#v-qalb .deed-evidence-ref a{font-size:13px!important;line-height:1.75!important}
-#v-qalb .ish-point p,#v-qalb .nafs-qcard,#v-qalb .path-detail-head p,#v-qalb .path-stop .pd,#v-qalb .path-empty p,#v-qalb .kh-d,#v-qalb .benefit-card p,#v-qalb .benefit-why,#v-qalb .benefit-step span,#v-qalb .benefit-profile,#v-qalb .busola-note{font-size:14px!important;line-height:1.85!important}
-#v-qalb .path-start,#v-qalb .path-open,#v-qalb .path-picks button,#v-qalb .path-review .choices button,#v-qalb .path-actions button,#v-qalb .path-inline button{font-size:13px!important}
-#v-qalb .nafs-detail-card h3{font-size:14px!important}
+#v-qalb .nafs-note,#v-qalb .flags .fl-t,#v-qalb .flags li,#v-qalb .ish-kicker,#v-qalb .ish-method,#v-qalb .ish-path,#v-qalb .ish-sub,#v-qalb .path-hero .kicker,#v-qalb .path-card .kind,#v-qalb .path-detail-head .kind,#v-qalb .path-review b,#v-qalb .path-danger,#v-qalb .path-inline span,#v-qalb .deed-evidence-label,#v-qalb .deed-evidence-ref,#v-qalb .deed-evidence-ref a{font-size:14px!important;line-height:1.75!important}
+#v-qalb .ish-point p,#v-qalb .nafs-qcard,#v-qalb .path-detail-head p,#v-qalb .path-stop .pd,#v-qalb .path-empty p,#v-qalb .kh-d,#v-qalb .benefit-card p,#v-qalb .benefit-why,#v-qalb .benefit-step span,#v-qalb .benefit-profile,#v-qalb .busola-note{font-size:15px!important;line-height:1.85!important}
+#v-qalb .path-start,#v-qalb .path-open,#v-qalb .path-picks button,#v-qalb .path-review .choices button,#v-qalb .path-actions button,#v-qalb .path-inline button{font-size:14px!important}
+#v-qalb .nafs-detail-card h3{font-size:15px!important}
 
 /* Irtaqi / history / feedback controls. */
-#v-irtaqi .irt-src,#v-irtaqi .irt-src.compact,#v-irtaqi .irt-source-axis b,#v-irtaqi .plan-row .ax,#v-irtaqi .plan-row .st,#v-irtaqi .ax-row .top span{font-size:13px!important;line-height:1.7!important}
-#v-history .hist-gap button,#v-history .history-day-row,#v-history .history-filter button{font-size:13px!important}
-.feedback-box .feedback-context,.feedback-box .feedback-note{font-size:13.5px!important;line-height:1.8!important}
+#v-irtaqi .irt-src,#v-irtaqi .irt-src.compact,#v-irtaqi .irt-source-axis b,#v-irtaqi .plan-row .ax,#v-irtaqi .plan-row .st,#v-irtaqi .ax-row .top span{font-size:14px!important;line-height:1.7!important}
+#v-history .hist-gap button,#v-history .history-day-row,#v-history .history-filter button{font-size:14px!important}
+.feedback-box .feedback-context,.feedback-box .feedback-note{font-size:14.5px!important;line-height:1.8!important}
 
 /* Keep true metadata compact, but never below a legible floor. */
-.src-label{font-size:12.5px!important}.learn-source,.h-src-line,.zk-source,.mus-source{font-size:13px!important;line-height:1.75!important}
-@media(max-width:360px){:root{--r51-support:13.5px}.section-source-panel{padding:12px}.section-source-panel>p{font-size:13px}.saved-text,#v-sunnah .learn-lead,#v-qalb .h-bd{font-size:13.5px!important}}
+.src-label{font-size:13.5px!important}.learn-source,.h-src-line,.zk-source,.mus-source{font-size:14px!important;line-height:1.75!important}
+@media(max-width:360px){:root{--r51-support:13.5px}.section-source-panel{padding:12px}.section-source-panel>p{font-size:13px}.saved-text,#v-sunnah .learn-lead,#v-qalb .h-bd{font-size:14.5px!important}}
+
+/* v24 R53 — Mishkat-inspired palette choices. */
+:root,[data-palette="mishkat"][data-theme="light"]{
+  --paper:#F8F1DF;--card:#FFFDF7;--ink:#173B38;--ink-soft:#60726D;--soft:#60726D;
+  --sage:#6C9B8F;--deep:#32786D;--wash:#EFEBDD;--line:#D8E1D6;--gold:#A95733;--clay:#C27758;
+}
+[data-palette="sage"][data-theme="light"]{
+  --paper:#F7F8F3;--card:#FFFFFF;--ink:#2E3A29;--ink-soft:#66755F;--soft:#66755F;
+  --sage:#8FA97E;--deep:#4A6940;--wash:#E9EFE3;--line:#DCE5D4;--gold:#B08A4A;--clay:#B08A6A;
+}
+[data-theme="dark"]{
+  --paper:#172638;--card:#1D3141;--ink:#F6EDDC;--ink-soft:#C2CBD0;--soft:#C2CBD0;
+  --sage:#8AC8B9;--deep:#8AC8B9;--wash:#24384B;--line:#3A5060;--gold:#EF9472;--clay:#D9A082;
+}
+body{transition:background-color .18s ease,color .18s ease}
+header,section,#main-nav,.sheet .box,.panel .box{transition:background-color .18s ease,border-color .18s ease}
+.next{background:linear-gradient(135deg,var(--deep),color-mix(in srgb,var(--deep) 78%,#173b38))}
+[data-theme="dark"] .next{background:linear-gradient(135deg,#244650,#1B3340);border:1px solid var(--line)}
+[data-theme="dark"] .scale button[aria-pressed="true"],
+[data-theme="dark"] .opts button[aria-pressed="true"],
+[data-theme="dark"] .mood-strip button[aria-pressed="true"],
+[data-theme="dark"] .onboarding-card button,
+[data-theme="dark"] .dots button[aria-pressed="true"],
+[data-theme="dark"] .az-tabs button[aria-current="true"],
+[data-theme="dark"] .tr-week i.on,
+[data-theme="dark"] .zseg button[aria-current="true"],
+[data-theme="dark"] .qz .opts button[aria-pressed="true"],
+[data-theme="dark"] .pchk.on,
+[data-theme="dark"] .h-tabs button[aria-current="true"],
+[data-theme="dark"] .h-chk.on,
+[data-theme="dark"] .h-primary,
+[data-theme="dark"] .path-start,
+[data-theme="dark"] .feedback-actions .primary{color:#10232A}
+.appearance-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.appearance-choice{min-width:0;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px;text-align:right;cursor:pointer;display:grid;gap:8px;align-content:start}
+.appearance-choice[aria-pressed="true"]{border-color:var(--deep);box-shadow:0 0 0 2px color-mix(in srgb,var(--deep) 16%,transparent);background:color-mix(in srgb,var(--deep) 5%,var(--card))}
+.appearance-choice>span:last-child{display:grid;gap:2px}.appearance-choice b{font-size:14.5px;color:var(--deep)}.appearance-choice small{font-size:12px;line-height:1.55;color:var(--ink-soft)}
+.appearance-swatches{display:flex;direction:ltr;gap:4px}.appearance-swatches i{width:19px;height:19px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
+.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(1){background:#F8F1DF}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(2){background:#32786D}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(3){background:#A95733}
+.appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(1){background:#F7F8F3}.appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(2){background:#4A6940}.appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(3){background:#B08A4A}
+.appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(1){background:#172638}.appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(2){background:#8AC8B9}.appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(3){background:#EF9472}
+.appearance-help{margin-top:8px}
+@media(max-width:430px){.appearance-choices{grid-template-columns:1fr}.appearance-choice{grid-template-columns:auto 1fr;align-items:center}.appearance-swatches{align-self:center}}
 </style>
 
 <script>
