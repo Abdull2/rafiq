@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>السبحة — عدّاد الذكر</title>
 <link rel="manifest" href="./manifest.webmanifest">
-<meta name="theme-color" content="#32786D">
+<meta name="theme-color" content="#226B4F">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,8 +20,8 @@
 </style>
 <style>
 :root,[data-palette="mishkat"][data-theme="light"]{
-  --bg:#F8F1DF; --card:#FFFDF7; --line:#D8E1D6; --ink:#173B38; --soft:#60726D;
-  --gold:#A95733; --gold-d:#C27758; --green:#32786D; --r:18px;
+  --bg:#F8F3E7; --card:#FFFDF9; --line:#D5E1D8; --ink:#183A31; --soft:#63756E;
+  --gold:#806A45; --gold-d:#B77860; --green:#226B4F; --r:18px;
 }
 [data-palette="sage"][data-theme="light"]{
   --bg:#F7F8F3; --card:#FFFFFF; --line:#DCE5D4; --ink:#2E3A29; --soft:#66755F;
@@ -410,7 +410,7 @@ function applyTasAppearance(value){
   cfg.appearance=name;cfg.theme=name==='night'?'dark':'light';
   document.documentElement.setAttribute('data-theme',cfg.theme);
   document.documentElement.setAttribute('data-palette',name==='sage'?'sage':'mishkat');
-  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=name==='night'?'#172638':name==='sage'?'#4A6940':'#32786D';
+  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=name==='night'?'#172638':name==='sage'?'#4A6940':'#226B4F';
 }
 document.getElementById('b-theme').onclick=async()=>{
   const appSettings=(await store.get('settings'))||{};

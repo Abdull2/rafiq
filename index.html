@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>تدارُك - Tadaruq</title>
-<meta name="theme-color" content="#32786D">
+<meta name="theme-color" content="#226B4F">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./tadaruk-icon-square.svg">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
@@ -1525,7 +1525,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
       <div class="appearance-choices" role="group" aria-label="اختيار ألوان تدارُك">
         <button type="button" class="appearance-choice" data-appearance="mishkat" aria-pressed="false">
           <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span><b>مِشكاة دافئ</b><small>عاجي هادئ مع أخضر بترولي ولمسة طينية</small></span>
+          <span><b>مِشكاة دافئ</b><small>عاجي أهدأ مع أخضر زمردي أوضح ولمسة ذهبية مطفأة</small></span>
         </button>
         <button type="button" class="appearance-choice" data-appearance="sage" aria-pressed="false">
           <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -2151,10 +2151,10 @@ body.quran-reading.reader-chrome-hidden #v-read .rd-bar{visibility:hidden}
 .src-label{font-size:13.5px!important}.learn-source,.h-src-line,.zk-source,.mus-source{font-size:14px!important;line-height:1.75!important}
 @media(max-width:360px){:root{--r51-support:13.5px}.section-source-panel{padding:12px}.section-source-panel>p{font-size:13px}.saved-text,#v-sunnah .learn-lead,#v-qalb .h-bd{font-size:14.5px!important}}
 
-/* v24 R54 — expanded appearance palette choices. */
+/* v24 R55 — refined default palette: stronger green, calmer gold. */
 :root,[data-palette="mishkat"][data-theme="light"]{
-  --paper:#F8F1DF;--card:#FFFDF7;--ink:#173B38;--ink-soft:#60726D;--soft:#60726D;
-  --sage:#6C9B8F;--deep:#32786D;--wash:#EFEBDD;--line:#D8E1D6;--gold:#A95733;--clay:#C27758;
+  --paper:#F8F3E7;--card:#FFFDF9;--ink:#183A31;--ink-soft:#63756E;--soft:#63756E;
+  --sage:#76A48C;--deep:#226B4F;--wash:#EAEFE7;--line:#D5E1D8;--gold:#806A45;--clay:#B77860;
 }
 [data-palette="sage"][data-theme="light"]{
   --paper:#F7F8F3;--card:#FFFFFF;--ink:#2E3A29;--ink-soft:#66755F;--soft:#66755F;
@@ -2208,7 +2208,7 @@ header,section,#main-nav,.sheet .box,.panel .box{transition:background-color .18
 .appearance-choice[aria-pressed="true"]{border-color:var(--deep);box-shadow:0 0 0 2px color-mix(in srgb,var(--deep) 16%,transparent);background:color-mix(in srgb,var(--deep) 5%,var(--card))}
 .appearance-choice>span:last-child{display:grid;gap:2px}.appearance-choice b{font-size:14.5px;color:var(--deep)}.appearance-choice small{font-size:12px;line-height:1.55;color:var(--ink-soft)}
 .appearance-swatches{display:flex;direction:ltr;gap:4px}.appearance-swatches i{width:19px;height:19px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
-.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(1){background:#F8F1DF}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(2){background:#32786D}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(3){background:#A95733}
+.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(1){background:#F8F3E7}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(2){background:#226B4F}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(3){background:#806A45}
 .appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(1){background:#F7F8F3}.appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(2){background:#4A6940}.appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(3){background:#B08A4A}
 .appearance-choice[data-appearance="ocean"] .appearance-swatches i:nth-child(1){background:#F3F8FB}.appearance-choice[data-appearance="ocean"] .appearance-swatches i:nth-child(2){background:#2F6F89}.appearance-choice[data-appearance="ocean"] .appearance-swatches i:nth-child(3){background:#A96F35}
 .appearance-choice[data-appearance="lavender"] .appearance-swatches i:nth-child(1){background:#F8F5FB}.appearance-choice[data-appearance="lavender"] .appearance-swatches i:nth-child(2){background:#6F5C91}.appearance-choice[data-appearance="lavender"] .appearance-swatches i:nth-child(3){background:#9E7339}
