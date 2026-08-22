@@ -1,10 +1,11 @@
-/* Rafiq Data Safety Layer v2 — local-first backup, validation and migration guard. */
+/* Tadaruq Data Safety Layer v3 — local-first backup, validation and migration guard. */
 (function(){
   'use strict';
 
-  const CURRENT_DATA_VERSION=2;
-  const BACKUP_FORMAT='rafiq-backup';
-  const BACKUP_VERSION=1;
+  const CURRENT_DATA_VERSION=globalThis.TADARUQ_META?.dataSchema||3;
+  const BACKUP_FORMAT='tadaruq-backup';
+  const LEGACY_BACKUP_FORMAT='rafiq-backup';
+  const BACKUP_VERSION=globalThis.TADARUQ_META?.backupVersion||2;
   const DATA_VERSION_KEY='rafiq:data-version';
   const SAFETY_SNAPSHOT_KEY='rafiq:safety-snapshot:v1';
   const LAST_EXPORT_KEY='rafiq:last-export-at';
@@ -17,7 +18,7 @@
     'deed-skip','khabia','irt-hist','irt-plan','irt-done','irt-journey','mujahada-weight-v1','fiqh-busola-progress-v1','benefit-choice-v1'
   ];
   const PREFIX_KEYS=['day:','tas:'];
-  const RAW_LOCAL_KEYS=['qFont'];
+  const RAW_LOCAL_KEYS=['qFont','mushafZoom'];
   const EXTENSION_KEYS=['rafiqNotebook','rafiqChromePrefs','rafiqPrayerConfig','rafiqLastPrayerNotification'];
 
   const EXPECTED={
@@ -50,11 +51,11 @@
 
   const adapter={
     async read(k){
-      if(window.storage){
+      if(globalThis.TadaruqStorage){
         try{
-          const r=await window.storage.get(k,false);
-          if(!r)return {exists:false,value:null,raw:null,error:null};
-          const raw=r.value;
+          const r=await TadaruqStorage.rawRead(k);
+          if(!r?.found)return {exists:false,value:null,raw:null,error:null};
+          const raw=r.raw;
           try{return {exists:true,value:JSON.parse(raw),raw,error:null}}
           catch(e){return {exists:true,value:null,raw,error:String(e)}}
         }catch(e){return {exists:false,value:null,raw:null,error:String(e)}}
@@ -67,23 +68,19 @@
     async get(k){const r=await this.read(k);return r.error?null:r.value},
     async set(k,v){
       const raw=JSON.stringify(v);
-      if(window.storage){try{await window.storage.set(k,raw,false);return}catch{}}
+      if(globalThis.TadaruqStorage){await TadaruqStorage.rawSet(k,raw);return}
       localStorage.setItem(k,raw);
     },
     async setRaw(k,raw){
-      if(window.storage){try{await window.storage.set(k,String(raw),false);return}catch{}}
+      if(globalThis.TadaruqStorage){await TadaruqStorage.rawSet(k,String(raw));return}
       localStorage.setItem(k,String(raw));
     },
     async remove(k){
-      if(window.storage){
-        try{if(typeof window.storage.delete==='function'){await window.storage.delete(k,false);return}}catch{}
-        try{if(typeof window.storage.remove==='function'){await window.storage.remove(k,false);return}}catch{}
-        try{await window.storage.set(k,'null',false);return}catch{}
-      }
+      if(globalThis.TadaruqStorage){await TadaruqStorage.remove(k);return}
       localStorage.removeItem(k);
     },
     async keys(prefix=''){
-      if(window.storage){try{const r=await window.storage.list(prefix,false);return r?.keys||[]}catch{return[]}}
+      if(globalThis.TadaruqStorage)return TadaruqStorage.keys(prefix);
       return Object.keys(localStorage).filter(k=>k.startsWith(prefix));
     }
   };
@@ -130,7 +127,7 @@
   async function createSafetySnapshot(reason='before-migration',includeExtension=false){
     const app=await collectAppData();
     const snapshot={
-      format:'rafiq-safety-snapshot',version:1,reason,createdAt:new Date().toISOString(),
+      format:'tadaruq-safety-snapshot',version:1,reason,createdAt:new Date().toISOString(),
       dataVersion:+(await adapter.get(DATA_VERSION_KEY)||0),records:app.records,unparsed:app.unparsed,rawLocal:app.rawLocal
     };
     const validation=validateRecords(snapshot.records,snapshot.unparsed);
@@ -173,6 +170,12 @@
       // v1 -> v2 is additive only: day records may now include goal/target/goalReview,
       // and todo items may include final review metadata. Existing records remain valid as-is.
       return true;
+    },
+    3:async()=>{
+      // v2 -> v3 introduces the IndexedDB-backed storage layer. The storage module migrates
+      // legacy localStorage records lazily and keeps a compatibility mirror, so no user record
+      // needs destructive rewriting here.
+      return true;
     }
   };
 
@@ -206,7 +209,7 @@
       return lastStatus;
     }catch(e){
       try{if(snapshot)await restoreSnapshot(snapshot)}catch{}
-      lastStatus={ok:false,dataVersion:version,message:'أوقف رفيق ترحيل البيانات حفاظًا على النسخة القديمة.',error:String(e)};
+      lastStatus={ok:false,dataVersion:version,message:'أوقف تدارُك ترحيل البيانات حفاظًا على النسخة القديمة.',error:String(e)};
       return lastStatus;
     }
   }
@@ -233,7 +236,7 @@
     if(!validation.ok)throw new Error('تعذّر التصدير لأن بعض البيانات غير قابلة للقراءة. استخدم فحص البيانات أولًا.');
     const extension=await collectExtensionData();
     const core={
-      format:BACKUP_FORMAT,backupVersion:BACKUP_VERSION,appVersion:'24.53.0',
+      format:BACKUP_FORMAT,backupVersion:BACKUP_VERSION,appVersion:globalThis.TADARUQ_META?.appVersion||'24.58.0',
       dataVersion:+(await adapter.get(DATA_VERSION_KEY)||CURRENT_DATA_VERSION),createdAt:new Date().toISOString(),
       origin:location.origin,records:app.records,rawLocal:app.rawLocal,extension,
       summary:{recordCount:Object.keys(app.records).length,dayCount:Object.keys(app.records).filter(k=>k.startsWith('day:')).length}
@@ -261,9 +264,9 @@
 
   function normalizeBackup(j){
     if(!isObject(j))throw new Error('ملف النسخة الاحتياطية غير صالح.');
-    if(j.format===BACKUP_FORMAT&&isObject(j.records))return j;
+    if((j.format===BACKUP_FORMAT||j.format===LEGACY_BACKUP_FORMAT)&&isObject(j.records))return j;
     if(j.settings||j.days||j.savedLater||j.qalbPaths)return legacyToNew(j);
-    throw new Error('هذا الملف ليس نسخة احتياطية معروفة لرفيق.');
+    throw new Error('هذا الملف ليس نسخة احتياطية معروفة لتدارُك.');
   }
 
   async function verifyBackup(j){
@@ -339,7 +342,7 @@
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
     const d=new Date().toISOString().slice(0,10);
-    a.download=`rafiq-backup-${d}.json`;
+    a.download=`tadaruq-backup-${d}.json`;
     document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     return out;
   }
@@ -352,9 +355,12 @@
     return {currentDataVersion:CURRENT_DATA_VERSION,deviceDataVersion:version,lastExport,lastAudit,lastSnapshot:snap?.createdAt||null,lastStatus};
   }
 
-  window.RafiqDataSafety={
+  const api={
     CURRENT_DATA_VERSION,init,audit:auditData,createPortableBackup,downloadBackup,restorePortableBackup,
     createSafetySnapshot,status,validateRecords,registry:{exact:[...EXACT_KEYS],prefixes:[...PREFIX_KEYS],rawLocal:[...RAW_LOCAL_KEYS],extension:[...EXTENSION_KEYS]},
     estimateBackupBytes:async()=>byteSize(JSON.stringify(await createPortableBackup()))
   };
+  // New public name; old alias remains for backward compatibility with existing releases/backups.
+  window.TadaruqDataSafety=api;
+  window.RafiqDataSafety=api;
 })();

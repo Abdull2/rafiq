@@ -1,11 +1,9 @@
 /* ================= storage ================= */
-const store = {
-  async get(k){ if(window.storage){try{const r=await window.storage.get(k,false);return r?JSON.parse(r.value):null}catch{return null}}
-    const v=localStorage.getItem(k); return v?JSON.parse(v):null },
-  async set(k,v){ if(window.storage){try{await window.storage.set(k,JSON.stringify(v),false);return}catch{}}
-    localStorage.setItem(k,JSON.stringify(v)) },
-  async keys(p){ if(window.storage){try{const r=await window.storage.list(p,false);return r?r.keys:[]}catch{return[]}}
-    return Object.keys(localStorage).filter(k=>k.startsWith(p)) }
+const store = window.TadaruqStorage || {
+  async get(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch{return null}},
+  async set(k,v){localStorage.setItem(k,JSON.stringify(v));return v},
+  async keys(p=''){return Object.keys(localStorage).filter(k=>k.startsWith(p))},
+  async remove(k){localStorage.removeItem(k)}
 };
 
 /* ================= content ================= */
@@ -2812,7 +2810,7 @@ document.getElementById('go-today').onclick=()=>load(iso(new Date()));
 function shift(n){const d=fromIso(current);d.setDate(d.getDate()+n);load(iso(d))}
 
 /* ================= feedback ================= */
-const FEEDBACK_VERSION='24.53.0';
+const FEEDBACK_VERSION=window.TADARUQ_META?.appVersion||'24.58.0';
 const feedbackSheet=document.getElementById('feedback-sheet');
 const feedbackText=document.getElementById('feedback-text');
 function feedbackPayload(){

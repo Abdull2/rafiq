@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://cdn.jsdelivr.net https://raw.githubusercontent.com https://api.alquran.cloud https://alquran.cloud https://dorar.net; frame-src https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>السبحة — عدّاد الذكر</title>
 <link rel="manifest" href="./manifest.webmanifest">
@@ -17,6 +17,10 @@
 @font-face{font-family:'IBM Plex Sans Arabic';src:url('./plex-400.woff2') format('woff2');font-weight:400;font-display:swap}
 @font-face{font-family:'IBM Plex Sans Arabic';src:url('./plex-500.woff2') format('woff2');font-weight:500;font-display:swap}
 @font-face{font-family:'IBM Plex Sans Arabic';src:url('./plex-600.woff2') format('woff2');font-weight:600;font-display:swap}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
 </style>
 <style>
 :root,[data-palette="mishkat"][data-theme="light"]{
@@ -217,15 +221,14 @@ input[type=text],input[type=number]{width:100%;background:var(--bg);border:1px s
   <div class="field"><button class="primary" id="save-new">إضافة</button></div>
 </div></div>
 
+<script src="./version.js"></script>
+<script src="./storage.js"></script>
 <script>
 /* ================= storage ================= */
-const store={
- async get(k){ if(window.storage){try{const r=await window.storage.get(k,false);return r?JSON.parse(r.value):null}catch{return null}}
-   const v=localStorage.getItem(k);return v?JSON.parse(v):null },
- async set(k,v){ if(window.storage){try{await window.storage.set(k,JSON.stringify(v),false);return}catch{}}
-   localStorage.setItem(k,JSON.stringify(v)) },
- async keys(p){ if(window.storage){try{const r=await window.storage.list(p,false);return r?r.keys:[]}catch{return[]}}
-   return Object.keys(localStorage).filter(k=>k.startsWith(p)) }
+const store=window.TadaruqStorage||{
+ async get(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch{return null}},
+ async set(k,v){localStorage.setItem(k,JSON.stringify(v));return v},
+ async keys(p=''){return Object.keys(localStorage).filter(k=>k.startsWith(p))}
 };
 
 /* ================= data ================= */

@@ -1,9 +1,9 @@
-# Third-party notices used by Rafiq v24 R14
+# Third-party notices used by Tadaruq (legacy list introduced in v24 R14)
 
 ## HisnElMuslim digital dataset
 Repository: https://github.com/asellam/HisnElMuslim
-Purpose in Rafiq: on-demand digital transcription/findex for the complete `حصن المسلم` reader.
-Canonical religious/book reference in Rafiq remains the official Risala al-Haramain publication of `حصن المسلم من أذكار الكتاب والسنة` by Sa'id ibn Ali ibn Wahf al-Qahtani.
+Purpose in Tadaruq: on-demand digital transcription/findex for the complete `حصن المسلم` reader.
+Canonical religious/book reference in Tadaruq remains the official Risala al-Haramain publication of `حصن المسلم من أذكار الكتاب والسنة` by Sa'id ibn Ali ibn Wahf al-Qahtani.
 
 MIT License
 
@@ -21,12 +21,12 @@ Official digital resource: https://dm.qurancomplex.gov.sa/
 Official usage-rights page: https://dm.qurancomplex.gov.sa/rights/
 
 Technical repository: https://github.com/quranpedia/quran-svg
-Rafiq folder used: `mushafs/hafs/kfqc/svg/`
+Tadaruq folder used: `mushafs/hafs/kfqc/svg/`
 Pinned revision: `0198423eb867ba26051aba6ac902cd5d10aadd1b`
 
-Purpose in Rafiq: render the fixed 604-page Hafs/KFQC Madinah Mushaf layout without browser text reflow and provide transparent ayah hit regions for selection.
+Purpose in Tadaruq: render the fixed 604-page Hafs/KFQC Madinah Mushaf layout without browser text reflow and provide transparent ayah hit regions for selection.
 
-The Quranpedia repository states that its own ayah-polygon overlay, JSON metadata, and repository tooling are released under CC0 1.0. The underlying KFQC digital Mushaf page artwork remains subject to the King Fahd Complex digital-Mushaf usage terms. Rafiq does not claim ownership of the Mushaf artwork, does not alter the Quranic page composition, and identifies the Complex as the canonical source.
+The Quranpedia repository states that its own ayah-polygon overlay, JSON metadata, and repository tooling are released under CC0 1.0. The underlying KFQC digital Mushaf page artwork remains subject to the King Fahd Complex digital-Mushaf usage terms. Tadaruq does not claim ownership of the Mushaf artwork, does not alter the Quranic page composition, and identifies the Complex as the canonical source.
 
 ## R42 Al-Lulu wal-Marjan digital transport layer
 Canonical religious/book reference: **اللؤلؤ والمرجان فيما اتفق عليه الشيخان** by Muhammad Fuad Abd al-Baqi.

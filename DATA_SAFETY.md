@@ -232,3 +232,11 @@ R51 changes presentation, source-display placement, and readability only. It add
 - Appearance fields live inside the already-backed-up `settings` object; no migration or destructive restore behavior was added.
 - Personal data schema remains **2**; backup metadata app version is **24.53.0**.
 - Religious/educational JSON content is unchanged.
+
+## R58 Stability Foundation — 2026-08-22
+
+R58 upgrades the local data schema from **2 to 3** without destructively rewriting user records. The new `storage.js` uses IndexedDB as the modern primary store when available and maintains a localStorage compatibility mirror so existing installations continue to read legacy records safely. Existing `rafiq:*` internal keys are deliberately preserved for backward compatibility; they are implementation identifiers, not a product-name assertion.
+
+Portable backups now use `format: tadaruq-backup`, `backupVersion: 2`, and app version `24.58.0`. The importer continues accepting prior `rafiq-backup` files and legacy backup shapes. `mushafZoom` joins `qFont` in the raw local preferences included in portable backups. The safety API is exported as both `TadaruqDataSafety` and the backward-compatible `RafiqDataSafety` alias.
+
+Automated R58 browser tests cover schema 2 -> 3 migration, preservation of seeded legacy settings, IndexedDB availability, backup/restore round-trip, checksum tamper rejection, and offline PWA reload.

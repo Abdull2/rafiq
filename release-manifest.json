@@ -1,0 +1,251 @@
+{
+  "appVersion": "24.58.0",
+  "release": "R58",
+  "algorithm": "SHA-256",
+  "files": {
+    "adab.json": {
+      "bytes": 103983,
+      "sha256": "cf605bc96ee5560b8b75d0028ae5d72c0023e60aaab5eceb1941966aacf15ace"
+    },
+    "adiya.json": {
+      "bytes": 37114,
+      "sha256": "1e7543f8eed41c590bcd9d52c9cc58a889cef8d55c84482899b3ec3624d09f18"
+    },
+    "agreed-hadith.json": {
+      "bytes": 10669,
+      "sha256": "b4136cf5c6f8594e4a7c91bc1f733075c8ed3abed1c52ffa29a06ac4059b5474"
+    },
+    "akhlaq.json": {
+      "bytes": 197468,
+      "sha256": "258e4a8781b93e2b14206c0b41bad5228dc7638acc25e1d76671e4c71e68e6d0"
+    },
+    "amiri-400.woff2": {
+      "bytes": 108560,
+      "sha256": "9abf8a10b4a2f27b698740522c9beec9ded7728aeef0738ac0d6e175bf6249d7"
+    },
+    "amiri-700.woff2": {
+      "bytes": 99968,
+      "sha256": "c775d9f8c3a7cf0d0c2bb5246dd699e8c09bf6f8758e1be0b98939331b18bcce"
+    },
+    "app.js": {
+      "bytes": 330906,
+      "sha256": "00888dfcf223c3151f4c660f2c2c1cda1b06b8e7dab77e226bb4539de9a13609"
+    },
+    "apple-touch-icon.png": {
+      "bytes": 9138,
+      "sha256": "c5cd2e247eb96edc69d0c627313e625e522341c94f33a4bea8260c59d7571d25"
+    },
+    "aqeedah.json": {
+      "bytes": 52968,
+      "sha256": "474bf7febbb86fc14890ea1afd1ddb32d93bf82952b68e86d54875718036b70b"
+    },
+    "asma.json": {
+      "bytes": 105671,
+      "sha256": "d0d8260bc27a3b86d02001d5b66daf7bf81eacf5deef4b19414a1cdffbe15a9d"
+    },
+    "assetlinks.json": {
+      "bytes": 555,
+      "sha256": "33272fce6716b98a3fb1b21f3c2620332b3315f5b251d31ce2cfbc3402aad5ac"
+    },
+    "azkar.json": {
+      "bytes": 46112,
+      "sha256": "7ede57f20c18ebf13c1ffee61e3e567babb1131e163489ac351bd8169af97962"
+    },
+    "benefit.json": {
+      "bytes": 8489,
+      "sha256": "2a79872c58466ce90624ed8ce0200d41733da761273e0f71b40ef747aed22288"
+    },
+    "companions.json": {
+      "bytes": 36798,
+      "sha256": "c9e7fee3a0e635721f3e109f2eb57c43bc2fe0585f8f86060696f0799ff8130c"
+    },
+    "data-safety.js": {
+      "bytes": 17634,
+      "sha256": "a3398cc8d2f76e024f267a588c872b86876bdcac0176ee9d1cd2829a01b1e603"
+    },
+    "diagnostics.js": {
+      "bytes": 3207,
+      "sha256": "0fccd2034ed18b65af36e04092f716fc3cca6d875b4504db1c30deac442304cf"
+    },
+    "digital-life.json": {
+      "bytes": 20688,
+      "sha256": "c563d7f50c62832207b7299c42e716e0aedb39b9aa954c20ebfc277bbc16f42d"
+    },
+    "extension-bridge.js": {
+      "bytes": 16849,
+      "sha256": "eb716b2d61d1fd8776129a2e0b49b00d1929ff4df0dd81087660c791bac0b37c"
+    },
+    "fiqh-busola.json": {
+      "bytes": 67980,
+      "sha256": "49bb787241aa08782f687dabee0df0b1f0c8c1f9c23516ef817443810081e0ec"
+    },
+    "fiqh-life.json": {
+      "bytes": 215791,
+      "sha256": "73bd2cf71f888d0c7b56728bdf93ddac7c0005471f6d581a4a22c4a063935775"
+    },
+    "fuqaha.json": {
+      "bytes": 15777,
+      "sha256": "bae2618081c6e5648cdf1cee5eb0a024c3f021dfdddacd6d674d9b37ccb5afdc"
+    },
+    "hadith-sciences.json": {
+      "bytes": 18925,
+      "sha256": "50e616a6d361297c8762c0bbd9c3c186db86032ce5d229499c241113389ff8d0"
+    },
+    "hafs.woff2": {
+      "bytes": 87760,
+      "sha256": "8c00e7a7d5f773bcfb1642fdcfba505dbd81975fef39f14718827a32d075020c"
+    },
+    "icon-1024.png": {
+      "bytes": 66960,
+      "sha256": "8082079e6febed19657fb693822fdc9be4355bbc80ced6ef12e7d0008cbdbabf"
+    },
+    "icon-192.png": {
+      "bytes": 9737,
+      "sha256": "ab605362cd8ec8b2d5a6792dc81f888aad3247d6dca3d8f649fa77939413ba29"
+    },
+    "icon-512.png": {
+      "bytes": 29379,
+      "sha256": "c2a8e30cfcb143174f07527895e5be03f41c94f26b8537febba8720ac0ecce61"
+    },
+    "icon-maskable-512.png": {
+      "bytes": 27691,
+      "sha256": "4181998d70fbf269aa2bebace89826d7faf55dcdcf619b683f31d618189c7729"
+    },
+    "index.html": {
+      "bytes": 262190,
+      "sha256": "9f1426c90256dce443bdf85a0566efa37e0939610a8fbf9ea4af21402c514631"
+    },
+    "irtaqi.json": {
+      "bytes": 18343,
+      "sha256": "38f9f16d9f3474980a5c467bcff51b094de63e89196055264eab91734da65e6c"
+    },
+    "ishkaliat.json": {
+      "bytes": 89213,
+      "sha256": "1af6197d8accf863fcc561f524ad36057582fbee305406fe8c03056b4f9f8ea3"
+    },
+    "islamic-history.json": {
+      "bytes": 16324,
+      "sha256": "dda4369554839fa3d44bbcf4b27eb8ab563d7772f6d1ecba3419af133d50870a"
+    },
+    "knowledge.json": {
+      "bytes": 38430,
+      "sha256": "c76d252e99a23d3606b8d9394b42a77d55ba3b0fff4221cfd9fd40c0d92c5d88"
+    },
+    "manazil-sairin.json": {
+      "bytes": 10713,
+      "sha256": "24732f4c091542b23a891176a32120fcca192ddef2820e0fba94a0da45ef32fe"
+    },
+    "manifest.webmanifest": {
+      "bytes": 2961,
+      "sha256": "759d09e0d135f385c0acaed3a6ec4c15aaec16f7f64d4d8343e2880dc537f75a"
+    },
+    "nawawi40.json": {
+      "bytes": 34211,
+      "sha256": "c9170f59819ade74426206f785f2a844b39073d0ac5949cef1f179584047b742"
+    },
+    "plex-400.woff2": {
+      "bytes": 42848,
+      "sha256": "6010e7fd0dce5d527583951750728cbe3c895efbd16aa0f809ab8c824878c9d8"
+    },
+    "plex-500.woff2": {
+      "bytes": 45296,
+      "sha256": "90aef64fea9794f232332e907d45810ab268d1a11721340025eba2a2cdb36d5c"
+    },
+    "plex-600.woff2": {
+      "bytes": 45688,
+      "sha256": "16734a5adb27b0f363e566cbbeacec480da0dc0baa19c8f0053251c2e2bc0eac"
+    },
+    "privacy.html": {
+      "bytes": 11816,
+      "sha256": "c2b9316f048c1abe58763c052c23239c6763e6b17286e0618d8d2d733cf9da66"
+    },
+    "pwa-register.js": {
+      "bytes": 2567,
+      "sha256": "8488bbcbdd747738a9c18221dad62e642280dbce56907bd28db983563760db48"
+    },
+    "qalb.json": {
+      "bytes": 900142,
+      "sha256": "5d8d3b623fe05f573c0fd96e150d4388396d1e90d232c134af3e54d100c40743"
+    },
+    "qawaid-fiqh.json": {
+      "bytes": 12162,
+      "sha256": "dcc3a1f278d900d4daf08180958db7eaa63998d9df91249b1204ff36e65eb39b"
+    },
+    "quran.json": {
+      "bytes": 1397970,
+      "sha256": "cfc1b469613ff829c54f52fb7fb5825a89146c40a4f77f578c760caddfa5f69b"
+    },
+    "riyad.json": {
+      "bytes": 1009671,
+      "sha256": "502e79166ff9ebfb813a6af4dde83760670b0d9ceed552cab72568c4ca0b15af"
+    },
+    "screenshot-1.png": {
+      "bytes": 406174,
+      "sha256": "1eb0cd28dc064e8b0b535b72f832df15ac99e80d1d67e810e5b6505cc74ec7d4"
+    },
+    "screenshot-2.png": {
+      "bytes": 261257,
+      "sha256": "6b21e9c0379506e3ac11c2101824792f94b59acc7611c3eb5e8ef7bc12297879"
+    },
+    "screenshot-3.png": {
+      "bytes": 214652,
+      "sha256": "8ace810a15c1b2d06ffe8d4193b873e9579330598c053b1518f10b5b520465d3"
+    },
+    "screenshot-4.png": {
+      "bytes": 137769,
+      "sha256": "b3e92f125f844c5fc65ea9d9278c4e6c486f06d5229250a44cab058070a18cc1"
+    },
+    "screenshot-5.png": {
+      "bytes": 66610,
+      "sha256": "a2ab30be1a48a6d9607c3088953b5bbe7f21cbbb60480d936bb99ce262656197"
+    },
+    "seerah.json": {
+      "bytes": 51043,
+      "sha256": "5ae9954f4adc401974a7be47f7c4df9fd5844d183ef1a754c9922c56ed179fe6"
+    },
+    "sources.html": {
+      "bytes": 47239,
+      "sha256": "b506afc564635b35ae1f7f1eac6953a91fd664fd0482807f5205f53da7dfd7b8"
+    },
+    "splash-mark.png": {
+      "bytes": 38215,
+      "sha256": "ffea5e8b05685c278031113744f6200f155e6c01c3d862cbe9e9538a89ebefec"
+    },
+    "storage.js": {
+      "bytes": 4978,
+      "sha256": "deac8d4c585178d8e9a6b9ffd4c322a754e3cca1618fd10ba9a0487b6c746c6a"
+    },
+    "suwiya-mumin.json": {
+      "bytes": 13805,
+      "sha256": "280d1050d6c64161d1f804028c01a6c93407b24006540933b496e3a89a7c62a5"
+    },
+    "sw.js": {
+      "bytes": 6640,
+      "sha256": "fcc37aa30c6f4648ea909c3ceca5a96e1212f5f81be96f22de709bbb7fd3edbb"
+    },
+    "tadaruk-icon-square.svg": {
+      "bytes": 17536,
+      "sha256": "49bbda572144033ba067c39ae1f01e81f7f5928233a79bd0d167c2a223bc79a7"
+    },
+    "tajweed.json": {
+      "bytes": 23848,
+      "sha256": "682af30c6b4cb5ddd24a164a53b3d91987c72a9793bc7f9ba72d753c37630fdb"
+    },
+    "tasbih.html": {
+      "bytes": 28096,
+      "sha256": "5cb1a2de69a49e56d36a4978d6b47d8f7f3c1830cc662fb9384a72146cc05eac"
+    },
+    "usul-fiqh.json": {
+      "bytes": 19078,
+      "sha256": "b601bdd6cff30927c2661ca5fb837cea580e02006db14c9c1cc75fb9cc1a79c9"
+    },
+    "usul-tafsir.json": {
+      "bytes": 22599,
+      "sha256": "58b81e7255bdbf64ed68bc586c36a944cedf50780d897677c3a49462f12d43ae"
+    },
+    "version.js": {
+      "bytes": 475,
+      "sha256": "bd49c2fa59c7ec8272f7a193aea9782067bbd74e7bbac61e9db07cc75ed212ff"
+    }
+  }
+}
