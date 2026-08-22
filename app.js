@@ -851,13 +851,13 @@ function openQuranSearch(){
   openQuranTools();
   setTimeout(()=>{const q=document.getElementById('q-search');q?.scrollIntoView({behavior:'smooth',block:'center'});q?.focus()},90);
 }
-const MUYASSAR_FULL_URL='https://qurancomplex.gov.sa/isdarat-books/#flipbook-df_11362/1/';
 const MUYASSAR_BOOK_URL='https://qurancomplex.gov.sa/kfgqpc-books-tafseer-muyassar/';
 const MUYASSAR_API_BASE='https://api.alquran.cloud/v1/ayah/';
+const MUYASSAR_FULL_API_URL='https://api.alquran.cloud/v1/quran/ar.muyassar';
 const MUYASSAR_API_EDITION='ar.muyassar';
 const MUYASSAR_CACHE='tadaruq-tafsir-muyassar-r45-v1';
 const muyassarMemory=new Map();
-const muyassarAyahUrl=(s,a)=>`https://quran.com/ar/${encodeURIComponent(s||1)}%3A${encodeURIComponent(a||1)}/tafsirs/ar-tafsir-muyassar`;
+let muyassarCorpus=null,muyassarCorpusSource='',muyassarReaderSurah=1,muyassarReaderQuery='',tafsirCurrentTarget={s:1,a:1};
 const muyassarApiUrl=(s,a)=>`${MUYASSAR_API_BASE}${encodeURIComponent(s||1)}:${encodeURIComponent(a||1)}/${MUYASSAR_API_EDITION}`;
 function firstAyahOnPage(){const run=(Q?.pages?.[qPage-1]||[])[0];return run?{s:+run[0],a:+run[1]}:{s:1,a:1}}
 function tafsirTarget(){return firstAyahOnPage()}
@@ -866,8 +866,37 @@ function plainTafsirText(v){
   const box=document.createElement('div');box.innerHTML=String(v||'');
   return (box.textContent||box.innerText||'').replace(/\s+/g,' ').trim();
 }
+function validateMuyassarCorpus(payload){
+  const edition=payload?.data?.edition?.identifier, surahs=payload?.data?.surahs;
+  if(payload?.code!==200||!Array.isArray(surahs)||surahs.length!==114||(edition&&edition!==MUYASSAR_API_EDITION))throw new Error('muyassar-invalid-corpus');
+  const normalized=surahs.map((su,si)=>({number:+su.number||si+1,name:String(su.name||''),ayahs:(su.ayahs||[]).map((a,ai)=>({number:+a.numberInSurah||ai+1,text:plainTafsirText(a.text)}))}));
+  const total=normalized.reduce((n,su)=>n+su.ayahs.length,0);
+  if(total!==6236||normalized.some(su=>!su.ayahs.length||su.ayahs.some(a=>!a.text)))throw new Error('muyassar-incomplete-corpus');
+  return normalized;
+}
+async function cachedMuyassarCorpusResponse(){
+  if(!('caches' in window))return null;
+  try{return await (await caches.open(MUYASSAR_CACHE)).match(MUYASSAR_FULL_API_URL)}catch{return null}
+}
+async function loadMuyassarCorpus({allowNetwork=true,force=false}={}){
+  if(muyassarCorpus&&!force)return muyassarCorpus;
+  let response=force?null:await cachedMuyassarCorpusResponse(),source=response?'cache':'';
+  if(!response&&allowNetwork){
+    const requestUrl=force?`${MUYASSAR_FULL_API_URL}?refresh=${Date.now()}`:MUYASSAR_FULL_API_URL;
+    response=await fetch(requestUrl,{cache:'no-cache',headers:{Accept:'application/json'}});
+    if(!response.ok)throw new Error('muyassar-corpus-http-'+response.status);
+    source='network';
+    if('caches' in window){try{await (await caches.open(MUYASSAR_CACHE)).put(MUYASSAR_FULL_API_URL,response.clone())}catch{}}
+  }
+  if(!response)throw new Error('muyassar-corpus-not-cached');
+  const payload=await response.json();
+  muyassarCorpus=validateMuyassarCorpus(payload);muyassarCorpusSource=source;
+  muyassarCorpus.forEach(su=>su.ayahs.forEach(a=>muyassarMemory.set(`${su.number}:${a.number}`,a.text)));
+  return muyassarCorpus;
+}
 async function loadMuyassarAyah(s,a){
   const key=`${+s}:${+a}`;if(muyassarMemory.has(key))return muyassarMemory.get(key);
+  try{await loadMuyassarCorpus({allowNetwork:false});if(muyassarMemory.has(key))return muyassarMemory.get(key)}catch{}
   const url=muyassarApiUrl(s,a);let response=null;
   if('caches' in window){try{response=await (await caches.open(MUYASSAR_CACHE)).match(url)}catch{}}
   if(!response){
@@ -886,7 +915,7 @@ function paintMuyassarContent(text){
   const wrap=document.createElement('div');wrap.className='tafsir-official-text';
   const badge=document.createElement('div');badge.className='tafsir-official-badge';badge.textContent='التفسير الميسر · مجمع الملك فهد';
   const para=document.createElement('p');para.textContent=text;
-  const note=document.createElement('div');note.className='tafsir-transport-note';note.textContent='النص من إصدار التفسير الميسر المعتمد من مجمع الملك فهد؛ النقل الرقمي لهذه الآية عبر AlQuran.cloud.';
+  const note=document.createElement('div');note.className='tafsir-transport-note';note.textContent='التفسير الميسر · مجمع الملك فهد. يحتفظ تدارُك بالنص المرجعي محليًا عند توفر النسخة الكاملة أو بعد تحميل الآية.';
   wrap.append(badge,para,note);host.appendChild(wrap);
 }
 function paintMuyassarError(){
@@ -898,15 +927,39 @@ function closeTafsirSheet(fromPop=false){
   sh.classList.add('hide');sh.setAttribute('aria-hidden','true');tafsirHistoryActive=false;tafsirRequestToken++;
 }
 let muyassarReturnFocus=null;
-function openMuyassarSheet(){
-  const sh=document.getElementById('muyassar-sheet'); if(!sh)return window.open(MUYASSAR_FULL_URL,'_blank','noopener');
+function muyassarReaderStatus(text,error=false){const el=document.getElementById('muyassar-reader-status');if(el){el.textContent=text||'';el.classList.toggle('error',!!error)}}
+function bindMuyassarReaderControls(){
+  const sel=document.getElementById('muyassar-surah-select'),search=document.getElementById('muyassar-search');
+  sel?.addEventListener('change',()=>{muyassarReaderSurah=Math.max(1,Math.min(114,+sel.value||1));muyassarReaderQuery='';renderMuyassarReader()});
+  search?.addEventListener('input',()=>{muyassarReaderQuery=search.value||'';renderMuyassarReaderList()});
+  document.getElementById('muyassar-prev')?.addEventListener('click',()=>{muyassarReaderSurah=Math.max(1,muyassarReaderSurah-1);muyassarReaderQuery='';renderMuyassarReader()});
+  document.getElementById('muyassar-next')?.addEventListener('click',()=>{muyassarReaderSurah=Math.min(114,muyassarReaderSurah+1);muyassarReaderQuery='';renderMuyassarReader()});
+  document.getElementById('muyassar-refresh')?.addEventListener('click',async()=>{muyassarReaderStatus('جارٍ تحديث النسخة الكاملة…');try{await loadMuyassarCorpus({allowNetwork:true,force:true});renderMuyassarReader();muyassarReaderStatus('تم تحديث التفسير الكامل وحفظه للعمل بدون إنترنت.')}catch{muyassarReaderStatus('تعذّر تحديث النسخة الآن. النسخة المحفوظة — إن وجدت — لم تُحذف.',true)}});
+}
+function renderMuyassarReaderList(){
+  const host=document.getElementById('muyassar-reader-list');if(!host||!muyassarCorpus)return;
+  const su=muyassarCorpus[muyassarReaderSurah-1],qsu=Q?.suras?.[muyassarReaderSurah-1],query=searchNorm(muyassarReaderQuery);
+  const items=su.ayahs.filter((a,i)=>!query||searchNorm(a.text+' '+(qsu?.a?.[i]||'')).includes(query));
+  host.innerHTML=items.length?items.map(a=>{const verse=qsu?.a?.[Math.max(0,a.number-1)]||'';return `<article class="muyassar-ayah-card" data-ayah="${a.number}"><div class="muyassar-ayah-ref">${escHtml(su.name||qsu?.name||'السورة')} · الآية ${AR(a.number)}</div><div class="muyassar-ayah-quran">${escHtml(verse)}</div><div class="muyassar-ayah-tafsir">${escHtml(a.text)}</div></article>`}).join(''):'<div class="muyassar-empty">لا توجد نتائج داخل هذه السورة.</div>';
+}
+function renderMuyassarReader(){
+  if(!muyassarCorpus)return;
+  const sel=document.getElementById('muyassar-surah-select'),search=document.getElementById('muyassar-search');
+  if(sel){sel.innerHTML=muyassarCorpus.map(su=>`<option value="${su.number}"${su.number===muyassarReaderSurah?' selected':''}>${AR(su.number)} · ${escHtml(su.name||Q?.suras?.[su.number-1]?.name||'')}</option>`).join('');sel.value=String(muyassarReaderSurah)}
+  if(search)search.value=muyassarReaderQuery;
+  const prev=document.getElementById('muyassar-prev'),next=document.getElementById('muyassar-next');if(prev)prev.disabled=muyassarReaderSurah<=1;if(next)next.disabled=muyassarReaderSurah>=114;
+  renderMuyassarReaderList();
+  muyassarReaderStatus(muyassarCorpusSource==='cache'?'التفسير الكامل محفوظ على الجهاز ويعمل بدون إنترنت.':'تم تحميل التفسير الكامل وحفظه على الجهاز للعمل بدون إنترنت.');
+}
+async function openMuyassarSheet(surahNo=null){
+  const sh=document.getElementById('muyassar-sheet');if(!sh)return;
   muyassarReturnFocus=document.activeElement;
-  const full=document.getElementById('muyassar-full-link'),book=document.getElementById('muyassar-book-link');
-  if(full)full.href=MUYASSAR_FULL_URL;if(book)book.href=MUYASSAR_BOOK_URL;
-  const wasHidden=sh.classList.contains('hide');
-  sh.classList.remove('hide');sh.setAttribute('aria-hidden','false');document.body.classList.add('muyassar-open');
+  if(surahNo)muyassarReaderSurah=Math.max(1,Math.min(114,+surahNo||1));
+  const wasHidden=sh.classList.contains('hide');sh.classList.remove('hide');sh.setAttribute('aria-hidden','false');document.body.classList.add('muyassar-open');
   if(wasHidden&&!muyassarHistoryActive){try{history.pushState({...(history.state||{}),tadaruqMuyassar:true},'',location.href);muyassarHistoryActive=true}catch{}}
-  document.getElementById('muyassar-full-link')?.focus();
+  await loadQuran();muyassarReaderStatus('جارٍ تجهيز التفسير الميسر الكامل…');
+  try{await loadMuyassarCorpus({allowNetwork:true});renderMuyassarReader();document.getElementById('muyassar-search')?.focus({preventScroll:true})}
+  catch{muyassarReaderStatus('تعذّر تحميل النسخة الكاملة الآن. افتحها مرة واحدة أثناء الاتصال بالإنترنت ليحتفظ بها تدارُك للعمل بدون إنترنت.',true)}
 }
 function closeMuyassarSheet(fromPop=false){
   const sh=document.getElementById('muyassar-sheet');if(!sh||sh.classList.contains('hide'))return;
@@ -917,9 +970,8 @@ function closeMuyassarSheet(fromPop=false){
 async function openTafsirSheet(t=tafsirTarget()){
   const sh=document.getElementById('tafsir-sheet');if(!sh)return window.open(muyassarAyahUrl(t.s,t.a),'_blank','noopener');
   await loadQuran();
-  const target={s:Math.max(1,+t.s||1),a:Math.max(1,+t.a||1)},su=Q&&suraOf(target.s),verse=tafsirVerseText(target);
+  const target={s:Math.max(1,+t.s||1),a:Math.max(1,+t.a||1)},su=Q&&suraOf(target.s),verse=tafsirVerseText(target);tafsirCurrentTarget=target;
   document.getElementById('tafsir-sheet-ref').textContent=`${su?su.name:'السورة'} — الآية ${AR(target.a)}`;document.getElementById('tafsir-sheet-ayah').textContent=verse;
-  const exact=document.getElementById('tafsir-sheet-muyassar');if(exact)exact.href=muyassarAyahUrl(target.s,target.a);
   const host=document.getElementById('tafsir-sheet-content');if(host)host.innerHTML='<div class="tafsir-loading">جارٍ تحميل نص التفسير الميسر لهذه الآية…</div>';
   const wasHidden=sh.classList.contains('hide');sh.classList.remove('hide');sh.setAttribute('aria-hidden','false');
   if(wasHidden&&!tafsirHistoryActive){try{history.pushState({...(history.state||{}),tadaruqTafsir:true},'',location.href);tafsirHistoryActive=true}catch{}}
@@ -1231,10 +1283,11 @@ document.getElementById('rd-search')?.addEventListener('click',openQuranSearch);
 document.getElementById('rd-tafsir').onclick=()=>{setReaderChromeHidden(false);openCurrentTafsir()};
 document.getElementById('tafsir-sheet-close')?.addEventListener('click',closeTafsirSheet);
 document.getElementById('tafsir-sheet')?.addEventListener('click',e=>{if(e.target?.id==='tafsir-sheet')closeTafsirSheet()});
-document.getElementById('tafsir-sheet-full')?.addEventListener('click',()=>window.open(MUYASSAR_FULL_URL,'_blank','noopener'));
-document.getElementById('muyassar-open')?.addEventListener('click',openMuyassarSheet);
+document.getElementById('tafsir-sheet-reader')?.addEventListener('click',()=>{const t=tafsirCurrentTarget;closeTafsirSheet(true);openMuyassarSheet(t.s)});
+document.getElementById('muyassar-open')?.addEventListener('click',()=>openMuyassarSheet());
 document.getElementById('muyassar-close')?.addEventListener('click',closeMuyassarSheet);
 document.getElementById('muyassar-sheet')?.addEventListener('click',e=>{if(e.target?.id==='muyassar-sheet')closeMuyassarSheet()});
+bindMuyassarReaderControls();
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!document.getElementById('muyassar-sheet')?.classList.contains('hide')){closeMuyassarSheet();return}if(!document.getElementById('tafsir-sheet')?.classList.contains('hide'))closeTafsirSheet()});
 window.addEventListener('popstate',()=>{
   if(muyassarHistoryActive&&!document.getElementById('muyassar-sheet')?.classList.contains('hide')){closeMuyassarSheet(true);return}
@@ -1507,7 +1560,7 @@ async function loadHistory(){if(HISTORY)return HISTORY;try{HISTORY=await (await 
 const KNOWLEDGE_CATS={sunnah:{title:'السنة والسيرة',items:[['agreed','متفق عليه'],['nawawi','الأربعون النووية'],['riyad','رياض الصالحين'],['seerah','السيرة النبوية']]},tafsir:{title:'التفسير وعلوم القرآن',items:[['muyassar','التفسير الميسر'],['usultafsir','أصول التفسير']]},fiqh:{title:'الفقه وأصوله',items:[['fiqh','الفقه الميسر'],['usulfiqh','أصول الفقه'],['fuqaha','فقهاء عبر العصور'],['busola','فقه المقاصد والبوصلة']]},history:{title:'التاريخ الإسلامي',items:[['companions','الصحابة'],['history','مختصر التاريخ الإسلامي']]}};
 function moduleExtraSources(m,x){const norm=u=>String(u||'').trim().replace(/\/$/,'');const primary=norm(m?.url);return (x?.sources||[]).filter(src=>!primary||norm(src?.url)!==primary)}
 function sourceModules(data,kind='علم'){const m=data?.meta||{},items=data?.items||[];return `<div class="learn-intro"><b>${laterEsc(m.title||'')}</b><br>${laterEsc(m.subtitle||'')}<div class="learn-ref-row">${m.url?`<a href="${laterEsc(m.url)}" target="_blank" rel="noopener">${laterEsc(m.book||m.source||'فتح المرجع الأصلي')} ↗</a>`:''}</div><span class="learn-note">${laterEsc(m.note||'')}</span></div>`+items.map((x,i)=>{const extra=moduleExtraSources(m,x);return `<article class="learn-module-card">${x.date||x.dates?`<div class="date">${laterEsc(x.date||x.dates)}</div>`:''}<h3>${laterEsc(x.title||x.name)}</h3><div class="lead">${laterEsc(x.lead||'')}</div>${x.points?.length?`<ul>${x.points.map(p=>`<li>${laterEsc(p)}</li>`).join('')}</ul>`:''}${extra.length?`<div class="source-stack module-extra-sources"><div class="source-scope-note">مرجع إضافي لهذه البطاقة</div>${sourceStack(extra)}</div>`:''}${laterRegister(`${kind}:${x.id}`,{kind,title:x.title||x.name,text:x.lead||'',source:x.sources?.[0]?.label||'',tab:'sunnah'})}</article>`}).join('')}
-async function renderSimpleKnowledge(mode){const host=document.getElementById('learn-'+mode);if(!host)return;if(mode==='usultafsir'){await loadUsulTafsir();host.innerHTML=sourceModules(USUL_TAFSIR,'أصول تفسير')}else if(mode==='usulfiqh'){await loadUsulFiqh();host.innerHTML=sourceModules(USUL_FIQH,'أصول فقه')}else if(mode==='fuqaha'){await loadFuqaha();host.innerHTML=sourceModules(FUQAHA,'فقيه')}else if(mode==='history'){await loadHistory();host.innerHTML=sourceModules(HISTORY,'تاريخ')}else if(mode==='muyassar'){host.innerHTML=`<div class="muyassar-learning"><small>مجمع الملك فهد لطباعة المصحف الشريف</small><h3>التفسير الميسر — قراءة مستقلة كاملة</h3><p>هذا نفس التفسير المعتمد الموجود بجوار المصحف. يفتح تدارُك القارئ الرسمي للمجمع خارج إطار التضمين حتى لا تعتمد القراءة على iframe قد تمنعه سياسات المتصفح أو يتأثر بتغييرات الموقع.</p><button type="button" data-open-muyassar>فتح التفسير الميسر كاملًا</button><div class="source-stack">${sourceStack([{label:'التفسير الميسر — الإصدار الرسمي',url:'https://qurancomplex.gov.sa/kfgqpc-books-tafseer-muyassar/'},{label:'منصة مطوري القرآن — مجمع الملك فهد',url:'https://qurancomplex.gov.sa/en/techquran/dev/'}])}</div></div>`;host.querySelector('[data-open-muyassar]')?.addEventListener('click',openMuyassarSheet)}}
+async function renderSimpleKnowledge(mode){const host=document.getElementById('learn-'+mode);if(!host)return;if(mode==='usultafsir'){await loadUsulTafsir();host.innerHTML=sourceModules(USUL_TAFSIR,'أصول تفسير')}else if(mode==='usulfiqh'){await loadUsulFiqh();host.innerHTML=sourceModules(USUL_FIQH,'أصول فقه')}else if(mode==='fuqaha'){await loadFuqaha();host.innerHTML=sourceModules(FUQAHA,'فقيه')}else if(mode==='history'){await loadHistory();host.innerHTML=sourceModules(HISTORY,'تاريخ')}else if(mode==='muyassar'){host.innerHTML=`<div class="muyassar-learning"><small>مجمع الملك فهد لطباعة المصحف الشريف</small><h3>التفسير الميسر — كامل داخل تدارُك</h3><p>اقرأ السور والآيات والتفسير داخل التطبيق نفسه. عند فتح القارئ أول مرة أثناء الاتصال، يحتفظ تدارُك بالنسخة الكاملة للعمل بدون إنترنت بعد ذلك.</p><button type="button" data-open-muyassar>فتح التفسير الميسر</button><div class="source-stack">${sourceStack([{label:'التفسير الميسر — الإصدار الرسمي',url:'https://qurancomplex.gov.sa/kfgqpc-books-tafseer-muyassar/'},{label:'منصة مطوري القرآن — مجمع الملك فهد',url:'https://qurancomplex.gov.sa/en/techquran/dev/'}])}</div></div>`;host.querySelector('[data-open-muyassar]')?.addEventListener('click',()=>openMuyassarSheet())}}
 function openKnowledgeCategory(cat){const c=KNOWLEDGE_CATS[cat];if(!c)return;learnCategory=cat;learnMode=c.items[0][0];document.getElementById('knowledge-home')?.classList.add('hide');const head=document.getElementById('learn-category-head');head?.classList.remove('hide');document.getElementById('learn-category-title').textContent=c.title;document.getElementById('learn-category-kicker').textContent='قسم العلم';const seg=document.getElementById('learn-seg');seg.classList.remove('hide');seg.innerHTML=c.items.map(([id,label])=>`<button data-learn="${id}" ${id===learnMode?'aria-current="true"':''}>${label}</button>`).join('');renderKnowledge()}
 function openKnowledgeHome(){learnCategory='';learnMode='home';document.getElementById('knowledge-home')?.classList.remove('hide');document.getElementById('learn-category-head')?.classList.add('hide');document.getElementById('learn-seg')?.classList.add('hide');document.querySelectorAll('#v-sunnah>[id^="learn-"]').forEach(el=>{if(!['learn-category-head','learn-seg'].includes(el.id))el.classList.add('hide')})}
 function busolaSources(ids=[]){return `<div class="busola-src">${ids.map(id=>BUSOLA?.sources?.[id]).filter(Boolean).map(s=>`<a href="${laterEsc(s.url)}" target="_blank" rel="noopener">${laterEsc(s.label)} ↗</a>`).join('')}</div>`}
