@@ -99,3 +99,17 @@ The focused printed Mushaf uses a fixed `100dvh` viewport. Body/wrapper/read-vie
 R45 displays the complete Tafsir Muyassar response for the explicitly selected ayah inside a sheet. Canonical religious/content authority is the King Fahd Complex digital Tafseer Muyassar dataset. Technical per-ayah transport uses AlQuran.cloud edition `ar.muyassar`; responses are validated and failures show no synthesized tafsir. Public responses may be cached in `tadaruq-tafsir-muyassar-r45-v1`.
 
 This Tafsir layer is separate from Quran page geometry: no tafsir text is inserted into, overlaid upon, or used to reconstruct the fixed SVG page.
+
+## R49 presentation fit — 2026-08-22
+Owner supplied Tadaruq and Ayah-app screenshots to compare apparent page size/readability. Both screenshots were 589 CSS/image pixels wide; rough visible text extents were already comparable horizontally. The more successful Ayah presentation mainly occupied more vertical reading space with less top/bottom dead area.
+
+R49 therefore replaces the old blind R47 110% portrait rule with a conservative presentation-only strategy:
+- the pinned KFQC SVG viewBox remains authoritative and is never rewritten;
+- portrait reader top-aligns the page;
+- `applyMushafAyahLikeFit()` measures non-hit-region SVG content bounds and may enlarge the WHOLE SVG only when there is measured blank horizontal room;
+- final scale is clamped to 1.000–1.035;
+- glyph paths and `.ayahPolygon` hit regions share the exact same CSS transform;
+- landscape/short-height remain conservatively contained;
+- R46 dark-mode white-pre-filter-canvas rule remains intact.
+
+No new Quran content source, page mapping, polygon source, glyph data, or page count is introduced. Real-device visual QA on representative live pages remains required.

@@ -1,6 +1,6 @@
-/* Tadaruq PWA service worker — v24 R48. */
-const CACHE_NAME = 'tadaruq-v24-r48-pwa-20260822';
-const RUNTIME_CACHE = 'tadaruq-runtime-v24-r48-20260822';
+/* Tadaruq PWA service worker — v24 R49. */
+const CACHE_NAME = 'tadaruq-v24-r49-pwa-20260822';
+const RUNTIME_CACHE = 'tadaruq-runtime-v24-r49-20260822';
 const HADITH_CORPUS_CACHE = 'tadaruq-lulu-marjan-v1';
 const MUSHAF_PUBLIC_CACHE = 'tadaruq-mushaf-kfqc-r43-v1';
 const TAFSIR_MUYASSAR_CACHE = 'tadaruq-tafsir-muyassar-r45-v1';
@@ -26,6 +26,14 @@ const PRECACHE_URLS = [
   "./irtaqi.json",
   "./ishkaliat.json",
   "./knowledge.json",
+  "./aqeedah.json",
+  "./fiqh-life.json",
+  "./tajweed.json",
+  "./hadith-sciences.json",
+  "./akhlaq.json",
+  "./adab.json",
+  "./digital-life.json",
+  "./qawaid-fiqh.json",
   "./fiqh-busola.json",
   "./benefit.json",
   "./manifest.webmanifest",
