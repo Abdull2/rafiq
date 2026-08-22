@@ -1,10 +1,10 @@
-# Tadaruq — Local Data Safety Layer (current through v24 R24; introduced in R10)
+# Tadaruq — Local Data Safety Layer (current through v24 R53; introduced in R10)
 
 ## Why this exists
 Rafiq now has real users. Their local data must be treated as legacy user data that survives ordinary UI/content releases. R10 adds a guard layer without adding a cloud backend or central database.
 
 ## Data version
-- Current Chrome extension code version is `24.4.0`; Google Play/TWA identity remains separate from the local data schema.
+- Current standalone Chrome extension release remains `24.42.0` unless separately changed; PWA/TWA release is v24 R53 and Flutter source remains at target 25.0.1+250052 (R52 branch). These product/build versions remain separate from the local data schema.
 - Local schema version is separate: `rafiq:data-version`.
 - Current local schema: **2**.
 - Future changes to storage keys or data shapes MUST add a migration. Never silently rename/delete a user key.
@@ -138,3 +138,97 @@ R38 changes navigation/UI and static educational content only. It introduces **n
 
 ## R39 — Tafseer Muyassar iframe removal (2026-08-21)
 R39 introduces **no new persistent key, no key rename/removal, no schema migration, and no stored-shape change**. `rafiq:data-version` remains **2**. The full Tafseer Muyassar action changes only from a remote iframe presentation to user-initiated direct official-site links. No Tafseer Muyassar text or reading position is newly stored by Tadaruq. Backup metadata `appVersion` advances to **24.39.0** only.
+
+## R40 — 2026-08-21
+R40 introduces **no new application persistent key, no key rename/removal, and no schema migration**. `rafiq:data-version` remains **2**. Backup metadata `appVersion` advances to **24.40.0** only.
+
+Content compatibility:
+- legacy dua categories/items remain in the same order and positions; new dua content is append-only, preserving existing `dua-fav` `categoryId:index` references;
+- all 99 Asma numeric IDs are unchanged;
+- all 19 Seerah content IDs are unchanged.
+
+Chrome extension compatibility:
+- the new MV3 companion reuses existing registered `rafiqNotebook` and `rafiqChromePrefs` keys;
+- it does not delete `rafiqPrayerConfig` or `rafiqLastPrayerNotification` from older extension installs;
+- no new extension-only persistent key is added to the Data Safety registry;
+- optional daily reminder fields are additive properties inside the existing `rafiqChromePrefs` object.
+
+## R41 — 2026-08-21
+R41 introduces **no new persistent application key, no key rename/removal, no incompatible stored-shape change, and no migration**. `rafiq:data-version` remains **2**. Backup metadata `appVersion` advances to **24.41.0** only.
+
+Compatibility details:
+- `adiya.json` is byte-identical to corrected R40; the visible 104/13 summary and new-category shortcuts are presentation only, so legacy `dua-fav` `categoryId:index` references remain unchanged.
+- `agreed-hadith.json` and `manazil-sairin.json` are static religious educational content, not personal data.
+- Saved Later integration reuses the existing Saved Later system and adds no parallel persistent store.
+- all existing Asma numeric IDs and Seerah IDs remain unchanged.
+- Tazkiyah R41 removes active runtime writes to the rejected legacy 40-day program state. The exact key `qalb-prog` **remains registered** for backup/restore compatibility; R41 does not delete an old user's existing value.
+- extension version 24.41.0 bundles two additional static search datasets but adds no storage key and no host permission. Existing `rafiqNotebook` and `rafiqChromePrefs` remain the active compatibility keys; historical extension keys are not deleted.
+
+Old users remain compatible; no forced reset or onboarding is introduced.
+
+## R42 — 2026-08-21
+R42 introduces **no new persistent user key, no key rename/removal, no incompatible object-shape change, and no migration**. `rafiq:data-version` remains **2**. Backup metadata `appVersion` advances to **24.42.0** only.
+
+Compatibility details:
+- the 1,906-hadith Lulu/Marjan reader is public/reference content and creates no user-data record;
+- `tadaruq-lulu-marjan-v1` is a browser CacheStorage cache for downloaded public corpus files, not personal data and not part of backup/export/import;
+- existing Saved Later integration reuses the established Saved Later registry; no parallel hadith bookmark database is added;
+- the 12 existing reviewed hadith overlay IDs are preserved;
+- `adiya.json` ordering remains unchanged from corrected R40/R41, preserving `dua-fav` `categoryId:index` references;
+- all 99 Asma numeric IDs and all 19 Seerah IDs remain unchanged;
+- stable `qalb` routes/storage and all protected legacy keys remain registered;
+- extension 24.42.0 keeps existing `rafiqNotebook` and `rafiqChromePrefs` storage compatibility and adds no broad host/tab/history permission.
+
+Old users remain compatible; no forced reset/onboarding is introduced.
+
+## R43 — Mushaf robustness/offline cache (2026-08-21)
+R43 introduces **no new persistent personal-data key, no key rename/removal, no incompatible stored-shape change, and no migration**. `rafiq:data-version` remains **2**. Backup metadata `appVersion` advances to **24.43.0** only.
+
+Compatibility details:
+- `quran-pos` remains registered as the same object key. R43 stops implicit ayah-selection writes from ordinary desktop clicks; explicit `حفظ الموضع هنا` continues to store page/surah/ayah in the existing object.
+- `tadaruq-mushaf-kfqc-r43-v1` is CacheStorage containing public KFQC SVG page resources. It is not personal data and is not included in backup/export/import.
+- deleting the optional offline Mushaf copy deletes only that public CacheStorage bucket; it does not delete `quran-pos`, Quran reading history, settings, or any other user key.
+- R43 adds no analytics/account/backend/cloud state.
+
+Old users remain compatible and receive no forced reset or onboarding.
+
+
+## R44 data-safety note
+R44 changes navigation and reader UI only. It adds no personal persistent keys, changes no existing key shape, and performs no migration. `quran-pos` and all R43 CacheStorage rules remain unchanged. Backup `appVersion` is `24.44.0`; schema remains 2.
+
+## R45 — interaction/history/Tafsir safety note (2026-08-21)
+R45 introduces **no new persistent personal-data key, no rename/removal, no incompatible stored-shape change, and no migration**. `rafiq:data-version` remains **2**. Backup metadata `appVersion` advances to **24.45.0** only.
+
+Compatibility details:
+- `quran-pos` remains the same registered reading-position object. Natural browser/device Back and fixed reader viewport do not change its shape or deletion semantics.
+- Browser `history.state` markers used for reader/Tafsir overlay Back behavior are temporary navigation state, not persistent user records and are not part of backup/export/import.
+- `tadaruq-tafsir-muyassar-r45-v1` is CacheStorage for public Tafsir Muyassar response content. It is not personal data and is not exported as user backup data.
+- Existing R43 public Mushaf cache `tadaruq-mushaf-kfqc-r43-v1` remains unchanged.
+- Same-tab root reset changes only current UI/navigation state. It does not clear user history, favorites, Saved Later, progress, preferences, `quran-pos`, or other registered storage.
+
+Old users remain compatible; no forced reset or onboarding is introduced.
+
+## R49 data-safety note — 2026-08-22
+R49 adds static public Islamic curriculum JSON and source links only. No new personal key, profile field, analytics event, server upload, or migration is introduced. Search/group filters and the limited zakat arithmetic input are ephemeral UI state and are not persisted. Backup schema remains 2; backup appVersion is 24.49.0. Existing public CacheStorage identities for Mushaf, Tafsir Muyassar, and Lulu/Marjan remain unchanged.
+
+## R50 — 2026-08-22
+R50 changes presentation, religious educational text, and interaction behavior only. It adds no new personal persistent key, changes no existing key shape, and requires no migration. `rafiq:data-version` remains 2. Backup metadata appVersion is 24.50.0. Public Mushaf/Tafsir/Hadith CacheStorage identities remain unchanged.
+
+## R51 — 2026-08-22
+R51 changes presentation, source-display placement, and readability only. It adds no new personal persistent key, changes no stored user-data shape, adds no analytics/backend upload, and requires no migration. `rafiq:data-version` remains 2. Backup metadata appVersion is 24.51.0. Existing public CacheStorage identities for Mushaf, Tafsir Muyassar, and Lulu/Marjan remain unchanged. Source de-duplication affects rendering only; provenance/source metadata is not deleted as user data.
+
+
+## R52 — `quran-khatmas-v1`
+- New additive local object: `quran-khatmas-v1`. It stores user-created Qur'an reading-track names and positions.
+- It does **not** replace or rewrite `quran-pos`.
+- It is registered in backup/export/import and expected to be an object.
+- Deleting a named track removes only that track; stopping the active track sets/deactivates `activeId` without deleting the item.
+- Names are arbitrary organizational user text. Do not derive a religious ruling, spiritual score, or reward claim from the label.
+- Personal data schema remains **2**; backup metadata app version is **24.53.0**.
+- `suwiya-mumin.json` and the added Manazil media metadata are static public content and are not included as user data in backup/export.
+
+
+## R53 — UI preference only
+- Appearance fields live inside the already-backed-up `settings` object; no migration or destructive restore behavior was added.
+- Personal data schema remains **2**; backup metadata app version is **24.53.0**.
+- Religious/educational JSON content is unchanged.

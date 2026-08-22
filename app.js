@@ -2950,15 +2950,25 @@ document.getElementById('saved-close')?.addEventListener('click',()=>document.ge
 document.getElementById('saved-list')?.addEventListener('click',async e=>{const d=e.target.closest('[data-saved-del]');if(d){laterItems=laterItems.filter(x=>x.id!==d.dataset.savedDel);await store.set('saved-later-v1',laterItems);updateLaterBadge();renderSavedPanel();return}const o=e.target.closest('[data-saved-open]');if(o&&o.dataset.savedOpen){document.getElementById('saved-panel')?.classList.add('hide');o.dataset.savedOpen==='azkar'?openZikrSection('azkar'):o.dataset.savedOpen==='qalb'?openTazkiyahSection():switchTab(o.dataset.savedOpen)}});
 document.addEventListener('click',e=>{const b=e.target.closest('.save-later');if(!b)return;e.preventDefault();e.stopPropagation();toggleLater(b.dataset.later)});
 
-const APPEARANCE_CHOICES=['mishkat','sage','night'];
+const APPEARANCE_CHOICES=['mishkat','sage','ocean','lavender','rose','sand','indigo','night'];
+const APPEARANCE_META={
+  mishkat:{themeColor:'#32786D',toast:'تم اختيار ألوان مِشكاة'},
+  sage:{themeColor:'#4A6940',toast:'تم اختيار ألوان تدارُك الخضراء'},
+  ocean:{themeColor:'#2F6F89',toast:'تم اختيار ألوان بحر هادئ'},
+  lavender:{themeColor:'#6F5C91',toast:'تم اختيار ألوان لافندر'},
+  rose:{themeColor:'#9A5D63',toast:'تم اختيار ألوان الورد الترابي'},
+  sand:{themeColor:'#786A3E',toast:'تم اختيار الألوان الرملية'},
+  indigo:{themeColor:'#4F5F9C',toast:'تم اختيار الألوان النيلية'},
+  night:{themeColor:'#172638',toast:'تم اختيار الوضع الليلي'}
+};
 function normalizeAppearance(value){return APPEARANCE_CHOICES.includes(value)?value:'mishkat'}
 function paintAppearanceChoices(){
   const current=normalizeAppearance(settings.appearance);
   document.querySelectorAll('[data-appearance]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.appearance===current)));
 }
-function appearanceThemeColor(name){return name==='night'?'#172638':name==='sage'?'#4A6940':'#32786D'}
+function appearanceThemeColor(name){return APPEARANCE_META[normalizeAppearance(name)].themeColor}
 async function applyAppearance(value,{save=false}={}){
-  const name=normalizeAppearance(value),dark=name==='night',palette=name==='sage'?'sage':'mishkat';
+  const name=normalizeAppearance(value),dark=name==='night',palette=dark?'night':name;
   document.documentElement.setAttribute('data-theme',dark?'dark':'light');
   document.documentElement.setAttribute('data-palette',palette);
   settings.appearance=name; settings.theme=dark?'dark':'light';
@@ -2968,8 +2978,9 @@ async function applyAppearance(value,{save=false}={}){
   if(save)await store.set('settings',settings);
 }
 document.querySelectorAll('[data-appearance]').forEach(btn=>btn.addEventListener('click',async()=>{
-  await applyAppearance(btn.dataset.appearance,{save:true});
-  toast(btn.dataset.appearance==='mishkat'?'تم اختيار ألوان مِشكاة':btn.dataset.appearance==='sage'?'تم اختيار ألوان تدارُك':'تم اختيار الوضع الليلي');
+  const name=normalizeAppearance(btn.dataset.appearance);
+  await applyAppearance(name,{save:true});
+  toast(APPEARANCE_META[name].toast);
 }));
 document.getElementById('btn-theme').onclick=async()=>{
   const current=normalizeAppearance(settings.appearance);

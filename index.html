@@ -1531,6 +1531,26 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
           <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
           <span><b>تدارُك أخضر</b><small>الألوان الخضراء الأصلية لتدارُك</small></span>
         </button>
+        <button type="button" class="appearance-choice" data-appearance="ocean" aria-pressed="false">
+          <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span><b>بحر هادئ</b><small>أزرق مائل للتركواز مع خلفية فاتحة ومنعشة</small></span>
+        </button>
+        <button type="button" class="appearance-choice" data-appearance="lavender" aria-pressed="false">
+          <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span><b>لافندر</b><small>بنفسجي هادئ ومريح مع تباين واضح للقراءة</small></span>
+        </button>
+        <button type="button" class="appearance-choice" data-appearance="rose" aria-pressed="false">
+          <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span><b>ورد ترابي</b><small>وردي دافئ وهادئ بعيد عن الألوان الصارخة</small></span>
+        </button>
+        <button type="button" class="appearance-choice" data-appearance="sand" aria-pressed="false">
+          <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span><b>رملي</b><small>بيج ورملي دافئ بطابع هادئ وتقليدي</small></span>
+        </button>
+        <button type="button" class="appearance-choice" data-appearance="indigo" aria-pressed="false">
+          <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span><b>نيلي</b><small>أزرق بنفسجي أنيق مع درجات فاتحة متوازنة</small></span>
+        </button>
         <button type="button" class="appearance-choice" data-appearance="night" aria-pressed="false">
           <span class="appearance-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
           <span><b>ليلي</b><small>داكن مريح للقراءة في الإضاءة المنخفضة</small></span>
@@ -2131,7 +2151,7 @@ body.quran-reading.reader-chrome-hidden #v-read .rd-bar{visibility:hidden}
 .src-label{font-size:13.5px!important}.learn-source,.h-src-line,.zk-source,.mus-source{font-size:14px!important;line-height:1.75!important}
 @media(max-width:360px){:root{--r51-support:13.5px}.section-source-panel{padding:12px}.section-source-panel>p{font-size:13px}.saved-text,#v-sunnah .learn-lead,#v-qalb .h-bd{font-size:14.5px!important}}
 
-/* v24 R53 — Mishkat-inspired palette choices. */
+/* v24 R54 — expanded appearance palette choices. */
 :root,[data-palette="mishkat"][data-theme="light"]{
   --paper:#F8F1DF;--card:#FFFDF7;--ink:#173B38;--ink-soft:#60726D;--soft:#60726D;
   --sage:#6C9B8F;--deep:#32786D;--wash:#EFEBDD;--line:#D8E1D6;--gold:#A95733;--clay:#C27758;
@@ -2139,6 +2159,26 @@ body.quran-reading.reader-chrome-hidden #v-read .rd-bar{visibility:hidden}
 [data-palette="sage"][data-theme="light"]{
   --paper:#F7F8F3;--card:#FFFFFF;--ink:#2E3A29;--ink-soft:#66755F;--soft:#66755F;
   --sage:#8FA97E;--deep:#4A6940;--wash:#E9EFE3;--line:#DCE5D4;--gold:#B08A4A;--clay:#B08A6A;
+}
+[data-palette="ocean"][data-theme="light"]{
+  --paper:#F3F8FB;--card:#FFFFFF;--ink:#1F3340;--ink-soft:#657984;--soft:#657984;
+  --sage:#7DA8B8;--deep:#2F6F89;--wash:#E6F0F5;--line:#D5E4EB;--gold:#A96F35;--clay:#B86E58;
+}
+[data-palette="lavender"][data-theme="light"]{
+  --paper:#F8F5FB;--card:#FFFCFF;--ink:#362F44;--ink-soft:#766D82;--soft:#766D82;
+  --sage:#9B91B7;--deep:#6F5C91;--wash:#EEE8F4;--line:#E0D8E9;--gold:#9E7339;--clay:#B87272;
+}
+[data-palette="rose"][data-theme="light"]{
+  --paper:#FFF7F5;--card:#FFFCFB;--ink:#432F32;--ink-soft:#816D6F;--soft:#816D6F;
+  --sage:#B18B88;--deep:#9A5D63;--wash:#F6E9E6;--line:#EAD9D6;--gold:#A87032;--clay:#C36F5C;
+}
+[data-palette="sand"][data-theme="light"]{
+  --paper:#FAF5EA;--card:#FFFDF8;--ink:#3D382C;--ink-soft:#786F5E;--soft:#786F5E;
+  --sage:#A8A17F;--deep:#786A3E;--wash:#F0E9D8;--line:#E3DAC5;--gold:#A86F2D;--clay:#B97958;
+}
+[data-palette="indigo"][data-theme="light"]{
+  --paper:#F5F6FC;--card:#FFFFFF;--ink:#292F49;--ink-soft:#6F7488;--soft:#6F7488;
+  --sage:#7E8BB7;--deep:#4F5F9C;--wash:#E9ECF7;--line:#DCE2EF;--gold:#9B7137;--clay:#A9696D;
 }
 [data-theme="dark"]{
   --paper:#172638;--card:#1D3141;--ink:#F6EDDC;--ink-soft:#C2CBD0;--soft:#C2CBD0;
@@ -2163,13 +2203,18 @@ header,section,#main-nav,.sheet .box,.panel .box{transition:background-color .18
 [data-theme="dark"] .h-primary,
 [data-theme="dark"] .path-start,
 [data-theme="dark"] .feedback-actions .primary{color:#10232A}
-.appearance-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.appearance-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .appearance-choice{min-width:0;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px;text-align:right;cursor:pointer;display:grid;gap:8px;align-content:start}
 .appearance-choice[aria-pressed="true"]{border-color:var(--deep);box-shadow:0 0 0 2px color-mix(in srgb,var(--deep) 16%,transparent);background:color-mix(in srgb,var(--deep) 5%,var(--card))}
 .appearance-choice>span:last-child{display:grid;gap:2px}.appearance-choice b{font-size:14.5px;color:var(--deep)}.appearance-choice small{font-size:12px;line-height:1.55;color:var(--ink-soft)}
 .appearance-swatches{display:flex;direction:ltr;gap:4px}.appearance-swatches i{width:19px;height:19px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
 .appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(1){background:#F8F1DF}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(2){background:#32786D}.appearance-choice[data-appearance="mishkat"] .appearance-swatches i:nth-child(3){background:#A95733}
 .appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(1){background:#F7F8F3}.appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(2){background:#4A6940}.appearance-choice[data-appearance="sage"] .appearance-swatches i:nth-child(3){background:#B08A4A}
+.appearance-choice[data-appearance="ocean"] .appearance-swatches i:nth-child(1){background:#F3F8FB}.appearance-choice[data-appearance="ocean"] .appearance-swatches i:nth-child(2){background:#2F6F89}.appearance-choice[data-appearance="ocean"] .appearance-swatches i:nth-child(3){background:#A96F35}
+.appearance-choice[data-appearance="lavender"] .appearance-swatches i:nth-child(1){background:#F8F5FB}.appearance-choice[data-appearance="lavender"] .appearance-swatches i:nth-child(2){background:#6F5C91}.appearance-choice[data-appearance="lavender"] .appearance-swatches i:nth-child(3){background:#9E7339}
+.appearance-choice[data-appearance="rose"] .appearance-swatches i:nth-child(1){background:#FFF7F5}.appearance-choice[data-appearance="rose"] .appearance-swatches i:nth-child(2){background:#9A5D63}.appearance-choice[data-appearance="rose"] .appearance-swatches i:nth-child(3){background:#C36F5C}
+.appearance-choice[data-appearance="sand"] .appearance-swatches i:nth-child(1){background:#FAF5EA}.appearance-choice[data-appearance="sand"] .appearance-swatches i:nth-child(2){background:#786A3E}.appearance-choice[data-appearance="sand"] .appearance-swatches i:nth-child(3){background:#A86F2D}
+.appearance-choice[data-appearance="indigo"] .appearance-swatches i:nth-child(1){background:#F5F6FC}.appearance-choice[data-appearance="indigo"] .appearance-swatches i:nth-child(2){background:#4F5F9C}.appearance-choice[data-appearance="indigo"] .appearance-swatches i:nth-child(3){background:#9B7137}
 .appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(1){background:#172638}.appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(2){background:#8AC8B9}.appearance-choice[data-appearance="night"] .appearance-swatches i:nth-child(3){background:#EF9472}
 .appearance-help{margin-top:8px}
 @media(max-width:430px){.appearance-choices{grid-template-columns:1fr}.appearance-choice{grid-template-columns:auto 1fr;align-items:center}.appearance-swatches{align-self:center}}
