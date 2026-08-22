@@ -799,6 +799,7 @@ function syncReaderSurface(nextTab){
 function searchNorm(x){ return (x||'').toString().toLowerCase().replace(/[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06edـ]/g,'').replace(/ٱ/g,'ا').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim() }
 function deepSearchText(v){ if(v==null)return ''; if(typeof v==='string'||typeof v==='number')return String(v); if(Array.isArray(v))return v.map(deepSearchText).join(' '); if(typeof v==='object')return Object.entries(v).filter(([k])=>!['u','url','link','video'].includes(k)).map(([,x])=>deepSearchText(x)).join(' '); return '' }
 const QKEY='quran-pos';
+const QKHATMA_KEY='quran-khatmas-v1';
 const JUZ_AR=['الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر',
  'الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر','السابع عشر','الثامن عشر',
  'التاسع عشر','العشرون','الحادي والعشرون','الثاني والعشرون','الثالث والعشرون','الرابع والعشرون',
@@ -811,7 +812,7 @@ async function loadQuran(){ if(Q)return Q;
 const suraOf=n=>Q.suras[n-1];
 const juzOf=p=>{ let j=1; Q.juz.forEach((sp,i)=>{ if(p>=sp) j=i+1 }); return j };
 
-async function openQuran(){ await loadQuran(); renderAyaDay(); renderResume(); renderSurahList(); refreshMushafOfflineUI().catch(()=>{}) }
+async function openQuran(){ await loadQuran(); renderAyaDay(); renderResume(); renderKhatmas(); renderSurahList(); refreshMushafOfflineUI().catch(()=>{}) }
 let quranToolsRequested=false;
 async function openQuranReaderDefault(){
   await loadQuran();
@@ -1011,6 +1012,76 @@ document.getElementById('q-search').oninput=renderSurahList;
 document.getElementById('q-list').onclick=e=>{
   const r=e.target.closest('.q-row'); if(r) openPage(+r.dataset.p) };
 
+
+function qKhatmaCleanName(v){return String(v||'').replace(/\s+/g,' ').trim().slice(0,60)}
+async function qKhatmaState(){
+  const raw=await store.get(QKHATMA_KEY);
+  if(raw&&typeof raw==='object'&&!Array.isArray(raw)){
+    const items=Array.isArray(raw.items)?raw.items.filter(x=>x&&typeof x==='object'):[];
+    return {activeId:typeof raw.activeId==='string'?raw.activeId:null,items};
+  }
+  // Compatibility if a preview build ever stored a bare array.
+  if(Array.isArray(raw))return {activeId:null,items:raw.filter(x=>x&&typeof x==='object')};
+  return {activeId:null,items:[]};
+}
+async function qKhatmaSave(st){
+  const safe={activeId:st.activeId||null,items:(st.items||[]).map(x=>({id:String(x.id),name:qKhatmaCleanName(x.name)||'ختمة',page:Math.max(1,Math.min(604,+x.page||1)),s:+x.s||null,a:+x.a||null,updatedAt:+x.updatedAt||Date.now()}))};
+  await store.set(QKHATMA_KEY,safe);return safe;
+}
+async function qKhatmaCreate(name,pos={}){
+  name=qKhatmaCleanName(name);if(!name)return null;
+  const st=await qKhatmaState(),id='kh-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
+  const x={id,name,page:Math.max(1,Math.min(604,+pos.page||qPage||1)),s:+pos.s||null,a:+pos.a||null,updatedAt:Date.now()};
+  st.items.unshift(x);st.activeId=id;await qKhatmaSave(st);return x;
+}
+async function qKhatmaSetAt(id,pos,{activate=true}={}){
+  const st=await qKhatmaState(),x=st.items.find(k=>k.id===id);if(!x)return false;
+  x.page=Math.max(1,Math.min(604,+pos.page||qPage||1));x.s=+pos.s||null;x.a=+pos.a||null;x.updatedAt=Date.now();if(activate)st.activeId=id;
+  await qKhatmaSave(st);return true;
+}
+async function qKhatmaUpdateActivePage(page){
+  const st=await qKhatmaState();if(!st.activeId)return;
+  const x=st.items.find(k=>k.id===st.activeId);if(!x)return;
+  x.page=Math.max(1,Math.min(604,+page||1));
+  if(x.s&&x.a&&qAyaPage[x.s+':'+x.a]!==x.page){x.s=null;x.a=null}
+  x.updatedAt=Date.now();await qKhatmaSave(st);
+}
+async function qKhatmaActive(){const st=await qKhatmaState();return st.items.find(x=>x.id===st.activeId)||null}
+async function qKhatmaDeactivate(){const st=await qKhatmaState();if(st.activeId){st.activeId=null;await qKhatmaSave(st)}}
+function qKhatmaWhere(x){
+  const su=x.s?suraOf(+x.s):null;
+  return `${su?.name||''}${x.a?` · الآية ${AR(+x.a)}`:''}${su?' · ':''}صفحة ${AR(+x.page||1)}`;
+}
+async function renderKhatmas(){
+  const host=document.getElementById('q-khatmas');if(!host)return;
+  const st=await qKhatmaState();
+  host.innerHTML=`<div class="q-khatma-head"><div><b>ختماتي وعلامات القراءة</b><span>${AR(st.items.length)} مسارات قراءة مستقلة</span></div><div class="q-khatma-head-actions">${st.activeId?'<button type="button" data-kh-stop>إيقاف المسار</button>':''}<button type="button" data-kh-new>إنشاء ختمة</button></div></div>
+    <p class="q-khatma-note">سمِّ كل مسار كما يناسبك: قيام الليل، تدبر، ورد خاص… الاسم للتنظيم فقط، ولا يصدر تدارُك حكمًا شرعيًا على النية أو التسمية.</p>
+    <div class="q-khatma-list">${st.items.length?st.items.map(x=>`<article class="q-khatma-item ${st.activeId===x.id?'active':''}" data-kh-id="${laterEsc(x.id)}"><div class="q-khatma-copy"><small>${st.activeId===x.id?'المسار النشط الآن':'مسار قراءة'}</small><strong>${laterEsc(x.name)}</strong><span>${laterEsc(qKhatmaWhere(x))}</span></div><div class="q-khatma-actions"><button type="button" data-kh-open>أكمل</button><button type="button" data-kh-rename aria-label="إعادة تسمية ${laterEsc(x.name)}">تسمية</button><button type="button" data-kh-delete aria-label="حذف ${laterEsc(x.name)}">حذف</button></div></article>`).join(''):'<div class="q-khatma-empty">لم تنشئ مسار قراءة بعد. أنشئ واحدًا، ثم يمكنك حفظ أي آية داخله من قائمة خيارات الآية.</div>'}</div>`;
+  host.onclick=async e=>{
+    if(e.target.closest('[data-kh-stop]')){await qKhatmaDeactivate();await renderKhatmas();toast('توقّف تحديث الختمة النشطة');return}
+    if(e.target.closest('[data-kh-new]')){
+      const name=prompt('اسم الختمة أو مسار القراءة','قيام الليل');if(!qKhatmaCleanName(name))return;
+      const cur=(await store.get(QKEY))||{page:1};await qKhatmaCreate(name,cur);await renderKhatmas();toast('أُنشئ مسار القراءة');return;
+    }
+    const row=e.target.closest('[data-kh-id]');if(!row)return;const id=row.dataset.khId;const st2=await qKhatmaState(),x=st2.items.find(k=>k.id===id);if(!x)return;
+    if(e.target.closest('[data-kh-open]')){st2.activeId=id;await qKhatmaSave(st2);await openPage(x.page);if(x.s&&x.a)highlightMushafAyah({s:+x.s,a:+x.a});return}
+    if(e.target.closest('[data-kh-rename]')){const name=prompt('الاسم الجديد',x.name);if(!qKhatmaCleanName(name))return;x.name=qKhatmaCleanName(name);x.updatedAt=Date.now();await qKhatmaSave(st2);await renderKhatmas();return}
+    if(e.target.closest('[data-kh-delete]')){if(!confirm(`حذف «${x.name}»؟ سيُحذف موضع هذا المسار فقط، ولن يتأثر المصحف أو بقية الختمات.`))return;st2.items=st2.items.filter(k=>k.id!==id);if(st2.activeId===id)st2.activeId=null;await qKhatmaSave(st2);await renderKhatmas();toast('حُذف مسار القراءة');}
+  };
+}
+function closeKhatmaPicker(){document.getElementById('khatma-picker')?.remove()}
+async function openKhatmaPicker(sn,an){
+  closeKhatmaPicker();const st=await qKhatmaState();const el=document.createElement('div');el.id='khatma-picker';el.className='ayah-menu';
+  el.innerHTML=`<div class="am-sheet khatmah-sheet" role="dialog" aria-label="حفظ في ختمة"><div class="am-h">حفظ ${laterEsc((suraOf(sn)?.name)||'السورة')} · الآية ${AR(an)}</div><p class="kh-sheet-note">اختر مسار قراءة مستقلًا، أو أنشئ مسارًا جديدًا. سيصبح المسار المختار هو النشط أثناء استمرارك في القراءة.</p>${st.items.map(x=>`<button class="am-b" data-khpick="${laterEsc(x.id)}"><span>${laterEsc(x.name)}</span><small>${laterEsc(qKhatmaWhere(x))}</small></button>`).join('')}<button class="am-b" data-khcreate>＋ إنشاء ختمة جديدة</button><button class="am-b am-x" data-khclose>إلغاء</button></div>`;
+  document.body.appendChild(el);
+  el.onclick=async e=>{
+    if(e.target===el||e.target.closest('[data-khclose]')){closeKhatmaPicker();return}
+    const b=e.target.closest('[data-khpick]');if(b){await qKhatmaSetAt(b.dataset.khpick,{page:qPage,s:sn,a:an});closeKhatmaPicker();closeAyahMenu();await renderKhatmas();toast('حُفظ الموضع في الختمة');return}
+    if(e.target.closest('[data-khcreate]')){const name=prompt('اسم الختمة أو مسار القراءة','تدبر');if(!qKhatmaCleanName(name))return;await qKhatmaCreate(name,{page:qPage,s:sn,a:an});closeKhatmaPicker();closeAyahMenu();await renderKhatmas();toast('أُنشئت الختمة وحُفظ الموضع');}
+  };
+}
+
 async function renderResume(){
   const p=await store.get(QKEY); const el=document.getElementById('q-resume');
   if(!p||!p.page){ el.style.display='none'; return }
@@ -1170,10 +1241,12 @@ async function openPage(p){
   document.getElementById('mus-sura').textContent=suraLabel;
   document.getElementById('mus-page').textContent='صفحة '+AR(qPage)+' من ٦٠٤';
   const swipeHint=document.getElementById('mushaf-swipe-hint'); if(swipeHint)swipeHint.classList.toggle('hide',qPage!==1);
-  document.getElementById('rd-title').textContent=suraLabel||'المصحف';
+  const activeKhatma=await qKhatmaActive();
+  document.getElementById('rd-title').textContent=(activeKhatma?activeKhatma.name+' · ':'')+(suraLabel||'المصحف');
   updateTafsirPanel();
   await renderMushafPage(qPage,runs,mark);
   await store.set(QKEY,{page:qPage,sura:suraLabel,s:(mark.s&&mark.a&&qAyaPage[mark.s+':'+mark.a]===qPage)?mark.s:null,a:(mark.s&&mark.a&&qAyaPage[mark.s+':'+mark.a]===qPage)?mark.a:null});
+  await qKhatmaUpdateActivePage(qPage);
   if(tab!=='read'){armReaderHistory(tab);switchTab('read')}
   if(!mushafFullscreen){scrollTo({top:0,behavior:'auto'});scheduleReaderChromeHide()}
   else document.getElementById('v-read')?.scrollTo({top:0,behavior:'smooth'});
@@ -1219,7 +1292,8 @@ function openAyahMenu(sn,an){
   el.innerHTML=`<div class="am-sheet" role="dialog" aria-label="خيارات الآية">
     <div class="am-h">الآية ${AR(an)} — ${(suraOf(sn)?.name)||('سورة '+sn)}</div>
     <button class="am-b" data-am="tafsir">تفسير الآية</button>
-    <button class="am-b" data-am="save">حفظ الموضع هنا</button>
+    <button class="am-b" data-am="save">حفظ موضع القراءة الرئيسي</button>
+    <button class="am-b" data-am="khatma">حفظ في ختمة…</button>
     <button class="am-b" data-am="copy">نسخ مرجع الآية</button>
     <button class="am-b am-x" data-am="close">إلغاء</button></div>`;
   document.body.appendChild(el);
@@ -1231,8 +1305,9 @@ function openAyahMenu(sn,an){
     const act=ev.target.closest('[data-am]')?.dataset.am;
     if(!act||act==='close'){ if(ev.target===el||act==='close')closeAyahMenu(); return }
     if(act==='tafsir'){ closeAyahMenu(); await openTafsirSheet({s:sn,a:an}); }
+    else if(act==='khatma'){ await openKhatmaPicker(sn,an); }
     else if(act==='save'){ const cur=(await store.get(QKEY))||{};
-      await store.set(QKEY,Object.assign(cur,{page:qPage,s:sn,a:an})); closeAyahMenu(); await renderResume(); toast('حُفظ موضعك'); }
+      await store.set(QKEY,Object.assign(cur,{page:qPage,s:sn,a:an})); closeAyahMenu(); await renderResume(); toast('حُفظ موضعك الرئيسي'); }
     else if(act==='copy'){ const t=`${(suraOf(sn)?.name)||('سورة '+sn)} — الآية ${an}`;
       try{await navigator.clipboard.writeText(t);toast('نُسخ المرجع')}catch{toast('تعذّر النسخ')} closeAyahMenu(); }
   });
@@ -1708,7 +1783,7 @@ document.getElementById('knowledge-home')?.addEventListener('click',e=>{const c=
 document.getElementById('learn-category-back')?.addEventListener('click',()=>{if(learnMode==='category'||learnCategory==='basics'||!learnCategory)openKnowledgeHome();else openKnowledgeCategory(learnCategory)});
 
 /* ================= القلب (مدمج) ================= */
-let HD=null, BENEFIT=null, MANAZIL=null, hKind='problems', hCur=null, hTrack={}, hJournal={}, hQuery='', hPaths=[], hPathCur=null, nafsCur=null, mujWeights={}, benefitChoice={};
+let HD=null, BENEFIT=null, MANAZIL=null, SUWIYA=null, hKind='problems', hCur=null, hTrack={}, hJournal={}, hQuery='', hPaths=[], hPathCur=null, nafsCur=null, mujWeights={}, benefitChoice={};
 const hToday=()=>iso(new Date());
 const hDone=(k,i,d)=>!!(hTrack[d]&&hTrack[d][k+':'+i]);
 function hStreak(k,i){ let s=0;
@@ -1844,6 +1919,7 @@ async function loadH(){ if(HD)return HD;
   hTrack=(await store.get('qalb-track'))||{}; hJournal=(await store.get('qalb-journal'))||{};
   hPaths=(await store.get('qalb-paths-v1'))||[]; mujWeights=(await store.get('mujahada-weight-v1'))||{}; benefitChoice=(await store.get('benefit-choice-v1'))||{}; return HD }
 async function loadManazil(){if(MANAZIL)return MANAZIL;try{MANAZIL=await (await fetch('./manazil-sairin.json')).json()}catch{MANAZIL={meta:{},items:[]}}return MANAZIL}
+async function loadSuwiya(){if(SUWIYA)return SUWIYA;try{SUWIYA=await (await fetch('./suwiya-mumin.json')).json()}catch{SUWIYA={meta:{},items:[]}}return SUWIYA}
 function hPct(p){
   if(p.items){ let t=0,n=0;
     p.items.forEach(it=>it.steps.forEach((st,i)=>{ if(st.track){t++; if(hDone(p.id+'/'+it.id,i,hToday()))n++ }}));
@@ -1936,14 +2012,20 @@ function hPathDetail(key){
 
 async function hHome(){
   await loadH(); hCur=null; const host=document.getElementById('v-qalb'); if(!host)return;
-  host.innerHTML=`<section class="knowledge-home tazkiyah-home"><div class="knowledge-hero"><small>خريطة التزكية</small><h2>اختر الباب الأقرب لما تريد إصلاحه</h2><p>بداية واضحة ثم دخول إلى الباب، مع بقاء المسارات والتقدم الحالي كما هي دون أي حكم على رتبة الإيمان.</p></div><button class="knowledge-essential" data-taz-go="path"><span>أكمل من هنا</span><b>مساري</b><small>ارجع إلى المسارات التي بدأت بها أو ابدأ مسار متابعة من المحتوى الموجود.</small></button><div class="knowledge-categories"><button data-taz-go="manazil"><b>منازل السائرين</b><span>يقظة · فكرة · بصيرة · عزم · محاسبة · توبة · توكل · صبر، بقراءة تربوية من مدارج السالكين.</span></button><button data-taz-go="works"><b>أعمال القلوب</b><span>محبة · إخلاص · توكل · صبر، مع الدراسة المتدرجة والتطبيق.</span></button><button data-taz-go="problems"><b>أمراض القلوب</b><span>فهم المرض القلبي وأسبابه وخطوات مجاهدته بالمصادر الموجودة.</span></button><button data-taz-go="obstacles"><b>العقبات اليومية</b><span>أسرة · دراسة · عمل · علاقات · هاتف · فتور، بخطوات عملية.</span></button><button data-taz-go="nafs"><b>فقه النفس</b><span>فهم النفس والتزكية مع الفصل الواضح بين التثقيف والتشخيص الطبي.</span></button></div></section>`;
-  host.onclick=e=>{const b=e.target.closest('[data-taz-go]');if(!b)return;const k=b.dataset.tazGo;if(k==='path'){hPathsRender();return}if(k==='manazil'){hManazil();return}if(k==='benefit'){hBenefit();return}if(k==='obstacles'){hKind='obstacles';hQuery='';hObstacles();return}if(k==='nafs'){nafsQuery='';hNafs();return}hKind=k;hQuery='';hRender()};
+  host.innerHTML=`<section class="knowledge-home tazkiyah-home"><div class="knowledge-hero"><small>خريطة التزكية</small><h2>اختر الباب الأقرب لما تريد إصلاحه</h2><p>بداية واضحة ثم دخول إلى الباب، مع بقاء المسارات والتقدم الحالي كما هي دون أي حكم على رتبة الإيمان.</p></div><button class="knowledge-essential" data-taz-go="path"><span>أكمل من هنا</span><b>مساري</b><small>ارجع إلى المسارات التي بدأت بها أو ابدأ مسار متابعة من المحتوى الموجود.</small></button><div class="knowledge-categories"><button data-taz-go="manazil"><b>منازل السائرين</b><span>يقظة · فكرة · بصيرة · عزم · محاسبة · توبة · توكل · صبر، بقراءة تربوية من مدارج السالكين.</span></button><button data-taz-go="suwiya"><b>سوية المؤمن</b><span>١٦ محطة تربوية من سلسلة الشيخ أحمد بن يوسف السيد، مع خلاصة غير حرفية والفيديو الأصلي لكل محطة.</span></button><button data-taz-go="works"><b>أعمال القلوب</b><span>محبة · إخلاص · توكل · صبر، مع الدراسة المتدرجة والتطبيق.</span></button><button data-taz-go="problems"><b>أمراض القلوب</b><span>فهم المرض القلبي وأسبابه وخطوات مجاهدته بالمصادر الموجودة.</span></button><button data-taz-go="obstacles"><b>العقبات اليومية</b><span>أسرة · دراسة · عمل · علاقات · هاتف · فتور، بخطوات عملية.</span></button><button data-taz-go="nafs"><b>فقه النفس</b><span>فهم النفس والتزكية مع الفصل الواضح بين التثقيف والتشخيص الطبي.</span></button></div></section>`;
+  host.onclick=e=>{const b=e.target.closest('[data-taz-go]');if(!b)return;const k=b.dataset.tazGo;if(k==='path'){hPathsRender();return}if(k==='manazil'){hManazil();return}if(k==='suwiya'){hSuwiya();return}if(k==='benefit'){hBenefit();return}if(k==='obstacles'){hKind='obstacles';hQuery='';hObstacles();return}if(k==='nafs'){nafsQuery='';hNafs();return}hKind=k;hQuery='';hRender()};
 }
 
 async function hManazil(){
   await loadManazil();const host=document.getElementById('v-qalb');if(!host)return;const m=MANAZIL.meta||{},items=MANAZIL.items||[];
-  host.innerHTML=`<button class="back" id="manazil-back">→ خريطة التزكية</button><div class="manazil-hero"><small>قراءة تربوية موثقة</small><h2>${laterEsc(m.title||'منازل السائرين')}</h2><p>${laterEsc(m.subtitle||'')}</p><div class="manazil-note">${laterEsc(m.note||'')}</div><div class="section-source-panel compact"><div class="section-source-kicker">المصدر المعتمد لهذا الباب</div><a href="${laterEsc(m.url||'')}" target="_blank" rel="noopener">${laterEsc(m.book||'فتح المرجع')} ↗</a><p>روابط المواضع التفصيلية لن تتكرر أسفل كل بطاقة ما دام الباب كله مبنيًا على المرجع نفسه.</p></div></div><div class="manazil-grid">${items.map((x,i)=>`${laterRegister(`manazil:${x.id}`,{kind:'تزكية',title:x.title,text:x.lead,source:m.book||'مدارج السالكين',tab:'qalb'})}<article class="manzil-card"><div class="manzil-num">${AR(i+1)}</div><h3>${laterEsc(x.title)}</h3><p class="manzil-lead">${laterEsc(x.lead||'')}</p>${x.points?.length?`<ul>${x.points.map(p=>`<li>${laterEsc(p)}</li>`).join('')}</ul>`:''}</article>`).join('')}</div>`;
+  const playlists=(m.playlists||[]).map(x=>`<a class="taz-video-link secondary" href="${laterEsc(x.url)}" target="_blank" rel="noopener">${laterEsc(x.title)} ↗</a>`).join('');
+  host.innerHTML=`<button class="back" id="manazil-back">→ خريطة التزكية</button><div class="manazil-hero"><small>قراءة تربوية موثقة</small><h2>${laterEsc(m.title||'منازل السائرين')}</h2><p>${laterEsc(m.subtitle||'')}</p><div class="manazil-note">${laterEsc(m.note||'')}</div><div class="section-source-panel compact"><div class="section-source-kicker">المصدر المعتمد لهذا الباب</div><a href="${laterEsc(m.url||'')}" target="_blank" rel="noopener">${laterEsc(m.book||'فتح المرجع')} ↗</a><p>روابط المواضع التفصيلية لن تتكرر أسفل كل بطاقة ما دام الباب كله مبنيًا على المرجع نفسه.</p></div>${playlists?`<div class="taz-playlists"><b>قوائم المشاهدة المضافة</b>${playlists}<small>${laterEsc(m.videoNote||'')}</small></div>`:''}</div><div class="manazil-grid">${items.map((x,i)=>`${laterRegister(`manazil:${x.id}`,{kind:'تزكية',title:x.title,text:x.lead,source:m.book||'مدارج السالكين',tab:'qalb'})}<article class="manzil-card"><div class="manzil-num">${AR(i+1)}</div><h3>${laterEsc(x.title)}</h3><p class="manzil-lead">${laterEsc(x.lead||'')}</p>${x.points?.length?`<ul>${x.points.map(p=>`<li>${laterEsc(p)}</li>`).join('')}</ul>`:''}${x.video?.url?`<a class="taz-video-link" href="${laterEsc(x.video.url)}" target="_blank" rel="noopener"><span>شاهد المادة المناسبة لهذه المنزلة</span><small>${laterEsc(x.video.title||'فتح الفيديو')}</small> ↗</a>`:''}</article>`).join('')}</div>`;
   document.getElementById('manazil-back')?.addEventListener('click',hHome);scrollTo({top:0,behavior:'smooth'});
+}
+async function hSuwiya(){
+  await loadSuwiya();const host=document.getElementById('v-qalb');if(!host)return;const m=SUWIYA.meta||{},items=SUWIYA.items||[];
+  host.innerHTML=`<button class="back" id="suwiya-back">→ خريطة التزكية</button><section class="suwiya-hero"><small>سلسلة تربوية · ${laterEsc(m.speaker||'')}</small><h2>${laterEsc(m.title||'سوية المؤمن')}</h2><p>${laterEsc(m.subtitle||'')}</p><div class="manazil-note">${laterEsc(m.note||'')}</div><div class="section-source-panel compact"><div class="section-source-kicker">المصدر الأصلي للسلسلة</div><div class="taz-source-actions"><a href="${laterEsc(m.playlist||'')}" target="_blank" rel="noopener">قائمة YouTube الأصلية ↗</a><a href="${laterEsc(m.collection||'')}" target="_blank" rel="noopener">فهرس السلسلة ↗</a></div></div></section><div class="suwiya-grid">${items.map(x=>`${laterRegister(`suwiya:${x.id}`,{kind:'تزكية',title:x.title,text:x.lead,source:m.speaker||'',tab:'qalb'})}<article class="suwiya-card"><div class="suwiya-num">${AR(x.n||'')}</div><h3>${laterEsc(x.title)}</h3><p>${laterEsc(x.lead||'')}</p>${x.points?.length?`<ul>${x.points.map(p=>`<li>${laterEsc(p)}</li>`).join('')}</ul>`:''}<a class="taz-video-link" href="${laterEsc(x.video||m.playlist||'')}" target="_blank" rel="noopener"><span>شاهد الحلقة الأصلية</span><small>${laterEsc(m.speaker||'أحمد السيد')}</small> ↗</a></article>`).join('')}</div>`;
+  document.getElementById('suwiya-back')?.addEventListener('click',hHome);scrollTo({top:0,behavior:'smooth'});
 }
 async function hRender(){
   await loadH(); hCur=null;
@@ -2730,7 +2812,7 @@ document.getElementById('go-today').onclick=()=>load(iso(new Date()));
 function shift(n){const d=fromIso(current);d.setDate(d.getDate()+n);load(iso(d))}
 
 /* ================= feedback ================= */
-const FEEDBACK_VERSION='24.51.0';
+const FEEDBACK_VERSION='24.52.0';
 const feedbackSheet=document.getElementById('feedback-sheet');
 const feedbackText=document.getElementById('feedback-text');
 function feedbackPayload(){

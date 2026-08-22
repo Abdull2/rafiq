@@ -951,6 +951,11 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 </style>
 
 
+
+<style id="r52-khatma-taz-styles">
+.q-khatmas-card{margin-top:12px}.q-khatma-head{display:flex;gap:12px;align-items:center;justify-content:space-between}.q-khatma-head>div{display:grid;gap:2px}.q-khatma-head span,.q-khatma-note,.q-khatma-item span,.kh-sheet-note{font-size:14px;line-height:1.75;color:var(--ink-soft)}.q-khatma-head button,.q-khatma-actions button{min-height:42px}.q-khatma-list{display:grid;gap:9px;margin-top:10px}.q-khatma-item{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:10px;background:var(--card)}.q-khatma-item.active{outline:2px solid color-mix(in srgb,var(--gold) 55%,transparent)}.q-khatma-copy{display:grid;gap:2px}.q-khatma-copy small{font-size:12.5px;color:var(--gold)}.q-khatma-copy strong{font-size:16px}.q-khatma-actions{display:flex;gap:7px;flex-wrap:wrap}.q-khatma-actions button{flex:1;min-width:76px}.q-khatma-empty{padding:14px;border:1px dashed var(--line);border-radius:12px;font-size:14px;line-height:1.8;color:var(--ink-soft)}.khatmah-sheet .am-b{display:grid!important;text-align:right;gap:2px}.khatmah-sheet .am-b small{font-size:12.5px;font-weight:400;color:var(--ink-soft)}.taz-playlists,.taz-source-actions{display:grid;gap:8px;margin-top:12px}.taz-playlists small{font-size:13.5px;line-height:1.8;color:var(--ink-soft)}.taz-video-link{display:grid;gap:3px;margin-top:12px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;text-decoration:none;font-weight:650;line-height:1.55}.taz-video-link small{font-size:13px;font-weight:400;color:var(--ink-soft)}.taz-video-link.secondary{margin-top:0}.suwiya-hero{margin-bottom:14px}.suwiya-grid{display:grid;gap:12px}.suwiya-card{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:15px}.suwiya-card h3{font-size:18px;margin:5px 0 8px}.suwiya-card p,.suwiya-card li{font-size:15px;line-height:1.9}.suwiya-num{font-size:13px;color:var(--gold);font-weight:700}.taz-source-actions{grid-template-columns:1fr 1fr}.taz-source-actions a{text-align:center;padding:10px;border:1px solid var(--line);border-radius:10px;text-decoration:none}@media(max-width:480px){.q-khatma-head{align-items:stretch;flex-direction:column}.taz-source-actions{grid-template-columns:1fr}}
+.q-khatma-head-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+</style>
 </head>
 <body>
 <div id="app-boot-splash" role="presentation" aria-hidden="true"><img src="./splash-mark.png" alt=""></div>
@@ -1151,6 +1156,12 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
       <small id="mushaf-offline-storage"></small>
       <div class="mushaf-offline-note">لا نفرض تنزيل ٦٠٤ صفحة على كل مستخدم عند تثبيت التطبيق. التنزيل هنا مرة واحدة وبإمكانك استكماله لاحقًا؛ كما تُحفظ أي صفحة تقرؤها تلقائيًا. بيانات المصحف العامة تُحفظ في CacheStorage ولا تدخل في نسخة بياناتك الشخصية.</div>
     </div>
+  </section>
+
+
+  <section class="q-khatmas-card" aria-labelledby="q-khatmas-title">
+    <div class="sec-head"><span id="q-khatmas-title">ختماتي وعلامات القراءة</span></div>
+    <div class="item" id="q-khatmas"></div>
   </section>
 
   <section class="quran-wird-card">
