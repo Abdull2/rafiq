@@ -28,8 +28,8 @@
       "sha256": "c775d9f8c3a7cf0d0c2bb5246dd699e8c09bf6f8758e1be0b98939331b18bcce"
     },
     "app.js": {
-      "bytes": 330906,
-      "sha256": "00888dfcf223c3151f4c660f2c2c1cda1b06b8e7dab77e226bb4539de9a13609"
+      "bytes": 357882,
+      "sha256": "73a8ff07279ae8c6e111b76931e006d7a159049d13617d03ce2f49770e995dd8"
     },
     "apple-touch-icon.png": {
       "bytes": 9138,
@@ -112,8 +112,8 @@
       "sha256": "4181998d70fbf269aa2bebace89826d7faf55dcdcf619b683f31d618189c7729"
     },
     "index.html": {
-      "bytes": 262190,
-      "sha256": "9f1426c90256dce443bdf85a0566efa37e0939610a8fbf9ea4af21402c514631"
+      "bytes": 281304,
+      "sha256": "85e7f490b09110aeac7572442d08758b66e4620abdbcfacae320f3b7955a32f9"
     },
     "irtaqi.json": {
       "bytes": 18343,
@@ -159,6 +159,10 @@
       "bytes": 11816,
       "sha256": "c2b9316f048c1abe58763c052c23239c6763e6b17286e0618d8d2d733cf9da66"
     },
+    "prophets-stories.json": {
+      "bytes": 96364,
+      "sha256": "a13c65a5160f5df90507133a1fb966b1acd39704162182c3fb4a4632b3415592"
+    },
     "pwa-register.js": {
       "bytes": 2567,
       "sha256": "8488bbcbdd747738a9c18221dad62e642280dbce56907bd28db983563760db48"
@@ -170,6 +174,10 @@
     "qawaid-fiqh.json": {
       "bytes": 12162,
       "sha256": "dcc3a1f278d900d4daf08180958db7eaa63998d9df91249b1204ff36e65eb39b"
+    },
+    "quran-stories.json": {
+      "bytes": 62253,
+      "sha256": "e9e0bbd5e6239aecac364732f97c6b43eb58513980e0edbb9dee3daab158634b"
     },
     "quran.json": {
       "bytes": 1397970,
@@ -220,8 +228,8 @@
       "sha256": "280d1050d6c64161d1f804028c01a6c93407b24006540933b496e3a89a7c62a5"
     },
     "sw.js": {
-      "bytes": 6640,
-      "sha256": "fcc37aa30c6f4648ea909c3ceca5a96e1212f5f81be96f22de709bbb7fd3edbb"
+      "bytes": 6689,
+      "sha256": "b3efd906f83d98e6c43acde78b9e65942395352a8e79b6172b0b1718865a8e75"
     },
     "tadaruk-icon-square.svg": {
       "bytes": 17536,
@@ -232,8 +240,8 @@
       "sha256": "682af30c6b4cb5ddd24a164a53b3d91987c72a9793bc7f9ba72d753c37630fdb"
     },
     "tasbih.html": {
-      "bytes": 28096,
-      "sha256": "5cb1a2de69a49e56d36a4978d6b47d8f7f3c1830cc662fb9384a72146cc05eac"
+      "bytes": 28100,
+      "sha256": "260026b8ce4f9c21ce21b70770e8d1bac218669bb1310cfc299dacac030f0f25"
     },
     "usul-fiqh.json": {
       "bytes": 19078,
@@ -244,8 +252,8 @@
       "sha256": "58b81e7255bdbf64ed68bc586c36a944cedf50780d897677c3a49462f12d43ae"
     },
     "version.js": {
-      "bytes": 475,
-      "sha256": "bd49c2fa59c7ec8272f7a193aea9782067bbd74e7bbac61e9db07cc75ed212ff"
+      "bytes": 483,
+      "sha256": "bcef0095d72dbd6a21a8a1b3e568aac2b34ed9c2cdb7c8d7214253f92d9da647"
     }
   }
 }

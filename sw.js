@@ -16,7 +16,7 @@ const OPTIONAL_URLS=[
   './apple-touch-icon.png','./icon-192.png','./icon-512.png','./icon-1024.png','./icon-maskable-512.png',
   './amiri-400.woff2','./amiri-700.woff2','./hafs.woff2','./plex-400.woff2','./plex-500.woff2','./plex-600.woff2',
   './adiya.json','./agreed-hadith.json','./asma.json','./azkar.json','./companions.json','./irtaqi.json','./ishkaliat.json',
-  './knowledge.json','./aqeedah.json','./fiqh-life.json','./tajweed.json','./hadith-sciences.json','./akhlaq.json','./adab.json',
+  './knowledge.json','./prophets-stories.json','./quran-stories.json','./aqeedah.json','./fiqh-life.json','./tajweed.json','./hadith-sciences.json','./akhlaq.json','./adab.json',
   './digital-life.json','./qawaid-fiqh.json','./fiqh-busola.json','./benefit.json','./manazil-sairin.json','./suwiya-mumin.json',
   './nawawi40.json','./qalb.json','./seerah.json','./usul-tafsir.json','./usul-fiqh.json','./fuqaha.json','./islamic-history.json',
   './quran.json','./riyad.json'
