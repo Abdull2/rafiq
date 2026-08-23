@@ -73,6 +73,19 @@ def run_profile(browser,base,mobile=False):
     page.locator('#close-settings').click()
     for tab in ('quran','azkar','sunnah','qalb','today'):
         page.locator(f'#main-nav button[data-tab="{tab}"]').click();page.wait_for_timeout(350)
+
+    # Regression: knowledge subpages must render on the FIRST entry, not after leaving/re-entering.
+    page.locator('#main-nav button[data-tab="sunnah"]').click();page.wait_for_timeout(120)
+    probes=(('quran','prophets'),('sunnah','nawawi'),('aqeedah','aqeedah'),('advanced','usultafsir'),('fiqh','fiqh'),('sunnah','riyad'))
+    for category,mode in probes:
+        page.evaluate('openKnowledgeHome()')
+        page.locator(f'#knowledge-home [data-kcat="{category}"]').click()
+        page.wait_for_selector('#learn-seg:not(.hide)',timeout=5000)
+        page.locator(f'#learn-seg [data-learn="{mode}"]').click()
+        page.wait_for_selector(f'#learn-{mode}:not(.hide)',timeout=5000)
+        page.wait_for_function("""mode=>{const el=document.getElementById('learn-'+mode);if(!el)return false;const t=(el.innerText||'').trim();return t.length>20&&!t.includes('جارٍ تحميل المحتوى…')}""",mode,timeout=10000)
+        assert page.locator(f'#learn-{mode}').inner_text().strip()
+        page.locator('#learn-category-back').click();page.wait_for_timeout(120)
     # Service worker must install; second load should be controlled.
     page.evaluate("navigator.serviceWorker.ready.then(()=>true)")
     page.reload(wait_until='domcontentloaded');page.wait_for_selector('body.app-boot-ready',timeout=10000)

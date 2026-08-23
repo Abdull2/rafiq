@@ -6,7 +6,7 @@
     release:'R58',
     dataSchema:3,
     backupVersion:2,
-    cacheVersion:'20260823-r58-stories',
+    cacheVersion:'20260823-r58-renderfix1',
     buildDate:'2026-08-23'
   });
   try{Object.defineProperty(root,'TADARUQ_META',{value:meta,writable:false,configurable:false})}
