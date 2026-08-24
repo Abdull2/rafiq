@@ -236,7 +236,7 @@
     if(!validation.ok)throw new Error('تعذّر التصدير لأن بعض البيانات غير قابلة للقراءة. استخدم فحص البيانات أولًا.');
     const extension=await collectExtensionData();
     const core={
-      format:BACKUP_FORMAT,backupVersion:BACKUP_VERSION,appVersion:globalThis.TADARUQ_META?.appVersion||'24.58.0',
+      format:BACKUP_FORMAT,backupVersion:BACKUP_VERSION,appVersion:globalThis.TADARUQ_META?.appVersion||'24.58.1',
       dataVersion:+(await adapter.get(DATA_VERSION_KEY)||CURRENT_DATA_VERSION),createdAt:new Date().toISOString(),
       origin:location.origin,records:app.records,rawLocal:app.rawLocal,extension,
       summary:{recordCount:Object.keys(app.records).length,dayCount:Object.keys(app.records).filter(k=>k.startsWith('day:')).length}

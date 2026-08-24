@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://cdn.jsdelivr.net https://raw.githubusercontent.com https://api.alquran.cloud https://alquran.cloud https://dorar.net; frame-src https://www.youtube.com https://www.youtube-nocookie.com; media-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://cdn.jsdelivr.net https://raw.githubusercontent.com https://api.alquran.cloud https://alquran.cloud https://dorar.net; frame-src https://www.youtube.com https://www.youtube-nocookie.com; media-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>تدارُك - Tadaruq</title>
@@ -1035,7 +1035,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
     </div>
     <div class="day-plan-tasks">
       <div class="day-plan-task-head"><div><b>مهام اليوم</b><span id="plan-progress-copy">ابدأ بهدف واضح ثم أضف مهامك الأساسية</span></div><span class="val" id="todo-val"></span></div>
-      <div class="todo-add"><input id="todo-new" type="text" maxlength="180" placeholder="أضف مهمة واضحة…">
+      <div class="todo-add"><input id="todo-new" type="text" maxlength="180" placeholder="أضف مهمة واضحة…" aria-label="أضف مهمة اليوم">
         <button id="todo-prio" type="button">☆ مهم</button><button id="todo-add" class="primary" type="button">إضافة</button></div>
       <div class="mini-bar plan-mini"><i id="todo-bar" style="width:0%"></i></div>
       <div id="todo-list"></div>
@@ -1077,7 +1077,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
   <div class="cal-panel hide" id="cal-panel">
     <div class="picker">
       <button id="prev-day" aria-label="السابق">‹</button>
-      <input type="date" id="datepick">
+      <input type="date" id="datepick" aria-label="اختر تاريخ اليوم">
       <button id="next-dayb" aria-label="التالي">›</button>
       <button class="tbtn" id="go-today">اليوم</button>
     </div>
@@ -1516,8 +1516,8 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 <!-- saved for later -->
 <div class="sheet hide" id="saved-panel">
-  <div class="box saved-box">
-    <div class="sec-head"><span>محفوظاتي — لوقت لاحق</span><button id="saved-close" class="sheet-x">✕</button></div>
+  <div class="box saved-box" role="dialog" aria-modal="true" aria-labelledby="saved-panel-title">
+    <div class="sec-head"><span id="saved-panel-title">محفوظاتي — لوقت لاحق</span><button id="saved-close" class="sheet-x" type="button" aria-label="إغلاق محفوظاتي">✕</button></div>
     <div class="saved-note">أي مادة عليها علامة ＋ يمكن حفظها هنا. الحفظ محلي على جهازك.</div>
     <div id="saved-list"></div>
   </div>
@@ -1525,9 +1525,9 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 <!-- profile personalization -->
 <div class="sheet hide" id="profile-panel">
-  <div class="box profile-box">
-    <div class="sec-head"><span>تخصيص تدارُك</span><button id="profile-close" class="sheet-x">✕</button></div>
-    <div class="field"><label>العمر</label><input id="profile-edit-age" type="number" min="10" max="100" inputmode="numeric"></div>
+  <div class="box profile-box" role="dialog" aria-modal="true" aria-labelledby="profile-panel-title">
+    <div class="sec-head"><span id="profile-panel-title">تخصيص تدارُك</span><button id="profile-close" class="sheet-x" type="button" aria-label="إغلاق التخصيص">✕</button></div>
+    <div class="field"><label for="profile-edit-age">العمر</label><input id="profile-edit-age" type="number" min="10" max="100" inputmode="numeric"></div>
     <div class="field"><label>النوع</label><div class="gender-pick"><label><input type="radio" name="profile-edit-gender" value="male"> ذكر</label><label><input type="radio" name="profile-edit-gender" value="female"> أنثى</label></div></div>
     <div class="field"><label>المسارات الاختيارية</label><label class="advanced-opt"><input id="profile-edit-issues" type="checkbox"><span><b>إظهار «إشكاليات»</b><span>مسار متقدم يناقش إشكالات الالتزام والتدين والعمل للدين. يمكنك إخفاؤه في أي وقت.</span></span></label></div>
     <div class="field profile-life-field"><label>سياق حياتك — اختياري</label>
@@ -1551,9 +1551,9 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
 
 <!-- settings sheet -->
 <div class="sheet hide" id="settings">
-  <div class="box">
-    <div class="sec-head" style="border-radius:0"><span>الإعدادات</span>
-      <button id="close-settings" style="border:0;background:none;color:var(--deep);font-size:19px;cursor:pointer">✕</button></div>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="sec-head" style="border-radius:0"><span id="settings-title">الإعدادات</span>
+      <button id="close-settings" type="button" aria-label="إغلاق الإعدادات" style="border:0;background:none;color:var(--deep);font-size:19px;cursor:pointer">✕</button></div>
     <div class="field appearance-field">
       <label>المظهر والألوان</label>
       <div class="appearance-choices" role="group" aria-label="اختيار ألوان تدارُك">
@@ -1609,8 +1609,8 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
         <div class="geo-help"><b>الخصوصية:</b> الموقع لا يُرسل إلى خادم تدارُك؛ يُستخدم على الجهاز فقط في الحساب. يمكنك أيضًا كتابة الإحداثيات يدويًا.</div>
       </div>
       <div class="row">
-        <input type="number" step="0.0001" id="lat" placeholder="خط العرض">
-        <input type="number" step="0.0001" id="lng" placeholder="خط الطول"></div>
+        <input type="number" step="0.0001" id="lat" placeholder="خط العرض" aria-label="خط العرض">
+        <input type="number" step="0.0001" id="lng" placeholder="خط الطول" aria-label="خط الطول"></div>
     </div>
     <div class="field"><label for="method">طريقة حساب المواقيت</label>
       <select id="method">
@@ -1640,7 +1640,7 @@ nav button[aria-current="true"]{color:var(--deep);background:var(--wash)}
         </select>
         <button id="btn-data-check" class="data-btn" style="flex:0 0 auto">فحص البيانات</button>
       </div>
-      <input type="file" id="file-in" accept="application/json" class="hide">
+      <input type="file" id="file-in" accept="application/json" class="hide" aria-label="ملف النسخة الاحتياطية للاستعادة">
       <div class="muted" style="margin-top:8px;line-height:1.8">قبل أي ترحيل أو استعادة ينشئ تدارُك نسخة أمان محلية. النسخة التي تنزّلها تشمل بيانات تدارُك المسجلة على هذا الجهاز، ولا تُرسل لأي خادم.</div>
     </div>
     <div class="field"><label>حالة النظام</label>
@@ -2329,28 +2329,21 @@ body.knowledge-subpage-open{overflow:hidden}
 /* R59 — trusted Qur'anic stories */
 .story-source-first .learn-method-panel{margin-top:4px}.story-tools{margin-top:12px}.story-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0 16px}.story-card{position:relative;width:100%;min-height:160px;border:1px solid var(--line);border-radius:18px;background:var(--card);color:var(--ink);padding:15px;text-align:right;display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;cursor:pointer;font:inherit;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}.story-card:active{transform:scale(.992)}.story-card:hover{border-color:color-mix(in srgb,var(--deep) 25%,var(--line));box-shadow:0 8px 24px rgba(0,0,0,.045)}.story-no{width:30px;height:30px;border-radius:10px;background:var(--wash);color:var(--gold);display:grid;place-items:center;font-size:13px;font-weight:800}.story-card-copy{min-width:0;display:grid;align-content:start;gap:5px}.story-card-copy small{font-size:13px;color:var(--gold);font-weight:800}.story-card-copy b{font-family:Amiri,serif;font-size:22px;color:var(--deep);line-height:1.4}.story-card-copy>span{font-size:14.5px;line-height:1.85;color:var(--soft)}.story-card-copy em{font-style:normal;font-size:13.5px;color:var(--deep);font-weight:800;margin-top:4px}.story-detail{position:fixed;inset:0;z-index:320;background:var(--paper);overflow-y:auto;overscroll-behavior:contain;padding:0 max(14px,calc((100vw - 850px)/2)) calc(34px + env(safe-area-inset-bottom))}.story-detail.hide{display:none!important}.story-detail-bar{position:sticky;top:0;z-index:4;min-height:62px;padding:calc(8px + env(safe-area-inset-top)) 0 9px;background:color-mix(in srgb,var(--paper) 97%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}.story-back{min-height:44px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 13px;font:inherit;font-size:14px;font-weight:800;color:var(--deep);cursor:pointer}.story-detail-bar>span{font-size:13.5px;color:var(--gold);font-weight:800}.story-detail-hero{padding:24px 2px 14px}.story-detail-hero small{font-size:14px;color:var(--gold);font-weight:800}.story-detail-hero h2{font-family:Amiri,serif;font-size:32px;line-height:1.35;color:var(--deep);margin:4px 0 8px}.story-detail-hero p{font-size:16px;line-height:1.95;color:var(--ink);margin:0}.story-detail-block{border:1px solid var(--line);border-radius:17px;background:var(--card);padding:15px 16px;margin:10px 0}.story-detail-block h3{font-family:Amiri,serif;font-size:22px;color:var(--deep);margin:0 0 7px}.story-detail-block p,.story-detail-block li{font-size:15.5px;line-height:2;color:var(--ink)}.story-detail-block p{margin:0}.story-detail-block ul{margin:4px 0 0;padding-right:22px}.story-section-kicker{font-size:12.75px;color:var(--gold);font-weight:800;margin-bottom:3px}.story-lessons{background:color-mix(in srgb,var(--deep) 4%,var(--card))}.story-cautions{border-style:dashed;background:color-mix(in srgb,var(--gold) 5%,var(--card))}.story-cautions h3{color:var(--gold)}.story-refs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.story-refs a{border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:9px 10px;text-decoration:none;display:grid;gap:2px;color:var(--deep)}.story-refs a b{font-size:14px}.story-refs a small{font-size:12.75px;color:var(--soft)}.story-tafsir-btn{width:100%;min-height:44px;margin-top:10px;border:0;border-radius:12px;background:var(--deep);color:#fff;font:inherit;font-size:14px;font-weight:800;cursor:pointer}.story-method .source-stack{margin-top:10px}body.story-detail-open{overflow:hidden}@media(max-width:620px){.story-grid{grid-template-columns:1fr}.story-card{min-height:auto;padding:13px}.story-detail{padding-inline:12px}.story-detail-hero{padding-top:18px}.story-detail-hero h2{font-size:28px}.story-detail-hero p{font-size:15.5px}.story-detail-block{padding:13px}.story-detail-block p,.story-detail-block li{font-size:15px}.story-refs{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){.story-card{transition:none}}
 
+/* R58.1 production hardening — mobile form usability */
+@media(max-width:768px){
+  input[type=text],input[type=search],input[type=number],input[type=date],input[type=email],input[type=tel],input[type=url],input[type=password],textarea,select{font-size:calc(16px + var(--user-text-add))!important}
+}
+
 </style>
-<script>
-(function(){
-  let done=false;
-  function reveal(){
-    if(done) return; done=true;
-    requestAnimationFrame(function(){requestAnimationFrame(function(){
-      document.body.classList.add('app-boot-ready');
-      setTimeout(function(){const s=document.getElementById('app-boot-splash');if(s)s.remove();},240);
-    });});
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',reveal,{once:true}); else reveal();
-  window.addEventListener('pageshow',reveal,{once:true});
-  setTimeout(reveal,850);
-})();
-</script>
+<script src="./boot.js"></script>
 <script src="./version.js"></script>
 <script src="./storage.js"></script>
 <script src="./data-safety.js"></script>
 <script src="./diagnostics.js"></script>
 <script src="./app.js"></script>
 <script src="./extension-bridge.js"></script>
+<script src="./a11y-dialogs.js"></script>
+<script src="./network-status.js"></script>
 <script src="./pwa-register.js"></script>
 </body>
 </html>

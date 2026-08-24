@@ -1,9 +1,9 @@
-/* Tadaruq PWA registration — safe opt-in updates. */
+/* Tadaruq PWA registration — safe opt-in updates + staged offline warming. */
 (() => {
   const isLocalhost=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
   const canRegister=location.protocol==='https:'||(location.protocol==='http:'&&isLocalhost)||window.isSecureContext;
   if(!canRegister||!('serviceWorker' in navigator))return;
-  let refreshForUpdate=false,shownFor=null;
+  let refreshForUpdate=false,shownFor=null,warmScheduled=false;
 
   function showUpdate(registration){
     const worker=registration.waiting;if(!worker||shownFor===worker)return;shownFor=worker;
@@ -18,6 +18,24 @@
       buttons[1].addEventListener('click',()=>bar.remove());
     }
   }
+
+  function shouldWarmOfflineContent(){
+    const standalone=window.matchMedia?.('(display-mode: standalone)').matches||navigator.standalone===true;
+    if(!standalone)return false;
+    const connection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+    if(connection?.saveData)return false;
+    return !['slow-2g','2g'].includes(connection?.effectiveType);
+  }
+  function scheduleOfflineWarm(registration){
+    if(warmScheduled||!shouldWarmOfflineContent())return;warmScheduled=true;
+    const send=()=>{
+      const worker=registration.active||navigator.serviceWorker.controller;
+      if(worker)worker.postMessage({type:'WARM_OFFLINE_CONTENT'});
+    };
+    if('requestIdleCallback' in window)window.requestIdleCallback(send,{timeout:12000});
+    else setTimeout(send,5000);
+  }
+
   navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshForUpdate)location.reload()});
   window.addEventListener('load',async()=>{
     try{
@@ -27,6 +45,7 @@
         const worker=registration.installing;
         worker?.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)showUpdate(registration)});
       });
+      navigator.serviceWorker.ready.then(scheduleOfflineWarm).catch(()=>{});
       registration.update().catch(()=>{});
     }catch(error){console.warn('Tadaruq service worker registration failed:',error)}
   });

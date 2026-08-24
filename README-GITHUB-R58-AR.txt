@@ -1,4 +1,4 @@
-تدارُك v24.58.0 — R58 Stability Foundation
+تدارُك v24.58.1 — R58 Production Hardening
 حزمة جاهزة لـ GitHub Pages
 
 طريقة الرفع:

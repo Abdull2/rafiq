@@ -535,7 +535,7 @@ async function renderAzkarList(){
     }
     if(hisnChapter!==null&&full[hisnChapter]){
       const ch=full[hisnChapter]; cnt.textContent=`${AR(ch.items.length)} ذكرًا في هذا الباب`;
-      box.innerHTML=`<section class="hisn-book hisn-reader"><div class="hisn-reader-top"><button type="button" data-hisn-back>← فهرس حصن المسلم</button><span>${AR(ch.chapterIndex+1)} / ${AR(full.length)}</span></div><div class="hisn-title">${escHtml(ch.title)}</div><div class="hisn-canonical-source"><span>المصدر الجامع</span><a href="https://risala.prh.gov.sa/ar/content/51" target="_blank" rel="noopener">حصن المسلم — سعيد بن علي بن وهف القحطاني — رسالة الحرمين ↗</a></div>${ch.items.map(z=>hisnItemHtml(ch,z)).join('')}</section>`;
+      box.innerHTML=`<section class="hisn-book hisn-reader"><div class="hisn-reader-top"><button type="button" data-hisn-back>→ فهرس حصن المسلم</button><span>${AR(ch.chapterIndex+1)} / ${AR(full.length)}</span></div><div class="hisn-title">${escHtml(ch.title)}</div><div class="hisn-canonical-source"><span>المصدر الجامع</span><a href="https://risala.prh.gov.sa/ar/content/51" target="_blank" rel="noopener">حصن المسلم — سعيد بن علي بن وهف القحطاني — رسالة الحرمين ↗</a></div>${ch.items.map(z=>hisnItemHtml(ch,z)).join('')}</section>`;
       return;
     }
     const total=full.reduce((n,ch)=>n+ch.items.length,0); cnt.textContent=`${AR(full.length)} بابًا · ${AR(total)} ذكرًا ودعاءً`;
@@ -2241,7 +2241,7 @@ function hOpen(id){
            {weekday:'long',day:'numeric',month:'long'}).format(new Date(e.d))}</span>
            <button data-del="${(hJournal[p.id].length-1)-i}">حذف</button></div>
            <div class="tx">${e.x.replace(/</g,'&lt;')}</div></div>`).join('')
-         : '<div class="h-empty">لا شيء بعد. اكتب أول ما يخطر لك — لن يراه أحد غيرك.</div>'}</div>
+         : '<div class="h-empty">لا شيء بعد. اكتب أول ما يخطر لك — يُحفظ محليًا على هذا الجهاز ولا يُرسل إلى خادم تدارُك.</div>'}</div>
      </div>`;
   scrollTo({top:0,behavior:'smooth'});
 }
@@ -2645,9 +2645,9 @@ function hDeedsTabs(){
 function khHtml(){
   if(!khOpen) return `<div class="kh-lock">
     <div class="kh-t">الخبيئة</div>
-    <div class="kh-d">مساحة لعملٍ تحب أن يبقى خفيًا عن الناس، تذكيرًا بالإخلاص لا حكمًا على النيات.</div>${hSourceHtml({t:'حديث السبعة الذين يظلهم الله — «ورجل تصدق بصدقة فأخفاها…»',u:'https://dorar.net/hadith/sharh/6995'})}
+    <div class="kh-d">مساحة لعملٍ تحب أن يبقى بعيدًا عن العرض العادي، تذكيرًا بالإخلاص لا حكمًا على النيات. رمز الفتح حماية واجهة محلية فقط وليس تشفيرًا للبيانات.</div>${hSourceHtml({t:'حديث السبعة الذين يظلهم الله — «ورجل تصدق بصدقة فأخفاها…»',u:'https://dorar.net/hadith/sharh/6995'})}
     <div style="display:flex;gap:8px;margin-top:11px">
-      <input type="password" id="kh-pin" inputmode="numeric" placeholder="${kh.pin?'أدخل الرقم السري':'اختر رقمًا سريًّا'}"
+      <input type="password" id="kh-pin" inputmode="numeric" placeholder="${kh.pin?'أدخل رمز الفتح المحلي':'اختر رمز فتح محلي'}"
         style="flex:1;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:10px;font-size:14px">
       <button id="kh-go" style="border:1px solid var(--line);background:var(--card);color:var(--deep);
         border-radius:11px;padding:10px 16px;font-size:13px;cursor:pointer">فتح</button>
@@ -2928,7 +2928,7 @@ document.getElementById('go-today').onclick=()=>load(iso(new Date()));
 function shift(n){const d=fromIso(current);d.setDate(d.getDate()+n);load(iso(d))}
 
 /* ================= feedback ================= */
-const FEEDBACK_VERSION=window.TADARUQ_META?.appVersion||'24.58.0';
+const FEEDBACK_VERSION=window.TADARUQ_META?.appVersion||'24.58.1';
 const feedbackSheet=document.getElementById('feedback-sheet');
 const feedbackText=document.getElementById('feedback-text');
 function feedbackPayload(){

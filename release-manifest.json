@@ -1,8 +1,12 @@
 {
-  "appVersion": "24.58.0",
+  "appVersion": "24.58.1",
   "release": "R58",
   "algorithm": "SHA-256",
   "files": {
+    "a11y-dialogs.js": {
+      "bytes": 2421,
+      "sha256": "e93b390c315b8b7620b9f2ba990c3b7190a848415197ef3feae83c1b8779299c"
+    },
     "adab.json": {
       "bytes": 103983,
       "sha256": "cf605bc96ee5560b8b75d0028ae5d72c0023e60aaab5eceb1941966aacf15ace"
@@ -28,8 +32,8 @@
       "sha256": "c775d9f8c3a7cf0d0c2bb5246dd699e8c09bf6f8758e1be0b98939331b18bcce"
     },
     "app.js": {
-      "bytes": 359404,
-      "sha256": "dfed487be1076fd0b8c820f3941ddab0ce2f6e6958f2b88c9413ab1c4b05da89"
+      "bytes": 359595,
+      "sha256": "5e8862555d6670d9e11ad9a8528bd29d6c148599bb82d81291883c76058b3ca8"
     },
     "apple-touch-icon.png": {
       "bytes": 9138,
@@ -55,13 +59,17 @@
       "bytes": 8489,
       "sha256": "2a79872c58466ce90624ed8ce0200d41733da761273e0f71b40ef747aed22288"
     },
+    "boot.js": {
+      "bytes": 601,
+      "sha256": "325e640c79a8fb41d6d333cb7308fc2fe8c831db1e0794340e3c56190d417b76"
+    },
     "companions.json": {
       "bytes": 36798,
       "sha256": "c9e7fee3a0e635721f3e109f2eb57c43bc2fe0585f8f86060696f0799ff8130c"
     },
     "data-safety.js": {
       "bytes": 17634,
-      "sha256": "a3398cc8d2f76e024f267a588c872b86876bdcac0176ee9d1cd2829a01b1e603"
+      "sha256": "ec209de4d7440385cc69cb9f4dbdf1e10434023d61d28dedd44e61938e65540d"
     },
     "diagnostics.js": {
       "bytes": 3207,
@@ -112,8 +120,8 @@
       "sha256": "4181998d70fbf269aa2bebace89826d7faf55dcdcf619b683f31d618189c7729"
     },
     "index.html": {
-      "bytes": 281304,
-      "sha256": "85e7f490b09110aeac7572442d08758b66e4620abdbcfacae320f3b7955a32f9"
+      "bytes": 281874,
+      "sha256": "22391d3c67a339ce44f7ac8805eafd0a471a386960b004342d16f18c3bc67999"
     },
     "irtaqi.json": {
       "bytes": 18343,
@@ -143,6 +151,10 @@
       "bytes": 34211,
       "sha256": "c9170f59819ade74426206f785f2a844b39073d0ac5949cef1f179584047b742"
     },
+    "network-status.js": {
+      "bytes": 1776,
+      "sha256": "5acaa121f1fe8628f1f5952daf6a6e8de2a6543ca0af2c4fdbbbb485f65fe85d"
+    },
     "plex-400.woff2": {
       "bytes": 42848,
       "sha256": "6010e7fd0dce5d527583951750728cbe3c895efbd16aa0f809ab8c824878c9d8"
@@ -156,16 +168,16 @@
       "sha256": "16734a5adb27b0f363e566cbbeacec480da0dc0baa19c8f0053251c2e2bc0eac"
     },
     "privacy.html": {
-      "bytes": 11816,
-      "sha256": "c2b9316f048c1abe58763c052c23239c6763e6b17286e0618d8d2d733cf9da66"
+      "bytes": 11843,
+      "sha256": "a40e0496ca77e13cd644cfe2d888098b9c26c7f00531b4a51e6f66822cbe70cd"
     },
     "prophet-stories.json": {
       "bytes": 77923,
       "sha256": "feff396eb7685c2e951307cc7b6a35fd3b27c11db289f425bc78d2c74fcb17d0"
     },
     "pwa-register.js": {
-      "bytes": 2567,
-      "sha256": "8488bbcbdd747738a9c18221dad62e642280dbce56907bd28db983563760db48"
+      "bytes": 3499,
+      "sha256": "5cd081f9f5c9cb50ca7e82061ea72c746d28e06b32c97c0e61283dc939270274"
     },
     "qalb.json": {
       "bytes": 900142,
@@ -216,8 +228,8 @@
       "sha256": "5ae9954f4adc401974a7be47f7c4df9fd5844d183ef1a754c9922c56ed179fe6"
     },
     "sources.html": {
-      "bytes": 47977,
-      "sha256": "f656a264306e24c4dc891d6070484918bfff07357a36d8ccb33f26d27541ff5d"
+      "bytes": 48004,
+      "sha256": "41d1e17580e8a58904e14871809ef5776721f144f8ea98c7416bf1abee7b0d12"
     },
     "splash-mark.png": {
       "bytes": 38215,
@@ -232,8 +244,8 @@
       "sha256": "280d1050d6c64161d1f804028c01a6c93407b24006540933b496e3a89a7c62a5"
     },
     "sw.js": {
-      "bytes": 6721,
-      "sha256": "5b5f144ce46b86049fc67e1b2d5f3694e5655d7f7379a4850e644872a81bcfbc"
+      "bytes": 7492,
+      "sha256": "219049ac43b44d7a2f508a83c7c1af0efbb57c1bdf1886b5e92671dbb4775d54"
     },
     "tadaruk-icon-square.svg": {
       "bytes": 17536,
@@ -244,8 +256,12 @@
       "sha256": "682af30c6b4cb5ddd24a164a53b3d91987c72a9793bc7f9ba72d753c37630fdb"
     },
     "tasbih.html": {
-      "bytes": 28100,
-      "sha256": "260026b8ce4f9c21ce21b70770e8d1bac218669bb1310cfc299dacac030f0f25"
+      "bytes": 13189,
+      "sha256": "35e15ed8a84b4dcf38f46c5640868208efb3ba68ffe41dff099c4a941fcdc783"
+    },
+    "tasbih.js": {
+      "bytes": 17043,
+      "sha256": "90500555ae4921b9e06063a08f907641b7d91c7eefd47a5a48cb7a098a3a5baa"
     },
     "usul-fiqh.json": {
       "bytes": 19078,
@@ -257,7 +273,7 @@
     },
     "version.js": {
       "bytes": 481,
-      "sha256": "d7c3bb9ad0e5bf57b872555627a9df168b9652bcd0b6362e00118e218f859c0a"
+      "sha256": "18874d7e5c3d574608b07bcb1b8a4f2b35ce1d7c5d78faadaf420a72909271d0"
     }
   }
 }

@@ -1,6 +1,6 @@
-/* Tadaruq PWA service worker — stability foundation. */
+/* Tadaruq PWA service worker — stability + staged offline warming. */
 importScripts('./version.js');
-const META=self.TADARUQ_META||{release:'R58',cacheVersion:'20260823-r58-renderfix1'};
+const META=self.TADARUQ_META||{release:'R58',cacheVersion:'20260824-r58-prod1'};
 const CACHE_NAME=`tadaruq-shell-${META.cacheVersion}`;
 const RUNTIME_CACHE=`tadaruq-runtime-${META.cacheVersion}`;
 const CONTENT_CACHE=`tadaruq-content-${META.cacheVersion}`;
@@ -8,13 +8,19 @@ const HADITH_CORPUS_CACHE='tadaruq-lulu-marjan-v1';
 const MUSHAF_PUBLIC_CACHE='tadaruq-mushaf-kfqc-r43-v1';
 const TAFSIR_MUYASSAR_CACHE='tadaruq-tafsir-muyassar-r45-v1';
 
+// Keep the install transaction small and deterministic. These files make the
+// shell and its support pages usable offline immediately after installation.
 const CRITICAL_URLS=[
-  './','./index.html','./version.js','./storage.js','./data-safety.js','./diagnostics.js','./app.js','./pwa-register.js','./manifest.webmanifest'
-];
-const OPTIONAL_URLS=[
-  './extension-bridge.js','./privacy.html','./sources.html','./tasbih.html','./tadaruk-icon-square.svg','./splash-mark.png',
+  './','./index.html','./version.js','./storage.js','./data-safety.js','./diagnostics.js','./app.js','./boot.js','./extension-bridge.js','./a11y-dialogs.js','./network-status.js','./pwa-register.js','./manifest.webmanifest',
+  './privacy.html','./sources.html','./tasbih.html','./tasbih.js','./tadaruk-icon-square.svg','./splash-mark.png',
   './apple-touch-icon.png','./icon-192.png','./icon-512.png','./icon-1024.png','./icon-maskable-512.png',
-  './amiri-400.woff2','./amiri-700.woff2','./hafs.woff2','./plex-400.woff2','./plex-500.woff2','./plex-600.woff2',
+  './amiri-400.woff2','./amiri-700.woff2','./hafs.woff2','./plex-400.woff2','./plex-500.woff2','./plex-600.woff2'
+];
+
+// The local knowledge corpus is intentionally not downloaded inside install.
+// Installed PWAs warm it later while idle and on a suitable connection. Any
+// file opened before that is cached on demand by staleWhileRevalidate().
+const OPTIONAL_CONTENT_URLS=[
   './adiya.json','./agreed-hadith.json','./asma.json','./azkar.json','./companions.json','./irtaqi.json','./ishkaliat.json',
   './knowledge.json','./aqeedah.json','./fiqh-life.json','./tajweed.json','./hadith-sciences.json','./akhlaq.json','./adab.json',
   './digital-life.json','./qawaid-fiqh.json','./fiqh-busola.json','./benefit.json','./manazil-sairin.json','./suwiya-mumin.json',
@@ -22,17 +28,25 @@ const OPTIONAL_URLS=[
   './quran.json','./riyad.json','./prophet-stories.json','./quran-stories.json','./search-index.json'
 ];
 
-async function precacheOptional(cache){
-  await Promise.allSettled(OPTIONAL_URLS.map(async url=>{
-    const request=new Request(url,{cache:'reload'}),response=await fetch(request);
-    if(response.ok)await cache.put(url,response);
-  }));
+async function warmOptionalContent(cache){
+  let cursor=0;
+  const workers=Array.from({length:4},async()=>{
+    while(cursor<OPTIONAL_CONTENT_URLS.length){
+      const url=OPTIONAL_CONTENT_URLS[cursor++];
+      try{
+        if(await cache.match(url))continue;
+        const response=await fetch(new Request(url,{cache:'no-cache'}));
+        if(response.ok)await cache.put(url,response);
+      }catch(_){}
+    }
+  });
+  await Promise.all(workers);
 }
+
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE_NAME);
     await cache.addAll(CRITICAL_URLS);
-    await precacheOptional(cache);
     // Do not call skipWaiting here: an existing session must choose when to update.
   })());
 });
@@ -105,5 +119,8 @@ self.addEventListener('fetch',event=>{
 });
 self.addEventListener('message',event=>{
   if(event.data?.type==='SKIP_WAITING')self.skipWaiting();
+  if(event.data?.type==='WARM_OFFLINE_CONTENT'){
+    event.waitUntil(caches.open(CACHE_NAME).then(warmOptionalContent));
+  }
   if(event.data?.type==='GET_VERSION')event.source?.postMessage?.({type:'TADARUQ_SW_VERSION',release:META.release,cacheVersion:META.cacheVersion});
 });
