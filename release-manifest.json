@@ -28,8 +28,8 @@
       "sha256": "c775d9f8c3a7cf0d0c2bb5246dd699e8c09bf6f8758e1be0b98939331b18bcce"
     },
     "app.js": {
-      "bytes": 358931,
-      "sha256": "2292d89a1ba3aeccf059507d09468e5afc5dc5214d3a9b44c77bbcc9e2f64dc4"
+      "bytes": 359404,
+      "sha256": "dfed487be1076fd0b8c820f3941ddab0ce2f6e6958f2b88c9413ab1c4b05da89"
     },
     "apple-touch-icon.png": {
       "bytes": 9138,
@@ -207,6 +207,10 @@
       "bytes": 66610,
       "sha256": "a2ab30be1a48a6d9607c3088953b5bbe7f21cbbb60480d936bb99ce262656197"
     },
+    "search-index.json": {
+      "bytes": 439454,
+      "sha256": "3e53b27b2c223d72cf6c1945742e3a179a031121cf3d82af37b963deef91dfb9"
+    },
     "seerah.json": {
       "bytes": 51043,
       "sha256": "5ae9954f4adc401974a7be47f7c4df9fd5844d183ef1a754c9922c56ed179fe6"
@@ -228,8 +232,8 @@
       "sha256": "280d1050d6c64161d1f804028c01a6c93407b24006540933b496e3a89a7c62a5"
     },
     "sw.js": {
-      "bytes": 6699,
-      "sha256": "4a961064c2921781a045d991ad6d4d9d423403907b874ac9baa48217375a3950"
+      "bytes": 6721,
+      "sha256": "5b5f144ce46b86049fc67e1b2d5f3694e5655d7f7379a4850e644872a81bcfbc"
     },
     "tadaruk-icon-square.svg": {
       "bytes": 17536,
@@ -252,8 +256,8 @@
       "sha256": "58b81e7255bdbf64ed68bc586c36a944cedf50780d897677c3a49462f12d43ae"
     },
     "version.js": {
-      "bytes": 486,
-      "sha256": "525a30c5ba5ccd1567bffb4130107e7bbb46121af0d1b4a918db89078c86ef6b"
+      "bytes": 481,
+      "sha256": "d7c3bb9ad0e5bf57b872555627a9df168b9652bcd0b6362e00118e218f859c0a"
     }
   }
 }

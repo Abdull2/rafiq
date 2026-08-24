@@ -22,6 +22,11 @@ if critical_size>800*1024: failed.append('critical code shell exceeds 800 KiB')
 json_size=sum(p.stat().st_size for p in ROOT.glob('*.json'))
 print(f'local JSON corpus: {json_size/1024/1024:.2f} MiB / 6 MiB')
 if json_size>6*1024*1024: failed.append('local JSON corpus exceeds 6 MiB')
+search_index=ROOT/'search-index.json'
+if search_index.exists():
+    search_size=search_index.stat().st_size
+    print(f'search-index.json: {search_size/1024:.1f} KiB / 600 KiB')
+    if search_size>600*1024: failed.append('search-index.json exceeds 600 KiB')
 if failed:
     for x in failed: print('FAIL:',x)
     sys.exit(1)

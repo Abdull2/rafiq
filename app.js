@@ -393,11 +393,10 @@ function buildStrip(){
   paintStrip();
 }
 async function paintStrip(){
-  for(const dot of document.querySelectorAll('.dot')){
-    const day=await store.get('day:'+dot.dataset.day);
-    const p=day?score(day):0;
-    dot.style.background = p? shade(p):'';
-    dot.style.color = p>55? '#fff':'' } }
+  const dots=[...document.querySelectorAll('.dot')];
+  const days=await Promise.all(dots.map(dot=>store.get('day:'+dot.dataset.day)));
+  dots.forEach((dot,i)=>{const p=days[i]?score(days[i]):0;dot.style.background=p?shade(p):'';dot.style.color=p>55?'#fff':''});
+}
 
 const score=day=>{const v=dailyRatingValues(day);return v.length?Math.round(v.length/ALL_ITEMS.length*100):0};
 const shade=p=>p>=80?'#3F5C34':p>=60?'#6E8F5C':p>=35?'#A8C296':p>0?'#D5E2CB':'';
@@ -411,7 +410,7 @@ async function load(day){
   document.getElementById('dateline').textContent=arabicDate(day);
   document.getElementById('datepick').value=day;
   ['tomorrow','best','worst'].forEach(f=>{const el=document.getElementById(f);if(el)el.value=data[f]||''});
-  paintRatings(); paintMood(); paintPrayerLog(); buildStrip(); renderAzkar(); renderQuran(); renderTodo(); renderTodoReview(); paintRing();
+  paintRatings(); paintMood(); paintPrayerLog(); buildStrip(); if(tab==='azkar'||AZ.sets.length)renderAzkar(); renderQuran(); renderTodo(); renderTodoReview(); paintRing();
 }
 
 /* ================= salah tab ================= */
@@ -2835,7 +2834,7 @@ document.getElementById('v-today')?.addEventListener('click',e=>{
   if(b.id==='home-resume-action'&&go==='qalb'){openTazkiyahSection();return}
   switchTab(go);
 });
-async function renderHomeResume(){const title=document.getElementById('home-resume-title'),copy=document.getElementById('home-resume-copy'),btn=document.getElementById('home-resume-action');if(!title||!copy||!btn)return;let choice=null;try{const q=await store.get(QKEY);if(q?.page>1)choice={t:`أكمل المصحف من صفحة ${AR(q.page)}`,c:'موضع القراءة محفوظ على جهازك.',go:'quran'};const lv=await store.get('qalb-levels-v1');if(!choice&&lv&&Object.keys(lv).length)choice={t:'أكمل رحلة التزكية',c:'لديك موضوع بدأته ويمكنك الرجوع إلى مرحلته التالية.',go:'qalb'};const bp=await store.get('fiqh-busola-progress-v1');if(!choice&&bp&&Object.keys(bp).length)choice={t:'أكمل فقه البوصلة',c:'تابع من آخر باب درسته في المقاصد أو الأولويات أو الواقع.',go:'sunnah',learn:'busola'}}catch{}if(!choice)choice={t:'ابدأ من المصحف',c:'لو لم تبدأ مسارًا بعد، اجعل أول باب اليوم قراءة القرآن.',go:'quran'};title.textContent=choice.t;copy.textContent=choice.c;btn.dataset.homeGo=choice.go;if(choice.learn)btn.dataset.learnGo=choice.learn;else delete btn.dataset.learnGo;btn.textContent='أكمل الآن ←'}
+async function renderHomeResume(){const title=document.getElementById('home-resume-title'),copy=document.getElementById('home-resume-copy'),btn=document.getElementById('home-resume-action');if(!title||!copy||!btn)return;let choice=null;try{const [q,lv,bp]=await Promise.all([store.get(QKEY),store.get('qalb-levels-v1'),store.get('fiqh-busola-progress-v1')]);if(q?.page>1)choice={t:`أكمل المصحف من صفحة ${AR(q.page)}`,c:'موضع القراءة محفوظ على جهازك.',go:'quran'};if(!choice&&lv&&Object.keys(lv).length)choice={t:'أكمل رحلة التزكية',c:'لديك موضوع بدأته ويمكنك الرجوع إلى مرحلته التالية.',go:'qalb'};if(!choice&&bp&&Object.keys(bp).length)choice={t:'أكمل فقه البوصلة',c:'تابع من آخر باب درسته في المقاصد أو الأولويات أو الواقع.',go:'sunnah',learn:'busola'}}catch{}if(!choice)choice={t:'ابدأ من المصحف',c:'لو لم تبدأ مسارًا بعد، اجعل أول باب اليوم قراءة القرآن.',go:'quran'};title.textContent=choice.t;copy.textContent=choice.c;btn.dataset.homeGo=choice.go;if(choice.learn)btn.dataset.learnGo=choice.learn;else delete btn.dataset.learnGo;btn.textContent='أكمل الآن ←'}
 
 function paintHomePrayer(){
   const T=todayTimes(),title=document.getElementById('home-prayer-title'),sub=document.getElementById('home-prayer-sub'),card=document.getElementById('home-prayer-card'),action=document.getElementById('home-prayer-action');
@@ -2914,7 +2913,7 @@ const GLOBAL_SEARCH_SOURCES=[
 const GLOBAL_LEARN_FILE_MODE={'prophet-stories.json':'prophets','quran-stories.json':'qstories','aqeedah.json':'aqeedah','fiqh-life.json':'fiqhlife','fiqh-busola.json':'busola','tajweed.json':'tajweed','hadith-sciences.json':'hadithsciences','nawawi40.json':'nawawi','riyad.json':'riyad','agreed-hadith.json':'agreed','seerah.json':'seerah','companions.json':'companions','islamic-history.json':'history','akhlaq.json':'akhlaq','adab.json':'adab','digital-life.json':'digital','qawaid-fiqh.json':'qawaid','usul-fiqh.json':'usulfiqh','usul-tafsir.json':'usultafsir'};
 function globalEntryText(v){return [v?.subtitle,v?.sub,v?.lead,v?.summary,v?.description,v?.meaning,v?.impact,v?.text,v?.answer,v?.explain,v?.practice,v?.note].filter(x=>typeof x==='string').join(' ')}
 function globalSearchWalk(v,meta,path=[],out=[]){if(!v||path.length>8)return out;if(Array.isArray(v)){v.forEach((x,i)=>globalSearchWalk(x,meta,[...path,String(i)],out));return out}if(typeof v!=='object')return out;const keys=Object.keys(v),isSource=(v.u||v.url||v.href)&&keys.length<=4&&!v.items&&!v.points&&!v.steps;let title=v.title||v.name||v.q||'';if(!title&&typeof v.t==='string'&&v.t.length<=150)title=v.t;if(typeof title==='string'&&title.trim()&&!isSource){const snippet=globalEntryText(v).trim();if(snippet||v.id||v.items||v.points||v.steps){let subkind='';if(path.includes('obstacles'))subkind='obstacles';else if(path.includes('problems'))subkind='problems';else if(path.includes('works'))subkind='works';else if(path.includes('nafs'))subkind='nafs';out.push({title:title.trim().slice(0,180),snippet:snippet.slice(0,260),group:meta.group,dest:meta.dest,subkind,file:meta.file})}}for(const [k,x] of Object.entries(v)){if(['sources','source','meta','methodology'].includes(k)&&path.length>1)continue;globalSearchWalk(x,meta,[...path,k],out)}return out}
-async function buildGlobalSearchIndex(){if(globalSearchIndex)return globalSearchIndex;const base=[{title:'المصحف والبحث في القرآن',snippet:'السور والآيات والفهرس وموضع القراءة',group:'المصحف',dest:'quran'},{title:'خطة اليوم (جدول محاسبة النفس)',snippet:'الهدف، المهام، ومراجعة اليوم',group:'يومي',dest:'today'},{title:'مساري',snippet:'متابعة العقبات والمشكلات التي بدأت بها داخل التزكية',group:'التزكية',dest:'qalb',subkind:'path'}];const loaded=await Promise.all(GLOBAL_SEARCH_SOURCES.map(async([file,group,dest])=>{try{const r=await fetch('./'+file);if(!r.ok)return[];const data=await r.json();return globalSearchWalk(data,{file,group,dest})}catch{return[]}}));const seen=new Set();globalSearchIndex=[...base,...loaded.flat()].filter(x=>{const k=searchNorm(x.group+'|'+x.title);if(!k||seen.has(k))return false;seen.add(k);x._search=searchNorm(`${x.title} ${x.snippet} ${x.group}`);return true});return globalSearchIndex}
+async function buildGlobalSearchIndex(){if(globalSearchIndex)return globalSearchIndex;const base=[{title:'المصحف والبحث في القرآن',snippet:'السور والآيات والفهرس وموضع القراءة',group:'المصحف',dest:'quran'},{title:'خطة اليوم (جدول محاسبة النفس)',snippet:'الهدف، المهام، ومراجعة اليوم',group:'يومي',dest:'today'},{title:'مساري',snippet:'متابعة العقبات والمشكلات التي بدأت بها داخل التزكية',group:'التزكية',dest:'qalb',subkind:'path'}];let entries=[];try{const r=await fetch('./search-index.json',{cache:'force-cache'});if(r.ok){const bundle=await r.json();if(Array.isArray(bundle?.entries))entries=bundle.entries}}catch{}if(!entries.length){const loaded=await Promise.all(GLOBAL_SEARCH_SOURCES.map(async([file,group,dest])=>{try{const r=await fetch('./'+file);if(!r.ok)return[];const data=await r.json();return globalSearchWalk(data,{file,group,dest})}catch{return[]}}));entries=loaded.flat()}const seen=new Set();globalSearchIndex=[...base,...entries].filter(x=>{const k=searchNorm(x.group+'|'+x.title);if(!k||seen.has(k))return false;seen.add(k);x._search=searchNorm(`${x.title} ${x.snippet} ${x.group}`);return true});return globalSearchIndex}
 function openGlobalSearch(){globalSearchPanel?.classList.remove('hide');globalSearchPanel?.setAttribute('aria-hidden','false');if(globalSearchStatus)globalSearchStatus.textContent=globalSearchIndex?'اكتب كلمة للبحث.':'جارٍ تجهيز فهرس البحث المحلي…';buildGlobalSearchIndex().then(()=>{if(globalSearchStatus&&!globalSearchInput?.value)globalSearchStatus.textContent='اكتب كلمة واضحة للبحث.'});setTimeout(()=>globalSearchInput?.focus(),80)}
 function closeGlobalSearch(){globalSearchPanel?.classList.add('hide');globalSearchPanel?.setAttribute('aria-hidden','true')}
 function renderGlobalSearch(q){clearTimeout(globalSearchTimer);globalSearchTimer=setTimeout(async()=>{const n=searchNorm(q);if(!n){globalSearchResults.innerHTML='';globalSearchStatus.textContent='اكتب كلمة واضحة للبحث.';return}globalSearchStatus.textContent='جارٍ البحث…';const idx=await buildGlobalSearchIndex(),terms=n.split(' ').filter(Boolean),ranked=idx.map(x=>{let s=0;if(x._search===n)s+=8;if(searchNorm(x.title).includes(n))s+=6;if(x._search.includes(n))s+=3;terms.forEach(t=>{if(searchNorm(x.title).includes(t))s+=2;if(x._search.includes(t))s+=1});return [x,s]}).filter(([,s])=>s>0).sort((a,b)=>b[1]-a[1]).slice(0,30).map(([x])=>x);globalSearchStatus.textContent=ranked.length?`${AR(ranked.length)} نتيجة أقرب للبحث`:'لم نجد نتيجة مطابقة في الفهرس المحلي.';globalSearchResults.innerHTML=ranked.length?ranked.map((x,i)=>`<button type="button" class="global-result" data-global-result="${i}"><small>${laterEsc(x.group)}</small><b>${laterEsc(x.title)}</b>${x.snippet?`<span>${laterEsc(x.snippet.slice(0,150))}</span>`:''}</button>`).join(''):'<div class="global-search-empty">جرّب كلمة أقصر أو افتح القسم المتخصص واستخدم البحث داخله.</div>';globalSearchResults._items=ranked},160)}
@@ -3121,21 +3120,23 @@ document.getElementById('onboarding-next')?.addEventListener('click',async()=>{i
 (async function(){
   let safetyBoot=null;
   if(window.RafiqDataSafety){try{safetyBoot=await RafiqDataSafety.init()}catch(e){safetyBoot={ok:false,message:'تعذر بدء حماية البيانات'}}}
-  settings=(await store.get('settings'))||{method:'EGYPT',asr:'1',khatma:30};
-  qada=(await store.get('qada'))||{};
-  profile={age:null,gender:null,advancedIssues:false,married:null,hasKids:null,timeBand:null,moneyBand:null,skills:[],...((await store.get('profile-v1'))||{})};if(!Array.isArray(profile.skills))profile.skills=[];
-  tazFocus=(await store.get('taz-focus-v1'))||'';tazOnboardingSeen=!!(await store.get('taz-onboarding-seen-v1'));if((profile.age||profile.gender)&&!tazOnboardingSeen){tazOnboardingSeen=true;await store.set('taz-onboarding-seen-v1',true)};
+  const [savedSettings,savedQada,savedProfile,savedTazFocus,savedTazSeen,onboardingSeenV4,onboardingSeenV3]=await Promise.all([
+    store.get('settings'),store.get('qada'),store.get('profile-v1'),store.get('taz-focus-v1'),store.get('taz-onboarding-seen-v1'),store.get('onboarding-seen-v4'),store.get('onboarding-seen-v3')
+  ]);
+  settings=savedSettings||{method:'EGYPT',asr:'1',khatma:30};
+  qada=savedQada||{};
+  profile={age:null,gender:null,advancedIssues:false,married:null,hasKids:null,timeBand:null,moneyBand:null,skills:[],...(savedProfile||{})};if(!Array.isArray(profile.skills))profile.skills=[];
+  tazFocus=savedTazFocus||'';tazOnboardingSeen=!!savedTazSeen;if((profile.age||profile.gender)&&!tazOnboardingSeen){tazOnboardingSeen=true;await store.set('taz-onboarding-seen-v1',true)};
   paintProfileUI();
-  await loadLater();
   const initialAppearance=settings.appearance||(settings.theme==='dark'?'night':'mishkat');
   await applyAppearance(initialAppearance);
   await applyFontScale(settings.fontScale||'normal');
   buildMoods(); buildSections(); buildPrayerLog();
-  await loadTodo();
+  await Promise.all([loadLater(),loadTodo()]);
   await load(current);
   renderNext(); setInterval(renderNext,1000);
   if(safetyBoot&&safetyBoot.ok===false)setTimeout(()=>toast('تنبيه: أوقف تدارُك ترحيل البيانات حفاظًا على نسختك القديمة'),900);
-  const onboardingSeen=(await store.get('onboarding-seen-v4'))||(await store.get('onboarding-seen-v3'));
+  const onboardingSeen=onboardingSeenV4||onboardingSeenV3;
   if(!onboardingSeen){paintOnboarding();document.getElementById('onboarding')?.classList.remove('hide')}else if(!(await store.get('onboarding-seen-v4')))await store.set('onboarding-seen-v4',true)
   const h=(location.hash||'').replace('#','');
   if(h==='tafsir'){quranToolsRequested=true;switchTab('quran')}

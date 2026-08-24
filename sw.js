@@ -19,7 +19,7 @@ const OPTIONAL_URLS=[
   './knowledge.json','./aqeedah.json','./fiqh-life.json','./tajweed.json','./hadith-sciences.json','./akhlaq.json','./adab.json',
   './digital-life.json','./qawaid-fiqh.json','./fiqh-busola.json','./benefit.json','./manazil-sairin.json','./suwiya-mumin.json',
   './nawawi40.json','./qalb.json','./seerah.json','./usul-tafsir.json','./usul-fiqh.json','./fuqaha.json','./islamic-history.json',
-  './quran.json','./riyad.json','./prophet-stories.json','./quran-stories.json'
+  './quran.json','./riyad.json','./prophet-stories.json','./quran-stories.json','./search-index.json'
 ];
 
 async function precacheOptional(cache){

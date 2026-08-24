@@ -15,7 +15,7 @@ assert block.index('modes.forEach') < block.index('await loadLearn()'), 'knowled
 for call in ('renderStoryLibrary(mode)','renderSimpleKnowledge(mode)','renderStructuredKnowledge(mode)','renderAgreed()','renderSunnah()','renderNawawi()','renderSeerah()','renderCompanions()','renderBusola()'):
     assert 'await '+call in block, f'missing await for {call}'
 assert 'knowledgeLoading(mode)' in block
-assert "cacheVersion:'20260823-r58-renderfix1'" in version
+assert re.search(r"cacheVersion:'20260823-r58-(?:renderfix\d+|perf\d+)'",version), 'unexpected cache version format'
 
 modes=['agreed','riyad','nawawi','seerah','companions','essentials','fiqh','busola','muyassar','prophets','qstories','usultafsir','usulfiqh','fuqaha','history','aqeedah','fiqhlife','tajweed','hadithsciences','akhlaq','adab','digital','qawaid']
 for mode in modes:
